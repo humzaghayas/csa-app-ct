@@ -1,0 +1,9 @@
+mutation UpdateQuoteMutation(
+  $version: Long!
+  $actions: [QuoteUpdateAction!]!
+  $id: String!
+) {
+  UpdateQuoteMutation(id: $id, version: $version, actions: $actions) {
+    ...QuoteListFragment
+  }
+}
