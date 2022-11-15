@@ -16,14 +16,14 @@ import {
 } from '@commercetools-frontend/actions-global';
 import { PERMISSIONS } from '../../../../constants';
 // import {
-//   useTicketCreateCreator,
+//   useTicketDetailsCreator,
 // } from '../../../../hooks/use-Ticket-connector/use-Tickete-graphql-connector';
 import { docToFormValues, formValuesToDoc } from './conversions';
-import TicketCreateForm from './ticket-create-form';
+import OrderCreateForm from './order-create-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
 
-const TicketCreate = (props) => {
+const OrderCreate = (props) => {
   const intl = useIntl();
   const params = useParams();
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
@@ -35,18 +35,18 @@ const TicketCreate = (props) => {
   });
   // const showNotification = useShowNotification();
   // const showApiErrorNotification = useShowApiErrorNotification();
-  // const TicketCreateCreator = useTicketCreateCreator();
+  // const TicketDetailsCreator = useTicketDetailsCreator();
   const handleSubmit = useCallback(
     // async (formikValues, formikHelpers) => {
     //   const data = formValuesToDoc(formikValues);
     //   try {
-    //     await TicketCreateCreator.execute({
+    //     await TicketDetailsCreator.execute({
     //       nextDraft: data,
     //     });
     //     showNotification({
     //       kind: 'success',
     //       domain: DOMAINS.SIDE,
-    //       text: intl.formatMessage(messages.TicketCreated),
+    //       text: intl.formatMessage(messages.OrderCreated),
     //     });
     //   } catch (graphQLErrors) {
     //     const transformedErrors = transformErrors(graphQLErrors);
@@ -60,7 +60,7 @@ const TicketCreate = (props) => {
     //   }
     // },
     // [
-    //   TicketCreateCreator,
+    //   TicketDetailsCreator,
     //   dataLocale,
     //   intl,
     //   projectLanguages,
@@ -70,7 +70,7 @@ const TicketCreate = (props) => {
   );
 
   return (
-    <TicketCreateForm
+    <OrderCreateForm
     initialValues={docToFormValues(null, projectLanguages)}
     onSubmit={handleSubmit}
     isReadOnly={!canManage}
@@ -98,11 +98,11 @@ const TicketCreate = (props) => {
           // </FormModalPage>
         );
       }}
-    </TicketCreateForm>
+    </OrderCreateForm>
   );
 };
-TicketCreate.displayName = 'TicketCreate';
-TicketCreate.propTypes = {
+OrderCreate.displayName = 'OrderDetails';
+OrderCreate.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
-export default TicketCreate;
+export default OrderCreate;

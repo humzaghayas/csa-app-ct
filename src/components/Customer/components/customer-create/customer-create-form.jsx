@@ -9,6 +9,8 @@ import DateInput from '@commercetools-uikit/date-input';
 import Spacings from '@commercetools-uikit/spacings';
 import validate from './validate';
 import messages from './messages';
+
+
 import { EMPLOYEE_ROLES,CUSTOMER_GROUPS,CUSTOMER_PRIORITY} from './constants';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import {
@@ -206,6 +208,7 @@ const CustomerCreateForm = (props) => {
       
           </Spacings.Inline>
           </div>
+         
           </Spacings.Stack>
 {/*      
     <CollapsiblePanel

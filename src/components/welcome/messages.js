@@ -54,4 +54,13 @@ export default defineMessages({
     defaultMessage:
       'Demo example to fetch some data using GraphQL and displaying it in a paginated table.',
   },
+  cardOrdersTitle: {
+    id: 'Welcome.cardOrdersTitle',
+    defaultMessage: 'Fetching Customers',
+  },
+  cardOrdersContent: {
+    id: 'Welcome.cardOrdersContent',
+    defaultMessage:
+      'Demo example to fetch some data using GraphQL and displaying it in a paginated table.',
+  },
 });

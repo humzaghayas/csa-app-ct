@@ -4,12 +4,15 @@ import Channels from './components/channels';
 import Tickets from './components/Ticket/components/Ticket-list/ticket-list';
 
 import Welcome from './components/welcome';
-import TicketDetails from './components/Ticket/components/Ticket-details/ticket-details';
-import TicketCreate from './components/Ticket/components/ticket-create/ticket-create';
+
+import TicketDetails from './components/Ticket/components/ticket-details/ticket-details';
 import TicketAccount from './components/Ticket/components/ticket-account/ticket-account';
 import Customers from './components/Customer/components/customer-list/customer-list';
 import CustomerAccount from './components/Customer/components/customer-account/customer-account';
 import CustomerCreate from './components/Customer/components/customer-create/customer-create';
+import Orders from './components/Orders/components/order-list/order-list';
+import OrderAccount from './components/Orders/components/order-account/order-account';
+import TicketCreate from './components/Ticket/components/ticket-create/ticket-create';
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
 
@@ -35,11 +38,20 @@ const ApplicationRoutes = () => {
          <Tickets linkToWelcome={match.url} />
         </Route>
         
+        <Route  path={`${match.path}/ticket-details`}>
+            <TicketDetails linkToWelcome={match.url} />
+        </Route>
         <Route  path={`${match.path}/ticket-create`}>
-            <TicketCreate linkToWelcome={match.url} />
+           <TicketCreate linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/Customers`}>
          <Customers linkToWelcome={match.url} />
+        </Route>
+        <Route path={`${match.path}/Orders`}>
+      <Orders linkToWelcome={match.url} />
+        </Route>
+        <Route  path={`${match.path}/order-edit/:id`}>
+      <OrderAccount linkToWelcome={match.url} />
         </Route>
         <Route  path={`${match.path}/customer-edit/:lahari`}>
         <CustomerAccount  linkToWelcome={match.url} />

@@ -40,8 +40,7 @@ import {
   PlusBoldIcon,
 } from '@commercetools-uikit/icons';
 
-import TicketDetails from '../ticket-details/ticket-details';
-import TicketAccount from '../ticket-account/ticket-account';
+import OrderAccount from '../order-account/order-account';
 
 // import { getCompanies } from '../../api';
 // import { useEffect } from 'react';
@@ -57,27 +56,25 @@ import TicketAccount from '../ticket-account/ticket-account';
 // };
 
 const rows = [
-  { id: '00012875',Customer:'Lahari',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...',Website:'Electronics Site',Status:'In process',Priority:'Moderate',Category:'Enquiry',Subject:'ticket 2'},
-  { id: '00000002',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Website:'Electronics Site',Status:'In process',Priority:'Low',Category:'Enquiry',Subject:'ticket 2'},
-  { id: '00000003',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Website:'Electronics Site',Status:'In process',Priority:'Low',Category:'Enquiry',Subject:'ticket 2'},
-  { id: '00000005',Customer:'RanjithKumar',Created:'Nov 11, 2022,2:54:47...',Modified:'Dec 11, 2022,2:54:47...',Website:'Electronics Site',Status:'In process',Priority:'Low',Category:'Enquiry',Subject:'ticket 2'},
+  { OrderNumber: '00012875',Customer:'Lahari',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
+  { OrderNumber: '00012876',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
+  { OrderNumber: '00012877',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
+  { OrderNumber: '00012879',Customer:'RanjithKumar',Created:'Nov 11, 2022,2:54:47...',Modified:'Dec 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
 ];
 
 const columns = [
 
-  { key: 'id', label: 'id' },
+  { key: 'OrderNumber', label: 'Order Number' },
   { key:'Customer', label: 'Customer' },
   { key: 'Created', label: 'Created' },
   { key: 'Modified', label: 'Modified' },
-  { key: 'Website', label: 'Website' },
   { key: 'Status', label: 'Status' },
-  { key: 'Priority', label: 'Priority' },
-  { key: 'Category', label: 'Category' },
-  { key: 'Subject', label: 'Subject' },
+  { key: 'DeliveryMode', label: 'Delivery Mode' },
+ 
 ];
 
 
-const Tickets = (props) => {
+const Orders = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
@@ -96,15 +93,15 @@ const Tickets = (props) => {
         <Text.Headline as="h2" intlMessage={messages.title} />
       </Spacings.Stack>
       {/* {loading && <LoadingSpinner />} */}
-      <Spacings.Inline>
+      {/* <Spacings.Inline>
       <SecondaryButton
         label="Add Ticket"
          data-track-event="click" 
-         onClick={() => push(`ticket-create`)}
+          onClick={() => push(`ticket-details`)}
         iconLeft={<PlusBoldIcon />}
         size="medium"
       />
-      </Spacings.Inline>
+      </Spacings.Inline> */}
       {/* {data ? ( */}
         <Spacings.Stack scale="l">
          
@@ -117,8 +114,7 @@ const Tickets = (props) => {
             // sortedBy={tableSorting.value.key}
             // sortDirection={tableSorting.value.order}
             // onSortChange={tableSorting.onChange}
-            // onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
-            onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
+            onRowClick={(row) => push(`order-edit/${row.id}/orders-general`)}
             // onRowClick={(row) => push(`Ticket-account/${row.id}/companies-general`)}
           />
           <Pagination
@@ -134,7 +130,7 @@ const Tickets = (props) => {
             </SuspendedRoute> */}
             
             <SuspendedRoute path={`${match.path}/:id`}>
-              <TicketAccount onClose={() => push(`${match.url}`)} />
+              <OrderAccount onClose={() => push(`${match.url}`)} />
             </SuspendedRoute>
           
           {/* <SuspendedRoute path={`${match.path}/ticket-details`}>
@@ -146,9 +142,9 @@ const Tickets = (props) => {
     </Spacings.Stack>
   );
 };
-Tickets.displayName = 'Tickets';
-Tickets.propTypes = {
+Orders.displayName = 'Orders';
+Orders.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
 };
 
-export default Tickets;
+export default Orders;
