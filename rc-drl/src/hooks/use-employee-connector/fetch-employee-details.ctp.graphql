@@ -1,0 +1,83 @@
+query FetchChannelDetailsQuery($id: String!) {
+  employee(id: $id) {
+    ...EmployeeFrag
+  }
+}
+
+fragment EmployeeFrag on Employee {
+  id
+  employeeNumber
+  customerNumber: employeeNumber
+  version
+  createdAt
+  lastModifiedAt
+  firstName
+  lastName
+  email
+  password
+  middleName
+  salutation
+  title
+  dateOfBirth
+  companyName
+  externalId
+  vatId
+  defaultBillingAddressId
+  defaultShippingAddressId
+  isEmailVerified
+  stores {
+    key
+    nameAllLocales {
+      locale
+      value
+    }
+  }
+  customerGroup {
+    id
+    key
+    name
+    version
+  }
+  addresses {
+    id
+    externalId
+    key
+    streetName
+    streetNumber
+    apartment
+    building
+    pOBox
+    city
+    postalCode
+    region
+    state
+    country
+    additionalStreetInfo
+    additionalAddressInfo
+    firstName
+    lastName
+    salutation
+    title
+    company
+    department
+    contactInfo {
+      email
+      phone
+      mobile
+      fax
+    }
+    externalId
+  }
+  roles
+  amountRemaining {
+    currencyCode
+    centAmount
+    fractionDigits
+  }
+  amountExpended {
+    currencyCode
+    centAmount
+    fractionDigits
+  }
+}
+

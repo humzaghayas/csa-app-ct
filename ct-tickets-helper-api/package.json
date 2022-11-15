@@ -1,0 +1,36 @@
+{
+  "name": "ct-tickets-helper-api",
+  "version": "1.0.0",
+  "description": "helper api for tickets module",
+  "main": "lib/index.js",
+  "module": "./lib/index.js",
+  "watch": {
+    "push-build": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "js,ts",
+      "quiet": false
+    }
+  },
+  "scripts": {
+    "release": "npm run build && cd lib && npm publish && cd ..",
+    "watch": "npm-watch push-build",
+    "ts:watch": "tsc --watch",
+    "ts:check": "tsc",
+    "push-build": "npm run build && cd lib && yalc push && cd ..",
+    "clean": "mkdir lib",
+    "build-dev": "npm run ts:check && npm run build:prep && NODE_ENV=development npm run build:sources",
+    "build": "npm run ts:check && npm run build:prep && NODE_ENV=production npm run build:sources",
+    "build:prep": "npm run clean && cp package.json README.md lib",
+    "build:sources": "babel ./src --source-maps --out-dir lib --extensions \".js,.ts\"",
+    "lint": "npm run lint:check",
+    "lint:check": "npx eslint src --ext .ts,.js",
+    "lint:fix": "npx eslint src --ext .ts,.js --fix"
+  },
+  "author": "Humza",
+  "license": "ISC",
+  "devDependencies": {
+    "npm-watch": "^0.6.0"
+  }
+}
