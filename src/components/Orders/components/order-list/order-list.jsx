@@ -39,15 +39,14 @@ import {
   // SecondaryButton,
   PlusBoldIcon,
 } from '@commercetools-uikit/icons';
-import CustomerDetails from '../customer-details/customer-details';
-import CustomerAccount from '../customer-account/customer-account';
-// import CustomerCreate from '../customer-create/customer-create';
+
+import OrderAccount from '../order-account/order-account';
 
 // import { getCompanies } from '../../api';
 // import { useEffect } from 'react';
 
 // import NoImageIcon from '@commercetools-frontend/assets/images/camera.svg';
-// import CustomerAccount from '../Customer-account';
+// import TicketAccount from '../Ticket-account';
 
 // const QUERY = {
 //   perPage: 20,
@@ -57,27 +56,25 @@ import CustomerAccount from '../customer-account/customer-account';
 // };
 
 const rows = [
-  { Customernumber: '00000001',ExternalId:'--',FirstName:'Lahari',LastName:'Ramurthi',Email:'lahari.r@royalcyber.com',Company:'--',CustomerGroup:'Company A',DateCreated:'Apr 11, 2022,2:54:47...',DateModified:'Apr 11, 2022,2:54:47...'},
-  { Customernumber: '00000002',ExternalId:'--',FirstName:'Lahari',LastName:'Ramurthi',Email:'lahari.r@royalcyber.com',Company:'--',CustomerGroup:'Company A',DateCreated:'Apr 11, 2022,2:54:47...',DateModified:'Apr 11, 2022,2:54:47...',},
-  { Customernumber: '00000003',ExternalId:'--',FirstName:'Lahari',LastName:'Ramurthi',Email:'lahari.r@royalcyber.com',Company:'--',CustomerGroup:'Company A',DateCreated:'Apr 11, 2022,2:54:47...',DateModified:'Apr 11, 2022,2:54:47...',},
-  { Customernumber: '00000003',ExternalId:'--',FirstName:'RanjithKumar',LastName:'Rajendran',Email:'ranjithKumar.r@royalcyber.com',Company:'--',CustomerGroup:'Company A',DateCreated:'Apr 11, 2022,2:54:47...',DateModified:'Apr 11, 2022,2:54:47...',},
+  { OrderNumber: '00012875',Customer:'Lahari',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
+  { OrderNumber: '00012876',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
+  { OrderNumber: '00012877',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
+  { OrderNumber: '00012879',Customer:'RanjithKumar',Created:'Nov 11, 2022,2:54:47...',Modified:'Dec 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
 ];
 
 const columns = [
 
-  { key: 'Customernumber', label: 'Customer number' },
-  { key:'ExternalId', label: 'External Id' },
-  { key: 'FirstName', label: 'First Name' },
-  { key: 'LastName', label: 'LastName' },
-  { key: 'Company', label: 'Company' },
-  { key: 'Email', label: 'Email' },
-  { key: 'CustomerGroup', label: 'Customer Group' },
-  { key: 'DateCreated', label: 'Date Created' },
-  { key: 'DateModified', label: 'Date Modified' },
+  { key: 'OrderNumber', label: 'Order Number' },
+  { key:'Customer', label: 'Customer' },
+  { key: 'Created', label: 'Created' },
+  { key: 'Modified', label: 'Modified' },
+  { key: 'Status', label: 'Status' },
+  { key: 'DeliveryMode', label: 'Delivery Mode' },
+ 
 ];
 
 
-const Customers = (props) => {
+const Orders = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
@@ -96,15 +93,15 @@ const Customers = (props) => {
         <Text.Headline as="h2" intlMessage={messages.title} />
       </Spacings.Stack>
       {/* {loading && <LoadingSpinner />} */}
-      <Spacings.Inline>
+      {/* <Spacings.Inline>
       <SecondaryButton
-        label="Add Customer"
+        label="Add Ticket"
          data-track-event="click" 
-         onClick={() => push(`Customer-create`)}
+          onClick={() => push(`ticket-details`)}
         iconLeft={<PlusBoldIcon />}
         size="medium"
       />
-      </Spacings.Inline>
+      </Spacings.Inline> */}
       {/* {data ? ( */}
         <Spacings.Stack scale="l">
          
@@ -117,8 +114,8 @@ const Customers = (props) => {
             // sortedBy={tableSorting.value.key}
             // sortDirection={tableSorting.value.order}
             // onSortChange={tableSorting.onChange}
-            onRowClick={(row) => push(`Customer-edit/${row.FirstName}/Customers-summary`)}
-            // onRowClick={(row) => push(`Customer-account/${row.id}/companies-general`)}
+            onRowClick={(row) => push(`order-edit/${row.id}/orders-general`)}
+            // onRowClick={(row) => push(`Ticket-account/${row.id}/companies-general`)}
           />
           <Pagination
             page={page.value}
@@ -129,17 +126,15 @@ const Customers = (props) => {
           />
            <Switch>
             {/* <SuspendedRoute path={`${match.path}/:id`}>
-                <CustomerAccount onClose={() => push(`${match.url}`)} />  
+                <TicketAccount onClose={() => push(`${match.url}`)} />  
             </SuspendedRoute> */}
             
-            {/* <SuspendedRoute path={`${match.path}/Customer-edit`}> */}
-            <SuspendedRoute path={`${match.path}/:lahari`}>
-              <CustomerAccount onClose={() => push(`${match.url}`)} /> 
-              {/* <CustomerDetails onClose={() => push(`${match.url}`)} /> */}
+            <SuspendedRoute path={`${match.path}/:id`}>
+              <OrderAccount onClose={() => push(`${match.url}`)} />
             </SuspendedRoute>
           
-          {/* <SuspendedRoute path={`${match.path}/Customer-create`}>
-            <CustomerCreate  onClose={() => push(`${match.url}`)} />
+          {/* <SuspendedRoute path={`${match.path}/ticket-details`}>
+            <TicketDetails  onClose={() => push(`${match.url}`)} />
             </SuspendedRoute> */}
           </Switch> 
         </Spacings.Stack>
@@ -147,9 +142,9 @@ const Customers = (props) => {
     </Spacings.Stack>
   );
 };
-Customers.displayName = 'Customers';
-Customers.propTypes = {
+Orders.displayName = 'Orders';
+Orders.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
 };
 
-export default Customers;
+export default Orders;

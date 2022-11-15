@@ -26,7 +26,7 @@ const getTicketPriorityOptions = Object.keys(TICKET_PRIORITY).map((key) => ({
 }));
 
 
-const TicketDetailsForm = (props) => {
+const OrderCreateForm = (props) => {
   const intl = useIntl();
   const formik = useFormik({
     initialValues: props.initialValues,
@@ -194,8 +194,8 @@ const TicketDetailsForm = (props) => {
     handleReset: formik.handleReset,
   });
 };
-TicketDetailsForm.displayName = 'TicketDetailsForm';
-TicketDetailsForm.propTypes = {
+OrderCreateForm.displayName = 'OrderCreateForm';
+OrderCreateForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   initialValues: PropTypes.shape({
     id: PropTypes.string,
@@ -204,4 +204,4 @@ TicketDetailsForm.propTypes = {
   dataLocale: PropTypes.string.isRequired,
 };
 
-export default TicketDetailsForm;
+export default OrderCreateForm;

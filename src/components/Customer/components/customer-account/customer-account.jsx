@@ -17,8 +17,7 @@ import {
 import PropTypes from 'prop-types';
 // import CustomerDetails from '../Customer-details/Customer-details';
 // import CustomerRules from '../Customer-rules/Customer-rules';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import { PlusBoldIcon, ExportIcon } from '@commercetools-uikit/icons';
+
 import Spacings from '@commercetools-uikit/spacings';
 import { Fragment } from 'react';
 import styles from './customer-account-module.css';
@@ -38,6 +37,7 @@ import CustomerAddress from '../customer-address/customer-address'
 import Text from '@commercetools-uikit/text';
 import NoImageIcon from '@commercetools-frontend/assets/images/camera.svg';
 import CustomerTickets from '../customer-Tickets/customer-tickets';
+
 const CustomerAccount = (props) => {
   const match = useRouteMatch();
   const tabsModalState = useModalState(true);
@@ -74,7 +74,8 @@ const CustomerAccount = (props) => {
         </div>
          <div className={styles.customerName}>
          {/* <Text size="big" color="primary">Description</Text> */}
-           <h1 className={styles.customerName}>Lahari</h1>
+         <h1>Lahari 360 view</h1>
+           {/* <h3 className={styles.customerName}>Lahari</h3> */}
            <h4>lahari.r@royalcyber.com</h4>
            {/* <div className={styles.customerDetails}>
              <Spacings.Inline>
@@ -111,6 +112,9 @@ const CustomerAccount = (props) => {
               <TabHeader to={`${match.url}/Customers-tickets`} label="Tickets" />
               <TabHeader to={`${match.url}/Customers-sumary`} label="Reviews" />
               <TabHeader to={`${match.url}/Customers-password`} label="Password" />
+              {/* <div style="margin-left :500px"> */}
+           
+              {/* </div> */}
               {/* <TabHeader
                 to={`${match.url}/Customer-administration`}
                 label="Administration"
