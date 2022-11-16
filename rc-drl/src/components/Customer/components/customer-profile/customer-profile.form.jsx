@@ -12,8 +12,9 @@ import Text from '@commercetools-uikit/text';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
  import { CUSTOMER_PRIORITY} from './constants';
 import RichTextInput from '@commercetools-uikit/rich-text-input';
-
+import SecondaryButton from '@commercetools-uikit/secondary-button';
 import Constraints from '@commercetools-uikit/constraints';
+import styles from './customer-profile.module.css';
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
 //   value: EMPLOYEE_ROLES[key],
@@ -50,6 +51,30 @@ const CustomerProfileForm = (props) => {
     <Spacings.Stack scale="l">
       {/* <Spacings.Inline> */}
    {/* <h3>lahari</h3> */}
+   <div className={styles.buttonss}>
+   <Spacings.Stack scale="xl" >
+               <Spacings.Inline>
+               <Spacings.Stack scale="l">
+              <SecondaryButton
+            label="Revert Changes"
+            data-track-event="click"
+            // onClick={() => push(`required-approval`)}
+            
+            size="medium"
+          />
+          </Spacings.Stack>
+           <Spacings.Stack scale="l">
+            <SecondaryButton
+            label="save"
+            data-track-event="click"
+            // onClick={() => push(`required-approval`)}
+            
+            size="medium"
+          />
+          </Spacings.Stack>
+          </Spacings.Inline>
+              </Spacings.Stack>
+             </div>
    <Spacings.Inline>
    <TextField
         name="key"

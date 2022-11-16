@@ -39,11 +39,11 @@ import {
   // SecondaryButton,
   PlusBoldIcon,
 } from '@commercetools-uikit/icons';
-import TicketDetails from '../Ticket-details/ticket-details';
-import TicketCreate from '../ticket-create/ticket-create';
+
+import TicketDetails from '../ticket-details/ticket-details';
 import TicketAccount from '../ticket-account/ticket-account';
 import { actions,useAsyncDispatch } from '@commercetools-frontend/sdk';
-import{FETCH_TICKETS,getTicketRows} from 'ct-tickets-helper-api'
+import{FETCH_TICKETS,getTicketRows,CONSTANTS} from 'ct-tickets-helper-api'
 import { gql } from '@apollo/client';
 
 // import { getCompanies } from '../../api';
@@ -109,7 +109,7 @@ const Tickets = (props) => {
 
   const { data, error, loading } = useMcQuery(gql`${FETCH_TICKETS}`, {
     variables: {
-      container:"ticket-container",
+      container:CONSTANTS.containerKey,
       limit: perPage.value,
       offset: (page.value - 1) * perPage.value,
     },
@@ -132,7 +132,6 @@ const Tickets = (props) => {
   return (
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="xs">
-
         <FlatButton
           as={RouterLink}
           to={props.linkToWelcome}
@@ -165,7 +164,8 @@ const Tickets = (props) => {
             // sortedBy={tableSorting.value.key}
             // sortDirection={tableSorting.value.order}
             // onSortChange={tableSorting.onChange}
-            onRowClick={(row) => push(`ticket-edit/${row.id}/ticket-general`)}
+            // onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
+            onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
             // onRowClick={(row) => push(`Ticket-account/${row.id}/companies-general`)}
           />
           <Pagination
@@ -184,8 +184,8 @@ const Tickets = (props) => {
               <TicketAccount onClose={() => push(`${match.url}`)} />
             </SuspendedRoute>
           
-          {/* <SuspendedRoute path={`${match.path}/ticket-create`}>
-            <TicketCreate  onClose={() => push(`${match.url}`)} />
+          {/* <SuspendedRoute path={`${match.path}/ticket-details`}>
+            <TicketDetails  onClose={() => push(`${match.url}`)} />
             </SuspendedRoute> */}
           </Switch> 
         </Spacings.Stack>

@@ -12,8 +12,8 @@ const config = {
       initialProjectKey: '${env:CTP_INITIAL_PROJECT_KEY}',
     },
     production: {
-      applicationId: 'cl977ym6c00042501ex12tk0d',
-      url: 'https://commerce-tools-b2b-services.firebaseapp.com',
+      applicationId: 'clajfnkej00b71f012e79u0r0',
+      url: 'https://csa-project-1d161.firebaseapp.com',
     },
   },
   oAuthScopes: {
@@ -35,21 +35,21 @@ const config = {
       'script-src': [
         'http://localhost:4459',
         'mc-api.us-central1.gcp.commercetools.com',
-        'commerce-tools-b2b-services.firebaseapp.com',
+        'csa-project-1d161.firebaseapp.com',
         'https://ms-company-f4b4o225iq-ue.a.run.app',
         'https://ms-gateway-f4b4o225iq-ue.a.run.app',
       ],
       'connect-src': [
         'http://localhost:4459',
         'mc-api.us-central1.gcp.commercetools.com',
-        'commerce-tools-b2b-services.firebaseapp.com',
+        'csa-project-1d161.firebaseapp.com',
         'https://ms-company-f4b4o225iq-ue.a.run.app',
         'https://ms-gateway-f4b4o225iq-ue.a.run.app',
       ],
       'style-src': [
         'http://localhost:4459',
         'mc-api.us-central1.gcp.commercetools.com',
-        'commerce-tools-b2b-services.firebaseapp.com',
+        'csa-project-1d161.firebaseapp.com',
         'https://ms-company-f4b4o225iq-ue.a.run.app',
         'https://ms-gateway-f4b4o225iq-ue.a.run.app',
       ],
@@ -77,6 +77,12 @@ const config = {
     {
       uriPath: 'Customers',
       defaultLabel: 'Customers',
+      labelAllLocales: [],
+      permissions: [PERMISSIONS.View],
+    },
+    {
+      uriPath: 'Orders',
+      defaultLabel: 'Orders',
       labelAllLocales: [],
       permissions: [PERMISSIONS.View],
     },

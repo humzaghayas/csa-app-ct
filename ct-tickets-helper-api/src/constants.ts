@@ -1,8 +1,7 @@
 export const TICKET_TYPE={
     query:"Query",
     request:"Request",
-    inquiery:"Inquiry"
-}
+    inquery:"Inquiry"}
 
 export const TICKET_STATUS={
     new:"New",
@@ -20,4 +19,15 @@ export const REQUEST_TYPES={
     passwordReset:"Password Reset",
     addressChange:"Address Change",
     generalInfoChange:"General Info Change"
+}
+
+export const TICKET_PRIORITIY_VALUES={
+    Low:"Low",
+    normal:"Normal",
+    high:"High",
+    medium:"Medium"
+}
+
+export const CONSTANTS ={
+    containerKey :"ticket-container"
 }

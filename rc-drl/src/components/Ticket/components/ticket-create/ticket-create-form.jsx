@@ -11,6 +11,9 @@ import messages from './messages';
 import { EMPLOYEE_ROLES,CUSTOMER_GROUPS,TICKET_PRIORITY} from './constants';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
+import{getTicketCategories,getTicketPriorityValues,getTicketContactTypes} from 'ct-tickets-helper-api';
+import { PrimaryButton, SecondaryButton } from '@commercetools-frontend/ui-kit';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
 //   value: EMPLOYEE_ROLES[key],
@@ -20,188 +23,144 @@ import Constraints from '@commercetools-uikit/constraints';
 //   label: key,
 //   value: CUSTOMER_GROUPS[key],
 // }));
-const getTicketPriorityOptions = Object.keys(TICKET_PRIORITY).map((key) => ({
-  label: key,
-  value: TICKET_PRIORITY[key],
+
+const ticketCategories = getTicketCategories();
+const ticketPriorityVal =getTicketPriorityValues();
+const getTicketContactTypesVals = getTicketContactTypes();
+const getTicketPriorityOptions = Object.keys(ticketPriorityVal).map((key) => ({
+  label: ticketPriorityVal[key],
+  value: key,
 }));
 
+const getTicketCategoriesOpts = Object.keys(ticketCategories).map((key) => ({
+  label: ticketCategories[key],
+  value: key,
+}));
+
+const getTicketContactTypesOpt= Object.keys(getTicketContactTypesVals).map((key) => ({
+  label: getTicketContactTypesVals[key],
+  value: key,
+})); 
 
 const TicketCreateForm = (props) => {
-  const intl = useIntl();
+  const dataLocale = useApplicationContext((context) => context.dataLocale);
   const formik = useFormik({
+    // Pass initial values from the parent component.
     initialValues: props.initialValues,
+    // Handle form submission in the parent component.
     onSubmit: props.onSubmit,
     validate,
     enableReinitialize: true,
   });
 
-  const formElements = (
-    <Spacings.Stack scale="l">
-     
-     <CollapsiblePanel
-          data-testid="quote-summary-panel"
-          header={
-            <CollapsiblePanel.Header>
-              {/* {formatMessage(messages.panelTitle)} */}
-              {'Ticket Details'}
-            </CollapsiblePanel.Header>
-          }
-          scale="l">
-            <Constraints.Horizontal >
-             <Spacings.Stack scale="m">
-             <Spacings.Stack scale="s">
-        <TextField
-          name="customer"
-          title="customer"
-          value={formik.values.title}
-          errors={formik.errors.title}
-          touched={formik.touched.title}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-        <Spacings.Stack scale="s">
-          <TextField
-          name="Category"
-          title="Category"
-          value={formik.values.firstName}
-          errors={formik.errors.firstName}
-          touched={formik.touched.firstName}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-     
-     </Spacings.Stack>
-     <Spacings.Stack scale="s">
-        <TextField
-          name="Created"
-          title="Created"
-          value={formik.values.middleName}
-          errors={formik.errors.middleName}
-          touched={formik.touched.middleName}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-        <Spacings.Stack scale="s">
-        <TextField
-          name="Subject"
-          title="Subject"
-          value={formik.values.lastName}
-          errors={formik.errors.lastName}
-          touched={formik.touched.lastName}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-     </Spacings.Stack>
-     <Spacings.Stack scale="s">
+  return (
+    <form onSubmit={formik.handleSubmit}>
+        <Spacings.Stack scale="l">
         
-        <TextField
-          name="Status"
-          title="Status"
-          isRequired
-          value={formik.values.email}
-          errors={formik.errors.email}
-          touched={formik.touched.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
+        <CollapsiblePanel
+              data-testid="quote-summary-panel"
+              header={
+                <CollapsiblePanel.Header>
+                  {/* {formatMessage(messages.panelTitle)} */}
+                  {'Ticket Details'}
+                </CollapsiblePanel.Header>
+              }
+              scale="l">
+                <Constraints.Horizontal >
+                <Spacings.Stack scale="m">
+                <Spacings.Stack scale="s">
+                <SelectField
+                    name="contactType"
+                    title="Contact Type"
+                    value={formik.values.contactType}
+                    errors={formik.errors.contactType}
+                    touched={formik.touched.contactType}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    options={getTicketContactTypesOpt}
+                    isReadOnly={props.isReadOnly}
+                    isRequired
+                    horizontalConstraint={13}
+                  />
+            </Spacings.Stack>
+            <Spacings.Stack scale="s">
+            <SelectField
+              name="category"
+              title="Ticket Categoty"
+              value={formik.values.category}
+              errors={formik.errors.category}
+              touched={formik.touched.category}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              options={getTicketCategoriesOpts}
+              isReadOnly={props.isReadOnly}
+              isRequired
+              horizontalConstraint={13}
+            />
+        
         </Spacings.Stack>
         <Spacings.Stack scale="s">
-        <TextField
-          name="Associated to"
-          title="Associated to"
-          value={formik.values.employeeNumber}
-          errors={formik.errors.employeeNumber}
-          touched={formik.touched.employeeNumber}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-     <Spacings.Stack scale="s">
-      
         <SelectField
-          name="Priority"
-          title="Priority"
-          value={formik.values.roles}
-          errors={formik.errors.roles}
-          touched={formik.touched.roles}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          
-          options={getTicketPriorityOptions}
-          isReadOnly={props.isReadOnly}
-          isRequired
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-        <Spacings.Stack scale="s">
-        <TextField
-        name="Assigned Agent"
-        title="Assigned Agent"
-        value={formik.values.externalId}
-          errors={formik.errors.externalId}
-          touched={formik.touched.externalId}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-      />
-     </Spacings.Stack>
-     <Spacings.Stack scale="s">
-        <TextField
-        name="Agent to"
-        title="Agent to"
-        value={formik.values.externalId}
-        errors={formik.errors.externalId}
-        touched={formik.touched.externalId}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        horizontalConstraint={13}
-      />
-      </Spacings.Stack>
-      <Spacings.Stack scale="s">
-        <TextField
-        name="Reply to Customer"
-        title="Reply to Customer"
-        value={formik.values.externalId}
-          errors={formik.errors.externalId}
-          touched={formik.touched.externalId}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-      />
-     
-     </Spacings.Stack>
-        </Spacings.Stack>
-        </Constraints.Horizontal>
-      {/* </Spacings.Inline> */}
-     </CollapsiblePanel>
-    </Spacings.Stack>
-  );
+              name="priority"
+              title="Ticket Priority"
+              value={formik.values.priority}
+              errors={formik.errors.priority}
+              touched={formik.touched.priority}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              options={getTicketPriorityOptions}
+              isReadOnly={props.isReadOnly}
+              isRequired
+              horizontalConstraint={13}
+            />
+            </Spacings.Stack>
 
-  return props.children({
-    formElements,
-    values: formik.values,
-    isDirty: formik.dirty,
-    isSubmitting: formik.isSubmitting,
-    submitForm: formik.handleSubmit,
-    handleReset: formik.handleReset,
-  });
-};
-TicketCreateForm.displayName = 'TicketCreateForm';
-TicketCreateForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  initialValues: PropTypes.shape({
-    id: PropTypes.string,
-  }),
-  isReadOnly: PropTypes.bool.isRequired,
-  dataLocale: PropTypes.string.isRequired,
-};
 
-export default TicketCreateForm;
+            <Spacings.Stack scale="s">
+                <TextField name="subject"
+                    title="Subject"
+                    isRequired
+                    value={formik.values.subject}
+                    errors={
+                      TextField.toFieldErrors(formik.errors).subject
+                    }
+                    touched={formik.touched.subject}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}/>
+              </Spacings.Stack>
+
+
+              <Spacings.Stack scale="s">
+                <TextField name="message"
+                    title="Message"
+                    isRequired
+                    value={formik.values.message}
+                    errors={
+                      TextField.toFieldErrors(formik.errors).message
+                    }
+                    touched={formik.touched.message}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}/>
+              </Spacings.Stack>
+
+                  <Spacings.Inline>
+                    <SecondaryButton
+                      label="Cancel"
+                      onClick={formik.handleReset}
+                    />
+                    <PrimaryButton
+                      type="submit"
+                      label="Submit"
+                      onClick={formik.handleSubmit}
+                      isDisabled={formik.isSubmitting}
+                    />
+                </Spacings.Inline>
+            </Spacings.Stack>
+            </Constraints.Horizontal>
+          {/* </Spacings.Inline> */}
+        </CollapsiblePanel>
+        </Spacings.Stack>
+    </form>
+  )}
+
+  export default TicketCreateForm;

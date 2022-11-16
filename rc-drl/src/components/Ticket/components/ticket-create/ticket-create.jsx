@@ -8,7 +8,7 @@ import {
 } from '@commercetools-frontend/application-components';
 import { useCallback } from 'react';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
-import { DOMAINS, NO_VALUE_FALLBACK } from '@commercetools-frontend/constants';
+import { DOMAINS, GRAPHQL_TARGETS, NO_VALUE_FALLBACK } from '@commercetools-frontend/constants';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import {
   useShowNotification,
@@ -16,16 +16,22 @@ import {
 } from '@commercetools-frontend/actions-global';
 import { PERMISSIONS } from '../../../../constants';
 // import {
-//   useTicketDetailsCreator,
+//   useTicketCreateCreator,
 // } from '../../../../hooks/use-Ticket-connector/use-Tickete-graphql-connector';
 import { docToFormValues, formValuesToDoc } from './conversions';
 import TicketCreateForm from './ticket-create-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
+import { TextInput } from '@commercetools-frontend/ui-kit';
+import { useMcMutation } from '@commercetools-frontend/application-shell';
+import{getCreateTicketMutaion,getCreateTicketDraft} from 'ct-tickets-helper-api'
+import { gql } from '@apollo/client';
 
 const TicketCreate = (props) => {
   const intl = useIntl();
   const params = useParams();
+
+
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
@@ -35,39 +41,48 @@ const TicketCreate = (props) => {
   });
   // const showNotification = useShowNotification();
   // const showApiErrorNotification = useShowApiErrorNotification();
-  // const TicketDetailsCreator = useTicketDetailsCreator();
-  const handleSubmit = useCallback(
-    // async (formikValues, formikHelpers) => {
-    //   const data = formValuesToDoc(formikValues);
-    //   try {
-    //     await TicketDetailsCreator.execute({
-    //       nextDraft: data,
-    //     });
-    //     showNotification({
-    //       kind: 'success',
-    //       domain: DOMAINS.SIDE,
-    //       text: intl.formatMessage(messages.TicketCreated),
-    //     });
-    //   } catch (graphQLErrors) {
-    //     const transformedErrors = transformErrors(graphQLErrors);
-    //     if (transformedErrors.unmappedErrors.length > 0) {
-    //       showApiErrorNotification({
-    //         errors: transformedErrors.unmappedErrors,
-    //       });
-    //     }
+  // const TicketCreateCreator = useTicketCreateCreator();
 
-    //     formikHelpers.setErrors(transformedErrors.formErrors);
-    //   }
-    // },
-    // [
-    //   TicketDetailsCreator,
-    //   dataLocale,
-    //   intl,
-    //   projectLanguages,
-    //   showApiErrorNotification,
-    //   showNotification,
-    // ]
+  const [createOrUpdateCustomObject, { data, loading, error }] = useMcMutation(gql`${getCreateTicketMutaion()}`);
+
+  const handleSubmit = useCallback(
+    async (formValues) => {
+
+      const data = formValuesToDoc(formValues);
+
+      console.log("data");
+      console.log(data);
+      
+      await createTicket(data);
+      // This would trigger the request, for example a mutation.
+      
+      // If successful, show a notification and redirect
+      // to the Channels details page.
+      // If errored, show an error notification.
+    },
+    [createTicket]
   );
+
+  const createTicket = async (data)=>{
+    console.log("createTicket");
+
+    const ticketDraft = getCreateTicketDraft(data);
+
+    console.log("ticketDraft");
+    console.log(ticketDraft);
+
+    createOrUpdateCustomObject({ variables: {
+      draft: ticketDraft,
+    },
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    } }).then((resp) => {
+      console.log(resp);
+    }).catch((err) =>{
+      console.log(err);
+    });
+    alert('Ticket Created!: ')
+  }
 
   return (
     <TicketCreateForm
@@ -75,34 +90,11 @@ const TicketCreate = (props) => {
     onSubmit={handleSubmit}
     isReadOnly={!canManage}
     dataLocale={dataLocale}
-    >
-      {(formProps) => {
-        return (
-          <React.Fragment>
-          {formProps.formElements}
-        </React.Fragment>
-          // <FormModalPage
-          //   title={intl.formatMessage(messages.modalTitle)}
-          //   isOpen
-          //   onClose={props.onClose}
-          //   isPrimaryButtonDisabled={
-          //     formProps.isSubmitting || !formProps.isDirty || !canManage
-          //   }
-          //   isSecondaryButtonDisabled={!formProps.isDirty}
-          //   onSecondaryButtonClick={formProps.handleReset}
-          //   onPrimaryButtonClick={formProps.submitForm}
-          //   labelPrimaryButton={FormModalPage.Intl.save}
-          //   labelSecondaryButton={FormModalPage.Intl.revert}
-          // >
-          //   {formProps.formElements}
-          // </FormModalPage>
-        );
-      }}
-    </TicketCreateForm>
+    />
   );
 };
-TicketCreate.displayName = 'TicketDetails';
-TicketCreate.propTypes = {
-  onClose: PropTypes.func.isRequired,
-};
+TicketCreate.displayName = 'TicketCreate';
+// TicketCreate.propTypes = {
+//   onClose: PropTypes.func.isRequired,
+// };
 export default TicketCreate;
