@@ -26,3 +26,24 @@ export const formValuesToDoc = (formValues) => ({
   ? formValues.subject
   : undefined
   });
+
+  export const formValuesToDocRequest = (formValues) => ({
+    category: !TextInput.isEmpty(formValues.category)
+    ? formValues.category
+    : undefined,
+    contactType: !TextInput.isEmpty(formValues.contactType)
+    ? formValues.contactType
+    : undefined,
+    priority: !TextInput.isEmpty(formValues.priority)
+    ? formValues.priority
+    : undefined,
+    firstName: !TextInput.isEmpty(formValues.firstName)
+    ? formValues.firstName
+    : undefined,
+    lastName: !TextInput.isEmpty(formValues.lastName)
+    ? formValues.lastName
+    : undefined,
+    subject: !TextInput.isEmpty(formValues.subject)
+    ? formValues.subject
+    : undefined
+    });

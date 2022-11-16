@@ -14,6 +14,7 @@ import Constraints from '@commercetools-uikit/constraints';
 import{getTicketCategories,getTicketPriorityValues,getTicketContactTypes} from 'ct-tickets-helper-api';
 import { PrimaryButton, SecondaryButton } from '@commercetools-frontend/ui-kit';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { useState } from 'react';
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
 //   value: EMPLOYEE_ROLES[key],
@@ -44,6 +45,8 @@ const getTicketContactTypesOpt= Object.keys(getTicketContactTypesVals).map((key)
 
 const TicketCreateForm = (props) => {
   const dataLocale = useApplicationContext((context) => context.dataLocale);
+
+  const [requestType, setRequestType] = useState(null);
   const formik = useFormik({
     // Pass initial values from the parent component.
     initialValues: props.initialValues,
@@ -52,6 +55,13 @@ const TicketCreateForm = (props) => {
     validate,
     enableReinitialize: true,
   });
+
+  const categoryChange = (evt)=>{
+
+    console.log(evt);
+    setRequestType(evt.target.value);
+    formik.handleChange(evt);
+  }
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -90,7 +100,7 @@ const TicketCreateForm = (props) => {
               value={formik.values.category}
               errors={formik.errors.category}
               touched={formik.touched.category}
-              onChange={formik.handleChange}
+              onChange={categoryChange}
               onBlur={formik.handleBlur}
               options={getTicketCategoriesOpts}
               isReadOnly={props.isReadOnly}
@@ -130,6 +140,8 @@ const TicketCreateForm = (props) => {
               </Spacings.Stack>
 
 
+            {(requestType !== null && 
+            (requestType == "query" || requestType == "inquiry")) && (
               <Spacings.Stack scale="s">
                 <TextField name="message"
                     title="Message"
@@ -142,7 +154,33 @@ const TicketCreateForm = (props) => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}/>
               </Spacings.Stack>
+            )}
 
+          {(requestType !== null && 
+            (requestType == "request" )) && (
+              <Spacings.Stack scale="s">
+                <TextField name="firstName"
+                    title="First Name"
+                    isRequired
+                    value={formik.values.firstName}
+                    errors={
+                      TextField.toFieldErrors(formik.errors).firstName
+                    }
+                    touched={formik.touched.firstName}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}/>
+                  <TextField name="lastName"
+                    title="Last Name"
+                    isRequired
+                    value={formik.values.lastName}
+                    errors={
+                      TextField.toFieldErrors(formik.errors).lastName
+                    }
+                    touched={formik.touched.lastName}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}/>
+              </Spacings.Stack>
+            )}
                   <Spacings.Inline>
                     <SecondaryButton
                       label="Cancel"

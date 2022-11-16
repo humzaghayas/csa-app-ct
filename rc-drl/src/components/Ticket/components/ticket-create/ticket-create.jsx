@@ -18,7 +18,7 @@ import { PERMISSIONS } from '../../../../constants';
 // import {
 //   useTicketCreateCreator,
 // } from '../../../../hooks/use-Ticket-connector/use-Tickete-graphql-connector';
-import { docToFormValues, formValuesToDoc } from './conversions';
+import { docToFormValues, formValuesToDoc, formValuesToDocRequest } from './conversions';
 import TicketCreateForm from './ticket-create-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
@@ -48,7 +48,12 @@ const TicketCreate = (props) => {
   const handleSubmit = useCallback(
     async (formValues) => {
 
-      const data = formValuesToDoc(formValues);
+      let data = {};
+      if(formValues.category && formValues.category !== "request"){
+        data = formValuesToDoc(formValues);
+      }else{
+        data = formValuesToDocRequest(formValues);
+      }
 
       console.log("data");
       console.log(data);

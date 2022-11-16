@@ -40,7 +40,12 @@ function getCreateTicketDraft(ticketInfo) {
     var email = "humza.ghayas@royalcyber.com";
     var num = getRandomInt(1, 2000);
     ticketDraft.key = getForKey(email) + "_" + num;
-    ticketDraft.value = "{\n            \"id\": 1,\n            \"customerId\": \"31319151-a3ec-4c8b-8202-0d89723b9fd1\",\n            \"email\":\"" + email + "\",\n            \"source\": \"" + ticketInfo.contactType + "\",\n            \"status\": \"" + constants_1.TICKET_STATUS.open + "\",\n            \"priority\": \"" + ticketInfo.priority + "\",\n            \"category\": \"" + ticketInfo.category + "\",\n            \"subject\": \"" + ticketInfo.subject + "\",\n           \"type\":\"" + ticketInfo.category + "\",\n            \"createdAt\": \"" + currentDate + "\",\n            \"modifiedAt\": \"" + currentDate + "\",\n            \"ticketData\":{\t\n                    \"message\": \"" + ticketInfo.message + "\"\n            }\n        }";
+    if (ticketInfo.category && ticketInfo.category !== 'request') {
+        ticketDraft.value = "{\n                \"id\": 1,\n                \"customerId\": \"31319151-a3ec-4c8b-8202-0d89723b9fd1\",\n                \"email\":\"" + email + "\",\n                \"source\": \"" + ticketInfo.contactType + "\",\n                \"status\": \"" + constants_1.TICKET_STATUS.open + "\",\n                \"priority\": \"" + ticketInfo.priority + "\",\n                \"category\": \"" + ticketInfo.category + "\",\n                \"subject\": \"" + ticketInfo.subject + "\",\n            \"type\":\"" + ticketInfo.category + "\",\n                \"createdAt\": \"" + currentDate + "\",\n                \"modifiedAt\": \"" + currentDate + "\",\n                \"ticketData\":{\t\n                        \"message\": \"" + ticketInfo.message + "\"\n                }\n            }";
+    }
+    else {
+        ticketDraft.value = "{\n            \"id\": 1,\n            \"customerId\": \"31319151-a3ec-4c8b-8202-0d89723b9fd1\",\n            \"email\":\"" + email + "\",\n            \"source\": \"" + ticketInfo.contactType + "\",\n            \"status\": \"" + constants_1.TICKET_STATUS.open + "\",\n            \"priority\": \"" + ticketInfo.priority + "\",\n            \"category\": \"" + ticketInfo.category + "\",\n            \"subject\": \"" + ticketInfo.subject + "\",\n        \"type\":\"" + ticketInfo.category + "\",\n            \"createdAt\": \"" + currentDate + "\",\n            \"modifiedAt\": \"" + currentDate + "\",\n            \"ticketData\":{\t\n                    \"firstName\": \"" + ticketInfo.firstName + "\",\n                    \"lastName\": \"" + ticketInfo.lastName + "\"\n            }\n        }";
+    }
     return ticketDraft;
 }
 exports.getCreateTicketDraft = getCreateTicketDraft;

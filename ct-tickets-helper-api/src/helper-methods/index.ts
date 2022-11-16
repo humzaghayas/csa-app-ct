@@ -50,7 +50,26 @@ export function getCreateTicketDraft(ticketInfo){
 
     const num = getRandomInt(1,2000);
     ticketDraft.key = `${getForKey(email)}_${num}`;
-    ticketDraft.value = `{
+
+    if(ticketInfo.category && ticketInfo.category !== 'request'){
+        ticketDraft.value = `{
+                \"id\": 1,
+                \"customerId\": \"31319151-a3ec-4c8b-8202-0d89723b9fd1\",
+                \"email\":\"${email}\",
+                \"source\": \"${ticketInfo.contactType}\",
+                \"status\": \"${TICKET_STATUS.open}\",
+                \"priority\": \"${ticketInfo.priority}\",
+                \"category\": \"${ticketInfo.category}\",
+                \"subject\": \"${ticketInfo.subject}\",
+            \"type\":\"${ticketInfo.category}\",
+                \"createdAt\": \"${currentDate}\",
+                \"modifiedAt\": \"${currentDate}\",
+                \"ticketData\":{	
+                        \"message\": \"${ticketInfo.message}\"
+                }
+            }`
+    }else{
+        ticketDraft.value = `{
             \"id\": 1,
             \"customerId\": \"31319151-a3ec-4c8b-8202-0d89723b9fd1\",
             \"email\":\"${email}\",
@@ -59,15 +78,16 @@ export function getCreateTicketDraft(ticketInfo){
             \"priority\": \"${ticketInfo.priority}\",
             \"category\": \"${ticketInfo.category}\",
             \"subject\": \"${ticketInfo.subject}\",
-           \"type\":\"${ticketInfo.category}\",
+        \"type\":\"${ticketInfo.category}\",
             \"createdAt\": \"${currentDate}\",
             \"modifiedAt\": \"${currentDate}\",
             \"ticketData\":{	
-                    \"message\": \"${ticketInfo.message}\"
+                    \"firstName\": \"${ticketInfo.firstName}\",
+                    \"lastName\": \"${ticketInfo.lastName}\"
             }
         }`
-
-        return ticketDraft;
+    }
+    return ticketDraft;
 }
 
 function getRandomInt(min, max) {
