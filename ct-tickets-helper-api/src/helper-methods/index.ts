@@ -7,8 +7,8 @@ export function getTicketRows(customObjects){
     console.log("customObjects :: " +JSON.stringify(customObjects));
     if(customObjects?.results){
         return customObjects?.results.map(co =>{
-            return { id: co.value.id,
-                Customer: co.value.email,Created: co.value.createdAt,Modified:co.value.modifiedAt,
+            return { id: co.id,
+                Customer: co.value.email,Created: co.createdAt,Modified:co.lastModifiedAt,
                 Source:co.value.source,Status:co.value.status,Priority:co.value.priority,Category:co.value.category,
                 Subject:co.value.subject}
         });
@@ -33,10 +33,7 @@ export function getTicketContactTypes(){
     return TICKET_SOURCE;
 }
 
-
-
 let ticketDraft:any ={"container": CONSTANTS.containerKey};
-
 
 export function getCreateTicketMutaion(){
 
@@ -48,8 +45,12 @@ export function getCreateTicketDraft(ticketInfo){
     const currentDate = new Date().toUTCString();
     const email = "humza.ghayas@royalcyber.com";
 
-    const num = getRandomInt(1,2000);
-    ticketDraft.key = `${getForKey(email)}_${num}`;
+    if(!ticketInfo.key){
+        const num = getRandomInt(1,2000);
+        ticketDraft.key = `${getForKey(email)}_${num}`;
+    }else{
+        ticketDraft.key = ticketInfo.key;
+    }
 
     if(ticketInfo.category && ticketInfo.category !== 'request'){
         ticketDraft.value = `{
@@ -99,3 +100,26 @@ function getRandomInt(min, max) {
   function getForKey(email){
     return email.replace("@","ATTHERATE")
   }
+
+
+  export function getTicketFromCO(data){
+
+    return {
+        id: data?.customObject?.id ?? '',
+        key: data?.customObject?.key ?? '',
+        container: data?.customObject?.container ?? '',
+        version: data?.customObject?.version ?? '',
+        category: data?.customObject?.value?.category ?? '',
+        Customer: data?.customObject?.value?.email ?? '',
+        contactType: data?.customObject?.value?.source ?? '',
+        Status: data?.customObject?.value?.status ?? '',
+        priority: data?.customObject?.value?.priority ?? '',
+        message: data?.customObject?.value?.ticketData?.message ?? '',
+        subject: data?.customObject?.value?.subject ?? '',
+        firstName : data?.customObject?.value?.ticketData?.firstName ?? '',
+        lastName : data?.customObject?.value?.ticketData?.lastName ?? '',
+        lastModifiedAt : data?.customObject?.lastModifiedAt ?? '',
+        createdAt : data?.customObject?.createdAt ?? '',
+        email: data?.customObject?.email ?? ''
+    }
+}

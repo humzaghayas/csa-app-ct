@@ -62,8 +62,6 @@ import { gql } from '@apollo/client';
 let rows = null;
 
 const columns = [
-
-  { key: 'id', label: 'id' },
   { key:'Customer', label: 'Customer' },
   { key: 'Created', label: 'Created' },
   { key: 'Modified', label: 'Modified' },

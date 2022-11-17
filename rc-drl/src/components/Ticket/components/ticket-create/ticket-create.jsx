@@ -24,7 +24,7 @@ import { transformErrors } from './transform-errors';
 import messages from './messages';
 import { TextInput } from '@commercetools-frontend/ui-kit';
 import { useMcMutation } from '@commercetools-frontend/application-shell';
-import{getCreateTicketMutaion,getCreateTicketDraft} from 'ct-tickets-helper-api'
+import{CREATE_TICKET_MUTATION,getCreateTicketDraft} from 'ct-tickets-helper-api'
 import { gql } from '@apollo/client';
 
 const TicketCreate = (props) => {
@@ -43,7 +43,7 @@ const TicketCreate = (props) => {
   // const showApiErrorNotification = useShowApiErrorNotification();
   // const TicketCreateCreator = useTicketCreateCreator();
 
-  const [createOrUpdateCustomObject, { data, loading, error }] = useMcMutation(gql`${getCreateTicketMutaion()}`);
+  const [createOrUpdateCustomObject, { data, loading, error }] = useMcMutation(gql`${CREATE_TICKET_MUTATION}`);
 
   const handleSubmit = useCallback(
     async (formValues) => {

@@ -46,7 +46,7 @@ const getTicketContactTypesOpt= Object.keys(getTicketContactTypesVals).map((key)
 const TicketCreateForm = (props) => {
   const dataLocale = useApplicationContext((context) => context.dataLocale);
 
-  const [requestType, setRequestType] = useState(null);
+
   const formik = useFormik({
     // Pass initial values from the parent component.
     initialValues: props.initialValues,
@@ -55,13 +55,6 @@ const TicketCreateForm = (props) => {
     validate,
     enableReinitialize: true,
   });
-
-  const categoryChange = (evt)=>{
-
-    console.log(evt);
-    setRequestType(evt.target.value);
-    formik.handleChange(evt);
-  }
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -78,6 +71,26 @@ const TicketCreateForm = (props) => {
               scale="l">
                 <Constraints.Horizontal >
                 <Spacings.Stack scale="m">
+
+
+                <Spacings.Stack scale="s">
+                  <SelectField
+                      name="email"
+                      title="Customer"
+                      value={formik.values.email}
+                      errors={formik.errors.email}
+                      touched={formik.touched.email}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      options={getTicketContactTypesOpt}
+                      isReadOnly={props.isReadOnly}
+                      isRequired
+                      horizontalConstraint={13}
+                    />
+                 </Spacings.Stack>
+
+
+
                 <Spacings.Stack scale="s">
                 <SelectField
                     name="contactType"
@@ -96,11 +109,11 @@ const TicketCreateForm = (props) => {
             <Spacings.Stack scale="s">
             <SelectField
               name="category"
-              title="Ticket Categoty"
+              title="Ticket Category"
               value={formik.values.category}
               errors={formik.errors.category}
               touched={formik.touched.category}
-              onChange={categoryChange}
+              onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               options={getTicketCategoriesOpts}
               isReadOnly={props.isReadOnly}
@@ -140,8 +153,8 @@ const TicketCreateForm = (props) => {
               </Spacings.Stack>
 
 
-            {(requestType !== null && 
-            (requestType == "query" || requestType == "inquiry")) && (
+            {(formik?.values?.category !== null && 
+            (formik?.values?.category == "query" || formik?.values?.category == "inquiry")) && (
               <Spacings.Stack scale="s">
                 <TextField name="message"
                     title="Message"
@@ -156,8 +169,8 @@ const TicketCreateForm = (props) => {
               </Spacings.Stack>
             )}
 
-          {(requestType !== null && 
-            (requestType == "request" )) && (
+          {(formik?.values?.category !== null && 
+            (formik?.values?.category == "request" )) && (
               <Spacings.Stack scale="s">
                 <TextField name="firstName"
                     title="First Name"

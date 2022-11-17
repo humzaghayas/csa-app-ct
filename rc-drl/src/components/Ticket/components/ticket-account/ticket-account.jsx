@@ -31,6 +31,7 @@ import { getTicket } from '../../api';
 import { lazy, useState, useEffect } from 'react';
 import TicketDetailsForm from '../ticket-details/ticket-details-form';
 import TicketDetails from '../ticket-details/ticket-details';
+import TicketDetailsP from '../ticket-create/tickets-details';
 
 
 const TicketAccount = (props) => {
@@ -42,11 +43,11 @@ const TicketAccount = (props) => {
   const [Ticket, setData] = useState();
 
   //const apiUrl ="http://localhost:4456";
-  const apiUrl = 'https://ms-Ticket-f4b4o225iq-ue.a.run.app';
-  const TicketId = params.id;
-  useEffect(() => {
-    getTicket({ url: apiUrl, id: TicketId }).then((res) => setData(res));
-  }, [apiUrl, TicketId]);
+  // const apiUrl = 'https://ms-Ticket-f4b4o225iq-ue.a.run.app';
+  // const TicketId = params.id;
+  // useEffect(() => {
+  //   getTicket({ url: apiUrl, id: TicketId }).then((res) => setData(res));
+  // }, [apiUrl, TicketId]);
 
   return (
     <TabularDetailPage
@@ -85,14 +86,14 @@ const TicketAccount = (props) => {
       <Switch>
         <Route path={`${match.path}/tickets-general`}>
           {/* <TicketDetails /> */}
-         <TicketDetails />
+         <TicketDetailsP />
         </Route>
-        <Route path={`${match.path}/tickets-history`}>
+        {/* <Route path={`${match.path}/tickets-history`}>
         <TicketDetailsForm />
         </Route>
         <Route path={`${match.path}/Ticket-administration`}>
         <TicketDetailsForm />
-        </Route>
+        </Route> */}
         {/* <Route path={`${match.path}/employee-create`}>
            <EmployeeCreate />
           </Route>
@@ -106,7 +107,7 @@ const TicketAccount = (props) => {
 
   );
 };
-TicketAccount.displayName = 'Companies';
+TicketAccount.displayName = 'Tickets';
 TicketAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,

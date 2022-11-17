@@ -2,14 +2,23 @@ import { TextInput } from '@commercetools-frontend/ui-kit';
 
 export const docToFormValues = (ticket, languages) => ({
   id: ticket?.id ?? '',
+  key: ticket?.key ?? '',
+  email : ticket?.email ?? '',
+  container: ticket?.container ?? '',
+  version: ticket?.version ?? '',
   category: ticket?.category ?? '',
   contactType: ticket?.contactType ?? '',
   priority: ticket?.priority ?? '',
   message: ticket?.message ?? '',
-  subject: ticket?.subject ?? ''
+  subject: ticket?.subject ?? '',
+  firstName : ticket?.firstName ?? '',
+  lastName : ticket?.lastName ?? ''
 });
 
 export const formValuesToDoc = (formValues) => ({
+  id:formValues?.id ?? undefined,
+  key:formValues?.key ?? undefined,
+  email:formValues?.email ?? undefined,
   category: !TextInput.isEmpty(formValues.category)
   ? formValues.category
   : undefined,
@@ -28,6 +37,9 @@ export const formValuesToDoc = (formValues) => ({
   });
 
   export const formValuesToDocRequest = (formValues) => ({
+    id:formValues?.id ?? undefined,
+    key:formValues?.key ?? undefined,
+    email:formValues?.email ?? undefined,
     category: !TextInput.isEmpty(formValues.category)
     ? formValues.category
     : undefined,

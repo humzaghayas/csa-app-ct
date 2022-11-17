@@ -1,5 +1,5 @@
-export{ FETCH_TICKETS} from './graphql-queries';
+export{ FETCH_TICKETS,FETCH_TICKETS_BY_ID,CREATE_TICKET_MUTATION} from './graphql-queries';
 export{ getTicketRows,getTicketCategories,
-    getTicketPriorityValues,getTicketContactTypes,
-    getCreateTicketMutaion,getCreateTicketDraft} from './helper-methods'
+    getTicketPriorityValues,getTicketContactTypes,getCreateTicketDraft,
+    getTicketFromCO} from './helper-methods'
 export {CONSTANTS} from './constants'
