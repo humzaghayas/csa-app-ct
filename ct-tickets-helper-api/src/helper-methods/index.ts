@@ -73,7 +73,7 @@ export function getCreateTicketDraft(ticketInfo){
     }else{
         ticketDraft.value = `{
             \"id\": 1,
-            \"customerId\": \"${customerId}\\",
+            \"customerId\": \"${customerId}\",
             \"email\":\"${email}\",
             \"source\": \"${ticketInfo.contactType}\",
             \"status\": \"${TICKET_STATUS.open}\",
@@ -146,7 +146,7 @@ function getRandomInt(min, max) {
 }
 
 export function escapeQuotes(field){
-    return field.replaceAll('\"','\\\"');
+    return field.replaceAll('\"','\\\"').replaceAll('\n','\\n');
 }
 
 

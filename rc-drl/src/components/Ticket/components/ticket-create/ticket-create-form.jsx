@@ -50,8 +50,6 @@ const getTicketContactTypesOpt= Object.keys(getTicketContactTypesVals).map((key)
 const TicketCreateForm = (props) => {
   const dataLocale = useApplicationContext((context) => context.dataLocale);
 
-  const [customerFound, setCustomerFound] = useState(false);
-
   const formik = useFormik({
     // Pass initial values from the parent component.
     initialValues: props.initialValues,
@@ -61,10 +59,11 @@ const TicketCreateForm = (props) => {
     enableReinitialize: true,
   });
 
+  const [customerFound, setCustomerFound] = useState(formik.values.isEdit);
+
   const custoInfo=useCallback(
     async () => {
-      getCustomerByEmail(formik.values.email);
-    
+      getCustomerByEmail(formik.values.email);  
   });
 
   const [customers,{ data, error, loading }] = useMcLazyQuery(gql`${FETCH_CUSTOMERS}`);
@@ -125,6 +124,7 @@ const onChangeEmail=(evt)=>{
                     <PrimaryButton
                       label="Search Customer"
                       onClick={custoInfo}
+                      isDisabled={formik.values.isEdit}
                     />
                   <TextField
                       name="email"
@@ -137,6 +137,7 @@ const onChangeEmail=(evt)=>{
                       isReadOnly={props.isReadOnly}
                       isRequired
                       horizontalConstraint={13}
+                      isDisabled={formik.values.isEdit}
                     />
                </Spacings.Inline>
                 <Spacings.Stack scale="s">
@@ -152,7 +153,7 @@ const onChangeEmail=(evt)=>{
                     isReadOnly={props.isReadOnly}
                     isRequired
                     horizontalConstraint={13}
-                    isDisabled={!customerFound}
+                    isDisabled={!customerFound }
                   />
             </Spacings.Stack>
             <Spacings.Stack scale="s">
@@ -168,7 +169,7 @@ const onChangeEmail=(evt)=>{
               isReadOnly={props.isReadOnly}
               isRequired
               horizontalConstraint={13}
-              isDisabled={!customerFound}
+              isDisabled={!customerFound  || formik.values.isEdit}
             />
         
         </Spacings.Stack>
@@ -185,7 +186,7 @@ const onChangeEmail=(evt)=>{
               isReadOnly={props.isReadOnly}
               isRequired
               horizontalConstraint={13}
-              isDisabled={!customerFound}
+              isDisabled={!customerFound }
             />
             </Spacings.Stack>
 
@@ -201,7 +202,7 @@ const onChangeEmail=(evt)=>{
                     touched={formik.touched.subject}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    isDisabled={!customerFound}/>
+                    isDisabled={!customerFound }/>
               </Spacings.Stack>
 
 
@@ -257,7 +258,7 @@ const onChangeEmail=(evt)=>{
                       label="Submit"
                       onClick={formik.handleSubmit}
                       //isDisabled={formik.isSubmitting}
-                      isDisabled={!customerFound}
+                      isDisabled={!customerFound }
                     />
                 </Spacings.Inline>
             </Spacings.Stack>

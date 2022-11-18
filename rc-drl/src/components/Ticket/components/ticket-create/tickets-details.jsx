@@ -96,7 +96,7 @@ const TicketDetailsP = (props) => {
         Manage Channel
       </Text.Headline>
       <TicketCreateForm
-        initialValues={docToFormValues(ticket, languages)}
+        initialValues={docToFormValues(ticket, languages,true)}
         onSubmit={handleSubmit}
         isReadOnly={!canManage}
         dataLocale={dataLocale}

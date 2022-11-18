@@ -1,6 +1,6 @@
 import { TextInput } from '@commercetools-frontend/ui-kit';
 import {escapeQuotes} from 'ct-tickets-helper-api'
-export const docToFormValues = (ticket, languages) => ({
+export const docToFormValues = (ticket, languages,isEdit) => ({
   id: ticket?.id ?? '',
   key: ticket?.key ?? '',
   email : ticket?.email ?? '',
@@ -13,7 +13,8 @@ export const docToFormValues = (ticket, languages) => ({
   message: ticket?.message ?? '',
   subject: ticket?.subject ?? '',
   firstName : ticket?.firstName ?? '',
-  lastName : ticket?.lastName ?? ''
+  lastName : ticket?.lastName ?? '',
+  isEdit:isEdit ?? false
 });
 
 export const formValuesToDoc = (formValues) => ({
@@ -63,6 +64,6 @@ export const formValuesToDoc = (formValues) => ({
     ? escapeQuotes(formValues.lastName)
     : undefined,
     subject: !TextInput.isEmpty(formValues.subject)
-    ? formValues.subject
+    ? escapeQuotes(formValues.subject)
     : undefined
     });

@@ -50,7 +50,7 @@ function getCreateTicketDraft(ticketInfo) {
         ticketDraft.value = "{\n                \"id\": 1,\n                \"customerId\": \"" + customerId + "\",\n                \"email\":\"" + email + "\",\n                \"source\": \"" + ticketInfo.contactType + "\",\n                \"status\": \"" + constants_1.TICKET_STATUS.open + "\",\n                \"priority\": \"" + ticketInfo.priority + "\",\n                \"category\": \"" + ticketInfo.category + "\",\n                \"subject\": \"" + ticketInfo.subject + "\",\n            \"type\":\"" + ticketInfo.category + "\",\n                \"createdAt\": \"" + currentDate + "\",\n                \"modifiedAt\": \"" + currentDate + "\",\n                \"ticketData\":{\t\n                        \"message\": \"" + ticketInfo.message + "\"\n                }\n            }";
     }
     else {
-        ticketDraft.value = "{\n            \"id\": 1,\n            \"customerId\": \"" + customerId + "\\\",\n            \"email\":\"" + email + "\",\n            \"source\": \"" + ticketInfo.contactType + "\",\n            \"status\": \"" + constants_1.TICKET_STATUS.open + "\",\n            \"priority\": \"" + ticketInfo.priority + "\",\n            \"category\": \"" + ticketInfo.category + "\",\n            \"subject\": \"" + ticketInfo.subject + "\",\n        \"type\":\"" + ticketInfo.category + "\",\n            \"createdAt\": \"" + currentDate + "\",\n            \"modifiedAt\": \"" + currentDate + "\",\n            \"ticketData\":{\t\n                    \"firstName\": \"" + ticketInfo.firstName + "\",\n                    \"lastName\": \"" + ticketInfo.lastName + "\"\n            }\n        }";
+        ticketDraft.value = "{\n            \"id\": 1,\n            \"customerId\": \"" + customerId + "\",\n            \"email\":\"" + email + "\",\n            \"source\": \"" + ticketInfo.contactType + "\",\n            \"status\": \"" + constants_1.TICKET_STATUS.open + "\",\n            \"priority\": \"" + ticketInfo.priority + "\",\n            \"category\": \"" + ticketInfo.category + "\",\n            \"subject\": \"" + ticketInfo.subject + "\",\n        \"type\":\"" + ticketInfo.category + "\",\n            \"createdAt\": \"" + currentDate + "\",\n            \"modifiedAt\": \"" + currentDate + "\",\n            \"ticketData\":{\t\n                    \"firstName\": \"" + ticketInfo.firstName + "\",\n                    \"lastName\": \"" + ticketInfo.lastName + "\"\n            }\n        }";
     }
     return ticketDraft;
 }
@@ -107,7 +107,7 @@ function getTicketFromCO(data) {
 }
 exports.getTicketFromCO = getTicketFromCO;
 function escapeQuotes(field) {
-    return field.replaceAll('\"', '\\\"');
+    return field.replaceAll('\"', '\\\"').replaceAll('\n', '\\n');
 }
 exports.escapeQuotes = escapeQuotes;
 function isEmailValid(email) {
