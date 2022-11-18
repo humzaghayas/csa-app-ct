@@ -41,8 +41,8 @@ export const FETCH_TICKETS=`
  `
 
  export const FETCH_CUSTOMERS=`
- query($limit:Int,$offset:Int){
-  customers(limit:$limit,offset:$offset){
+ query Test($where:String){
+  customers(where:$where){
     total
     count
     offset

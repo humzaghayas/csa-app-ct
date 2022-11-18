@@ -1,8 +1,3 @@
-export const TICKET_TYPE={
-    query:"Query",
-    request:"Request",
-    inquery:"Inquiry"}
-
 export const TICKET_STATUS={
     new:"New",
     open:"Open",
@@ -29,5 +24,14 @@ export const TICKET_PRIORITIY_VALUES={
 }
 
 export const CONSTANTS ={
-    containerKey :"ticket-container"
+    containerKey :"ticket-container",
+    TICKET_TYPE_REQUEST :'request',
+    TICKET_TYPE_INQUIRY :'inquiry',
+    TICKET_TYPE_QUERY :'query',
+}
+
+export const TICKET_TYPE={
+    [CONSTANTS.TICKET_TYPE_QUERY]:"Query",
+    [CONSTANTS.TICKET_TYPE_REQUEST]:"Request",
+    [CONSTANTS.TICKET_TYPE_INQUIRY]:"Inquiry"
 }

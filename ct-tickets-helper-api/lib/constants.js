@@ -1,11 +1,7 @@
 "use strict";
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CONSTANTS = exports.TICKET_PRIORITIY_VALUES = exports.REQUEST_TYPES = exports.TICKET_SOURCE = exports.TICKET_STATUS = exports.TICKET_TYPE = void 0;
-exports.TICKET_TYPE = {
-    query: "Query",
-    request: "Request",
-    inquery: "Inquiry"
-};
+exports.TICKET_TYPE = exports.CONSTANTS = exports.TICKET_PRIORITIY_VALUES = exports.REQUEST_TYPES = exports.TICKET_SOURCE = exports.TICKET_STATUS = void 0;
 exports.TICKET_STATUS = {
     new: "New",
     open: "Open",
@@ -28,5 +24,13 @@ exports.TICKET_PRIORITIY_VALUES = {
     medium: "Medium"
 };
 exports.CONSTANTS = {
-    containerKey: "ticket-container"
+    containerKey: "ticket-container",
+    TICKET_TYPE_REQUEST: 'request',
+    TICKET_TYPE_INQUIRY: 'inquiry',
+    TICKET_TYPE_QUERY: 'query',
 };
+exports.TICKET_TYPE = (_a = {},
+    _a[exports.CONSTANTS.TICKET_TYPE_QUERY] = "Query",
+    _a[exports.CONSTANTS.TICKET_TYPE_REQUEST] = "Request",
+    _a[exports.CONSTANTS.TICKET_TYPE_INQUIRY] = "Inquiry",
+    _a);

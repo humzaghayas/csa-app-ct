@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import { useIntl } from 'react-intl';
@@ -12,9 +12,13 @@ import { EMPLOYEE_ROLES,CUSTOMER_GROUPS,TICKET_PRIORITY} from './constants';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import{getTicketCategories,getTicketPriorityValues,getTicketContactTypes} from 'ct-tickets-helper-api';
-import { PrimaryButton, SecondaryButton } from '@commercetools-frontend/ui-kit';
+import { MultilineTextField, PrimaryButton, SecondaryButton } from '@commercetools-frontend/ui-kit';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useState } from 'react';
+import{FETCH_CUSTOMERS,isEmailValid,CONSTANTS} from 'ct-tickets-helper-api'
+import { useMcLazyQuery, useMcQuery } from '@commercetools-frontend/application-shell';
+import { gql, useQuery } from '@apollo/client';
+import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
 //   value: EMPLOYEE_ROLES[key],
@@ -46,6 +50,7 @@ const getTicketContactTypesOpt= Object.keys(getTicketContactTypesVals).map((key)
 const TicketCreateForm = (props) => {
   const dataLocale = useApplicationContext((context) => context.dataLocale);
 
+  const [customerFound, setCustomerFound] = useState(false);
 
   const formik = useFormik({
     // Pass initial values from the parent component.
@@ -55,6 +60,49 @@ const TicketCreateForm = (props) => {
     validate,
     enableReinitialize: true,
   });
+
+  const custoInfo=useCallback(
+    async () => {
+      getCustomerByEmail(formik.values.email);
+    
+  });
+
+  const [customers,{ data, error, loading }] = useMcLazyQuery(gql`${FETCH_CUSTOMERS}`);
+const getCustomerByEmail = (email) =>{
+   //const email=formik.values.email;
+
+   console.log('email',email);
+    if(isEmailValid(email)){
+      //setCustomerFound(true);
+     customers( {
+        variables:{
+          where:`email=\"${email}\"`
+        },
+        context: {
+          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+        }
+      }).then((resp)=>{
+
+        console.log("data1",resp);
+        if(resp?.data?.customers?.count > 0){
+  
+          formik.values.customerId =  resp?.data?.customers.results[0].id;
+          setCustomerFound(true);
+        }
+      }).catch((error)=>{
+
+        setCustomerFound(false);
+        console.error('error',error);
+      });
+  }else{
+    setCustomerFound(false);
+  }
+}
+
+const onChangeEmail=(evt)=>{
+  setCustomerFound(false);
+  formik.handleChange(evt);
+}
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -73,24 +121,24 @@ const TicketCreateForm = (props) => {
                 <Spacings.Stack scale="m">
 
 
-                <Spacings.Stack scale="s">
-                  <SelectField
+                <Spacings.Inline>
+                    <PrimaryButton
+                      label="Search Customer"
+                      onClick={custoInfo}
+                    />
+                  <TextField
                       name="email"
-                      title="Customer"
+                      title="Customer Email"
                       value={formik.values.email}
                       errors={formik.errors.email}
                       touched={formik.touched.email}
-                      onChange={formik.handleChange}
+                      onChange={onChangeEmail}
                       onBlur={formik.handleBlur}
-                      options={getTicketContactTypesOpt}
                       isReadOnly={props.isReadOnly}
                       isRequired
                       horizontalConstraint={13}
                     />
-                 </Spacings.Stack>
-
-
-
+               </Spacings.Inline>
                 <Spacings.Stack scale="s">
                 <SelectField
                     name="contactType"
@@ -104,6 +152,7 @@ const TicketCreateForm = (props) => {
                     isReadOnly={props.isReadOnly}
                     isRequired
                     horizontalConstraint={13}
+                    isDisabled={!customerFound}
                   />
             </Spacings.Stack>
             <Spacings.Stack scale="s">
@@ -119,6 +168,7 @@ const TicketCreateForm = (props) => {
               isReadOnly={props.isReadOnly}
               isRequired
               horizontalConstraint={13}
+              isDisabled={!customerFound}
             />
         
         </Spacings.Stack>
@@ -135,6 +185,7 @@ const TicketCreateForm = (props) => {
               isReadOnly={props.isReadOnly}
               isRequired
               horizontalConstraint={13}
+              isDisabled={!customerFound}
             />
             </Spacings.Stack>
 
@@ -149,14 +200,16 @@ const TicketCreateForm = (props) => {
                     }
                     touched={formik.touched.subject}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}/>
+                    onBlur={formik.handleBlur}
+                    isDisabled={!customerFound}/>
               </Spacings.Stack>
 
 
             {(formik?.values?.category !== null && 
-            (formik?.values?.category == "query" || formik?.values?.category == "inquiry")) && (
+            (formik?.values?.category === CONSTANTS.TICKET_TYPE_QUERY || 
+              formik?.values?.category == CONSTANTS.TICKET_TYPE_INQUIRY)) && (
               <Spacings.Stack scale="s">
-                <TextField name="message"
+                <MultilineTextField name="message"
                     title="Message"
                     isRequired
                     value={formik.values.message}
@@ -170,7 +223,7 @@ const TicketCreateForm = (props) => {
             )}
 
           {(formik?.values?.category !== null && 
-            (formik?.values?.category == "request" )) && (
+            (formik?.values?.category === CONSTANTS.TICKET_TYPE_REQUEST )) && (
               <Spacings.Stack scale="s">
                 <TextField name="firstName"
                     title="First Name"
@@ -203,7 +256,8 @@ const TicketCreateForm = (props) => {
                       type="submit"
                       label="Submit"
                       onClick={formik.handleSubmit}
-                      isDisabled={formik.isSubmitting}
+                      //isDisabled={formik.isSubmitting}
+                      isDisabled={!customerFound}
                     />
                 </Spacings.Inline>
             </Spacings.Stack>

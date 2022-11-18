@@ -1,5 +1,6 @@
 import TextInput from '@commercetools-uikit/text-input';
 import omitEmpty from 'omit-empty-es';
+import{CONSTANTS} from 'ct-tickets-helper-api'
 
 const validate = (formikValues) => {
   const errors = {
@@ -20,7 +21,7 @@ const validate = (formikValues) => {
 
   if (TextInput.isEmpty(formikValues.subject)) errors.subject.missing = true;
 
-  if(formikValues.category == 'request'){
+  if(formikValues.category == CONSTANTS.TICKET_TYPE_REQUEST){
     if (TextInput.isEmpty(formikValues.firstName)) errors.firstName.missing = true;
     if (TextInput.isEmpty(formikValues.lastName)) errors.lastName.missing = true;
   }else{

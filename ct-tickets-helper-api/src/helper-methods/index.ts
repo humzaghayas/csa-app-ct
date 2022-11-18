@@ -43,7 +43,8 @@ export function getCreateTicketMutaion(){
 export function getCreateTicketDraft(ticketInfo){
 
     const currentDate = new Date().toUTCString();
-    const email = "humza.ghayas@royalcyber.com";
+    const email = ticketInfo.email;
+    const customerId = ticketInfo.customerId;
 
     if(!ticketInfo.key){
         const num = getRandomInt(1,2000);
@@ -52,10 +53,10 @@ export function getCreateTicketDraft(ticketInfo){
         ticketDraft.key = ticketInfo.key;
     }
 
-    if(ticketInfo.category && ticketInfo.category !== 'request'){
+    if(ticketInfo.category && ticketInfo.category !== CONSTANTS.TICKET_TYPE_REQUEST){
         ticketDraft.value = `{
                 \"id\": 1,
-                \"customerId\": \"31319151-a3ec-4c8b-8202-0d89723b9fd1\",
+                \"customerId\": \"${customerId}\",
                 \"email\":\"${email}\",
                 \"source\": \"${ticketInfo.contactType}\",
                 \"status\": \"${TICKET_STATUS.open}\",
@@ -72,7 +73,7 @@ export function getCreateTicketDraft(ticketInfo){
     }else{
         ticketDraft.value = `{
             \"id\": 1,
-            \"customerId\": \"31319151-a3ec-4c8b-8202-0d89723b9fd1\",
+            \"customerId\": \"${customerId}\\",
             \"email\":\"${email}\",
             \"source\": \"${ticketInfo.contactType}\",
             \"status\": \"${TICKET_STATUS.open}\",
@@ -104,22 +105,56 @@ function getRandomInt(min, max) {
 
   export function getTicketFromCO(data){
 
-    return {
-        id: data?.customObject?.id ?? '',
-        key: data?.customObject?.key ?? '',
-        container: data?.customObject?.container ?? '',
-        version: data?.customObject?.version ?? '',
-        category: data?.customObject?.value?.category ?? '',
-        Customer: data?.customObject?.value?.email ?? '',
-        contactType: data?.customObject?.value?.source ?? '',
-        Status: data?.customObject?.value?.status ?? '',
-        priority: data?.customObject?.value?.priority ?? '',
-        message: data?.customObject?.value?.ticketData?.message ?? '',
-        subject: data?.customObject?.value?.subject ?? '',
-        firstName : data?.customObject?.value?.ticketData?.firstName ?? '',
-        lastName : data?.customObject?.value?.ticketData?.lastName ?? '',
-        lastModifiedAt : data?.customObject?.lastModifiedAt ?? '',
-        createdAt : data?.customObject?.createdAt ?? '',
-        email: data?.customObject?.email ?? ''
+    if(data?.customObject?.value?.category === CONSTANTS.TICKET_TYPE_REQUEST){
+        return {
+            id: data?.customObject?.id ?? '',
+            key: data?.customObject?.key ?? '',
+            container: data?.customObject?.container ?? '',
+            version: data?.customObject?.version ?? '',
+            category: data?.customObject?.value?.category ?? '',
+            Customer: data?.customObject?.value?.email ?? '',
+            contactType: data?.customObject?.value?.source ?? '',
+            Status: data?.customObject?.value?.status ?? '',
+            priority: data?.customObject?.value?.priority ?? '',
+            subject: data?.customObject?.value?.subject ?? '',
+            firstName : data?.customObject?.value?.ticketData?.firstName ?? '',
+            lastName : data?.customObject?.value?.ticketData?.lastName ?? '',
+            lastModifiedAt : data?.customObject?.lastModifiedAt ?? '',
+            createdAt : data?.customObject?.createdAt ?? '',
+            email: data?.customObject?.value.email ?? '',
+            customerId: data?.customObject?.value.customerId ?? ''
+        }
+    }else{
+        return {
+            id: data?.customObject?.id ?? '',
+            key: data?.customObject?.key ?? '',
+            container: data?.customObject?.container ?? '',
+            version: data?.customObject?.version ?? '',
+            category: data?.customObject?.value?.category ?? '',
+            Customer: data?.customObject?.value?.email ?? '',
+            contactType: data?.customObject?.value?.source ?? '',
+            Status: data?.customObject?.value?.status ?? '',
+            priority: data?.customObject?.value?.priority ?? '',
+            message: data?.customObject?.value?.ticketData?.message ?? '',
+            subject: data?.customObject?.value?.subject ?? '',
+            lastModifiedAt : data?.customObject?.lastModifiedAt ?? '',
+            createdAt : data?.customObject?.createdAt ?? '',
+            email: data?.customObject?.value.email ?? '',
+            customerId: data?.customObject?.value.customerId ?? ''
+        }
     }
+}
+
+export function escapeQuotes(field){
+    return field.replaceAll('\"','\\\"');
+}
+
+
+export function isEmailValid(email) {
+    var emailFormat = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+    if (email !== '' && email.match(emailFormat)) { 
+        return true; 
+    }
+
+    return false;
 }

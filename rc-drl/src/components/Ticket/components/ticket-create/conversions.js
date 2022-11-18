@@ -1,9 +1,10 @@
 import { TextInput } from '@commercetools-frontend/ui-kit';
-
+import {escapeQuotes} from 'ct-tickets-helper-api'
 export const docToFormValues = (ticket, languages) => ({
   id: ticket?.id ?? '',
   key: ticket?.key ?? '',
   email : ticket?.email ?? '',
+  customerId : ticket?.customerId ?? '',
   container: ticket?.container ?? '',
   version: ticket?.version ?? '',
   category: ticket?.category ?? '',
@@ -18,7 +19,10 @@ export const docToFormValues = (ticket, languages) => ({
 export const formValuesToDoc = (formValues) => ({
   id:formValues?.id ?? undefined,
   key:formValues?.key ?? undefined,
-  email:formValues?.email ?? undefined,
+  customerId:formValues?.customerId ?? undefined,
+  email: !TextInput.isEmpty(formValues.email)
+  ? formValues.email
+  : undefined,
   category: !TextInput.isEmpty(formValues.category)
   ? formValues.category
   : undefined,
@@ -29,17 +33,20 @@ export const formValuesToDoc = (formValues) => ({
   ? formValues.priority
   : undefined,
   message: !TextInput.isEmpty(formValues.message)
-  ? formValues.message
+  ? escapeQuotes(formValues.message)
   : undefined,
   subject: !TextInput.isEmpty(formValues.subject)
-  ? formValues.subject
+  ? escapeQuotes(formValues.subject)
   : undefined
   });
 
   export const formValuesToDocRequest = (formValues) => ({
     id:formValues?.id ?? undefined,
     key:formValues?.key ?? undefined,
-    email:formValues?.email ?? undefined,
+    customerId:formValues?.customerId ?? undefined,
+    email: !TextInput.isEmpty(formValues.email)
+    ? formValues.email
+    : undefined,
     category: !TextInput.isEmpty(formValues.category)
     ? formValues.category
     : undefined,
@@ -50,10 +57,10 @@ export const formValuesToDoc = (formValues) => ({
     ? formValues.priority
     : undefined,
     firstName: !TextInput.isEmpty(formValues.firstName)
-    ? formValues.firstName
+    ? escapeQuotes(formValues.firstName)
     : undefined,
     lastName: !TextInput.isEmpty(formValues.lastName)
-    ? formValues.lastName
+    ? escapeQuotes(formValues.lastName)
     : undefined,
     subject: !TextInput.isEmpty(formValues.subject)
     ? formValues.subject

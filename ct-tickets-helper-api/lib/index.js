@@ -4,6 +4,7 @@ var graphql_queries_1 = require("./graphql-queries");
 Object.defineProperty(exports, "FETCH_TICKETS", { enumerable: true, get: function () { return graphql_queries_1.FETCH_TICKETS; } });
 Object.defineProperty(exports, "FETCH_TICKETS_BY_ID", { enumerable: true, get: function () { return graphql_queries_1.FETCH_TICKETS_BY_ID; } });
 Object.defineProperty(exports, "CREATE_TICKET_MUTATION", { enumerable: true, get: function () { return graphql_queries_1.CREATE_TICKET_MUTATION; } });
+Object.defineProperty(exports, "FETCH_CUSTOMERS", { enumerable: true, get: function () { return graphql_queries_1.FETCH_CUSTOMERS; } });
 var helper_methods_1 = require("./helper-methods");
 Object.defineProperty(exports, "getTicketRows", { enumerable: true, get: function () { return helper_methods_1.getTicketRows; } });
 Object.defineProperty(exports, "getTicketCategories", { enumerable: true, get: function () { return helper_methods_1.getTicketCategories; } });
@@ -11,5 +12,7 @@ Object.defineProperty(exports, "getTicketPriorityValues", { enumerable: true, ge
 Object.defineProperty(exports, "getTicketContactTypes", { enumerable: true, get: function () { return helper_methods_1.getTicketContactTypes; } });
 Object.defineProperty(exports, "getCreateTicketDraft", { enumerable: true, get: function () { return helper_methods_1.getCreateTicketDraft; } });
 Object.defineProperty(exports, "getTicketFromCO", { enumerable: true, get: function () { return helper_methods_1.getTicketFromCO; } });
+Object.defineProperty(exports, "isEmailValid", { enumerable: true, get: function () { return helper_methods_1.isEmailValid; } });
+Object.defineProperty(exports, "escapeQuotes", { enumerable: true, get: function () { return helper_methods_1.escapeQuotes; } });
 var constants_1 = require("./constants");
 Object.defineProperty(exports, "CONSTANTS", { enumerable: true, get: function () { return constants_1.CONSTANTS; } });
