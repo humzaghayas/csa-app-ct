@@ -14,6 +14,7 @@ export const docToFormValues = (ticket, languages,isEdit) => ({
   subject: ticket?.subject ?? '',
   firstName : ticket?.firstName ?? '',
   lastName : ticket?.lastName ?? '',
+  imageURL: ticket?.imageURL ?? '',
   isEdit:isEdit ?? false
 });
 
@@ -36,6 +37,9 @@ export const formValuesToDoc = (formValues) => ({
   message: !TextInput.isEmpty(formValues.message)
   ? escapeQuotes(formValues.message)
   : undefined,
+  imageURL: !TextInput.isEmpty(formValues.imageURL)
+  ? formValues.imageURL
+  : null,
   subject: !TextInput.isEmpty(formValues.subject)
   ? escapeQuotes(formValues.subject)
   : undefined

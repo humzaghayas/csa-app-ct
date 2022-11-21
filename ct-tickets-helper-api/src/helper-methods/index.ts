@@ -67,7 +67,8 @@ export function getCreateTicketDraft(ticketInfo){
                 \"createdAt\": \"${currentDate}\",
                 \"modifiedAt\": \"${currentDate}\",
                 \"ticketData\":{	
-                        \"message\": \"${ticketInfo.message}\"
+                        \"message\": \"${ticketInfo.message}\",
+                        \"imageURL\": \"${ticketInfo.imageURL}\"
                 }
             }`
     }else{
@@ -136,6 +137,7 @@ function getRandomInt(min, max) {
             Status: data?.customObject?.value?.status ?? '',
             priority: data?.customObject?.value?.priority ?? '',
             message: data?.customObject?.value?.ticketData?.message ?? '',
+            imageURL: data?.customObject?.value?.ticketData?.imageURL ?? '',
             subject: data?.customObject?.value?.subject ?? '',
             lastModifiedAt : data?.customObject?.lastModifiedAt ?? '',
             createdAt : data?.customObject?.createdAt ?? '',

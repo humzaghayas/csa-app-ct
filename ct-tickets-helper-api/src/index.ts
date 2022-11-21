@@ -3,3 +3,6 @@ export{ getTicketRows,getTicketCategories,
     getTicketPriorityValues,getTicketContactTypes,getCreateTicketDraft,
     getTicketFromCO,isEmailValid,escapeQuotes} from './helper-methods'
 export {CONSTANTS} from './constants'
+
+export{app,storage} from './firebase'
+export { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";

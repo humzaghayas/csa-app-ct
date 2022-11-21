@@ -32,5 +32,8 @@
   "license": "ISC",
   "devDependencies": {
     "npm-watch": "^0.6.0"
+  },
+  "dependencies": {
+    "firebase": "^9.14.0"
   }
 }

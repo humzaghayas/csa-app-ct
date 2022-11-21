@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import { useIntl } from 'react-intl';
@@ -15,10 +15,12 @@ import{getTicketCategories,getTicketPriorityValues,getTicketContactTypes} from '
 import { MultilineTextField, PrimaryButton, SecondaryButton } from '@commercetools-frontend/ui-kit';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useState } from 'react';
-import{FETCH_CUSTOMERS,isEmailValid,CONSTANTS} from 'ct-tickets-helper-api'
+import{FETCH_CUSTOMERS,isEmailValid,CONSTANTS, storage,
+  ref, getDownloadURL, uploadBytesResumable } from 'ct-tickets-helper-api'
 import { useMcLazyQuery, useMcQuery } from '@commercetools-frontend/application-shell';
 import { gql, useQuery } from '@apollo/client';
 import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
+
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
 //   value: EMPLOYEE_ROLES[key],
@@ -60,6 +62,9 @@ const TicketCreateForm = (props) => {
   });
 
   const [customerFound, setCustomerFound] = useState(formik.values.isEdit);
+  const [imgUrl, setImgUrl] = useState(null);
+
+  const [progresspercent, setProgresspercent] = useState(0);
 
   const custoInfo=useCallback(
     async () => {
@@ -103,6 +108,56 @@ const onChangeEmail=(evt)=>{
   formik.handleChange(evt);
 }
 
+
+const inputRef = useRef(null);
+
+const handleClick = (e) => {
+  e.preventDefault()
+  // 👇️ open file input box on click of other element
+  inputRef.current.click();
+
+  return false;
+};
+
+const uploadFile = (e) => {
+
+  e.preventDefault()
+  const file = e.target.files && e.target.files[0];
+
+  if (!file) {
+    console.log('File Not Found!');
+    return;
+  }
+
+  formik.values.imageURL = null;
+
+  console.log('file found');
+  
+  const storageRef = ref(storage, `files/${file.name}`);
+  const uploadTask = uploadBytesResumable(storageRef, file);
+
+  uploadTask.on("state_changed",
+    (snapshot) => {
+      const progress =
+        Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+      setProgresspercent(progress);
+    },
+    (error) => {
+      alert(error);
+    },
+    () => {
+      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        setImgUrl(downloadURL)
+
+        formik.values.imageURL = downloadURL;
+        console.log('downloadURL',downloadURL);
+      });
+    }
+  );
+
+  console.log('file uploaded');
+  return false;
+}
   return (
     <form onSubmit={formik.handleSubmit}>
         <Spacings.Stack scale="l">
@@ -220,7 +275,32 @@ const onChangeEmail=(evt)=>{
                     touched={formik.touched.message}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}/>
+
+                <div>
+                   <input type='file' id="upload_file" 
+                          name="upload_file" 
+                          ref={inputRef}
+                          onChange={uploadFile}/>
+                   <button onClick={handleClick}>Upload</button>
+  
+                  <br/><br/>
+                  {formik.values.imageURL && !imgUrl &&
+                    <img src={formik.values.imageURL} alt='uploaded file' height={500} />
+                  }
+                    {
+                      !imgUrl &&
+                      <div className='outerbar'>
+                        <div className='innerbar' style={{ width: `${progresspercent}%` }}>{progresspercent}%</div>
+                      </div>
+                    }
+                    {
+                      //!formik.values.imageURL &&
+                      imgUrl &&
+                      <img src={imgUrl} alt='uploaded file' height={500} />
+                    }
+                </div>
               </Spacings.Stack>
+
             )}
 
           {(formik?.values?.category !== null && 
