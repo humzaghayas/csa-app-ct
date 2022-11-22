@@ -54,6 +54,12 @@ export function getCreateTicketDraft(ticketInfo){
     }
 
     if(ticketInfo.category && ticketInfo.category !== CONSTANTS.TICKET_TYPE_REQUEST){
+
+        const filesStr = ticketInfo.files.map((f) =>{
+            return `{\"name\":\"${f.name}\",\"url\":\"${f.url}\"}`
+        }).toString();
+
+
         ticketDraft.value = `{
                 \"id\": 1,
                 \"customerId\": \"${customerId}\",
@@ -63,13 +69,15 @@ export function getCreateTicketDraft(ticketInfo){
                 \"priority\": \"${ticketInfo.priority}\",
                 \"category\": \"${ticketInfo.category}\",
                 \"subject\": \"${ticketInfo.subject}\",
-            \"type\":\"${ticketInfo.category}\",
+                \"type\":\"${ticketInfo.category}\",
                 \"createdAt\": \"${currentDate}\",
                 \"modifiedAt\": \"${currentDate}\",
                 \"ticketData\":{	
                         \"message\": \"${ticketInfo.message}\",
-                        \"imageURL\": \"${ticketInfo.imageURL}\"
-                }
+                        \"files\": [${filesStr}]
+                },
+                \"createdBy\":\"${ticketInfo.createdBy}\",
+                \"assignedTo\":\"${ticketInfo.assignedTo}\"
             }`
     }else{
         ticketDraft.value = `{
@@ -81,13 +89,15 @@ export function getCreateTicketDraft(ticketInfo){
             \"priority\": \"${ticketInfo.priority}\",
             \"category\": \"${ticketInfo.category}\",
             \"subject\": \"${ticketInfo.subject}\",
-        \"type\":\"${ticketInfo.category}\",
+            \"type\":\"${ticketInfo.category}\",
             \"createdAt\": \"${currentDate}\",
             \"modifiedAt\": \"${currentDate}\",
             \"ticketData\":{	
                     \"firstName\": \"${ticketInfo.firstName}\",
                     \"lastName\": \"${ticketInfo.lastName}\"
-            }
+            },
+            \"createdBy\":\"${ticketInfo.createdBy}\",
+            \"assignedTo\":\"${ticketInfo.assignedTo}\"
         }`
     }
     return ticketDraft;
@@ -99,7 +109,7 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
   }
 
-  function getForKey(email){
+  export function getForKey(email){
     return email.replace("@","ATTHERATE")
   }
 
@@ -122,6 +132,7 @@ function getRandomInt(min, max) {
             lastName : data?.customObject?.value?.ticketData?.lastName ?? '',
             lastModifiedAt : data?.customObject?.lastModifiedAt ?? '',
             createdAt : data?.customObject?.createdAt ?? '',
+            assignedTo : data?.customObject?.assignedTo ?? '',
             email: data?.customObject?.value.email ?? '',
             customerId: data?.customObject?.value.customerId ?? ''
         }
@@ -137,7 +148,7 @@ function getRandomInt(min, max) {
             Status: data?.customObject?.value?.status ?? '',
             priority: data?.customObject?.value?.priority ?? '',
             message: data?.customObject?.value?.ticketData?.message ?? '',
-            imageURL: data?.customObject?.value?.ticketData?.imageURL ?? '',
+            files: data?.customObject?.value?.ticketData?.files ?? '',
             subject: data?.customObject?.value?.subject ?? '',
             lastModifiedAt : data?.customObject?.lastModifiedAt ?? '',
             createdAt : data?.customObject?.createdAt ?? '',

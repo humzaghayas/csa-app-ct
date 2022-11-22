@@ -1,20 +1,22 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadBytesResumable = exports.getDownloadURL = exports.ref = exports.storage = exports.app = exports.CONSTANTS = exports.escapeQuotes = exports.isEmailValid = exports.getTicketFromCO = exports.getCreateTicketDraft = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getTicketRows = exports.FETCH_CUSTOMERS = exports.CREATE_TICKET_MUTATION = exports.FETCH_TICKETS_BY_ID = exports.FETCH_TICKETS = void 0;
-var graphql_queries_1 = require("./graphql-queries");
-Object.defineProperty(exports, "FETCH_TICKETS", { enumerable: true, get: function () { return graphql_queries_1.FETCH_TICKETS; } });
-Object.defineProperty(exports, "FETCH_TICKETS_BY_ID", { enumerable: true, get: function () { return graphql_queries_1.FETCH_TICKETS_BY_ID; } });
-Object.defineProperty(exports, "CREATE_TICKET_MUTATION", { enumerable: true, get: function () { return graphql_queries_1.CREATE_TICKET_MUTATION; } });
-Object.defineProperty(exports, "FETCH_CUSTOMERS", { enumerable: true, get: function () { return graphql_queries_1.FETCH_CUSTOMERS; } });
-var helper_methods_1 = require("./helper-methods");
-Object.defineProperty(exports, "getTicketRows", { enumerable: true, get: function () { return helper_methods_1.getTicketRows; } });
-Object.defineProperty(exports, "getTicketCategories", { enumerable: true, get: function () { return helper_methods_1.getTicketCategories; } });
-Object.defineProperty(exports, "getTicketPriorityValues", { enumerable: true, get: function () { return helper_methods_1.getTicketPriorityValues; } });
-Object.defineProperty(exports, "getTicketContactTypes", { enumerable: true, get: function () { return helper_methods_1.getTicketContactTypes; } });
-Object.defineProperty(exports, "getCreateTicketDraft", { enumerable: true, get: function () { return helper_methods_1.getCreateTicketDraft; } });
-Object.defineProperty(exports, "getTicketFromCO", { enumerable: true, get: function () { return helper_methods_1.getTicketFromCO; } });
-Object.defineProperty(exports, "isEmailValid", { enumerable: true, get: function () { return helper_methods_1.isEmailValid; } });
-Object.defineProperty(exports, "escapeQuotes", { enumerable: true, get: function () { return helper_methods_1.escapeQuotes; } });
+exports.deleteObject = exports.listAll = exports.uploadBytesResumable = exports.getDownloadURL = exports.ref = exports.storage = exports.app = exports.CONSTANTS = void 0;
+__exportStar(require("./graphql-queries"), exports);
+__exportStar(require("./helper-methods"), exports);
 var constants_1 = require("./constants");
 Object.defineProperty(exports, "CONSTANTS", { enumerable: true, get: function () { return constants_1.CONSTANTS; } });
 var firebase_1 = require("./firebase");
@@ -24,3 +26,5 @@ var storage_1 = require("firebase/storage");
 Object.defineProperty(exports, "ref", { enumerable: true, get: function () { return storage_1.ref; } });
 Object.defineProperty(exports, "getDownloadURL", { enumerable: true, get: function () { return storage_1.getDownloadURL; } });
 Object.defineProperty(exports, "uploadBytesResumable", { enumerable: true, get: function () { return storage_1.uploadBytesResumable; } });
+Object.defineProperty(exports, "listAll", { enumerable: true, get: function () { return storage_1.listAll; } });
+Object.defineProperty(exports, "deleteObject", { enumerable: true, get: function () { return storage_1.deleteObject; } });

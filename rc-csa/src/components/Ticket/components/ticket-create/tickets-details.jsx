@@ -79,10 +79,11 @@ const TicketDetailsP = (props) => {
       target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
     } }).then((resp) => {
       console.log(resp);
+      alert('Ticket Updated!: ');
     }).catch((err) =>{
       console.log(err);
     });
-    alert('Ticket Updated!: ')
+   
   }
 
 

@@ -28,6 +28,8 @@ export const CONSTANTS ={
     TICKET_TYPE_REQUEST :'request',
     TICKET_TYPE_INQUIRY :'inquiry',
     TICKET_TYPE_QUERY :'query',
+    USER_CONTRAINER_KEY:"mc-users",
+    USER_CONTAINER:"mc-user-info",
 }
 
 export const TICKET_TYPE={

@@ -10,7 +10,8 @@ const validate = (formikValues) => {
     message: {},
     subject: {},
     firstName: {},
-    lastName: {}
+    lastName: {},
+   // assignedTo:{}
   };
 
   const EMAIL_REGEX = /^[\wäöüÄÖÜß._%+-]+@[\wäöüÄÖÜß.-]+\.[A-Z]{2,}$/i;
@@ -20,6 +21,7 @@ const validate = (formikValues) => {
   if (TextInput.isEmpty(formikValues.priority)) errors.priority.missing = true;
 
   if (TextInput.isEmpty(formikValues.subject)) errors.subject.missing = true;
+  //if (TextInput.isEmpty(formikValues.assignedTo)) errors.subject.assignedTo = true;
 
   if(formikValues.category == CONSTANTS.TICKET_TYPE_REQUEST){
     if (TextInput.isEmpty(formikValues.firstName)) errors.firstName.missing = true;

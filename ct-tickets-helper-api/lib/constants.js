@@ -28,6 +28,8 @@ exports.CONSTANTS = {
     TICKET_TYPE_REQUEST: 'request',
     TICKET_TYPE_INQUIRY: 'inquiry',
     TICKET_TYPE_QUERY: 'query',
+    USER_CONTRAINER_KEY: "mc-users",
+    USER_CONTAINER: "mc-user-info",
 };
 exports.TICKET_TYPE = (_a = {},
     _a[exports.CONSTANTS.TICKET_TYPE_QUERY] = "Query",

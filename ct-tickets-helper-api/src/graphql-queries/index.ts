@@ -17,6 +17,25 @@ export const FETCH_TICKETS=`
   }
  `
 
+ export const FETCH_USERS_INFO=`
+ query FetchUsers($container:String!,$where:String) {
+    customObjects(container: $container,where:$where){
+      total
+      count
+      offset
+    results{
+      id
+      version
+      createdAt
+      lastModifiedAt
+      container
+      value
+      key
+    }
+  }
+  }
+ `
+
  export const FETCH_TICKETS_BY_ID=`
  query FetchTicketById($id:String) {
     customObject(id: $id){

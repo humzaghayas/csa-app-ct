@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import { useIntl } from 'react-intl';
@@ -15,8 +15,8 @@ import{getTicketCategories,getTicketPriorityValues,getTicketContactTypes} from '
 import { MultilineTextField, PrimaryButton, SecondaryButton } from '@commercetools-frontend/ui-kit';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useState } from 'react';
-import{FETCH_CUSTOMERS,isEmailValid,CONSTANTS, storage,
-  ref, getDownloadURL, uploadBytesResumable } from 'ct-tickets-helper-api'
+import{FETCH_CUSTOMERS,isEmailValid,CONSTANTS, storage,deleteObject ,FETCH_USERS_INFO,
+  ref, getDownloadURL, uploadBytesResumable ,getForKey} from 'ct-tickets-helper-api'
 import { useMcLazyQuery, useMcQuery } from '@commercetools-frontend/application-shell';
 import { gql, useQuery } from '@apollo/client';
 import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
@@ -61,8 +61,25 @@ const TicketCreateForm = (props) => {
     enableReinitialize: true,
   });
 
+  const { data:users, error:userErr, loading:userLoading } = useMcQuery(gql`${FETCH_USERS_INFO}`, {
+    variables: {
+      container:CONSTANTS.USER_CONTAINER,
+      where: "key=\"mc-users\""
+    },
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    },
+  });
+
+
+  console.log('assign to ',users)
+  const getUsersToAssignTo = users?.customObjects?.results[0].value.map((userInfo) => ( {
+    label: userInfo.email,
+    value: userInfo.email,
+  }));
+
   const [customerFound, setCustomerFound] = useState(formik.values.isEdit);
-  const [imgUrl, setImgUrl] = useState(null);
+  const [files, setFiles] = useState([]);
 
   const [progresspercent, setProgresspercent] = useState(0);
 
@@ -110,6 +127,62 @@ const onChangeEmail=(evt)=>{
 
 
 const inputRef = useRef(null);
+const [fileDeleteUrl,setFileDeleteUrl] = useState('');
+const [fileDeleteName,setFileDeleteName] = useState('');
+
+useEffect(() => {
+  // Update the document title using the browser API
+  if(files.length ==0 && formik?.values?.files?.length > 0){
+    let f =[];
+    formik.values.files.map((fileInfo)=>{
+      f.push(
+        <div key={fileInfo.name} id={`id-${fileInfo.name}`}>
+          <input type="radio" value={fileInfo.url} onClick={()=>{setFileDeleteName(fileInfo.name);setFileDeleteUrl(fileInfo.url);}} name="fileDeleteRadio" />&nbsp;&nbsp;<a  href={fileInfo.url}>{fileInfo.name}</a><br/>
+        </div>);
+    });
+
+    setFiles(f);
+    // renderOnce= false; 
+    console.log('render once');
+  }
+  console.log('render once12');
+});
+
+
+const deleteFileFromStorage=(e)=>{
+
+  e.preventDefault()
+
+  console.log('setFileDeleteUrl',fileDeleteUrl);
+  console.log('fileDeleteName',fileDeleteName);
+
+  const desertRef = ref(storage, fileDeleteUrl);
+
+  let f = [];
+  f =f.concat(formik?.values?.files);
+
+  console.log("f",f);
+
+  const index = f.findIndex(f => f.name ===fileDeleteName);
+
+  console.log("index",index);
+
+
+  f.splice(index, 1);
+  document.getElementById(`id-${fileDeleteName}`).remove();
+
+  formik.values.files = f;
+
+  console.log("fwewewe",f);
+  console.log('File Deleted1',formik?.values?.files);
+
+  // Delete the file
+  deleteObject(desertRef).then(function() {
+    console.log('File Deleted');
+  }).catch(function(error) {
+    console.error('error',error);
+  });
+}
 
 const handleClick = (e) => {
   e.preventDefault()
@@ -122,6 +195,11 @@ const handleClick = (e) => {
 const uploadFile = (e) => {
 
   e.preventDefault()
+
+
+  if(formik.values.files && formik.values.files.length  >= 5){
+    alert("Limit Reached , Can't Upload more!");
+  }
   const file = e.target.files && e.target.files[0];
 
   if (!file) {
@@ -132,8 +210,10 @@ const uploadFile = (e) => {
   formik.values.imageURL = null;
 
   console.log('file found');
+
+  const folder = getForKey(formik.values.email);
   
-  const storageRef = ref(storage, `files/${file.name}`);
+  const storageRef = ref(storage, `files/${folder}/${file.name}`);
   const uploadTask = uploadBytesResumable(storageRef, file);
 
   uploadTask.on("state_changed",
@@ -147,9 +227,11 @@ const uploadFile = (e) => {
     },
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        setImgUrl(downloadURL)
+        formik.values.files = formik.values.files.concat([{name:file.name,url:downloadURL}]);
+        setFiles(files.concat(<div><a href={downloadURL}>{file.name}</a><br/></div>));
+        // files.push({name:file.name,url:downloadURL});
 
-        formik.values.imageURL = downloadURL;
+        console.log('concat',formik.values.files);
         console.log('downloadURL',downloadURL);
       });
     }
@@ -245,6 +327,23 @@ const uploadFile = (e) => {
             />
             </Spacings.Stack>
 
+            <Spacings.Stack scale="s">
+        <SelectField
+              name="assignedTo"
+              title="Assign To"
+              value={formik.values.assignedTo}
+              errors={formik.errors.assignedTo}
+              touched={formik.touched.assignedTo}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              options={getUsersToAssignTo}
+              isReadOnly={props.isReadOnly}
+              isRequired
+              horizontalConstraint={13}
+              isDisabled={!customerFound }
+            />
+            </Spacings.Stack>
+
 
             <Spacings.Stack scale="s">
                 <TextField name="subject"
@@ -284,7 +383,13 @@ const uploadFile = (e) => {
                    <button onClick={handleClick}>Upload</button>
   
                   <br/><br/>
-                  {formik.values.imageURL && !imgUrl &&
+                  {/* {formik?.values?.files && formik?.values?.files.map((fileInfo,i)=> 
+                    <div><a href={fileInfo.url}>{fileInfo.name}</a><br/></div>
+                  )} */}
+                  {files}
+                  <br/>
+                  {files?.length>0 && <button onClick={deleteFileFromStorage}>Delete File</button>}
+                  {/* {formik.values.imageURL && !imgUrl &&
                     <img src={formik.values.imageURL} alt='uploaded file' height={500} />
                   }
                     {
@@ -297,7 +402,7 @@ const uploadFile = (e) => {
                       //!formik.values.imageURL &&
                       imgUrl &&
                       <img src={imgUrl} alt='uploaded file' height={500} />
-                    }
+                    } */}
                 </div>
               </Spacings.Stack>
 

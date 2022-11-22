@@ -14,14 +14,19 @@ export const docToFormValues = (ticket, languages,isEdit) => ({
   subject: ticket?.subject ?? '',
   firstName : ticket?.firstName ?? '',
   lastName : ticket?.lastName ?? '',
-  imageURL: ticket?.imageURL ?? '',
-  isEdit:isEdit ?? false
+  files: ticket?.files ?? [],
+  isEdit:isEdit ?? false,
+  createdBy:ticket?.createdBy ?? '',
+  assignedTo:ticket?.assignedTo ?? ''
 });
 
 export const formValuesToDoc = (formValues) => ({
   id:formValues?.id ?? undefined,
   key:formValues?.key ?? undefined,
   customerId:formValues?.customerId ?? undefined,
+  createdBy:formValues?.createdBy ?? undefined,
+  assignedTo: !TextInput.isEmpty(formValues.assignedTo) 
+  ? formValues.assignedTo : '',
   email: !TextInput.isEmpty(formValues.email)
   ? formValues.email
   : undefined,
@@ -37,9 +42,7 @@ export const formValuesToDoc = (formValues) => ({
   message: !TextInput.isEmpty(formValues.message)
   ? escapeQuotes(formValues.message)
   : undefined,
-  imageURL: !TextInput.isEmpty(formValues.imageURL)
-  ? formValues.imageURL
-  : null,
+  files:  formValues?.files ?? null,
   subject: !TextInput.isEmpty(formValues.subject)
   ? escapeQuotes(formValues.subject)
   : undefined
@@ -49,6 +52,9 @@ export const formValuesToDoc = (formValues) => ({
     id:formValues?.id ?? undefined,
     key:formValues?.key ?? undefined,
     customerId:formValues?.customerId ?? undefined,
+    createdBy:formValues?.createdBy ?? undefined,
+    assignedTo: !TextInput.isEmpty(formValues.assignedTo) 
+    ? formValues.assignedTo : '',
     email: !TextInput.isEmpty(formValues.email)
     ? formValues.email
     : undefined,

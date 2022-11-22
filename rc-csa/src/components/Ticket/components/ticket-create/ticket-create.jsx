@@ -32,9 +32,10 @@ const TicketCreate = (props) => {
   const params = useParams();
 
 
-  const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
+  const { dataLocale, projectLanguages,user } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
+    user:context.user
   }));
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
@@ -49,7 +50,12 @@ const TicketCreate = (props) => {
     async (formValues) => {
 
       let data = {};
-      if(formValues.category && formValues.category !== "request"){
+      formValues.createdBy = user.email;
+
+      if(!formValues.assignedTo){
+        formValues.assignedTo = user.email;
+      }
+      if(formValues.category && formValues.category !== "request"){ 
         data = formValuesToDoc(formValues);
       }else{
         data = formValuesToDocRequest(formValues);
@@ -83,10 +89,11 @@ const TicketCreate = (props) => {
       target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
     } }).then((resp) => {
       console.log(resp);
+      alert('Ticket Created!: ');
     }).catch((err) =>{
       console.log(err);
     });
-    alert('Ticket Created!: ')
+
   }
 
   return (
