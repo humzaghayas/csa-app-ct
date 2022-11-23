@@ -1,5 +1,5 @@
 import { TICKET_TYPE,TICKET_PRIORITIY_VALUES,TICKET_SOURCE, CONSTANTS, TICKET_STATUS } from "../constants";
-import { CREATE_TICKET_MUTATION } from "../graphql-queries";
+import { CREATE_CUSTOMOBJECT_MUTATION } from "../graphql-queries";
 
 export function getTicketRows(customObjects){
 
@@ -37,10 +37,10 @@ let ticketDraft:any ={"container": CONSTANTS.containerKey};
 
 export function getCreateTicketMutaion(){
 
-    return CREATE_TICKET_MUTATION;
+    return CREATE_CUSTOMOBJECT_MUTATION;
 }
 
-export function getCreateTicketDraft(ticketInfo){
+export async function getCreateTicketDraft(ticketInfo){
 
     const currentDate = new Date().toUTCString();
     const email = ticketInfo.email;

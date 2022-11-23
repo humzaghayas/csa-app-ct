@@ -37,3 +37,10 @@ export const TICKET_TYPE={
     [CONSTANTS.TICKET_TYPE_REQUEST]:"Request",
     [CONSTANTS.TICKET_TYPE_INQUIRY]:"Inquiry"
 }
+
+export const TICKET_WORKFLOW={
+    pending:"Pending",
+    approve:"Approve",
+    reject:"Reject",
+    resolved:"Resolved"
+}

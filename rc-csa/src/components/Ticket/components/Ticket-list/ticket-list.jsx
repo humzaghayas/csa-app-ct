@@ -43,21 +43,12 @@ import {
 import TicketDetails from '../ticket-details/ticket-details';
 import TicketAccount from '../ticket-account/ticket-account';
 import { actions,useAsyncDispatch } from '@commercetools-frontend/sdk';
-import{FETCH_TICKETS,getTicketRows,CONSTANTS} from 'ct-tickets-helper-api'
-import { gql } from '@apollo/client';
-
-// import { getCompanies } from '../../api';
-// import { useEffect } from 'react';
-
-// import NoImageIcon from '@commercetools-frontend/assets/images/camera.svg';
-// import TicketAccount from '../Ticket-account';
-
-// const QUERY = {
-//   perPage: 20,
-//   page: 1,
-//   sortBy: 'createdAt',
-//   sortDirection: 'desc',
-// };
+import{FETCH_TICKETS,getTicketRows,CONSTANTS,FETCH_USERS_INFO} from 'ct-tickets-helper-api'
+import {  gql } from '@apollo/client';
+import { useIsAuthorized } from '@commercetools-frontend/permissions';
+import { PERMISSIONS } from '../../../../constants';
+import { useCreateEntry, useUserFetcher } from '../../../../hooks/use-register-user-connector/use-service-connector';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 let rows = null;
 
@@ -80,31 +71,31 @@ const Tickets = (props) => {
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
 
+  const canManage = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.Manage],
+  });
 
-  //const dispatch = useAsyncDispatch();
-  // useEffect(() => {
-  //   async function execute() {
-  //     try {
+  const canView = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.View],
+  });
 
-  //       console.log('here');
-  //       const result =  await dispatch(
-  //           actions.forwardTo.get({
-  //             uri:'https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/getTickets',
-  //             includeUserPermissions: true,}));
-  //       // Update state with `result`
-  //       console.log("result :: " +result);
-  //     } catch (error) {
-  //       // Update state with `error`
+  const { user } = useApplicationContext((context) => ({
+    user: context.user ?? ''
+  }));
 
-  //       console.log("error : "+JSON.stringify(error));
-  //     }
-  //   }
-  //   execute();
-  // }, [])
-
-  // rows[0].Customer =
+  const {foundUser} = useUserFetcher(user.email);
+  const {execute} = useCreateEntry(user.email)
 
 
+  useEffect(() => {
+    if(foundUser == false){
+      console.log('calling execute !');
+      execute();
+    }
+    console.log('inside hook !');
+  }, [foundUser]);
+
+  
   const { data, error, loading } = useMcQuery(gql`${FETCH_TICKETS}`, {
     variables: {
       container:CONSTANTS.containerKey,
@@ -139,6 +130,8 @@ const Tickets = (props) => {
         <Text.Headline as="h2" intlMessage={messages.title} />
       </Spacings.Stack>
       {/* {loading && <LoadingSpinner />} */}
+
+      { canManage  ?
       <Spacings.Inline>
       <SecondaryButton
         label="Add Ticket"
@@ -148,6 +141,8 @@ const Tickets = (props) => {
         size="medium"
       />
       </Spacings.Inline>
+      : null}
+
       {/* {data ? ( */}
 
       {rows ? 

@@ -26,6 +26,7 @@ import { TextInput } from '@commercetools-frontend/ui-kit';
 import { useMcMutation } from '@commercetools-frontend/application-shell';
 import{CREATE_TICKET_MUTATION,getCreateTicketDraft} from 'ct-tickets-helper-api'
 import { gql } from '@apollo/client';
+import { useCreateOrUpdateTicket } from '../../../../hooks/use-register-user-connector';
 
 const TicketCreate = (props) => {
   const intl = useIntl();
@@ -44,7 +45,8 @@ const TicketCreate = (props) => {
   // const showApiErrorNotification = useShowApiErrorNotification();
   // const TicketCreateCreator = useTicketCreateCreator();
 
-  const [createOrUpdateCustomObject, { data, loading, error }] = useMcMutation(gql`${CREATE_TICKET_MUTATION}`);
+//  const [createOrUpdateCustomObject, { data, loading, error }] = useMcMutation(gql`${CREATE_TICKET_MUTATION}`);
+  const{execute} = useCreateOrUpdateTicket();
 
   const handleSubmit = useCallback(
     async (formValues) => {
@@ -63,38 +65,12 @@ const TicketCreate = (props) => {
 
       console.log("data");
       console.log(data);
-      
-      await createTicket(data);
-      // This would trigger the request, for example a mutation.
-      
-      // If successful, show a notification and redirect
-      // to the Channels details page.
-      // If errored, show an error notification.
+      execute(data);
     },
-    [createTicket]
+    [execute]
   );
 
-  const createTicket = async (data)=>{
-    console.log("createTicket");
 
-    const ticketDraft = getCreateTicketDraft(data);
-
-    console.log("ticketDraft");
-    console.log(ticketDraft);
-
-    createOrUpdateCustomObject({ variables: {
-      draft: ticketDraft,
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    } }).then((resp) => {
-      console.log(resp);
-      alert('Ticket Created!: ');
-    }).catch((err) =>{
-      console.log(err);
-    });
-
-  }
 
   return (
     <TicketCreateForm

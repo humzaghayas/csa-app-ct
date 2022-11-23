@@ -18,12 +18,8 @@ export const FETCH_TICKETS=`
  `
 
  export const FETCH_USERS_INFO=`
- query FetchUsers($container:String!,$where:String) {
-    customObjects(container: $container,where:$where){
-      total
-      count
-      offset
-    results{
+ query FetchUsers($container:String!,$key:String) {
+    customObject(container: $container,key:$key){
       id
       version
       createdAt
@@ -31,7 +27,25 @@ export const FETCH_TICKETS=`
       container
       value
       key
-    }
+  }
+  }
+ `
+
+ export const FETCH_USERS_LIST=`
+ query FetchUsers($container:String!) {
+    customObjects(container: $container){
+      total
+      count
+      offset
+      results{
+        id
+        version
+        createdAt
+        lastModifiedAt
+        container
+        value
+        key
+      }
   }
   }
  `
@@ -50,10 +64,11 @@ export const FETCH_TICKETS=`
   }
  `
 
- export const CREATE_TICKET_MUTATION=`
- mutation CreateClaimObject($draft:CustomObjectDraft!){
+ export const CREATE_CUSTOMOBJECT_MUTATION=`
+ mutation CreateCustomObject($draft:CustomObjectDraft!){
   createOrUpdateCustomObject(draft:$draft){
     container
+    key
     value
   }
 }

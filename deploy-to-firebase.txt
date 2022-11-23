@@ -1,0 +1,4 @@
+npm run build
+npm run compile-html
+firebase use csa-project-1d161
+firebase deploy --only hosting

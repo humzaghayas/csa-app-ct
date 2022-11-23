@@ -20,6 +20,9 @@ import{FETCH_CUSTOMERS,isEmailValid,CONSTANTS, storage,deleteObject ,FETCH_USERS
 import { useMcLazyQuery, useMcQuery } from '@commercetools-frontend/application-shell';
 import { gql, useQuery } from '@apollo/client';
 import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
+import { useIsAuthorized } from '@commercetools-frontend/permissions';
+import { PERMISSIONS } from '../../../../constants';
+import { useUserListFetcher } from '../../../../hooks/use-register-user-connector/use-service-connector';
 
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
@@ -61,22 +64,28 @@ const TicketCreateForm = (props) => {
     enableReinitialize: true,
   });
 
-  const { data:users, error:userErr, loading:userLoading } = useMcQuery(gql`${FETCH_USERS_INFO}`, {
-    variables: {
-      container:CONSTANTS.USER_CONTAINER,
-      where: "key=\"mc-users\""
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
+  const canManage = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.Manage],
   });
 
+  // const { data:users, error:userErr, loading:userLoading } = useMcQuery(gql`${FETCH_USERS_INFO}`, {
+  //   variables: {
+  //     container:CONSTANTS.USER_CONTAINER,
+  //     where: "key=\"mc-users\""
+  //   },
+  //   context: {
+  //     target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+  //   },
+  // });
 
-  console.log('assign to ',users)
-  const getUsersToAssignTo = users?.customObjects?.results[0].value.map((userInfo) => ( {
-    label: userInfo.email,
-    value: userInfo.email,
-  }));
+
+  // console.log('assign to ',users)
+  // const getUsersToAssignTo = users?.customObjects?.results[0].value.map((userInfo) => ( {
+  //   label: userInfo.email,
+  //   value: userInfo.email,
+  // 
+
+  const{getUsersToAssignTo} =useUserListFetcher();
 
   const [customerFound, setCustomerFound] = useState(formik.values.isEdit);
   const [files, setFiles] = useState([]);
@@ -228,7 +237,10 @@ const uploadFile = (e) => {
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
         formik.values.files = formik.values.files.concat([{name:file.name,url:downloadURL}]);
-        setFiles(files.concat(<div><a href={downloadURL}>{file.name}</a><br/></div>));
+        setFiles(files.concat(
+          <div key={file.name} id={`id-${file.name}`}>
+            <input type="radio" value={downloadURL} onClick={()=>{setFileDeleteName(file.name);setFileDeleteUrl(downloadURL);}} name="fileDeleteRadio" />&nbsp;&nbsp;<a  href={downloadURL}>{file.name}</a><br/>
+          </div>));
         // files.push({name:file.name,url:downloadURL});
 
         console.log('concat',formik.values.files);
@@ -261,7 +273,7 @@ const uploadFile = (e) => {
                     <PrimaryButton
                       label="Search Customer"
                       onClick={custoInfo}
-                      isDisabled={formik.values.isEdit}
+                      isDisabled={!canManage || formik.values.isEdit}
                     />
                   <TextField
                       name="email"
@@ -274,7 +286,7 @@ const uploadFile = (e) => {
                       isReadOnly={props.isReadOnly}
                       isRequired
                       horizontalConstraint={13}
-                      isDisabled={formik.values.isEdit}
+                      isDisabled={!canManage || formik.values.isEdit}
                     />
                </Spacings.Inline>
                 <Spacings.Stack scale="s">
@@ -290,7 +302,7 @@ const uploadFile = (e) => {
                     isReadOnly={props.isReadOnly}
                     isRequired
                     horizontalConstraint={13}
-                    isDisabled={!customerFound }
+                    isDisabled={!canManage || !customerFound }
                   />
             </Spacings.Stack>
             <Spacings.Stack scale="s">
@@ -306,7 +318,7 @@ const uploadFile = (e) => {
               isReadOnly={props.isReadOnly}
               isRequired
               horizontalConstraint={13}
-              isDisabled={!customerFound  || formik.values.isEdit}
+              isDisabled={!canManage || (!customerFound  || formik.values.isEdit)}
             />
         
         </Spacings.Stack>
@@ -323,7 +335,7 @@ const uploadFile = (e) => {
               isReadOnly={props.isReadOnly}
               isRequired
               horizontalConstraint={13}
-              isDisabled={!customerFound }
+              isDisabled={!canManage || !customerFound }
             />
             </Spacings.Stack>
 
@@ -340,7 +352,7 @@ const uploadFile = (e) => {
               isReadOnly={props.isReadOnly}
               isRequired
               horizontalConstraint={13}
-              isDisabled={!customerFound }
+              isDisabled={!canManage || !customerFound }
             />
             </Spacings.Stack>
 
@@ -356,7 +368,7 @@ const uploadFile = (e) => {
                     touched={formik.touched.subject}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    isDisabled={!customerFound }/>
+                    isDisabled={!canManage || !customerFound }/>
               </Spacings.Stack>
 
 
@@ -443,7 +455,7 @@ const uploadFile = (e) => {
                       label="Submit"
                       onClick={formik.handleSubmit}
                       //isDisabled={formik.isSubmitting}
-                      isDisabled={!customerFound }
+                      isDisabled={!canManage || !customerFound }
                     />
                 </Spacings.Inline>
             </Spacings.Stack>

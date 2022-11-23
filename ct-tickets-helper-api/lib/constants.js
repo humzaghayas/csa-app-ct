@@ -1,7 +1,7 @@
 "use strict";
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TICKET_TYPE = exports.CONSTANTS = exports.TICKET_PRIORITIY_VALUES = exports.REQUEST_TYPES = exports.TICKET_SOURCE = exports.TICKET_STATUS = void 0;
+exports.TICKET_WORKFLOW = exports.TICKET_TYPE = exports.CONSTANTS = exports.TICKET_PRIORITIY_VALUES = exports.REQUEST_TYPES = exports.TICKET_SOURCE = exports.TICKET_STATUS = void 0;
 exports.TICKET_STATUS = {
     new: "New",
     open: "Open",
@@ -36,3 +36,9 @@ exports.TICKET_TYPE = (_a = {},
     _a[exports.CONSTANTS.TICKET_TYPE_REQUEST] = "Request",
     _a[exports.CONSTANTS.TICKET_TYPE_INQUIRY] = "Inquiry",
     _a);
+exports.TICKET_WORKFLOW = {
+    pending: "Pending",
+    approve: "Approve",
+    reject: "Reject",
+    resolved: "Resolved"
+};

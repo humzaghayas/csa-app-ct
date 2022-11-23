@@ -13,9 +13,19 @@ import CustomerCreate from './components/Customer/components/customer-create/cus
 import Orders from './components/Orders/components/order-list/order-list';
 import OrderAccount from './components/Orders/components/order-account/order-account';
 import TicketCreate from './components/Ticket/components/ticket-create/ticket-create';
+import { PageUnauthorized } from '@commercetools-frontend/application-components';
+import { useIsAuthorized } from '@commercetools-frontend/permissions';
+import { PERMISSIONS } from './constants';
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
 
+  const canManageTickets = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.Manage],
+  });
+
+  const canViewTickets = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.View],
+  });
   /**
    * When using routes, there is a good chance that you might want to
    * restrict the access to a certain route based on the user permissions.
@@ -35,14 +45,27 @@ const ApplicationRoutes = () => {
         </Route>
        
         <Route path={`${match.path}/Tickets`}>
-         <Tickets linkToWelcome={match.url} />
+          {canViewTickets ? (
+            <Tickets linkToWelcome={match.url} />
+          ):(
+            <PageUnauthorized />
+          )}
+         
         </Route>
         
         <Route  path={`${match.path}/ticket-details`}>
-            <TicketDetails linkToWelcome={match.url} />
+            {canManageTickets ? (
+              <TicketDetails linkToWelcome={match.url} />
+            ):(
+              <PageUnauthorized />
+            )}
         </Route>
         <Route  path={`${match.path}/ticket-create`}>
-           <TicketCreate linkToWelcome={match.url} />
+           {canManageTickets ? (
+              <TicketCreate linkToWelcome={match.url} />
+            ):(
+              <PageUnauthorized />
+            )}
         </Route>
         <Route path={`${match.path}/Customers`}>
          <Customers linkToWelcome={match.url} />

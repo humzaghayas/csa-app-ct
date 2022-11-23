@@ -13,6 +13,7 @@ import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
 import{CREATE_TICKET_MUTATION,getCreateTicketDraft} from 'ct-tickets-helper-api'
+import { useCreateOrUpdateTicket, useGetTicketById } from '../../../../hooks/use-register-user-connector';
 
 const TicketDetailsP = (props) => {
   const match = useRouteMatch();
@@ -24,24 +25,10 @@ const TicketDetailsP = (props) => {
     demandedPermissions: [PERMISSIONS.Manage],
   });
 
-
-
-  const { data, error, loading } = useMcQuery(gql`${FETCH_TICKETS_BY_ID}`, {
-    variables: {
-      id:match.params.id
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-  });
-
-  const ticket = getTicketFromCO(data);
-
-  console.log("data",data);
+  const {ticket} = useGetTicketById(match.params.id);
   console.log("ticket",ticket);
 
-  const [createOrUpdateCustomObject, { data:customOb, loading:coLoading, error:coError }] = 
-    useMcMutation(gql`${CREATE_TICKET_MUTATION}`);
+  const{execute} = useCreateOrUpdateTicket();
   const handleSubmit = useCallback(
     async (formValues) => {
 
@@ -54,38 +41,15 @@ const TicketDetailsP = (props) => {
 
       console.log("data from form",data);
       
-      await updateTicket(data);
+      await execute(data);
       // This would trigger the request, for example a mutation.
       
       // If successful, show a notification and redirect
       // to the Channels details page.
       // If errored, show an error notification.
     },
-    [updateTicket]
+    [execute]
   );
-
-
-  const updateTicket = async (data)=>{
-    console.log("updateTicket");
-
-    const ticketDraft = getCreateTicketDraft(data);
-
-    console.log("ticketDraft",ticketDraft);
-
-    createOrUpdateCustomObject({ variables: {
-      draft: ticketDraft,
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    } }).then((resp) => {
-      console.log(resp);
-      alert('Ticket Updated!: ');
-    }).catch((err) =>{
-      console.log(err);
-    });
-   
-  }
-
 
   if (!ticket) {
     return <LoadingSpinner />;
