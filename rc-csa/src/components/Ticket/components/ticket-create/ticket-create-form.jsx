@@ -23,6 +23,8 @@ import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
 import { useUserListFetcher } from '../../../../hooks/use-register-user-connector/use-service-connector';
+import { useFileDeleteService, useFileUploadService } from '../../../../hooks/use-file-upload-connector';
+import { useFindCustomerService } from '../../../../hooks/use-customer-connector/use-customer-connector';
 
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
@@ -94,40 +96,12 @@ const TicketCreateForm = (props) => {
 
   const custoInfo=useCallback(
     async () => {
-      getCustomerByEmail(formik.values.email);  
+      getCustomerByEmail(formik.values.email,formik,setCustomerFound);  
   });
 
-  const [customers,{ data, error, loading }] = useMcLazyQuery(gql`${FETCH_CUSTOMERS}`);
-const getCustomerByEmail = (email) =>{
-   //const email=formik.values.email;
+/////
 
-   console.log('email',email);
-    if(isEmailValid(email)){
-      //setCustomerFound(true);
-     customers( {
-        variables:{
-          where:`email=\"${email}\"`
-        },
-        context: {
-          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-        }
-      }).then((resp)=>{
-
-        console.log("data1",resp);
-        if(resp?.data?.customers?.count > 0){
-  
-          formik.values.customerId =  resp?.data?.customers.results[0].id;
-          setCustomerFound(true);
-        }
-      }).catch((error)=>{
-
-        setCustomerFound(false);
-        console.error('error',error);
-      });
-  }else{
-    setCustomerFound(false);
-  }
-}
+const {getCustomerByEmail} = useFindCustomerService();
 
 const onChangeEmail=(evt)=>{
   setCustomerFound(false);
@@ -161,39 +135,14 @@ useEffect(() => {
 });
 
 
+const{execute} = useFileUploadService();
+const {deleteFileHandle} = useFileDeleteService();
 const deleteFileFromStorage=(e)=>{
 
   e.preventDefault()
+  deleteFileHandle(formik,fileDeleteUrl,fileDeleteName);
 
-  console.log('setFileDeleteUrl',fileDeleteUrl);
-  console.log('fileDeleteName',fileDeleteName);
-
-  const desertRef = ref(storage, fileDeleteUrl);
-
-  let f = [];
-  f =f.concat(formik?.values?.files);
-
-  console.log("f",f);
-
-  const index = f.findIndex(f => f.name ===fileDeleteName);
-
-  console.log("index",index);
-
-
-  f.splice(index, 1);
-  document.getElementById(`id-${fileDeleteName}`).remove();
-
-  formik.values.files = f;
-
-  console.log("fwewewe",f);
-  console.log('File Deleted1',formik?.values?.files);
-
-  // Delete the file
-  deleteObject(desertRef).then(function() {
-    console.log('File Deleted');
-  }).catch(function(error) {
-    console.error('error',error);
-  });
+  return false;
 }
 
 const handleClick = (e) => {
@@ -204,10 +153,10 @@ const handleClick = (e) => {
   return false;
 };
 
+
 const uploadFile = (e) => {
 
-  e.preventDefault()
-
+  e.preventDefault();
 
   if(formik.values.files && formik.values.files.length  >= 5){
     alert("Limit Reached , Can't Upload more!");
@@ -219,39 +168,8 @@ const uploadFile = (e) => {
     return;
   }
 
-  formik.values.imageURL = null;
-
-  console.log('file found');
-
-  const folder = getForKey(formik.values.email);
-  
-  const storageRef = ref(storage, `files/${folder}/${file.name}`);
-  const uploadTask = uploadBytesResumable(storageRef, file);
-
-  uploadTask.on("state_changed",
-    (snapshot) => {
-      const progress =
-        Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-      setProgresspercent(progress);
-    },
-    (error) => {
-      alert(error);
-    },
-    () => {
-      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        formik.values.files = formik.values.files.concat([{name:file.name,url:downloadURL}]);
-        setFiles(files.concat(
-          <div key={file.name} id={`id-${file.name}`}>
-            <input type="radio" value={downloadURL} onClick={()=>{setFileDeleteName(file.name);setFileDeleteUrl(downloadURL);}} name="fileDeleteRadio" />&nbsp;&nbsp;<a  href={downloadURL}>{file.name}</a><br/>
-          </div>));
-        // files.push({name:file.name,url:downloadURL});
-
-        console.log('concat',formik.values.files);
-        console.log('downloadURL',downloadURL);
-      });
-    }
-  );
-
+  execute(formik,file,files,setFiles,setProgresspercent
+        ,setFileDeleteName,setFileDeleteUrl);
   console.log('file uploaded');
   return false;
 }
