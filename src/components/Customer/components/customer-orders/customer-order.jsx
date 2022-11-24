@@ -27,6 +27,7 @@ import {
   useDataTableSortingState,
 } from '@commercetools-uikit/hooks';
 import DataTable from '@commercetools-uikit/data-table';
+import ToggleInput from '@commercetools-uikit/toggle-input';
 // import {
 //   useCustomerDetailsCreator,
 // } from '../../../../hooks/use-Customer-connector/use-Customere-graphql-connector';
@@ -36,9 +37,10 @@ import { transformErrors } from './transform-errors';
 import messages from './messages';
 import Spacings from '@commercetools-uikit/spacings';
 const rows = [
-  { Ordernumber: '00000001',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ready'},
-  { Ordernumber: '00000002',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ready'},
-  { Ordernumber: '00000003',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ready'},
+  { Ordernumber: '00000001',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ordered'},
+  { Ordernumber: '00000002',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ordered'},
+  { Ordernumber: '00000003',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ordered'},
+  { Ordernumber: '00000003',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Cancelled'},
 ];
 
 const columns = [
@@ -61,7 +63,20 @@ const CustomerOrder = (props) => {
     
       {/* {data ? ( */}
         <Spacings.Stack scale="l">
-         
+        <ToggleInput
+    isDisabled={false}
+    isChecked={true}
+    // onChange={(event) => {
+    //    if(event.target.checked == true){
+        
+    //    }else{
+
+    //    }
+    // }}
+    
+     onChange={(event) => alert(event.target.checked)}
+    size="medium"
+  />
           <DataTable
             isCondensed
             columns={columns}

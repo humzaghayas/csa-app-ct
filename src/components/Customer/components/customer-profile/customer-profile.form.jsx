@@ -4,7 +4,6 @@ import { useFormik } from 'formik';
 import { useIntl } from 'react-intl';
 import TextField from '@commercetools-uikit/text-field';
 import SelectField from '@commercetools-uikit/select-field';
-import DateInput from '@commercetools-uikit/date-input';
 import Spacings from '@commercetools-uikit/spacings';
 import validate from './validate';
 import messages from './messages';
@@ -15,15 +14,11 @@ import RichTextInput from '@commercetools-uikit/rich-text-input';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import Constraints from '@commercetools-uikit/constraints';
 import styles from './customer-profile.module.css';
-// const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
-//   label: EMPLOYEE_ROLES[key],
-//   value: EMPLOYEE_ROLES[key],
-// }));
+import DateField from '@commercetools-uikit/date-field';
+import RadioField from '@commercetools-uikit/radio-field';
+import RadioInput from '@commercetools-uikit/radio-input';
+// import FieldLabel from '@commercetools-uikit/field-label';
 
-// const getCustomerGroupsOptions = Object.keys(CUSTOMER_GROUPS).map((key) => ({
-//   label: key,
-//   value: CUSTOMER_GROUPS[key],
-// }));
 const getCustomerPriorityOptions = Object.keys(CUSTOMER_PRIORITY).map((key) => ({
   label: key,
   value: CUSTOMER_PRIORITY[key],
@@ -78,9 +73,9 @@ const CustomerProfileForm = (props) => {
    <Spacings.Inline>
    <TextField
         name="key"
-        title="Standard Language"
+        title="Full Name"
         // placeholder="English"
-        value="English"
+        value="Lahari Ramurthi"
         // value={formik.values.amount}
           errors={formik.errors.amount}
           touched={formik.touched.amount}
@@ -90,34 +85,7 @@ const CustomerProfileForm = (props) => {
       />
        <TextField
         name="key"
-        title="Standard Currency"
-        value="Dollar"
-        // value={formik.values.key}
-        // value={formik.values.amount}
-          errors={formik.errors.amount}
-          touched={formik.touched.amount}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-      />
-      </Spacings.Inline>
-      <Spacings.Inline>
-       <SelectField
-          name="role"
-          title="Groups"
-         
-          //  value={getCustomerPriorityOptions[Low]}
-          errors={formik.errors.role}
-          touched={formik.touched.role}
-          onChange={formik.handleChange}
-          options={ getCustomerPriorityOptions}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-          isRequired
-        />
-       <TextField
-        name="key"
-        title="Description"
+        title="Occupation"
         value="Software Engineer"
         // value={formik.values.key}
         // value={formik.values.amount}
@@ -128,6 +96,99 @@ const CustomerProfileForm = (props) => {
           horizontalConstraint={13}
       />
       </Spacings.Inline>
+      <Spacings.Inline>
+      <TextField
+        name="key"
+        title="Company Name"
+        value="Royal cyber"
+        // value={formik.values.key}
+        // value={formik.values.amount}
+          errors={formik.errors.amount}
+          touched={formik.touched.amount}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          horizontalConstraint={13}
+      />
+       <SelectField
+          name="role"
+          title="Preferred Language"
+         
+          //  value={getCustomerPriorityOptions[Low]}
+          errors={formik.errors.role}
+          touched={formik.touched.role}
+          onChange={formik.handleChange}
+          options={ getCustomerPriorityOptions}
+          onBlur={formik.handleBlur}
+          horizontalConstraint={13}
+          isRequired
+        />
+     
+      </Spacings.Inline>
+      <Spacings.Inline>
+      <DateField
+    title="Date Of Birth"
+    value="1998-08-14"
+    horizontalConstraint={13}
+    onChange={(event) => alert(event.target.value)}
+  />
+       <SelectField
+          name="role"
+          title="Age Group"
+          value="English"
+          //  value={getCustomerPriorityOptions[Low]}
+          errors={formik.errors.role}
+          touched={formik.touched.role}
+          onChange={formik.handleChange}
+          options={ getCustomerPriorityOptions}
+          onBlur={formik.handleBlur}
+          horizontalConstraint={13}
+          isRequired
+        />
+    
+      </Spacings.Inline>
+      <Spacings.Inline>
+      <RadioField
+    title="Gender"
+    name="Gender"
+    value="Female"
+    onChange={(event) => alert(event.target.value)}
+  >
+    <RadioInput.Option value="Male">{'Male'}</RadioInput.Option>
+    <RadioInput.Option value="Female">{'Female'}</RadioInput.Option>
+    <RadioInput.Option value="Others">{'Others'}</RadioInput.Option>
+  </RadioField>
+
+  
+</Spacings.Inline>
+<Spacings.Inline>
+<SelectField
+          title="Preferred Currency"
+          name="Preferred Currency"
+          value={formik.values.status}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          isDisabled={formik.isSubmitting}
+          options={[
+            { value: 'EUR', label: 'EUR' },
+            { value: 'USD', label: 'USD' },
+            
+          ]}
+          horizontalConstraint={13}
+        />
+         <SelectField
+          name="role"
+          title="Customer Group"
+          value="English"
+          //  value={getCustomerPriorityOptions[Low]}
+          errors={formik.errors.role}
+          touched={formik.touched.role}
+          onChange={formik.handleChange}
+          options={ getCustomerPriorityOptions}
+          onBlur={formik.handleBlur}
+          horizontalConstraint={13}
+          isRequired
+        />
+</Spacings.Inline>
          {/* <>
       <button onClick={handleReset}>Reset</button>
       <RichTextInput value={value} onChange={handleChange} ref={ref} />

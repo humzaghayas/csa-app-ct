@@ -7,7 +7,7 @@ export default defineMessages({
   },
   title: {
     id: 'Ticket.title',
-    defaultMessage: 'Ticket list',
+    defaultMessage: 'Order list',
   },
   demoHint: {
     id: 'Ticket.demoHint',

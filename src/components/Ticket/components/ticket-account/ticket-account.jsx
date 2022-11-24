@@ -50,7 +50,7 @@ const TicketAccount = (props) => {
 
   return (
     <TabularDetailPage
-      title="Detail page"
+      title=" "
       //  onPreviousPathClick={() => history.push(`Ticket-list`)}
       onPreviousPathClick={() => history.push(`${match.url}`)}
       previousPathLabel="Go to View Tickets"

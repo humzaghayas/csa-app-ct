@@ -11,6 +11,7 @@ import messages from './messages';
 import { EMPLOYEE_ROLES,CUSTOMER_GROUPS,TICKET_PRIORITY} from './constants';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
+import { PrimaryButton, SecondaryButton } from '@commercetools-uikit/buttons';
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
 //   value: EMPLOYEE_ROLES[key],
@@ -43,7 +44,7 @@ const OrderCreateForm = (props) => {
           header={
             <CollapsiblePanel.Header>
               {/* {formatMessage(messages.panelTitle)} */}
-              {'Ticket Details'}
+              {'Order Details'}
             </CollapsiblePanel.Header>
           }
           scale="l">
@@ -51,8 +52,8 @@ const OrderCreateForm = (props) => {
              <Spacings.Stack scale="m">
              <Spacings.Stack scale="s">
         <TextField
-          name="customer"
-          title="customer"
+          name="Product Code"
+          title="Product Code"
           value={formik.values.title}
           errors={formik.errors.title}
           touched={formik.touched.title}
@@ -63,8 +64,8 @@ const OrderCreateForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale="s">
           <TextField
-          name="Category"
-          title="Category"
+          name="Product Name"
+          title="Product Name"
           value={formik.values.firstName}
           errors={formik.errors.firstName}
           touched={formik.touched.firstName}
@@ -76,8 +77,8 @@ const OrderCreateForm = (props) => {
      </Spacings.Stack>
      <Spacings.Stack scale="s">
         <TextField
-          name="Created"
-          title="Created"
+          name="Item Price"
+          title="Item Price"
           value={formik.values.middleName}
           errors={formik.errors.middleName}
           touched={formik.touched.middleName}
@@ -88,8 +89,8 @@ const OrderCreateForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale="s">
         <TextField
-          name="Subject"
-          title="Subject"
+          name="allocated"
+          title="allocated"
           value={formik.values.lastName}
           errors={formik.errors.lastName}
           touched={formik.touched.lastName}
@@ -101,8 +102,8 @@ const OrderCreateForm = (props) => {
      <Spacings.Stack scale="s">
         
         <TextField
-          name="Status"
-          title="Status"
+          name="returned"
+          title="returned"
           isRequired
           value={formik.values.email}
           errors={formik.errors.email}
@@ -114,8 +115,8 @@ const OrderCreateForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale="s">
         <TextField
-          name="Associated to"
-          title="Associated to"
+          name="cancelled"
+          title="cancelled"
           value={formik.values.employeeNumber}
           errors={formik.errors.employeeNumber}
           touched={formik.touched.employeeNumber}
@@ -127,8 +128,8 @@ const OrderCreateForm = (props) => {
      <Spacings.Stack scale="s">
       
         <SelectField
-          name="Priority"
-          title="Priority"
+          name="shipped quantity"
+          title="shipped quantity"
           value={formik.values.roles}
           errors={formik.errors.roles}
           touched={formik.touched.roles}
@@ -141,45 +142,24 @@ const OrderCreateForm = (props) => {
           horizontalConstraint={13}
         />
         </Spacings.Stack>
-        <Spacings.Stack scale="s">
-        <TextField
-        name="Assigned Agent"
-        title="Assigned Agent"
-        value={formik.values.externalId}
-          errors={formik.errors.externalId}
-          touched={formik.touched.externalId}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-      />
-     </Spacings.Stack>
-     <Spacings.Stack scale="s">
-        <TextField
-        name="Agent to"
-        title="Agent to"
-        value={formik.values.externalId}
-        errors={formik.errors.externalId}
-        touched={formik.touched.externalId}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        horizontalConstraint={13}
-      />
-      </Spacings.Stack>
-      <Spacings.Stack scale="s">
-        <TextField
-        name="Reply to Customer"
-        title="Reply to Customer"
-        value={formik.values.externalId}
-          errors={formik.errors.externalId}
-          touched={formik.touched.externalId}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-      />
      
-     </Spacings.Stack>
         </Spacings.Stack>
+        <Spacings.Stack scale="s">
+        <Spacings.Inline>
+                <SecondaryButton
+                  onClick={formik.handleReset}
+                  isDisabled={formik.isSubmitting}
+                  label="Reset"
+                />
+                <PrimaryButton
+                  onClick={formik.handleSubmit}
+                  isDisabled={formik.isSubmitting || !formik.dirty}
+                  label="Submit"
+                />
+              </Spacings.Inline>
+              </Spacings.Stack>
         </Constraints.Horizontal>
+       
       {/* </Spacings.Inline> */}
      </CollapsiblePanel>
     </Spacings.Stack>
