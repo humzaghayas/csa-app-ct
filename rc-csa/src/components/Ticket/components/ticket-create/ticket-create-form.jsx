@@ -24,7 +24,7 @@ import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
 import { useUserListFetcher } from '../../../../hooks/use-register-user-connector/use-service-connector';
 import { useFileDeleteService, useFileUploadService } from '../../../../hooks/use-file-upload-connector';
-import { useFindCustomerService } from '../../../../hooks/use-customer-connector/use-customer-connector';
+import { useFindCustomerService } from '../../../../hooks/use-customer-connector';
 
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
