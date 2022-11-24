@@ -5,11 +5,7 @@ import Text from '@commercetools-uikit/text';
 import Spacings from '@commercetools-uikit/spacings';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import { docToFormValues, formValuesToDoc, formValuesToDocRequest } from './conversions';
-import{FETCH_TICKETS_BY_ID,getTicketFromCO} from 'ct-tickets-helper-api'
-import { gql } from '@apollo/client';
 import TicketCreateForm from './ticket-create-form';
-import { useMcMutation, useMcQuery } from '@commercetools-frontend/application-shell';
-import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
 import{CREATE_TICKET_MUTATION,getCreateTicketDraft} from 'ct-tickets-helper-api'
@@ -32,12 +28,7 @@ const TicketDetailsP = (props) => {
   const handleSubmit = useCallback(
     async (formValues) => {
 
-      let data = {};
-      if(formValues.category && formValues.category !== "request"){
-        data = formValuesToDoc(formValues);
-      }else{
-        data = formValuesToDocRequest(formValues);
-      }
+      let data =formValuesToDoc(formValues);
 
       console.log("data from form",data);
       

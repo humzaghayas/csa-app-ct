@@ -57,11 +57,8 @@ const TicketCreate = (props) => {
       if(!formValues.assignedTo){
         formValues.assignedTo = user.email;
       }
-      if(formValues.category && formValues.category !== "request"){ 
-        data = formValuesToDoc(formValues);
-      }else{
-        data = formValuesToDocRequest(formValues);
-      }
+      
+      data = formValuesToDoc(formValues);
 
       console.log("data");
       console.log(data);

@@ -30,6 +30,7 @@ export const CONSTANTS ={
     TICKET_TYPE_QUERY :'query',
     USER_CONTRAINER_KEY:"mc-users",
     USER_CONTAINER:"mc-user-info",
+    TICKET_DATA:"{{TICKET_DATA}}"
 }
 
 export const TICKET_TYPE={

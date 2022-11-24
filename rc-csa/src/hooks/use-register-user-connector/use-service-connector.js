@@ -6,7 +6,7 @@ import {
 } from '@commercetools-frontend/application-shell';
 import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
 import{getForKey,CONSTANTS,FETCH_USERS_INFO,CREATE_CUSTOMOBJECT_MUTATION,FETCH_USERS_LIST,FETCH_TICKETS_BY_ID} from 'ct-tickets-helper-api'
-import { getCreateTicketDraft, getTicketFromCO } from 'ct-tickets-helper-api/lib/helper-methods';
+import { getCreateTicketDraft, getTicketFromCustomObject } from 'ct-tickets-helper-api';
 import { extractErrorFromGraphQlResponse } from '../../helpers';
 
 export const useUserFetcher = (email) => {
@@ -118,7 +118,7 @@ export const useGetTicketById = (id) => {
     },
   });
 
-  const ticket = getTicketFromCO(data);
+  const ticket = getTicketFromCustomObject(data);
 
   return{
     ticket

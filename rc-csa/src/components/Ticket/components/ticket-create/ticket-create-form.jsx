@@ -143,6 +143,9 @@ useEffect(() => {
   // Update the document title using the browser API
   if(files.length ==0 && formik?.values?.files?.length > 0){
     let f =[];
+    if(!formik.values.files){
+      formik.values.files = [];
+    }
     formik.values.files.map((fileInfo)=>{
       f.push(
         <div key={fileInfo.name} id={`id-${fileInfo.name}`}>
@@ -252,6 +255,22 @@ const uploadFile = (e) => {
   console.log('file uploaded');
   return false;
 }
+
+
+const handleTicketCategory=(e)=>{
+
+  if(!formik.values.message){
+    formik.values.message = '';
+  }
+
+  if(!formik.values.files){
+    formik.values.files =[];
+  }
+  
+  formik.handleChange(e);
+}
+
+
   return (
     <form onSubmit={formik.handleSubmit}>
         <Spacings.Stack scale="l">
@@ -312,7 +331,7 @@ const uploadFile = (e) => {
               value={formik.values.category}
               errors={formik.errors.category}
               touched={formik.touched.category}
-              onChange={formik.handleChange}
+              onChange={handleTicketCategory}
               onBlur={formik.handleBlur}
               options={getTicketCategoriesOpts}
               isReadOnly={props.isReadOnly}

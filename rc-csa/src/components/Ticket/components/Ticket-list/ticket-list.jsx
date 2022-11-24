@@ -23,10 +23,6 @@ import { Pagination } from '@commercetools-uikit/pagination';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import { SuspendedRoute, useMcQuery } from '@commercetools-frontend/application-shell';
-import {
-  formatLocalizedString,
-  transformLocalizedFieldToLocalizedString,
-} from '@commercetools-frontend/l10n';
 import messages from './messages';
 
 import SecondaryButton from '@commercetools-uikit/secondary-button';
@@ -86,9 +82,8 @@ const Tickets = (props) => {
   const {foundUser} = useUserFetcher(user.email);
   const {execute} = useCreateEntry(user.email)
 
-
   useEffect(() => {
-    if(foundUser == false){
+    if(canManage && foundUser == false){
       console.log('calling execute !');
       execute();
     }

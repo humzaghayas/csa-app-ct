@@ -30,6 +30,7 @@ exports.CONSTANTS = {
     TICKET_TYPE_QUERY: 'query',
     USER_CONTRAINER_KEY: "mc-users",
     USER_CONTAINER: "mc-user-info",
+    TICKET_DATA: "{{TICKET_DATA}}"
 };
 exports.TICKET_TYPE = (_a = {},
     _a[exports.CONSTANTS.TICKET_TYPE_QUERY] = "Query",
