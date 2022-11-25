@@ -1,5 +1,6 @@
 import { TICKET_TYPE,TICKET_PRIORITIY_VALUES,TICKET_SOURCE, CONSTANTS, TICKET_STATUS } from "../constants";
 import { CREATE_CUSTOMOBJECT_MUTATION } from "../graphql-queries";
+import { v4 as uuidv4 } from 'uuid';
 
 export function getTicketRows(customObjects){
 
@@ -12,7 +13,7 @@ export function getTicketRows(customObjects){
                 Created: co.createdAt,
                 Modified:co.lastModifiedAt,
                 Source:co.value.source,
-                Status:co.value.status,
+                status:co.value.status,
                 Priority:co.value.priority,
                 Category:co.value.category,
                 Subject:co.value.subject,
@@ -49,67 +50,39 @@ export function getCreateTicketMutaion(){
 
 export async function getCreateTicketDraft(ticketInfo){
     const email = ticketInfo.email;
+    const uuid = uuidv4(); 
 
     if(!ticketInfo.key){
-        const num = getRandomInt(1,2000);
-        ticketDraft.key = `${getForKey(email)}_${num}`;
+        ticketDraft.key = uuid;
     }else{
         ticketDraft.key = ticketInfo.key;
     }
 
-    let value='';
-    if(ticketInfo.category && ticketInfo.category !== CONSTANTS.TICKET_TYPE_REQUEST){
+    const filesStr = ticketInfo.files.map((f) =>{
+        return `{\"name\":\"${f.name}\",\"url\":\"${f.url}\"}`
+    }).toString();
 
-        const filesStr = ticketInfo.files.map((f) =>{
-            return `{\"name\":\"${f.name}\",\"url\":\"${f.url}\"}`
-        }).toString();
-
-
-        value = `\"ticketData\":{	
-                        \"message\": \"${ticketInfo.message}\",
-                        \"files\": [${filesStr}]}`
-        ticketDraft.value = getTicketValueString(ticketInfo);
-        
-    }else{
-        ticketDraft.value = getTicketValueString(ticketInfo);
-        
-        value = `\"ticketData\":{\"requestType\":\"${ticketInfo.requestType}\"`;
-
-        if(ticketInfo.requestType && ticketInfo.requestType == CONSTANTS.REQUEST_TYPE_RESET_PASSWORD){
-            value = `${value}}`;
-        }else
-        if(ticketInfo.requestType && ticketInfo.requestType == CONSTANTS.REQUEST_TYPE_GENERAL_INFO_CHANGE){
-            value = `${value},\"firstName\": \"${ticketInfo.firstName}\",
-                                \"lastName\": \"${ticketInfo.lastName}\",
-                                \"middleName\": \"${ticketInfo.middleName}\",
-                                \"salutation\": \"${ticketInfo.salutation}\",
-                                \"title\": \"${ticketInfo.title}\",
-                                \"companyName\": \"${ticketInfo.companyName}\",
-                                \"dateOfBirth\": \"${ticketInfo.dateOfBirth}\"}`;
-        }else
-        if(ticketInfo.requestType && (
-                ticketInfo.requestType == CONSTANTS.REQUEST_TYPE_ADD_ADDRESS 
-                ||ticketInfo.requestType == CONSTANTS.REQUEST_TYPE_CHANGE_ADDRESS )){
-            value = `${value}}`;
-        }
-    }
-
+    let value = `\"ticketData\":{
+        \"orderNumber\":\"${ticketInfo.orderNumber}\",	
+        \"message\": \"${ticketInfo.message}\",
+        \"files\": [${filesStr}]}`
+    ticketDraft.value = getTicketValueString(ticketInfo,uuid);   
     ticketDraft.value =ticketDraft.value.replace(CONSTANTS.TICKET_DATA,value);
     return ticketDraft;
 }
 
-function getTicketValueString( ticketInfo){
+function getTicketValueString( ticketInfo,uuid){
 
     const currentDate = new Date().toUTCString();
     const email = ticketInfo.email;
     const customerId = ticketInfo.customerId;
 
     return `{
-        \"id\": 1,
+        \"id\": \"${uuid}\",
         \"customerId\": \"${customerId}\",
         \"email\":\"${email}\",
         \"source\": \"${ticketInfo.contactType}\",
-        \"status\": \"${TICKET_STATUS.open}\",
+        \"status\": \"${ticketInfo.status}\",
         \"priority\": \"${ticketInfo.priority}\",
         \"category\": \"${ticketInfo.category}\",
         \"subject\": \"${ticketInfo.subject}\",
@@ -137,23 +110,26 @@ function getRandomInt(min, max) {
 
     let ticket = createTicketFromCustomObject(data); 
 
-    if(data?.customObject?.value?.category === CONSTANTS.TICKET_TYPE_REQUEST){
+    ticket['message'] = data?.customObject?.value?.ticketData?.message ?? '';
+    ticket['files'] = data?.customObject?.value?.ticketData?.files ?? '';
 
-        ticket['requestType'] = data?.customObject?.value?.ticketData?.requestType ?? '';
-        if(data?.customObject?.value?.ticketData?.requestType == CONSTANTS.REQUEST_TYPE_GENERAL_INFO_CHANGE){
-            ticket['firstName'] = data?.customObject?.value?.ticketData?.firstName ?? '';
-            ticket['lastName'] = data?.customObject?.value?.ticketData?.lastName ?? '';
-            ticket['middleName'] = data?.customObject?.value?.ticketData?.middleName ?? '';
-            ticket['salutation'] = data?.customObject?.value?.ticketData?.salutation ?? '';
-            ticket['title'] = data?.customObject?.value?.ticketData?.title ?? '';
-            ticket['dateOfBirth'] = data?.customObject?.value?.ticketData?.dateOfBirth ?? '';
-            ticket['companyName'] = data?.customObject?.value?.ticketData?.companyName ?? '';
-        }
+    // if(data?.customObject?.value?.category === CONSTANTS.TICKET_TYPE_REQUEST){
+
+    //     ticket['requestType'] = data?.customObject?.value?.ticketData?.requestType ?? '';
+    //     if(data?.customObject?.value?.ticketData?.requestType == CONSTANTS.TICKET_TYPE_GENERAL_INFO_CHANGE){
+    //         ticket['firstName'] = data?.customObject?.value?.ticketData?.firstName ?? '';
+    //         ticket['lastName'] = data?.customObject?.value?.ticketData?.lastName ?? '';
+    //         ticket['middleName'] = data?.customObject?.value?.ticketData?.middleName ?? '';
+    //         ticket['salutation'] = data?.customObject?.value?.ticketData?.salutation ?? '';
+    //         ticket['title'] = data?.customObject?.value?.ticketData?.title ?? '';
+    //         ticket['dateOfBirth'] = data?.customObject?.value?.ticketData?.dateOfBirth ?? '';
+    //         ticket['companyName'] = data?.customObject?.value?.ticketData?.companyName ?? '';
+    //     }
        
-    }else{
-        ticket['message'] = data?.customObject?.value?.ticketData?.message ?? '';
-        ticket['files'] = data?.customObject?.value?.ticketData?.files ?? '';
-    }
+    // }else{
+    //     ticket['message'] = data?.customObject?.value?.ticketData?.message ?? '';
+    //     ticket['files'] = data?.customObject?.value?.ticketData?.files ?? '';
+    // }
 
     return ticket;
 }
@@ -168,7 +144,7 @@ function createTicketFromCustomObject(data){
         category: data?.customObject?.value?.category ?? '',
         Customer: data?.customObject?.value?.email ?? '',
         contactType: data?.customObject?.value?.source ?? '',
-        Status: data?.customObject?.value?.status ?? '',
+        status: data?.customObject?.value?.status ?? '',
         priority: data?.customObject?.value?.priority ?? '',
         subject: data?.customObject?.value?.subject ?? '',
         lastModifiedAt : data?.customObject?.lastModifiedAt ?? '',
@@ -176,7 +152,8 @@ function createTicketFromCustomObject(data){
         email: data?.customObject?.value.email ?? '',
         customerId: data?.customObject?.value.customerId ?? '',
         assignedTo: data?.customObject?.value.assignedTo ?? '',
-        createdBy: data?.customObject?.value.createdBy ?? ''
+        createdBy: data?.customObject?.value.createdBy ?? '',
+        orderNumber: data?.customObject?.value?.ticketData?.orderNumber ?? ''
     }
 }
 

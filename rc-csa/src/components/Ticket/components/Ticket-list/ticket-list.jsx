@@ -53,7 +53,7 @@ const columns = [
   { key: 'Created', label: 'Created' },
   { key: 'Modified', label: 'Modified' },
   { key: 'Source', label: 'Source' },
-  { key: 'Status', label: 'Status' },
+  { key: 'status', label: 'Status' },
   { key: 'Priority', label: 'Priority' },
   { key: 'Category', label: 'Category' },
   { key: 'Subject', label: 'Subject' },

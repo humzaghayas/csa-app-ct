@@ -53,6 +53,8 @@ const TicketCreate = (props) => {
 
       let data = {};
       formValues.createdBy = user.email;
+      // formValues.id='a';
+      // formValues.key='a';
 
       if(!formValues.assignedTo){
         formValues.assignedTo = user.email;
@@ -62,7 +64,9 @@ const TicketCreate = (props) => {
 
       console.log("data");
       console.log(data);
-      execute(data);
+      let t = await execute(data);
+
+      console.log(t);
     },
     [execute]
   );

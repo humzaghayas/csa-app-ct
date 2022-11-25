@@ -1,8 +1,19 @@
 export const TICKET_STATUS={
-    new:"New",
-    open:"Open",
-    inprogress:"In Progress",
-    closed:"Closed"
+    new:{name:"new",label:"New"},
+    open:{name:"open",label:"Open"},
+    inprogress:{name:"inprogress",label:"In Progress"},
+    rejected:{name:"reject",label:"Reject"},
+    done:{name:"done",label:"Done"},
+    closed:{name:"closed",label:"Closed"}
+}
+
+export const TICKET_WORKFLOW={
+    [TICKET_STATUS["new"]["name"]]:[TICKET_STATUS.open],
+    [TICKET_STATUS["open"]["name"]]:[TICKET_STATUS.inprogress,TICKET_STATUS.rejected],
+    [TICKET_STATUS["inprogress"]["name"]]:[TICKET_STATUS.done,TICKET_STATUS.rejected],
+    [TICKET_STATUS["done"]["name"]]:[TICKET_STATUS.closed],
+    [TICKET_STATUS["closed"]["name"]]:[],
+    [TICKET_STATUS["rejected"]["name"]]:[]
 }
 
 export const TICKET_SOURCE={
@@ -20,33 +31,22 @@ export const TICKET_PRIORITIY_VALUES={
 export const CONSTANTS ={
     containerKey :"ticket-container",
     TICKET_TYPE_REQUEST :'request',
-    TICKET_TYPE_INQUIRY :'inquiry',
-    TICKET_TYPE_QUERY :'query',
     USER_CONTRAINER_KEY:"mc-users",
     USER_CONTAINER:"mc-user-info",
     TICKET_DATA:"{{TICKET_DATA}}",
-    REQUEST_TYPE_RESET_PASSWORD :'passwordReset',
-    REQUEST_TYPE_GENERAL_INFO_CHANGE :'generalInfoChange',
-    REQUEST_TYPE_ADD_ADDRESS :'addAddress',
-    REQUEST_TYPE_CHANGE_ADDRESS :'changeAddress'
+    TICKET_TYPE_RESET_PASSWORD :'passwordReset',
+    TICKET_TYPE_GENERAL_INFO_CHANGE :'generalInfoChange',
+    TICKET_TYPE_ORDER_INQUIRY :'orderInquiry',
+    TICKET_TYPE_PAYMENT_METHODS :'paymentMethod',
+    TICKET_TYPE_RETURNS :'returns',
+    TICKET_INITIAL_STATUS:TICKET_STATUS.new.name
 }
 
 export const TICKET_TYPE={
-    [CONSTANTS.TICKET_TYPE_QUERY]:"Query",
     [CONSTANTS.TICKET_TYPE_REQUEST]:"Request",
-    [CONSTANTS.TICKET_TYPE_INQUIRY]:"Inquiry"
-}
-
-export const TICKET_WORKFLOW={
-    pending:"Pending",
-    approve:"Approve",
-    reject:"Reject",
-    resolved:"Resolved"
-}
-
-export const REQUEST_TYPES={
-    [CONSTANTS.REQUEST_TYPE_RESET_PASSWORD]:"Password Reset",
-    [CONSTANTS.REQUEST_TYPE_GENERAL_INFO_CHANGE]:"General Info Change",
-    [CONSTANTS.REQUEST_TYPE_ADD_ADDRESS]:"Add Address",
-    [CONSTANTS.REQUEST_TYPE_CHANGE_ADDRESS]:"Change Address"
+    [CONSTANTS.TICKET_TYPE_GENERAL_INFO_CHANGE]:"General Info Change",
+    [CONSTANTS.TICKET_TYPE_RESET_PASSWORD]:"Password Reset",
+    [CONSTANTS.TICKET_TYPE_ORDER_INQUIRY]:"Order Inquiry",
+    [CONSTANTS.TICKET_TYPE_PAYMENT_METHODS]:"Payment Methods",
+    [CONSTANTS.TICKET_TYPE_RETURNS]:"Returns",
 }

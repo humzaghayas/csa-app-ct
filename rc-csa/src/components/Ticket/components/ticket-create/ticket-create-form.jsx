@@ -21,7 +21,7 @@ import { useUserListFetcher } from '../../../../hooks/use-register-user-connecto
 import { useFileDeleteService, useFileUploadService } from '../../../../hooks/use-file-upload-connector';
 import { useFindCustomerService } from '../../../../hooks/use-customer-connector';
 import { docToFormValuesCustomer } from './conversions';
-import { REQUEST_TYPES } from 'ct-tickets-helper-api';
+import { TICKET_STATUS, TICKET_WORKFLOW } from 'ct-tickets-helper-api/lib/constants';
 
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
@@ -51,10 +51,6 @@ const getTicketContactTypesOpt= Object.keys(getTicketContactTypesVals).map((key)
   value: key,
 })); 
 
-const getTicketRequestTypesOpt= Object.keys(REQUEST_TYPES).map((key) => ({
-  label: REQUEST_TYPES[key],
-  value: key,
-}));
 
 const TicketCreateForm = (props) => {
   const dataLocale = useApplicationContext((context) => context.dataLocale);
@@ -79,6 +75,27 @@ const TicketCreateForm = (props) => {
   const [customer, setCustomer] = useState(null);
   const [disableSubmitButton, setDisableSubmitButton] = useState(!canManage || !customerFound);
   
+  const [workflowStatusses, setWorkflowStatusses] = useState([]);   
+
+  useEffect(()=>{
+        if(formik?.values?.status && workflowStatusses.length == 0){
+          let workfolwArray = [TICKET_STATUS[formik?.values?.status]];
+          workfolwArray = workfolwArray.concat (TICKET_WORKFLOW[formik?.values?.status]);
+
+          console.log('TICKET_WORKFLOW[formik?.values?.status]',TICKET_WORKFLOW[formik?.values?.status])
+      
+          const displayWF = workfolwArray.map((wf) => ({
+            label: wf.label,
+            value: wf.name,
+          }));
+
+          setWorkflowStatusses(displayWF);
+          console.log('232323 status effect 2323  ',displayWF);
+      }
+ 
+ 
+    console.log('status effect 134343',formik.values.status);
+  },[formik?.values?.status]);
 
   const [progresspercent, setProgresspercent] = useState(0);
 
@@ -236,8 +253,7 @@ const handleTicketCategory=(e)=>{
                       touched={formik.touched.email}
                       onChange={onChangeEmail}
                       onBlur={formik.handleBlur}
-                      isReadOnly={props.isReadOnly}
-                      isRequired
+                      
                       horizontalConstraint={13}
                       isDisabled={!canManage || formik.values.isEdit}
                     />
@@ -247,6 +263,59 @@ const handleTicketCategory=(e)=>{
                       isDisabled={!canManage || formik.values.isEdit}
                     />
                </Spacings.Inline>
+
+
+               <Spacings.Stack scale="s">
+                        <Spacings.Inline scale="s">
+                          <TextField name="c_salutation"
+                              title="Salutation"
+                              isReadOnly={true}
+                              
+                              value={customer?.salutation}
+                              />
+                            <TextField name="c_title"
+                              title="Title"
+                              
+                              isReadOnly={true}
+                              value={customer?.title}/>
+                           <TextField name="c_firstName"
+                              title="First Name"
+                              
+                              isReadOnly={true}
+                              value={customer?.firstName}
+                             />
+                          </Spacings.Inline>
+                          <Spacings.Inline scale="s">
+                            <TextField name="c_middleName"
+                              title="Middle Name"
+                              
+                              isReadOnly={true}
+                              value={customer?.middleName}/>
+
+                            <TextField name="c_lastName"
+                              title="Last Name"
+                              
+                              isReadOnly={true}
+                              value={customer?.lastName}
+                             />
+
+                          <TextField name="c_dateOfBirth"
+                              title="Date of birth"
+                              
+                              isReadOnly={true}
+                              value={customer?.dateOfBirth}
+                              />
+                          </Spacings.Inline>
+                          <Spacings.Inline>
+                            <TextField name="c_companyName"
+                                title="Company Name"
+                                isReadOnly={true}
+                                value={customer?.companyName}
+                               />
+                          </Spacings.Inline>
+                    </Spacings.Stack>
+
+
                 <Spacings.Stack scale="s">
                 <SelectField
                     name="contactType"
@@ -263,7 +332,7 @@ const handleTicketCategory=(e)=>{
                     isDisabled={!canManage || !customerFound }
                   />
             </Spacings.Stack>
-            <Spacings.Stack scale="s">
+            <Spacings.Inline scale="s">
             <SelectField
               name="category"
               title="Ticket Category"
@@ -278,8 +347,22 @@ const handleTicketCategory=(e)=>{
               horizontalConstraint={13}
               isDisabled={!canManage || (!customerFound  || formik.values.isEdit)}
             />
-        
-        </Spacings.Stack>
+        {formik.values.category && (formik.values.category== CONSTANTS.TICKET_TYPE_REQUEST
+                      || formik.values.category== CONSTANTS.TICKET_TYPE_RESET_PASSWORD
+                      || formik.values.category==CONSTANTS.TICKET_TYPE_GENERAL_INFO_CHANGE)
+               && <TextField name="orderNumber"
+                      title="Order Number"
+                      isRequired
+                      value={formik.values.orderNumber}
+                      errors={
+                        TextField.toFieldErrors(formik.errors).orderNumber
+                      }
+                      touched={formik.touched.orderNumber}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      isDisabled={!canManage || (!customerFound  || formik.values.isEdit) }/>
+                  }
+        </Spacings.Inline>
         <Spacings.Stack scale="s">
         <SelectField
               name="priority"
@@ -330,10 +413,7 @@ const handleTicketCategory=(e)=>{
               </Spacings.Stack>
 
 
-            {(formik?.values?.category !== null && 
-            (formik?.values?.category === CONSTANTS.TICKET_TYPE_QUERY || 
-              formik?.values?.category == CONSTANTS.TICKET_TYPE_INQUIRY)) && (
-              <Spacings.Stack scale="s">
+               <Spacings.Stack scale="s">
                 <MultilineTextField name="message"
                     title="Message"
                     isRequired
@@ -341,6 +421,7 @@ const handleTicketCategory=(e)=>{
                     errors={
                       TextField.toFieldErrors(formik.errors).message
                     }
+                    isDisabled={!canManage || !customerFound }
                     touched={formik.touched.message}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}/>
@@ -358,132 +439,21 @@ const handleTicketCategory=(e)=>{
                   {files?.length>0 && <button onClick={deleteFileFromStorage}>Delete File</button>}
                 </div>
               </Spacings.Stack>
+              <Spacings.Stack>
+                    <SelectField
+                        name="status"
+                        title="Ticket Status"
+                        value={formik.values.status}
+                        errors={formik.errors.status}
+                        touched={formik.touched.status}
+                        onBlur={formik.handleBlur}
+                        options={workflowStatusses}
+                        onChange={formik.handleChange}
+                        horizontalConstraint={13}
+                        isDisabled={!formik.values.isEdit}
+                      />
+              </Spacings.Stack>
 
-            )}
-
-          {(formik?.values?.category !== null && 
-            (formik?.values?.category === CONSTANTS.TICKET_TYPE_REQUEST )) && (
-              <>
-                <Spacings.Stack scale='m'>
-                  <Spacings.Inline>
-
-                  <SelectField
-                      name="requestType"
-                      title="Request Type"
-                      value={formik.values.requestType}
-                      errors={formik.errors.requestType}
-                      touched={formik.touched.requestType}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      options={getTicketRequestTypesOpt}
-                      isReadOnly={props.isReadOnly}
-                      isDisabled={formik.values.isEdit}
-                      isRequired
-                      horizontalConstraint={13}
-                    />
-                  </Spacings.Inline>
-                </Spacings.Stack>
-
-
-
-                {(formik?.values?.requestType !== null && 
-                  (formik?.values?.requestType === CONSTANTS.REQUEST_TYPE_GENERAL_INFO_CHANGE )) && (
-                    <>
-
-                    <Spacings.Stack scale="s">
-                        <Spacings.Inline scale="s">
-                          <TextField name="salutation"
-                              title="Salutation"
-                              isRequired
-                              value={formik.values.salutation}
-                              errors={
-                                TextField.toFieldErrors(formik.errors).salutation
-                              }
-                              placeholder={customer?.salutation}
-                              touched={formik.touched.salutation}
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}/>
-                            <TextField name="title"
-                              title="Title"
-                              isRequired
-                              placeholder={customer?.title}
-                              value={formik.values.title}
-                              errors={
-                                TextField.toFieldErrors(formik.errors).title
-                              }
-                              touched={formik.touched.title}
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}/>
-                          </Spacings.Inline>
-
-                        <Spacings.Inline scale="s">
-                          <TextField name="firstName"
-                              title="First Name"
-                              isRequired
-                              value={formik.values.firstName}
-                              errors={
-                                TextField.toFieldErrors(formik.errors).firstName
-                              }
-                              placeholder={customer?.firstName}
-                              touched={formik.touched.firstName}
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}/>
-                            <TextField name="middleName"
-                              title="Middle Name"
-                              isRequired
-                              value={formik.values.middleName}
-                              errors={
-                                TextField.toFieldErrors(formik.errors).middleName
-                              }
-                              placeholder={customer?.middleName}
-                              touched={formik.touched.middleName}
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}/>
-                          </Spacings.Inline>
-
-                        <Spacings.Inline scale="s">
-                            <TextField name="lastName"
-                              title="Last Name"
-                              isRequired
-                              value={formik.values.lastName}
-                              errors={
-                                TextField.toFieldErrors(formik.errors).lastName
-                              }
-                              placeholder={customer?.lastName}
-                              touched={formik.touched.lastName}
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}/>
-
-                          <DateField name="dateOfBirth"
-                              title="Date of birth"
-                              isRequired
-                              value={formik.values.dateOfBirth}
-                              errors={
-                                TextField.toFieldErrors(formik.errors).dateOfBirth
-                              }
-                              placeholder={customer?.dateOfBirth}
-                              touched={formik.touched.dateOfBirth}
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}/>
-                          </Spacings.Inline>
-                          <Spacings.Inline>
-                            <TextField name="companyName"
-                                title="Company Name"
-                                isRequired
-                                value={formik.values.companyName}
-                                placeholder={customer?.companyName}
-                                errors={
-                                  TextField.toFieldErrors(formik.errors).companyName
-                                }
-                                touched={formik.touched.companyName}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}/>
-                          </Spacings.Inline>
-                    </Spacings.Stack>
-                    </>
-                  )}
-            </>
-            )}
                   <Spacings.Inline>
                     <SecondaryButton
                       label="Cancel"

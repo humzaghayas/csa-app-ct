@@ -2,24 +2,15 @@ import { TextInput } from '@commercetools-frontend/ui-kit';
 import {CONSTANTS, escapeQuotes} from 'ct-tickets-helper-api'
 export const docToFormValues = (ticket, languages,isEdit) => {
   let doc = docToFormCommonValues(ticket,isEdit);
+  doc.message= ticket?.message ?? '';
+  doc.files =ticket?.files ?? [];
+  doc.orderNumber = ticket?.orderNumber ?? '';
 
-  if(ticket?.category && ticket?.category !== CONSTANTS.TICKET_TYPE_REQUEST){
-    doc.message= ticket?.message ?? '';
-    doc.files =ticket?.files ?? [];
+  if(!ticket){
+    doc.status = CONSTANTS.TICKET_INITIAL_STATUS;
   }else{
-    doc.requestType = ticket?.requestType ?? '';
-    if(ticket?.requestType && ticket?.requestType == CONSTANTS.REQUEST_TYPE_GENERAL_INFO_CHANGE){
-      doc.firstName =ticket?.firstName ?? '';
-      doc.lastName = ticket?.lastName ?? '';
-      doc.middleName=ticket?.middleName  ?? '';
-      doc.title=ticket?.title ?? '';
-      doc.dateOfBirth=ticket?.dateOfBirth  ?? '';
-      doc.companyName=ticket?.companyName  ?? '';
-      doc.addresses=ticket?.addresses  ?? '';
-      doc.salutation=ticket?.salutation ?? '';
-    }
+    doc.status = ticket.status;
   }
-
   return doc;
 }
 
@@ -44,52 +35,14 @@ const docToFormCommonValues=(ticket,isEdit)=>(
 export const formValuesToDoc = (formValues) => {
    
   let doc=formValuesToDocCommonValues(formValues);
-  
-  if(formValues.category && formValues.category == CONSTANTS.TICKET_TYPE_REQUEST){ 
 
-    doc.requestType= !TextInput.isEmpty(formValues.requestType) 
-      ? formValues.requestType
+    doc.orderNumber= !TextInput.isEmpty(formValues.orderNumber) 
+      ? formValues.orderNumber
       : '';
-
-      if(formValues.requestType && formValues.requestType == CONSTANTS.REQUEST_TYPE_GENERAL_INFO_CHANGE){ 
-        doc.firstName= !TextInput.isEmpty(formValues.firstName) 
-          ? escapeQuotes(formValues.firstName)
-          : '';
-          
-
-        doc.lastName=!TextInput.isEmpty(formValues.lastName)
-          ? escapeQuotes(formValues.lastName)
-          : '';
-
-          doc.middleName= !TextInput.isEmpty(formValues.middleName)
-            ? escapeQuotes(formValues.middleName)
-            : doc.middleName= '';
-
-          doc.title= !TextInput.isEmpty(formValues.title)
-            ? escapeQuotes(formValues.title)
-            : doc.title= '';
-
-          doc.dateOfBirth= !TextInput.isEmpty(formValues.dateOfBirth)
-            ? escapeQuotes(formValues.dateOfBirth)
-            : '';     
-
-          doc.companyName= !TextInput.isEmpty(formValues.companyName)
-            ? escapeQuotes(formValues.companyName)
-            : doc.companyName= '';
-
-          doc.salutation= !TextInput.isEmpty(formValues.salutation)
-            ? escapeQuotes(formValues.salutation)
-            : '';
-      }else if(formValues.requestType && formValues.requestType == CONSTANTS.REQUEST_TYPE_ADD_ADDRESS){
-            console.log('Add address in developent phase' );
-        }
-
-  }else{
     doc.message= !TextInput.isEmpty(formValues.message)
       ? escapeQuotes(formValues.message)
       : undefined;
     doc.files=  formValues?.files ?? null;
-  }
   return doc;
 };
 
@@ -114,7 +67,10 @@ export const formValuesToDoc = (formValues) => {
     : undefined,
     subject: !TextInput.isEmpty(formValues.subject)
     ? escapeQuotes(formValues.subject)
-    : undefined
+    : undefined,
+    status: !TextInput.isEmpty(formValues.status)
+    ? formValues.status
+    : ''
     });
 
 
