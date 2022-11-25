@@ -57,6 +57,8 @@ const columns = [
   { key: 'Priority', label: 'Priority' },
   { key: 'Category', label: 'Category' },
   { key: 'Subject', label: 'Subject' },
+  { key: 'assignedTo', label: 'Assignee' },
+  { key: 'createdBy', label: 'Created By' },
 ];
 
 
@@ -80,7 +82,7 @@ const Tickets = (props) => {
   }));
 
   const {foundUser} = useUserFetcher(user.email);
-  const {execute} = useCreateEntry(user.email)
+  const {execute} = useCreateEntry(user.email);
 
   useEffect(() => {
     if(canManage && foundUser == false){

@@ -8,9 +8,16 @@ export function getTicketRows(customObjects){
     if(customObjects?.results){
         return customObjects?.results.map(co =>{
             return { id: co.id,
-                Customer: co.value.email,Created: co.createdAt,Modified:co.lastModifiedAt,
-                Source:co.value.source,Status:co.value.status,Priority:co.value.priority,Category:co.value.category,
-                Subject:co.value.subject}
+                Customer: co.value.email,
+                Created: co.createdAt,
+                Modified:co.lastModifiedAt,
+                Source:co.value.source,
+                Status:co.value.status,
+                Priority:co.value.priority,
+                Category:co.value.category,
+                Subject:co.value.subject,
+                assignedTo:co.value.assignedTo,
+                createdBy:co.value.createdBy}
         });
     }
 

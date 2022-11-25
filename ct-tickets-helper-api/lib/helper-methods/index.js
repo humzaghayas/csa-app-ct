@@ -45,9 +45,16 @@ function getTicketRows(customObjects) {
     if (customObjects === null || customObjects === void 0 ? void 0 : customObjects.results) {
         return customObjects === null || customObjects === void 0 ? void 0 : customObjects.results.map(function (co) {
             return { id: co.id,
-                Customer: co.value.email, Created: co.createdAt, Modified: co.lastModifiedAt,
-                Source: co.value.source, Status: co.value.status, Priority: co.value.priority, Category: co.value.category,
-                Subject: co.value.subject };
+                Customer: co.value.email,
+                Created: co.createdAt,
+                Modified: co.lastModifiedAt,
+                Source: co.value.source,
+                Status: co.value.status,
+                Priority: co.value.priority,
+                Category: co.value.category,
+                Subject: co.value.subject,
+                assignedTo: co.value.assignedTo,
+                createdBy: co.value.createdBy };
         });
     }
     // return {};
