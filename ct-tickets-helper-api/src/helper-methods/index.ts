@@ -68,7 +68,12 @@ export async function getCreateTicketDraft(ticketInfo){
         
         value = `\"ticketData\":{	
                             \"firstName\": \"${ticketInfo.firstName}\",
-                            \"lastName\": \"${ticketInfo.lastName}\"}`;
+                            \"lastName\": \"${ticketInfo.lastName}\",
+                            \"middleName\": \"${ticketInfo.middleName}\",
+                            \"salutation\": \"${ticketInfo.salutation}\",
+                            \"title\": \"${ticketInfo.title}\",
+                            \"companyName\": \"${ticketInfo.companyName}\",
+                            \"dateOfBirth\": \"${ticketInfo.dateOfBirth}\"}`;
     }
 
     ticketDraft.value =ticketDraft.value.replace(CONSTANTS.TICKET_DATA,value);
@@ -118,6 +123,11 @@ function getRandomInt(min, max) {
 
         ticket['firstName'] = data?.customObject?.value?.ticketData?.firstName ?? '';
         ticket['lastName'] = data?.customObject?.value?.ticketData?.lastName ?? '';
+        ticket['middleName'] = data?.customObject?.value?.ticketData?.middleName ?? '';
+        ticket['salutation'] = data?.customObject?.value?.ticketData?.salutation ?? '';
+        ticket['title'] = data?.customObject?.value?.ticketData?.title ?? '';
+        ticket['dateOfBirth'] = data?.customObject?.value?.ticketData?.dateOfBirth ?? '';
+        ticket['companyName'] = data?.customObject?.value?.ticketData?.companyName ?? '';
        
     }else{
         ticket['message'] = data?.customObject?.value?.ticketData?.message ?? '';

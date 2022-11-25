@@ -8,23 +8,19 @@ import DateInput from '@commercetools-uikit/date-input';
 import Spacings from '@commercetools-uikit/spacings';
 import validate from './validate';
 import messages from './messages';
-import { EMPLOYEE_ROLES,CUSTOMER_GROUPS,TICKET_PRIORITY} from './constants';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import{getTicketCategories,getTicketPriorityValues,getTicketContactTypes} from 'ct-tickets-helper-api';
-import { MultilineTextField, PrimaryButton, SecondaryButton } from '@commercetools-frontend/ui-kit';
+import { DateField, MultilineTextField, PrimaryButton, SecondaryButton } from '@commercetools-frontend/ui-kit';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useState } from 'react';
-import{FETCH_CUSTOMERS,isEmailValid,CONSTANTS, storage,deleteObject ,FETCH_USERS_INFO,
-  ref, getDownloadURL, uploadBytesResumable ,getForKey} from 'ct-tickets-helper-api'
-import { useMcLazyQuery, useMcQuery } from '@commercetools-frontend/application-shell';
-import { gql, useQuery } from '@apollo/client';
-import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
+import{CONSTANTS} from 'ct-tickets-helper-api'
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
 import { useUserListFetcher } from '../../../../hooks/use-register-user-connector/use-service-connector';
 import { useFileDeleteService, useFileUploadService } from '../../../../hooks/use-file-upload-connector';
 import { useFindCustomerService } from '../../../../hooks/use-customer-connector';
+import { docToFormValuesCustomer } from './conversions';
 
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
@@ -70,41 +66,43 @@ const TicketCreateForm = (props) => {
     demandedPermissions: [PERMISSIONS.Manage],
   });
 
-  // const { data:users, error:userErr, loading:userLoading } = useMcQuery(gql`${FETCH_USERS_INFO}`, {
-  //   variables: {
-  //     container:CONSTANTS.USER_CONTAINER,
-  //     where: "key=\"mc-users\""
-  //   },
-  //   context: {
-  //     target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-  //   },
-  // });
-
-
-  // console.log('assign to ',users)
-  // const getUsersToAssignTo = users?.customObjects?.results[0].value.map((userInfo) => ( {
-  //   label: userInfo.email,
-  //   value: userInfo.email,
-  // 
-
   const{getUsersToAssignTo} =useUserListFetcher();
 
   const [customerFound, setCustomerFound] = useState(formik.values.isEdit);
   const [files, setFiles] = useState([]);
+  const [customer, setCustomer] = useState(null);
+  const [disableSubmitButton, setDisableSubmitButton] = useState(!canManage || !customerFound);
+  
 
   const [progresspercent, setProgresspercent] = useState(0);
 
-  const custoInfo=useCallback(
+  const getCustomerData=useCallback(
     async () => {
-      getCustomerByEmail(formik.values.email,formik,setCustomerFound);  
+      const customerObj = await getCustomerByEmail(formik.values.email);
+
+      await customerInfoSetter(customerObj,formik);
   });
 
-/////
+
+const customerInfoSetter =async (customerObj,formik) =>{
+
+  if(customerObj?.data?.customers?.count > 0){
+    formik.values.customerId =  customerObj?.data?.customers.results[0].id;
+    setCustomer(customerObj?.data?.customers?.results[0]);
+    setCustomerFound(true);
+    setDisableSubmitButton(false);
+    console.log('customer',customer);
+    console.log('customer[0]',customerObj?.data?.customers.results[0]);
+  }else{
+    setCustomerFound(false);
+  }
+}
 
 const {getCustomerByEmail} = useFindCustomerService();
 
 const onChangeEmail=(evt)=>{
   setCustomerFound(false);
+  setDisableSubmitButton(true);
   formik.handleChange(evt);
 }
 
@@ -133,6 +131,18 @@ useEffect(() => {
   }
   console.log('render once12');
 });
+
+useEffect(async() => {
+ if(formik?.values?.email &&formik?.values?.isEdit && customer === null){
+    const customerObj = await getCustomerByEmail(formik.values.email);
+    await customerInfoSetter(customerObj,formik);
+
+
+    console.log('customer use effect ',customerObj);
+ }
+
+  console.log('use effect 1',formik.values.emai);
+},[formik?.values?.email]);
 
 
 const{execute} = useFileUploadService();
@@ -177,14 +187,18 @@ const uploadFile = (e) => {
 
 const handleTicketCategory=(e)=>{
 
-  if(!formik.values.message){
-    formik.values.message = '';
-  }
+  console.log('formik.values.category',e);
+  if(e.target.value === CONSTANTS.TICKET_TYPE_REQUEST){
+    //docToFormValuesCustomer(formik.values,customer);
+   }else{
 
-  if(!formik.values.files){
-    formik.values.files =[];
+    if(!formik.values.message){
+      formik.values.message = '';
+    }
+    if(!formik.values.files){
+      formik.values.files =[];
+    }
   }
-  
   formik.handleChange(e);
 }
 
@@ -209,7 +223,7 @@ const handleTicketCategory=(e)=>{
                 <Spacings.Inline>
                     <PrimaryButton
                       label="Search Customer"
-                      onClick={custoInfo}
+                      onClick={getCustomerData}
                       isDisabled={!canManage || formik.values.isEdit}
                     />
                   <TextField
@@ -332,26 +346,9 @@ const handleTicketCategory=(e)=>{
                    <button onClick={handleClick}>Upload</button>
   
                   <br/><br/>
-                  {/* {formik?.values?.files && formik?.values?.files.map((fileInfo,i)=> 
-                    <div><a href={fileInfo.url}>{fileInfo.name}</a><br/></div>
-                  )} */}
-                  {files}
+                   {files}
                   <br/>
                   {files?.length>0 && <button onClick={deleteFileFromStorage}>Delete File</button>}
-                  {/* {formik.values.imageURL && !imgUrl &&
-                    <img src={formik.values.imageURL} alt='uploaded file' height={500} />
-                  }
-                    {
-                      !imgUrl &&
-                      <div className='outerbar'>
-                        <div className='innerbar' style={{ width: `${progresspercent}%` }}>{progresspercent}%</div>
-                      </div>
-                    }
-                    {
-                      //!formik.values.imageURL &&
-                      imgUrl &&
-                      <img src={imgUrl} alt='uploaded file' height={500} />
-                    } */}
                 </div>
               </Spacings.Stack>
 
@@ -360,26 +357,94 @@ const handleTicketCategory=(e)=>{
           {(formik?.values?.category !== null && 
             (formik?.values?.category === CONSTANTS.TICKET_TYPE_REQUEST )) && (
               <Spacings.Stack scale="s">
-                <TextField name="firstName"
-                    title="First Name"
-                    isRequired
-                    value={formik.values.firstName}
-                    errors={
-                      TextField.toFieldErrors(formik.errors).firstName
-                    }
-                    touched={formik.touched.firstName}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}/>
-                  <TextField name="lastName"
-                    title="Last Name"
-                    isRequired
-                    value={formik.values.lastName}
-                    errors={
-                      TextField.toFieldErrors(formik.errors).lastName
-                    }
-                    touched={formik.touched.lastName}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}/>
+                  <Spacings.Inline scale="s">
+                    <TextField name="salutation"
+                        title="Salutation"
+                        isRequired
+                        value={formik.values.salutation}
+                        errors={
+                          TextField.toFieldErrors(formik.errors).salutation
+                        }
+                        placeholder={customer?.salutation}
+                        touched={formik.touched.salutation}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}/>
+                      <TextField name="title"
+                        title="Title"
+                        isRequired
+                        placeholder={customer?.title}
+                        value={formik.values.title}
+                        errors={
+                          TextField.toFieldErrors(formik.errors).title
+                        }
+                        touched={formik.touched.title}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}/>
+                    </Spacings.Inline>
+
+                  <Spacings.Inline scale="s">
+                    <TextField name="firstName"
+                        title="First Name"
+                        isRequired
+                        value={formik.values.firstName}
+                        errors={
+                          TextField.toFieldErrors(formik.errors).firstName
+                        }
+                        placeholder={customer?.firstName}
+                        touched={formik.touched.firstName}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}/>
+                      <TextField name="middleName"
+                        title="Middle Name"
+                        isRequired
+                        value={formik.values.middleName}
+                        errors={
+                          TextField.toFieldErrors(formik.errors).middleName
+                        }
+                        placeholder={customer?.middleName}
+                        touched={formik.touched.middleName}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}/>
+                    </Spacings.Inline>
+
+                  <Spacings.Inline scale="s">
+                      <TextField name="lastName"
+                        title="Last Name"
+                        isRequired
+                        value={formik.values.lastName}
+                        errors={
+                          TextField.toFieldErrors(formik.errors).lastName
+                        }
+                        placeholder={customer?.lastName}
+                        touched={formik.touched.lastName}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}/>
+
+                    <DateField name="dateOfBirth"
+                        title="Date of birth"
+                        isRequired
+                        value={formik.values.dateOfBirth}
+                        errors={
+                          TextField.toFieldErrors(formik.errors).dateOfBirth
+                        }
+                        placeholder={customer?.dateOfBirth}
+                        touched={formik.touched.dateOfBirth}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}/>
+                    </Spacings.Inline>
+                    <Spacings.Inline>
+                      <TextField name="companyName"
+                          title="Company Name"
+                          isRequired
+                          value={formik.values.companyName}
+                          placeholder={customer?.companyName}
+                          errors={
+                            TextField.toFieldErrors(formik.errors).companyName
+                          }
+                          touched={formik.touched.companyName}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}/>
+                    </Spacings.Inline>
               </Spacings.Stack>
             )}
                   <Spacings.Inline>
@@ -390,9 +455,9 @@ const handleTicketCategory=(e)=>{
                     <PrimaryButton
                       type="submit"
                       label="Submit"
-                      onClick={formik.handleSubmit}
+                      onClick={(e)=>{setDisableSubmitButton(true);formik.handleSubmit(e);}}
                       //isDisabled={formik.isSubmitting}
-                      isDisabled={!canManage || !customerFound }
+                      isDisabled={disableSubmitButton }
                     />
                 </Spacings.Inline>
             </Spacings.Stack>

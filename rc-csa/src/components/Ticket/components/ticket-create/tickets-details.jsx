@@ -8,7 +8,6 @@ import { docToFormValues, formValuesToDoc, formValuesToDocRequest } from './conv
 import TicketCreateForm from './ticket-create-form';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
-import{CREATE_TICKET_MUTATION,getCreateTicketDraft} from 'ct-tickets-helper-api'
 import { useCreateOrUpdateTicket, useGetTicketById } from '../../../../hooks/use-register-user-connector';
 
 const TicketDetailsP = (props) => {
@@ -31,13 +30,7 @@ const TicketDetailsP = (props) => {
       let data =formValuesToDoc(formValues);
 
       console.log("data from form",data);
-      
       await execute(data);
-      // This would trigger the request, for example a mutation.
-      
-      // If successful, show a notification and redirect
-      // to the Channels details page.
-      // If errored, show an error notification.
     },
     [execute]
   );

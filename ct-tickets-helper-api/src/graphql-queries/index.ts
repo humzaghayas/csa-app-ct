@@ -75,7 +75,7 @@ export const FETCH_TICKETS=`
  `
 
  export const FETCH_CUSTOMERS=`
- query Test($where:String){
+ query FetchCustomer($where:String){
   customers(where:$where){
     total
     count
@@ -83,6 +83,13 @@ export const FETCH_TICKETS=`
     results{
       email
       id
+      firstName
+      lastName
+      middleName
+      salutation
+      title
+      dateOfBirth
+      companyName
     }
   }
 }

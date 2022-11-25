@@ -24,8 +24,8 @@ const validate = (formikValues) => {
   //if (TextInput.isEmpty(formikValues.assignedTo)) errors.subject.assignedTo = true;
 
   if(formikValues.category == CONSTANTS.TICKET_TYPE_REQUEST){
-    if (TextInput.isEmpty(formikValues.firstName)) errors.firstName.missing = true;
-    if (TextInput.isEmpty(formikValues.lastName)) errors.lastName.missing = true;
+    // if (TextInput.isEmpty(formikValues.firstName)) errors.firstName.missing = true;
+    // if (TextInput.isEmpty(formikValues.lastName)) errors.lastName.missing = true;
   }else{
     if (TextInput.isEmpty(formikValues.message)) errors.message.missing = true;
   }

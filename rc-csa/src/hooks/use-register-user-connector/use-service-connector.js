@@ -96,9 +96,7 @@ export const useUserListFetcher = () => {
       target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
     },
   });
-
-
-  console.log('assign to ',data)
+  
   const getUsersToAssignTo = data?.customObjects?.results?.map((userInfo) => ( {
     label: userInfo.value.email,
     value: userInfo.value.email,

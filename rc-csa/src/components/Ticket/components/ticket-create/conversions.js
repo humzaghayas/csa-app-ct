@@ -9,6 +9,12 @@ export const docToFormValues = (ticket, languages,isEdit) => {
   }else{
     doc.firstName =ticket?.firstName ?? '';
     doc.lastName = ticket?.lastName ?? '';
+    doc.middleName=ticket?.middleName  ?? '';
+    doc.title=ticket?.title ?? '';
+    doc.dateOfBirth=ticket?.dateOfBirth  ?? '';
+    doc.companyName=ticket?.companyName  ?? '';
+    doc.addresses=ticket?.addresses  ?? '';
+    doc.salutation=ticket?.salutation ?? '';
   }
 
   return doc;
@@ -37,12 +43,36 @@ export const formValuesToDoc = (formValues) => {
   let doc=formValuesToDocCommonValues(formValues);
   
   if(formValues.category && formValues.category == CONSTANTS.TICKET_TYPE_REQUEST){ 
-    doc.firstName= !TextInput.isEmpty(formValues.firstName)
+
+
+    doc.firstName= !TextInput.isEmpty(formValues.firstName) 
       ? escapeQuotes(formValues.firstName)
-      : undefined;
-    doc.lastName= !TextInput.isEmpty(formValues.lastName)
+      : doc.firstName= '';
+      
+
+    doc.lastName=!TextInput.isEmpty(formValues.lastName)
       ? escapeQuotes(formValues.lastName)
-      : undefined;
+      : '';
+
+      doc.middleName= !TextInput.isEmpty(formValues.middleName)
+        ? escapeQuotes(formValues.middleName)
+        : doc.middleName= '';
+
+      doc.title= !TextInput.isEmpty(formValues.title)
+        ? escapeQuotes(formValues.title)
+        : doc.title= '';
+
+      doc.dateOfBirth= !TextInput.isEmpty(formValues.dateOfBirth)
+        ? escapeQuotes(formValues.dateOfBirth)
+        : '';     
+
+      doc.companyName= !TextInput.isEmpty(formValues.companyName)
+        ? escapeQuotes(formValues.companyName)
+        : doc.companyName= '';
+
+      doc.salutation= !TextInput.isEmpty(formValues.salutation)
+        ? escapeQuotes(formValues.salutation)
+        : '';
   }else{
     doc.message= !TextInput.isEmpty(formValues.message)
       ? escapeQuotes(formValues.message)
@@ -75,3 +105,17 @@ export const formValuesToDoc = (formValues) => {
     ? escapeQuotes(formValues.subject)
     : undefined
     });
+
+
+    export const docToFormValuesCustomer= (doc,customer)=>{
+
+        doc.firstName=customer.firstName;
+        doc.lastName=customer.lastName;
+        doc.middleName=customer.middleName;
+        doc.title=customer.title;
+        doc.dateOfBirth=customer.dateOfBirth;
+        doc.companyName=customer.companyName;
+        doc.addresses=customer.addresses;
+        doc.salutation=customer.salutation;
+
+    }
