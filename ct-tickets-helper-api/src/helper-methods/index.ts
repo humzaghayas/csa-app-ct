@@ -73,14 +73,25 @@ export async function getCreateTicketDraft(ticketInfo){
     }else{
         ticketDraft.value = getTicketValueString(ticketInfo);
         
-        value = `\"ticketData\":{	
-                            \"firstName\": \"${ticketInfo.firstName}\",
-                            \"lastName\": \"${ticketInfo.lastName}\",
-                            \"middleName\": \"${ticketInfo.middleName}\",
-                            \"salutation\": \"${ticketInfo.salutation}\",
-                            \"title\": \"${ticketInfo.title}\",
-                            \"companyName\": \"${ticketInfo.companyName}\",
-                            \"dateOfBirth\": \"${ticketInfo.dateOfBirth}\"}`;
+        value = `\"ticketData\":{\"requestType\":\"${ticketInfo.requestType}\"`;
+
+        if(ticketInfo.requestType && ticketInfo.requestType == CONSTANTS.REQUEST_TYPE_RESET_PASSWORD){
+            value = `${value}}`;
+        }else
+        if(ticketInfo.requestType && ticketInfo.requestType == CONSTANTS.REQUEST_TYPE_GENERAL_INFO_CHANGE){
+            value = `${value},\"firstName\": \"${ticketInfo.firstName}\",
+                                \"lastName\": \"${ticketInfo.lastName}\",
+                                \"middleName\": \"${ticketInfo.middleName}\",
+                                \"salutation\": \"${ticketInfo.salutation}\",
+                                \"title\": \"${ticketInfo.title}\",
+                                \"companyName\": \"${ticketInfo.companyName}\",
+                                \"dateOfBirth\": \"${ticketInfo.dateOfBirth}\"}`;
+        }else
+        if(ticketInfo.requestType && (
+                ticketInfo.requestType == CONSTANTS.REQUEST_TYPE_ADD_ADDRESS 
+                ||ticketInfo.requestType == CONSTANTS.REQUEST_TYPE_CHANGE_ADDRESS )){
+            value = `${value}}`;
+        }
     }
 
     ticketDraft.value =ticketDraft.value.replace(CONSTANTS.TICKET_DATA,value);
@@ -128,13 +139,16 @@ function getRandomInt(min, max) {
 
     if(data?.customObject?.value?.category === CONSTANTS.TICKET_TYPE_REQUEST){
 
-        ticket['firstName'] = data?.customObject?.value?.ticketData?.firstName ?? '';
-        ticket['lastName'] = data?.customObject?.value?.ticketData?.lastName ?? '';
-        ticket['middleName'] = data?.customObject?.value?.ticketData?.middleName ?? '';
-        ticket['salutation'] = data?.customObject?.value?.ticketData?.salutation ?? '';
-        ticket['title'] = data?.customObject?.value?.ticketData?.title ?? '';
-        ticket['dateOfBirth'] = data?.customObject?.value?.ticketData?.dateOfBirth ?? '';
-        ticket['companyName'] = data?.customObject?.value?.ticketData?.companyName ?? '';
+        ticket['requestType'] = data?.customObject?.value?.ticketData?.requestType ?? '';
+        if(data?.customObject?.value?.ticketData?.requestType == CONSTANTS.REQUEST_TYPE_GENERAL_INFO_CHANGE){
+            ticket['firstName'] = data?.customObject?.value?.ticketData?.firstName ?? '';
+            ticket['lastName'] = data?.customObject?.value?.ticketData?.lastName ?? '';
+            ticket['middleName'] = data?.customObject?.value?.ticketData?.middleName ?? '';
+            ticket['salutation'] = data?.customObject?.value?.ticketData?.salutation ?? '';
+            ticket['title'] = data?.customObject?.value?.ticketData?.title ?? '';
+            ticket['dateOfBirth'] = data?.customObject?.value?.ticketData?.dateOfBirth ?? '';
+            ticket['companyName'] = data?.customObject?.value?.ticketData?.companyName ?? '';
+        }
        
     }else{
         ticket['message'] = data?.customObject?.value?.ticketData?.message ?? '';

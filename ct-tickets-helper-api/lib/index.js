@@ -14,11 +14,10 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteObject = exports.listAll = exports.uploadBytesResumable = exports.getDownloadURL = exports.ref = exports.storage = exports.app = exports.CONSTANTS = void 0;
+exports.deleteObject = exports.listAll = exports.uploadBytesResumable = exports.getDownloadURL = exports.ref = exports.storage = exports.app = void 0;
 __exportStar(require("./graphql-queries"), exports);
 __exportStar(require("./helper-methods"), exports);
-var constants_1 = require("./constants");
-Object.defineProperty(exports, "CONSTANTS", { enumerable: true, get: function () { return constants_1.CONSTANTS; } });
+__exportStar(require("./constants"), exports);
 var firebase_1 = require("./firebase");
 Object.defineProperty(exports, "app", { enumerable: true, get: function () { return firebase_1.app; } });
 Object.defineProperty(exports, "storage", { enumerable: true, get: function () { return firebase_1.storage; } });

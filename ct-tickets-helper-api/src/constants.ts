@@ -10,12 +10,6 @@ export const TICKET_SOURCE={
     email:"E-Mail"
 }
 
-export const REQUEST_TYPES={
-    passwordReset:"Password Reset",
-    addressChange:"Address Change",
-    generalInfoChange:"General Info Change"
-}
-
 export const TICKET_PRIORITIY_VALUES={
     Low:"Low",
     normal:"Normal",
@@ -30,7 +24,11 @@ export const CONSTANTS ={
     TICKET_TYPE_QUERY :'query',
     USER_CONTRAINER_KEY:"mc-users",
     USER_CONTAINER:"mc-user-info",
-    TICKET_DATA:"{{TICKET_DATA}}"
+    TICKET_DATA:"{{TICKET_DATA}}",
+    REQUEST_TYPE_RESET_PASSWORD :'passwordReset',
+    REQUEST_TYPE_GENERAL_INFO_CHANGE :'generalInfoChange',
+    REQUEST_TYPE_ADD_ADDRESS :'addAddress',
+    REQUEST_TYPE_CHANGE_ADDRESS :'changeAddress'
 }
 
 export const TICKET_TYPE={
@@ -44,4 +42,11 @@ export const TICKET_WORKFLOW={
     approve:"Approve",
     reject:"Reject",
     resolved:"Resolved"
+}
+
+export const REQUEST_TYPES={
+    [CONSTANTS.REQUEST_TYPE_RESET_PASSWORD]:"Password Reset",
+    [CONSTANTS.REQUEST_TYPE_GENERAL_INFO_CHANGE]:"General Info Change",
+    [CONSTANTS.REQUEST_TYPE_ADD_ADDRESS]:"Add Address",
+    [CONSTANTS.REQUEST_TYPE_CHANGE_ADDRESS]:"Change Address"
 }
