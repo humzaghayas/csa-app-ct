@@ -208,7 +208,7 @@ const handleTicketCategory=(e)=>{
         <Spacings.Stack scale="l">
         
         <CollapsiblePanel
-              data-testid="quote-summary-panel"
+              data-testid="tickets-summary-panel"
               header={
                 <CollapsiblePanel.Header>
                   {/* {formatMessage(messages.panelTitle)} */}
@@ -220,12 +220,8 @@ const handleTicketCategory=(e)=>{
                 <Spacings.Stack scale="m">
 
 
-                <Spacings.Inline>
-                    <PrimaryButton
-                      label="Search Customer"
-                      onClick={getCustomerData}
-                      isDisabled={!canManage || formik.values.isEdit}
-                    />
+                <Spacings.Inline alignItems="flex-end">
+                   
                   <TextField
                       name="email"
                       title="Customer Email"
@@ -237,6 +233,11 @@ const handleTicketCategory=(e)=>{
                       isReadOnly={props.isReadOnly}
                       isRequired
                       horizontalConstraint={13}
+                      isDisabled={!canManage || formik.values.isEdit}
+                    />
+                  <PrimaryButton
+                      label="Search Customer"
+                      onClick={getCustomerData}
                       isDisabled={!canManage || formik.values.isEdit}
                     />
                </Spacings.Inline>
