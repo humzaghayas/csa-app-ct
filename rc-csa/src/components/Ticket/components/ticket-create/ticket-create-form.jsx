@@ -226,6 +226,18 @@ const handleTicketCategory=(e)=>{
 }
 
 
+const saveTicket =(e)=>{
+
+
+  // if(formik.errors && formik.errors.isError){
+
+  //   return;
+  // }
+  //setDisableSubmitButton(true);
+  formik.handleSubmit(e);
+}
+
+
   return (
     <form onSubmit={formik.handleSubmit}>
         <Spacings.Stack scale="l">
@@ -347,20 +359,22 @@ const handleTicketCategory=(e)=>{
               horizontalConstraint={13}
               isDisabled={!canManage || (!customerFound  || formik.values.isEdit)}
             />
-        {formik.values.category && (formik.values.category== CONSTANTS.TICKET_TYPE_REQUEST
-                      || formik.values.category== CONSTANTS.TICKET_TYPE_RESET_PASSWORD
-                      || formik.values.category==CONSTANTS.TICKET_TYPE_GENERAL_INFO_CHANGE)
-               && <TextField name="orderNumber"
-                      title="Order Number"
-                      isRequired
-                      value={formik.values.orderNumber}
-                      errors={
-                        TextField.toFieldErrors(formik.errors).orderNumber
-                      }
-                      touched={formik.touched.orderNumber}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      isDisabled={!canManage || (!customerFound  || formik.values.isEdit) }/>
+
+        {formik.values.category && (formik.values.category== CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
+                      || formik.values.category== CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
+                      || formik.values.category==CONSTANTS.TICKET_TYPE_RETURNS)
+               && 
+               <Spacings.Stack scale="s">
+                  <TextField name="orderNumber"
+                          title="Order Number"
+                          isRequired
+                          value={formik.values.orderNumber}
+                          errors={formik.errors.orderNumber}
+                          touched={formik.touched.orderNumber}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          isDisabled={!canManage || (!customerFound  || formik.values.isEdit) }/>
+                  </Spacings.Stack>
                   }
         </Spacings.Inline>
         <Spacings.Stack scale="s">
@@ -462,9 +476,9 @@ const handleTicketCategory=(e)=>{
                     <PrimaryButton
                       type="submit"
                       label="Submit"
-                      onClick={(e)=>{setDisableSubmitButton(true);formik.handleSubmit(e);}}
-                      //isDisabled={formik.isSubmitting}
-                      isDisabled={disableSubmitButton }
+                      onClick={saveTicket}
+                      isDisabled={formik.isSubmitting}
+                      // isDisabled={disableSubmitButton }
                     />
                 </Spacings.Inline>
             </Spacings.Stack>

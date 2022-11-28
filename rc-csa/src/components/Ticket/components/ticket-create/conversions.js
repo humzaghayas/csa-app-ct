@@ -4,7 +4,12 @@ export const docToFormValues = (ticket, languages,isEdit) => {
   let doc = docToFormCommonValues(ticket,isEdit);
   doc.message= ticket?.message ?? '';
   doc.files =ticket?.files ?? [];
-  doc.orderNumber = ticket?.orderNumber ?? '';
+
+  if(doc.category && (doc.category == CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
+    || doc.category == CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
+    || doc.category == CONSTANTS.TICKET_TYPE_RETURNS)){
+      doc.orderNumber = ticket?.orderNumber ?? '';
+    }
 
   if(!ticket){
     doc.status = CONSTANTS.TICKET_INITIAL_STATUS;
@@ -34,11 +39,15 @@ const docToFormCommonValues=(ticket,isEdit)=>(
 
 export const formValuesToDoc = (formValues) => {
    
-  let doc=formValuesToDocCommonValues(formValues);
+    let doc=formValuesToDocCommonValues(formValues);
 
-    doc.orderNumber= !TextInput.isEmpty(formValues.orderNumber) 
-      ? formValues.orderNumber
-      : '';
+    if(doc.category && (doc.category == CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
+      || doc.category == CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
+      || doc.category == CONSTANTS.TICKET_TYPE_RETURNS)){
+        doc.orderNumber= !TextInput.isEmpty(formValues.orderNumber) 
+          ? formValues.orderNumber
+          : undefined;
+      }
     doc.message= !TextInput.isEmpty(formValues.message)
       ? escapeQuotes(formValues.message)
       : undefined;

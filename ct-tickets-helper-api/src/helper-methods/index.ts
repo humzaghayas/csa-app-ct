@@ -62,10 +62,19 @@ export async function getCreateTicketDraft(ticketInfo){
         return `{\"name\":\"${f.name}\",\"url\":\"${f.url}\"}`
     }).toString();
 
-    let value = `\"ticketData\":{
-        \"orderNumber\":\"${ticketInfo.orderNumber}\",	
+    
+    let orderNumberStr = '';
+    if(ticketInfo.category && (ticketInfo.category == CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
+        || ticketInfo.category == CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
+        || ticketInfo.category == CONSTANTS.TICKET_TYPE_RETURNS)){
+        orderNumberStr = `,\"orderNumber\":\"${ticketInfo.orderNumber}\"`;
+    }
+    
+    let value = `\"ticketData\":{	
         \"message\": \"${ticketInfo.message}\",
-        \"files\": [${filesStr}]}`
+        \"files\": [${filesStr}]
+        ${orderNumberStr}}`;
+        
     ticketDraft.value = getTicketValueString(ticketInfo,uuid);   
     ticketDraft.value =ticketDraft.value.replace(CONSTANTS.TICKET_DATA,value);
     return ticketDraft;

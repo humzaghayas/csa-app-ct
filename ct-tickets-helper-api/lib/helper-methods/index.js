@@ -81,7 +81,7 @@ function getCreateTicketMutaion() {
 exports.getCreateTicketMutaion = getCreateTicketMutaion;
 function getCreateTicketDraft(ticketInfo) {
     return __awaiter(this, void 0, void 0, function () {
-        var email, uuid, filesStr, value;
+        var email, uuid, filesStr, orderNumberStr, value;
         return __generator(this, function (_a) {
             email = ticketInfo.email;
             uuid = (0, uuid_1.v4)();
@@ -94,7 +94,13 @@ function getCreateTicketDraft(ticketInfo) {
             filesStr = ticketInfo.files.map(function (f) {
                 return "{\"name\":\"".concat(f.name, "\",\"url\":\"").concat(f.url, "\"}");
             }).toString();
-            value = "\"ticketData\":{\n        \"orderNumber\":\"".concat(ticketInfo.orderNumber, "\",\t\n        \"message\": \"").concat(ticketInfo.message, "\",\n        \"files\": [").concat(filesStr, "]}");
+            orderNumberStr = '';
+            if (ticketInfo.category && (ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
+                || ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
+                || ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_RETURNS)) {
+                orderNumberStr = ",\"orderNumber\":\"".concat(ticketInfo.orderNumber, "\"");
+            }
+            value = "\"ticketData\":{\t\n        \"message\": \"".concat(ticketInfo.message, "\",\n        \"files\": [").concat(filesStr, "]\n        ").concat(orderNumberStr, "}");
             ticketDraft.value = getTicketValueString(ticketInfo, uuid);
             ticketDraft.value = ticketDraft.value.replace(constants_1.CONSTANTS.TICKET_DATA, value);
             return [2 /*return*/, ticketDraft];
