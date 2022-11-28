@@ -1,7 +1,0 @@
-#import './QuoteDetailFragment.graphql'
-
-query queryQuote($id: String!) {
-  quote(id: $id) {
-    ...QuoteDetailsFragment
-  }
-}

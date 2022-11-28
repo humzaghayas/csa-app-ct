@@ -1,9 +1,0 @@
-mutation UpdateMyquoteMutation(
-  $version: Long!
-  $actions: [MyquoteUpdateAction!]!
-  $id: String!
-) {
-  UpdateMyquote(id: $id, version: $version, actions: $actions) {
-    ...MyquoteDetailsFragment
-  }
-}
