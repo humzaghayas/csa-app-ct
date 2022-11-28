@@ -39,21 +39,21 @@ import Text from '@commercetools-uikit/text';
 import NoImageIcon from '@commercetools-frontend/assets/images/camera.svg';
 import CustomerTickets from '../customer-Tickets/customer-tickets';
 
+import { useCustomerDetailsFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
+
+
 const CustomerAccount = (props) => {
   const match = useRouteMatch();
   const tabsModalState = useModalState(true);
   const history = useHistory();
   const params = useParams();
   const { push } = useHistory();
-  const [Customer, setData] = useState();
+ // const [Customer, setData] = useState();
 
-  //const apiUrl ="http://localhost:4456";
-  // const apiUrl = 'https://ms-Customer-f4b4o225iq-ue.a.run.app';
-  // const CustomerId = params.id;
-  // useEffect(() => {
-  //   getCustomer({ url: apiUrl, id: CustomerId }).then((res) => setData(res));
-  // }, [apiUrl, CustomerId]);
+  const {customer, error, loading } = useCustomerDetailsFetcher(params.id);
 
+   console.log("customer",customer);
+  // console.log("params.id",params.id);
   return (
     <TabularDetailPage
      title=" "
@@ -74,11 +74,19 @@ const CustomerAccount = (props) => {
   />
  
          <div className={styles.customerName}>
-        <br/>
-         <h1>Lahari 360 view</h1>
-          
-           <h3>lahari.r@royalcyber.com</h3>
-        
+
+         {/* <Text size="big" color="primary">Description</Text> */}
+         <h1>{customer?.firstName} 360 view</h1>
+           {/* <h3 className={styles.customerName}>Lahari</h3> */}
+           <h4>{customer?.email}</h4>
+           {/* <div className={styles.customerDetails}>
+             <Spacings.Inline>
+             <h4>10010781</h4>
+             <h4>Software Engineer</h4>
+             <h4>Digital Commerce</h4>
+             </Spacings.Inline>
+           </div> */}
+
          </div>
      
          </Spacings.Inline>
@@ -133,11 +141,11 @@ const CustomerAccount = (props) => {
       <Switch>
         <Route path={`${match.path}/Customers-summary`}>
           {/* <CustomerDetails /> */}
-         <CustomerCreate />
+         <CustomerCreate customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-profile`}>
           {/* <CustomerDetails /> */}
-        <CustomerProfile />
+        <CustomerProfile customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-orders`}>
            <CustomerOrder />

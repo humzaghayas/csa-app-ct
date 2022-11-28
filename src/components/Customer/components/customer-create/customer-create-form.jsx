@@ -81,7 +81,7 @@ const CustomerCreateForm = (props) => {
                       </Label>
                       <Text.Body  >
                     <div className={styles.changePricesLabel}> 
-                      {'Lahari'}
+                      {props.customer?.firstName}
                     </div>
                      </Text.Body>
                     </div>
@@ -97,12 +97,12 @@ const CustomerCreateForm = (props) => {
                      <div className={styles.imageContainer}>
                        <Label isBold={true} as='h1' >
                        <div className={styles.FieldLabel}> 
-                       {'Customer Id'}
+                       {'Customer Number'}
                        </div>
                       </Label>
                       <Text.Body  >
                     <div className={styles.changePricesLabel}> 
-                      {'00000081'}
+                      {props.customer?.customerNumber}
                     </div>
                      </Text.Body>
                     </div>
@@ -119,12 +119,12 @@ const CustomerCreateForm = (props) => {
                      <div className={styles.imageContainer}>
                        <Label isBold={true} as='h1' >
                        <div className={styles.FieldLabel}> 
-                       {'Original Id'}
+                       {'External Id'}
                        </div>
                       </Label>
                       <Text.Body  >
                     <div className={styles.changePricesLabel}> 
-                      {'10010781'}
+                      {props.customer?.externalId}
                     </div>
                      </Text.Body>
                     </div>
@@ -135,7 +135,7 @@ const CustomerCreateForm = (props) => {
           </Spacings.Inline>
           </Spacings.Stack>
           <Spacings.Stack scale="l">
-         <div className={styles.dateTable}>
+         {/* <div className={styles.dateTable}>
           <DataTable
             isCondensed
             columns={columns}
@@ -151,7 +151,7 @@ const CustomerCreateForm = (props) => {
             onPerPageChange={perPage.onChange}
             // totalItems={data.total}
           />
-          </div>
+          </div> */}
         </Spacings.Stack>
         <Spacings.Stack scale="l">
         <div className={styles.dateTable}>

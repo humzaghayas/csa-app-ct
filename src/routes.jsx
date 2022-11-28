@@ -69,7 +69,9 @@ const ApplicationRoutes = () => {
         <Route  path={`${match.path}/customer-create`}>
            <CustomerCreate linkToWelcome={match.url} />
         </Route>
-       
+        <Route path={`${match.path}/customer-account/:id`}>
+	        <CustomerAccount linkToWelcome={match.url} />
+        </Route>
         <Route>
           <Welcome />
         </Route>
