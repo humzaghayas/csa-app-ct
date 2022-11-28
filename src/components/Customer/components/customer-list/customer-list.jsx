@@ -117,7 +117,8 @@ const Customers = (props) => {
             // sortedBy={tableSorting.value.key}
             // sortDirection={tableSorting.value.order}
             // onSortChange={tableSorting.onChange}
-            onRowClick={(row) => push(`Customer-edit/${row.FirstName}/Customers-summary`)}
+            onRowClick={() => push(`Customer-edit/Customers-summary`)}
+            // onRowClick={(row) => push(`${row.FirstName}`)}
             // onRowClick={(row) => push(`Customer-account/${row.id}/companies-general`)}
           />
           <Pagination

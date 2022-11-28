@@ -57,8 +57,8 @@ const CustomerAccount = (props) => {
   return (
     <TabularDetailPage
      title=" "
-      //  onPreviousPathClick={() => history.push(`Customer-list`)}
-      onPreviousPathClick={() => history.push(`${match.url}`)}
+         onPreviousPathClick={() => history.push(`/csa_project/drl-b2b-extension/Customers`)}
+      //  onPreviousPathClick={() => history.push(`${match.url}`)}
       previousPathLabel="Go to View Customers"
      
       tabControls={
@@ -107,7 +107,7 @@ const CustomerAccount = (props) => {
               />
               <TabHeader to={`${match.url}/Customers-tickets`} label="Tickets" />
               <TabHeader to={`${match.url}/Customers-sumary`} label="Returns" />
-              <TabHeader to={`${match.url}/Customers-password`} label="Password" />
+              {/* <TabHeader to={`${match.url}/Customers-password`} label="Password" /> */}
               {/* <div style="margin-left :500px"> */}
            
               {/* </div> */}
@@ -142,9 +142,9 @@ const CustomerAccount = (props) => {
         <Route path={`${match.path}/Customers-orders`}>
            <CustomerOrder />
         </Route>
-        <Route path={`${match.path}/Customers-password`}>
+        {/* <Route path={`${match.path}/Customers-password`}>
            <CustomerPassword />
-        </Route>
+        </Route> */}
         <Route path={`${match.path}/Customers-Address`}>
           <CustomerAddress />
         </Route>

@@ -11,6 +11,10 @@ import messages from './messages';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import { EMPLOYEE_ROLES,CUSTOMER_GROUPS,CUSTOMER_PRIORITY} from './constants';
 import Constraints from '@commercetools-uikit/constraints';
+import DataTable from '@commercetools-uikit/data-table';
+import { useState } from 'react';
+import SecondaryButton from '@commercetools-uikit/secondary-button';
+import { PlusBoldIcon } from '@commercetools-uikit/icons';
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
 //   value: EMPLOYEE_ROLES[key],
@@ -24,9 +28,27 @@ const getCustomerPriorityOptions = Object.keys(CUSTOMER_PRIORITY).map((key) => (
   label: key,
   value: CUSTOMER_PRIORITY[key],
 }));
+const rows = [
+ 
+  { id: '--',CompanyName:'--',Address:'--',City:'--',PostalCode:'--',State:'--',Region:'--',Country:'--',AddressType:'--'},
+];
 
+const columns = [
+
+  { key: 'ContactName', label: 'ContactName' },
+  { key:'CompanyName', label: 'CompanyName' },
+  { key: 'Address', label: 'Address' },
+  { key: 'City', label: 'City' },
+  { key: 'PostalCode', label: 'PostalCode' },
+  { key: 'State', label: 'State' },
+  { key: 'Region', label: 'Region' },
+  { key: 'Country', label: 'Country' },
+ 
+  { key: 'AddressType', label: 'Address Type' },
+];
 
 const CustomerAddressForm = (props) => {
+   const[value , setValue] = useState(false)
   const intl = useIntl();
   const formik = useFormik({
     initialValues: props.initialValues,
@@ -38,6 +60,14 @@ const CustomerAddressForm = (props) => {
   const formElements = (
     <Spacings.Stack scale="l">
       {/* <Spacings.Inline> */}
+      <Spacings.Stack scale="s">
+             <Constraints.Horizontal min={13}>
+             <SecondaryButton iconLeft={<PlusBoldIcon />} label="Add Address" onClick={() => setValue(true)} />;
+            <DataTable rows={rows} columns={columns}  />
+
+          </Constraints.Horizontal>
+          </Spacings.Stack>
+        {value == true ? <div >
       <CollapsiblePanel
           data-testid="quote-summary-panel"
           header={
@@ -150,6 +180,7 @@ const CustomerAddressForm = (props) => {
         </Constraints.Horizontal>
       {/* </Spacings.Inline> */}
      </CollapsiblePanel>
+     </div> : null} 
     </Spacings.Stack>
   );
 

@@ -53,9 +53,12 @@ const ApplicationRoutes = () => {
         <Route  path={`${match.path}/order-edit/:id`}>
       <OrderAccount linkToWelcome={match.url} />
         </Route>
-        <Route  path={`${match.path}/customer-edit/:lahari`}>
+        <Route  path={`${match.path}/customer-edit`}>
         <CustomerAccount  linkToWelcome={match.url} />
         </Route>
+        {/* <Route  path={`${match.path}/:Lahari`}>
+        <CustomerCreate linkToWelcome={match.url} />
+        </Route> */}
         <Route  path={`${match.path}/ticket-edit/:id`}>
         <TicketAccount linkToWelcome={match.url} />
         </Route>
