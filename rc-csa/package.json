@@ -54,7 +54,7 @@
     "@commercetools-uikit/text": "^15.2.2",
     "@commercetools-uikit/text-field": "^15.2.2",
     "@commercetools-uikit/text-input": "^15.2.2",
-    "@commercetools/sync-actions": "^5.1.0",
+    "@commercetools/sync-actions": "^5.3.0",
     "@formatjs/cli": "4.8.4",
     "@manypkg/cli": "0.19.1",
     "@testing-library/react": "12.1.5",
