@@ -33,46 +33,19 @@ const CustomerCreate = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
+  // console.log("props",JSON.stringify(props));
   // const showNotification = useShowNotification();
   // const showApiErrorNotification = useShowApiErrorNotification();
   // const CustomerDetailsCreator = useCustomerDetailsCreator();
   const handleSubmit = useCallback(
-    // async (formikValues, formikHelpers) => {
-    //   const data = formValuesToDoc(formikValues);
-    //   try {
-    //     await CustomerDetailsCreator.execute({
-    //       nextDraft: data,
-    //     });
-    //     showNotification({
-    //       kind: 'success',
-    //       domain: DOMAINS.SIDE,
-    //       text: intl.formatMessage(messages.CustomerCreated),
-    //     });
-    //   } catch (graphQLErrors) {
-    //     const transformedErrors = transformErrors(graphQLErrors);
-    //     if (transformedErrors.unmappedErrors.length > 0) {
-    //       showApiErrorNotification({
-    //         errors: transformedErrors.unmappedErrors,
-    //       });
-    //     }
-
-    //     formikHelpers.setErrors(transformedErrors.formErrors);
-    //   }
-    // },
-    // [
-    //   CustomerDetailsCreator,
-    //   dataLocale,
-    //   intl,
-    //   projectLanguages,
-    //   showApiErrorNotification,
-    //   showNotification,
-    // ]
+    
   );
 
   return (
     <CustomerCreateForm
     initialValues={docToFormValues(null, projectLanguages)}
     onSubmit={handleSubmit}
+    customer={props.customer}
     isReadOnly={!canManage}
     dataLocale={dataLocale}
     >
