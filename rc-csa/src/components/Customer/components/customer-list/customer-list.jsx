@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { lazy,useState } from 'react';
+import { lazy, useState } from 'react';
 import { useIntl } from 'react-intl';
 import {
   Link as RouterLink,
@@ -56,26 +56,64 @@ import CustomerAccount from '../customer-account/customer-account';
 //   sortDirection: 'desc',
 // };
 
-const rows = [
-  { Customernumber: '00000001',ExternalId:'--',FirstName:'Lahari',LastName:'Ramurthi',Email:'lahari.r@royalcyber.com',Company:'--',CustomerGroup:'Company A',DateCreated:'Apr 11, 2022,2:54:47...',DateModified:'Apr 11, 2022,2:54:47...'},
-  { Customernumber: '00000002',ExternalId:'--',FirstName:'Lahari',LastName:'Ramurthi',Email:'lahari.r@royalcyber.com',Company:'--',CustomerGroup:'Company A',DateCreated:'Apr 11, 2022,2:54:47...',DateModified:'Apr 11, 2022,2:54:47...',},
-  { Customernumber: '00000003',ExternalId:'--',FirstName:'Lahari',LastName:'Ramurthi',Email:'lahari.r@royalcyber.com',Company:'--',CustomerGroup:'Company A',DateCreated:'Apr 11, 2022,2:54:47...',DateModified:'Apr 11, 2022,2:54:47...',},
-  { Customernumber: '00000003',ExternalId:'--',FirstName:'RanjithKumar',LastName:'Rajendran',Email:'ranjithKumar.r@royalcyber.com',Company:'--',CustomerGroup:'Company A',DateCreated:'Apr 11, 2022,2:54:47...',DateModified:'Apr 11, 2022,2:54:47...',},
-];
+import { useCustomersFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
+
+// const rows = [
+//   { Customernumber: '00000001',ExternalId:'--',FirstName:'Lahari',LastName:'Ramurthi',Email:'lahari.r@royalcyber.com',Company:'--',CustomerGroup:'Company A',DateCreated:'Apr 11, 2022,2:54:47...',DateModified:'Apr 11, 2022,2:54:47...'},
+//   { Customernumber: '00000002',ExternalId:'--',FirstName:'Lahari',LastName:'Ramurthi',Email:'lahari.r@royalcyber.com',Company:'--',CustomerGroup:'Company A',DateCreated:'Apr 11, 2022,2:54:47...',DateModified:'Apr 11, 2022,2:54:47...',},
+//   { Customernumber: '00000003',ExternalId:'--',FirstName:'Lahari',LastName:'Ramurthi',Email:'lahari.r@royalcyber.com',Company:'--',CustomerGroup:'Company A',DateCreated:'Apr 11, 2022,2:54:47...',DateModified:'Apr 11, 2022,2:54:47...',},
+//   { Customernumber: '00000003',ExternalId:'--',FirstName:'RanjithKumar',LastName:'Rajendran',Email:'ranjithKumar.r@royalcyber.com',Company:'--',CustomerGroup:'Company A',DateCreated:'Apr 11, 2022,2:54:47...',DateModified:'Apr 11, 2022,2:54:47...',},
+// ];
+
+// const columns = [
+
+//   { key: 'Customernumber', label: 'Customer number' },
+//   { key:'ExternalId', label: 'External Id' },
+//   { key: 'FirstName', label: 'First Name' },
+//   { key: 'LastName', label: 'LastName' },
+//   { key: 'Company', label: 'Company' },
+//   { key: 'Email', label: 'Email' },
+//   { key: 'CustomerGroup', label: 'Customer Group' },
+//   { key: 'DateCreated', label: 'Date Created' },
+//   { key: 'DateModified', label: 'Date Modified' },
+// ];
 
 const columns = [
-
-  { key: 'Customernumber', label: 'Customer number' },
-  { key:'ExternalId', label: 'External Id' },
-  { key: 'FirstName', label: 'First Name' },
-  { key: 'LastName', label: 'LastName' },
-  { key: 'Company', label: 'Company' },
-  { key: 'Email', label: 'Email' },
-  { key: 'CustomerGroup', label: 'Customer Group' },
-  { key: 'DateCreated', label: 'Date Created' },
-  { key: 'DateModified', label: 'Date Modified' },
+  { key: 'customerNumber', label: 'Customer number' },
+  { key: 'externalId', label: 'External Id' },
+  { key: 'firstName', label: 'First Name' },
+  { key: 'lastName', label: 'LastName' },
+  { key: 'companyName', label: 'Company' },
+  { key: 'email', label: 'Email' },
+  { key: 'customerGroup', label: 'Customer Group' },
+  { key: 'createdAt', label: 'Date Created' },
+  { key: 'lastModifiedAt', label: 'Date Modified' },
 ];
 
+const itemRenderer = (item, column) => {
+  switch (column.key) {
+    case 'customerNumber':
+      return item.customerNumber;
+    case 'externalId':
+      return item.externalId;
+    case 'firstName':
+      return item.firstName;
+    case 'lastName':
+      return item.lastName;
+    case 'companyName':
+      return item.companyName;
+    case 'email':
+      return item.email;
+    case 'customerGroup':
+      return item.customerGroup?.name;
+    case 'createdAt':
+      return item.createdAt;
+    case 'lastModifiedAt':
+      return item.lastModifiedAt;
+    default:
+      return item[column.key];
+  }
+};
 
 const Customers = (props) => {
   const intl = useIntl();
@@ -83,7 +121,15 @@ const Customers = (props) => {
   const { push } = useHistory();
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
+  const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
 
+  const { customersPaginatedResult, error, loading } = useCustomersFetcher({
+    page,
+    perPage,
+    tableSorting,
+  });
+
+ // console.log("customersPaginatedResult",JSON.stringify(customersPaginatedResult));
   return (
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="xs">
@@ -97,18 +143,17 @@ const Customers = (props) => {
       </Spacings.Stack>
       {/* {loading && <LoadingSpinner />} */}
       <Spacings.Inline>
-      <SecondaryButton
-        label="Add Customer"
-         data-track-event="click" 
-         onClick={() => push(`Customer-create`)}
-        iconLeft={<PlusBoldIcon />}
-        size="medium"
-      />
+        <SecondaryButton
+          label="Add Customer"
+          data-track-event="click"
+          onClick={() => push(`Customer-create`)}
+          iconLeft={<PlusBoldIcon />}
+          size="medium"
+        />
       </Spacings.Inline>
       {/* {data ? ( */}
-        <Spacings.Stack scale="l">
-         
-          <DataTable
+      <Spacings.Stack scale="l">
+        {/* <DataTable
             isCondensed
             columns={columns}
             rows={rows}
@@ -117,7 +162,8 @@ const Customers = (props) => {
             // sortedBy={tableSorting.value.key}
             // sortDirection={tableSorting.value.order}
             // onSortChange={tableSorting.onChange}
-            onRowClick={(row) => push(`Customer-edit/${row.FirstName}/Customers-summary`)}
+            onRowClick={() => push(`Customer-edit/Customers-summary`)}
+            // onRowClick={(row) => push(`${row.FirstName}`)}
             // onRowClick={(row) => push(`Customer-account/${row.id}/companies-general`)}
           />
           <Pagination
@@ -126,23 +172,48 @@ const Customers = (props) => {
             perPage={perPage.value}
             onPerPageChange={perPage.onChange}
             // totalItems={data.total}
-          />
-           <Switch>
-            {/* <SuspendedRoute path={`${match.path}/:id`}>
+          /> */}
+
+        {customersPaginatedResult ? (
+          <Spacings.Stack scale="l">
+            <DataTable
+              isCondensed
+              columns={columns}
+              rows={customersPaginatedResult.results}
+              itemRenderer={(item, column) => itemRenderer(item, column)}
+              maxHeight={600}
+              onRowClick={(row) => push(`customer-account/${row.id}/Customers-summary`)}
+            />
+            <Pagination
+              page={page.value}
+              onPageChange={page.onChange}
+              perPage={perPage.value}
+              onPerPageChange={perPage.onChange}
+              totalItems={customersPaginatedResult.total}
+            />
+            <Switch>
+              <SuspendedRoute path={`${match.path}/:id`}>
+                <CustomerAccount onClose={() => push(`${match.url}`)} />
+              </SuspendedRoute>
+            </Switch>
+          </Spacings.Stack>
+        ) : null}
+        <Switch>
+          {/* <SuspendedRoute path={`${match.path}/:id`}>
                 <CustomerAccount onClose={() => push(`${match.url}`)} />  
             </SuspendedRoute> */}
-            
-            {/* <SuspendedRoute path={`${match.path}/Customer-edit`}> */}
-            <SuspendedRoute path={`${match.path}/:lahari`}>
-              <CustomerAccount onClose={() => push(`${match.url}`)} /> 
-              {/* <CustomerDetails onClose={() => push(`${match.url}`)} /> */}
-            </SuspendedRoute>
-          
+
+          {/* <SuspendedRoute path={`${match.path}/Customer-edit`}> */}
+          {/* <SuspendedRoute path={`${match.path}/:lahari`}>
+              <CustomerAccount onClose={() => push(`${match.url}`)} />  */}
+          {/* <CustomerDetails onClose={() => push(`${match.url}`)} /> */}
+          {/* </SuspendedRoute> */}
+
           {/* <SuspendedRoute path={`${match.path}/Customer-create`}>
             <CustomerCreate  onClose={() => push(`${match.url}`)} />
             </SuspendedRoute> */}
-          </Switch> 
-        </Spacings.Stack>
+        </Switch>
+      </Spacings.Stack>
       {/* ) : null} */}
     </Spacings.Stack>
   );

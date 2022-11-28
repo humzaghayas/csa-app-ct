@@ -19,11 +19,11 @@ import { PERMISSIONS } from '../../../../constants';
 //   useCustomerDetailsCreator,
 // } from '../../../../hooks/use-Customer-connector/use-Customere-graphql-connector';
 import { docToFormValues, formValuesToDoc } from './conversions';
-import CustomerCreateForm from './customer-create-form';
+import CustomerMessagesForm from './customer-messages-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
 
-const CustomerCreate = (props) => {
+const CustomerMessages = (props) => {
   const intl = useIntl();
   const params = useParams();
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
@@ -33,19 +33,46 @@ const CustomerCreate = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
-  // console.log("props",JSON.stringify(props));
   // const showNotification = useShowNotification();
   // const showApiErrorNotification = useShowApiErrorNotification();
   // const CustomerDetailsCreator = useCustomerDetailsCreator();
   const handleSubmit = useCallback(
-    
+    // async (formikValues, formikHelpers) => {
+    //   const data = formValuesToDoc(formikValues);
+    //   try {
+    //     await CustomerDetailsCreator.execute({
+    //       nextDraft: data,
+    //     });
+    //     showNotification({
+    //       kind: 'success',
+    //       domain: DOMAINS.SIDE,
+    //       text: intl.formatMessage(messages.CustomerMessagesd),
+    //     });
+    //   } catch (graphQLErrors) {
+    //     const transformedErrors = transformErrors(graphQLErrors);
+    //     if (transformedErrors.unmappedErrors.length > 0) {
+    //       showApiErrorNotification({
+    //         errors: transformedErrors.unmappedErrors,
+    //       });
+    //     }
+
+    //     formikHelpers.setErrors(transformedErrors.formErrors);
+    //   }
+    // },
+    // [
+    //   CustomerDetailsCreator,
+    //   dataLocale,
+    //   intl,
+    //   projectLanguages,
+    //   showApiErrorNotification,
+    //   showNotification,
+    // ]
   );
 
   return (
-    <CustomerCreateForm
+    <CustomerMessagesForm
     initialValues={docToFormValues(null, projectLanguages)}
     onSubmit={handleSubmit}
-    customer={props.customer}
     isReadOnly={!canManage}
     dataLocale={dataLocale}
     >
@@ -71,11 +98,11 @@ const CustomerCreate = (props) => {
           // </FormModalPage>
         );
       }}
-    </CustomerCreateForm>
+    </CustomerMessagesForm>
   );
 };
-CustomerCreate.displayName = 'CustomerDetails';
-CustomerCreate.propTypes = {
+CustomerMessages.displayName = 'CustomerMessages';
+CustomerMessages.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
-export default CustomerCreate;
+export default CustomerMessages;
