@@ -33,7 +33,13 @@ const validate = (formikValues) => {
   if (TextInput.isEmpty(formikValues.customerGroup)) errors.customerGroup.missing = true;
   if (!formikValues.roles || formikValues.roles.length === 0)
     errors.roles.missing = true;
-    
+
+  // if (TextInput.isEmpty(formikValues.key)) {
+  //   errors.key.missing = true;
+  // }
+  // if (Array.isArray(formikValues.roles) && formikValues.roles.length === 0) {
+  //   errors.roles.missing = true;
+  // }
   return omitEmpty(errors);
 };
 

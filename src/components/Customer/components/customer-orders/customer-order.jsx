@@ -27,6 +27,9 @@ import {
   useDataTableSortingState,
 } from '@commercetools-uikit/hooks';
 import DataTable from '@commercetools-uikit/data-table';
+import ToggleInput from '@commercetools-uikit/toggle-input';
+import SecondaryButton from '@commercetools-uikit/secondary-button';
+import IconButton from '@commercetools-uikit/icon-button';
 // import {
 //   useCustomerDetailsCreator,
 // } from '../../../../hooks/use-Customer-connector/use-Customere-graphql-connector';
@@ -35,33 +38,66 @@ import { docToFormValues, formValuesToDoc } from './conversions';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
 import Spacings from '@commercetools-uikit/spacings';
-const rows = [
-  { Ordernumber: '00000001',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ready'},
-  { Ordernumber: '00000002',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ready'},
-  { Ordernumber: '00000003',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ready'},
-];
+import { MailIcon } from '@commercetools-uikit/icons';
 
-const columns = [
+// function getIcon() {
+//   return(
+//     <div>
+//       <p>lahari</p>
+//     </div>
+//   )
+// }
+// const getIcon =   <div>Some Text <a>llll</a></div>
 
-  { key: 'Ordernumber', label: 'Order number' },
-  { key: 'FirstName', label: 'Customer' },
-  { key: 'DateCreated', label: 'Date Created' },
-  { key: 'DeliveryMode', label: 'Delivery Mode' },
-  { key: 'Status', label: 'Status' },
-];
 const CustomerOrder = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
-
+  const rows = [
+    { Ordernumber: '00000001',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status: 'Ordered'},
+    { Ordernumber: '00000002',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ordered'},
+    { Ordernumber: '00000003',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ordered'},
+    { Ordernumber: '00000003',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Cancelled'},
+  ];
+  // const { push } = useHistory();
+  const columns = [
+  
+    { key: 'Ordernumber', label: 'Order number'  },
+    { key: 'FirstName', label: 'Customer' },
+    { key: 'DateCreated', label: 'Date Created' },
+    { key: 'DeliveryMode', label: 'Delivery Mode',renderItem: (row) => (
+      <SecondaryButton label={row.DeliveryMode} onClick={() => alert('Button clicked')} />) },
+    { key: 'Status', label: 'Status',renderItem: (row) => (
+      <div>
+        <p>Ordered</p>
+      <IconButton
+      icon={<MailIcon />}
+      // label={row.Status}
+      onClick={() => push(`/csa_project/drl-b2b-extension/customer-order-messages`)}
+    />
+    </div>)},
+  ];
   return (
     <Spacings.Stack scale="xl">
     
       {/* {data ? ( */}
         <Spacings.Stack scale="l">
-         
+        <ToggleInput
+    isDisabled={false}
+    isChecked={true}
+    // onChange={(event) => {
+    //    if(event.target.checked == true){
+        
+    //    }else{
+
+    //    }
+    // }}
+    
+     onChange={(event) => alert(event.target.checked)}
+    size="medium"
+  />
           <DataTable
             isCondensed
             columns={columns}

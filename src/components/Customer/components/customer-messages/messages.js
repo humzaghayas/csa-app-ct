@@ -44,7 +44,7 @@ export default defineMessages({
   },
   modalTitle: {
     id: 'EmployeeDetails.modalTitle',
-    defaultMessage: 'Add New Rule',
+    defaultMessage: 'Create Ticket',
   },
   EmployeeDetailsErrorMessage: {
     id: 'EmployeeDetails.errorMessage',

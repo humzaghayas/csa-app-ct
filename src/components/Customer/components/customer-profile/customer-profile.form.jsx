@@ -6,6 +6,7 @@ import TextField from '@commercetools-uikit/text-field';
 import SelectField from '@commercetools-uikit/select-field';
 import Spacings from '@commercetools-uikit/spacings';
 import validate from './validate';
+
 import { CUSTOMER_PRIORITY } from './constants';
 import DateField from '@commercetools-uikit/date-field';
 import RadioField from '@commercetools-uikit/radio-field';
@@ -22,6 +23,7 @@ const getCustomerPriorityOptions = Object.keys(CUSTOMER_PRIORITY).map(
   })
 );
 
+
 const CustomerProfileForm = (props) => {
   const intl = useIntl();
   console.log("propsPF",props);
@@ -34,6 +36,7 @@ const CustomerProfileForm = (props) => {
   console.log("formik",formik);
   const formElements = (
     <Spacings.Stack scale="l">
+
    <form onSubmit={formik.handleSubmit}>
       <Spacings.Inline>
         <TextField
@@ -52,11 +55,13 @@ const CustomerProfileForm = (props) => {
           value="Software Engineer"
           // value={formik.values.key}
           // value={formik.values.amount}
+
           errors={formik.errors.amount}
           touched={formik.touched.amount}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
+
         />
       </Spacings.Inline>
       <Spacings.Inline>
@@ -66,6 +71,7 @@ const CustomerProfileForm = (props) => {
           value="Royal cyber"
           // value={formik.values.key}
           // value={formik.values.amount}
+
           errors={formik.errors.amount}
           touched={formik.touched.amount}
           onChange={formik.handleChange}
@@ -86,6 +92,7 @@ const CustomerProfileForm = (props) => {
         />
       </Spacings.Inline>
       <Spacings.Inline>
+
         {/* <DateField
           title="Date Of Birth"
           value="1998-08-14"
@@ -108,6 +115,7 @@ const CustomerProfileForm = (props) => {
           name="role"
           title="Age Group"
           value="English"
+
           //  value={getCustomerPriorityOptions[Low]}
           errors={formik.errors.role}
           touched={formik.touched.role}
@@ -117,6 +125,7 @@ const CustomerProfileForm = (props) => {
           horizontalConstraint={13}
           isRequired
         />
+
       </Spacings.Inline>
       <Spacings.Inline>
         <RadioField
@@ -147,16 +156,20 @@ const CustomerProfileForm = (props) => {
         <SelectField
           name="role"
           title="Customer Group"
+
           value="English"
           //  value={getCustomerPriorityOptions[Low]}
           errors={formik.errors.role}
           touched={formik.touched.role}
           onChange={formik.handleChange}
+
           options={getCustomerPriorityOptions}
+
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
           isRequired
         />
+
       </Spacings.Inline>
 
     <Spacings.Inline>
@@ -172,6 +185,7 @@ const CustomerProfileForm = (props) => {
           />
         </Spacings.Inline>
         </form>
+
     </Spacings.Stack>
   );
 

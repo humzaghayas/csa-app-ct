@@ -13,6 +13,7 @@ import CustomerCreate from './components/Customer/components/customer-create/cus
 import Orders from './components/Orders/components/order-list/order-list';
 import OrderAccount from './components/Orders/components/order-account/order-account';
 import TicketCreate from './components/Ticket/components/ticket-create/ticket-create';
+import CustomerMessages from './components/Customer/components/customer-messages/customer-messages';
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
 
@@ -53,9 +54,15 @@ const ApplicationRoutes = () => {
         <Route  path={`${match.path}/order-edit/:id`}>
       <OrderAccount linkToWelcome={match.url} />
         </Route>
-        <Route  path={`${match.path}/customer-edit/:lahari`}>
+        <Route  path={`${match.path}/customer-edit`}>
         <CustomerAccount  linkToWelcome={match.url} />
         </Route>
+        <Route  path={`${match.path}/customer-order-messages`}>
+      <CustomerMessages linkToWelcome={match.url} />
+        </Route>
+        {/* <Route  path={`${match.path}/:Lahari`}>
+        <CustomerCreate linkToWelcome={match.url} />
+        </Route> */}
         <Route  path={`${match.path}/ticket-edit/:id`}>
         <TicketAccount linkToWelcome={match.url} />
         </Route>

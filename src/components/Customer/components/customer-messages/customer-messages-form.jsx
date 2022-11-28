@@ -6,6 +6,7 @@ import TextField from '@commercetools-uikit/text-field';
 import SelectField from '@commercetools-uikit/select-field';
 import DateInput from '@commercetools-uikit/date-input';
 import Spacings from '@commercetools-uikit/spacings';
+import Text from '@commercetools-uikit/text';
 import validate from './validate';
 import messages from './messages';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
@@ -14,7 +15,14 @@ import Constraints from '@commercetools-uikit/constraints';
 import DataTable from '@commercetools-uikit/data-table';
 import { useState } from 'react';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
-import { PlusBoldIcon } from '@commercetools-uikit/icons';
+import { PlusBoldIcon , MailIcon ,CartIcon } from '@commercetools-uikit/icons';
+import { ContentNotification } from '@commercetools-uikit/notifications';
+import {
+  Link as RouterLink,
+  Switch,
+  useHistory,
+  useRouteMatch,
+} from 'react-router-dom';
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
 //   value: EMPLOYEE_ROLES[key],
@@ -30,26 +38,26 @@ const getCustomerPriorityOptions = Object.keys(CUSTOMER_PRIORITY).map((key) => (
 }));
 const rows = [
  
-  { id: '--',CompanyName:'--',Address:'--',City:'--',PostalCode:'--',State:'--',Region:'--',Country:'--',AddressType:'--'},
+  { id: '--',Subject:'test',Message:'test',From:'[customer]',DataSent:'5th Aug 2022 @10.00 AM',Status:'Read',Action:'--'},
+  { id: '--',Subject:'test',Message:'test',From:'[customer]',DataSent:'5th Aug 2022 @10.00 AM',Status:'Read',Action:'--'},
 ];
 
 const columns = [
 
-  { key: 'ContactName', label: 'ContactName' },
-  { key:'CompanyName', label: 'CompanyName' },
-  { key: 'Address', label: 'Address' },
-  { key: 'City', label: 'City' },
-  { key: 'PostalCode', label: 'PostalCode' },
-  { key: 'State', label: 'State' },
-  { key: 'Region', label: 'Region' },
-  { key: 'Country', label: 'Country' },
- 
-  { key: 'AddressType', label: 'Address Type' },
+  { key: 'Subject', label: 'Subject' },
+  { key:'Message', label: 'Message' },
+  { key: 'From', label: 'From' },
+  { key: 'DataSent', label: 'DataSent' },
+  { key: 'Status', label: 'Status' },
+  { key: 'Action', label: 'Action' },
+
+  
 ];
 
-const CustomerAddressForm = (props) => {
+const CustomerMessagesForm = (props) => {
    const[value , setValue] = useState(false)
   const intl = useIntl();
+  const { push } = useHistory();
   const formik = useFormik({
     initialValues: props.initialValues,
     onSubmit: props.onSubmit,
@@ -60,9 +68,15 @@ const CustomerAddressForm = (props) => {
   const formElements = (
     <Spacings.Stack scale="l">
       {/* <Spacings.Inline> */}
-      <Spacings.Stack scale="s">
+      <Spacings.Stack scale="m">
+        <Text.Headline as="h1">{'View messages for the order #101 '}</Text.Headline>;
+      <ContentNotification type="success">Your message was saved and sent to the customer along with a link for them to reply </ContentNotification>
+      <Spacings.Inline>
+      <SecondaryButton iconLeft={<MailIcon />} label="Send a Message" onClick={() => setValue(true)} size = "small"/>
+      <SecondaryButton  iconLeft={<CartIcon />} label="View Orders" onClick={() => push(`/csa_project/drl-b2b-extension/Customer-edit/Customers-orders`)} size = "small"/>
+      </Spacings.Inline>  
              <Constraints.Horizontal min={13}>
-             <SecondaryButton iconLeft={<PlusBoldIcon />} label="Add Address" onClick={() => setValue(true)} />;
+           
             <DataTable rows={rows} columns={columns}  />
 
           </Constraints.Horizontal>
@@ -193,8 +207,8 @@ const CustomerAddressForm = (props) => {
     handleReset: formik.handleReset,
   });
 };
-CustomerAddressForm.displayName = 'CustomerAddressForm';
-CustomerAddressForm.propTypes = {
+CustomerMessagesForm.displayName = 'CustomerMessagesForm';
+CustomerMessagesForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   initialValues: PropTypes.shape({
     id: PropTypes.string,
@@ -203,4 +217,4 @@ CustomerAddressForm.propTypes = {
   dataLocale: PropTypes.string.isRequired,
 };
 
-export default CustomerAddressForm;
+export default CustomerMessagesForm;

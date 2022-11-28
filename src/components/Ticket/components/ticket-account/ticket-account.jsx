@@ -50,9 +50,9 @@ const TicketAccount = (props) => {
 
   return (
     <TabularDetailPage
-      title="Detail page"
+      title=" "
       //  onPreviousPathClick={() => history.push(`Ticket-list`)}
-      onPreviousPathClick={() => history.push(`${match.url}`)}
+      onPreviousPathClick={() => history.push(`/csa_project/drl-b2b-extension/Tickets`)}
       previousPathLabel="Go to View Tickets"
       tabControls={
         <>

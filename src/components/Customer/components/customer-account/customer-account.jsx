@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 import Spacings from '@commercetools-uikit/spacings';
 import { Fragment } from 'react';
 import styles from './customer-account-module.css';
+import Avatar from '@commercetools-uikit/avatar';
 // import RequiredApproval from '../required-approval';
 // import AddBudget from '../add-budget';
 // import AddNewRule from '../add-new-rule';
@@ -55,24 +56,25 @@ const CustomerAccount = (props) => {
   // console.log("params.id",params.id);
   return (
     <TabularDetailPage
-      title="Detail page"
-      //  onPreviousPathClick={() => history.push(`Customer-list`)}
-      onPreviousPathClick={() => history.push(`${match.url}`)}
+     title=" "
+         onPreviousPathClick={() => history.push(`/csa_project/drl-b2b-extension/Customers`)}
+      //  onPreviousPathClick={() => history.push(`${match.url}`)}
       previousPathLabel="Go to View Customers"
      
       tabControls={
         <>
-        <Spacings.Stack scale="l">
+        <Spacings.Stack scale="xxl">
           <Spacings.Inline>
-        <div className={styles.companyLogoBackground}>
-        <Fragment>
-          {/* <React.Fragment> */}
-          <img src={NoImageIcon} alt="logo" width={64} height={64} className={styles.LogoImage}/>
-                           
-                            </Fragment>
-        {/* <img src={NoImageIcon} alt="logo" width={64} height={64} className={styles.customerImage}/> */}
-        </div>
+        
+          <Avatar
+    gravatarHash="20c9c1b252b46ab49d6f7a4cee9c3e68"
+    firstName="Lahari"
+    lastName="Ramurthi"
+    size="l"
+  />
+ 
          <div className={styles.customerName}>
+
          {/* <Text size="big" color="primary">Description</Text> */}
          <h1>{customer?.firstName} 360 view</h1>
            {/* <h3 className={styles.customerName}>Lahari</h3> */}
@@ -84,7 +86,9 @@ const CustomerAccount = (props) => {
              <h4>Digital Commerce</h4>
              </Spacings.Inline>
            </div> */}
+
          </div>
+     
          </Spacings.Inline>
          </Spacings.Stack>
           <Spacings.Stack scale="xl">
@@ -110,8 +114,8 @@ const CustomerAccount = (props) => {
                 label="Addresses"
               />
               <TabHeader to={`${match.url}/Customers-tickets`} label="Tickets" />
-              <TabHeader to={`${match.url}/Customers-sumary`} label="Reviews" />
-              <TabHeader to={`${match.url}/Customers-password`} label="Password" />
+              <TabHeader to={`${match.url}/Customers-sumary`} label="Returns" />
+              {/* <TabHeader to={`${match.url}/Customers-password`} label="Password" /> */}
               {/* <div style="margin-left :500px"> */}
            
               {/* </div> */}
@@ -146,9 +150,9 @@ const CustomerAccount = (props) => {
         <Route path={`${match.path}/Customers-orders`}>
            <CustomerOrder />
         </Route>
-        <Route path={`${match.path}/Customers-password`}>
+        {/* <Route path={`${match.path}/Customers-password`}>
            <CustomerPassword />
-        </Route>
+        </Route> */}
         <Route path={`${match.path}/Customers-Address`}>
           <CustomerAddress />
         </Route>
