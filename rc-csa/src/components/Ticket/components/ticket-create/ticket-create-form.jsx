@@ -22,6 +22,9 @@ import { useFileDeleteService, useFileUploadService } from '../../../../hooks/us
 import { useFindCustomerService } from '../../../../hooks/use-customer-connector';
 import { docToFormValuesCustomer } from './conversions';
 import { TICKET_STATUS, TICKET_WORKFLOW } from 'ct-tickets-helper-api/lib/constants';
+import Tickets from '../Ticket-list/ticket-list';
+import { useHistory, useRouteMatch } from 'react-router-dom';
+
 
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
@@ -225,20 +228,15 @@ const handleTicketCategory=(e)=>{
   formik.handleChange(e);
 }
 
-
-const saveTicket =(e)=>{
-
-
-  // if(formik.errors && formik.errors.isError){
-
-  //   return;
-  // }
-  //setDisableSubmitButton(true);
+const match = useRouteMatch();
+let history = useHistory();
+const saveTicket =async (e)=>{
   formik.handleSubmit(e);
+  //history.push(`${match.url}/Tickets`)
 }
 
 
-  return (
+  return (<>
     <form onSubmit={formik.handleSubmit}>
         <Spacings.Stack scale="l">
         
@@ -487,6 +485,8 @@ const saveTicket =(e)=>{
         </CollapsiblePanel>
         </Spacings.Stack>
     </form>
+
+</>
   )}
 
   export default TicketCreateForm;

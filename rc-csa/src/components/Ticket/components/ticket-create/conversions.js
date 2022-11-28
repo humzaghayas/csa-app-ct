@@ -45,7 +45,7 @@ export const formValuesToDoc = (formValues) => {
       || doc.category == CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
       || doc.category == CONSTANTS.TICKET_TYPE_RETURNS)){
         doc.orderNumber= !TextInput.isEmpty(formValues.orderNumber) 
-          ? formValues.orderNumber
+          ? formValues?.orderNumber
           : undefined;
       }
     doc.message= !TextInput.isEmpty(formValues.message)

@@ -23,7 +23,6 @@ const getCustomerPriorityOptions = Object.keys(CUSTOMER_PRIORITY).map(
   })
 );
 
-
 const CustomerProfileForm = (props) => {
   const intl = useIntl();
   console.log("propsPF",props);
@@ -36,6 +35,9 @@ const CustomerProfileForm = (props) => {
   console.log("formik",formik);
   const formElements = (
     <Spacings.Stack scale="l">
+
+
+
 
    <form onSubmit={formik.handleSubmit}>
       <Spacings.Inline>
@@ -56,11 +58,17 @@ const CustomerProfileForm = (props) => {
           // value={formik.values.key}
           // value={formik.values.amount}
 
+
+
+
           errors={formik.errors.amount}
           touched={formik.touched.amount}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
+
+
+
 
         />
       </Spacings.Inline>
@@ -71,6 +79,9 @@ const CustomerProfileForm = (props) => {
           value="Royal cyber"
           // value={formik.values.key}
           // value={formik.values.amount}
+
+
+
 
           errors={formik.errors.amount}
           touched={formik.touched.amount}
@@ -92,6 +103,9 @@ const CustomerProfileForm = (props) => {
         />
       </Spacings.Inline>
       <Spacings.Inline>
+
+
+
 
         {/* <DateField
           title="Date Of Birth"
@@ -116,6 +130,9 @@ const CustomerProfileForm = (props) => {
           title="Age Group"
           value="English"
 
+
+
+
           //  value={getCustomerPriorityOptions[Low]}
           errors={formik.errors.role}
           touched={formik.touched.role}
@@ -125,6 +142,9 @@ const CustomerProfileForm = (props) => {
           horizontalConstraint={13}
           isRequired
         />
+
+
+
 
       </Spacings.Inline>
       <Spacings.Inline>
@@ -157,11 +177,18 @@ const CustomerProfileForm = (props) => {
           name="role"
           title="Customer Group"
 
+
+
+
           value="English"
           //  value={getCustomerPriorityOptions[Low]}
           errors={formik.errors.role}
           touched={formik.touched.role}
           onChange={formik.handleChange}
+
+
+          options={getCustomerPriorityOptions}
+
 
           options={getCustomerPriorityOptions}
 
@@ -169,6 +196,9 @@ const CustomerProfileForm = (props) => {
           horizontalConstraint={13}
           isRequired
         />
+
+
+
 
       </Spacings.Inline>
 
@@ -185,6 +215,9 @@ const CustomerProfileForm = (props) => {
           />
         </Spacings.Inline>
         </form>
+
+
+
 
     </Spacings.Stack>
   );
