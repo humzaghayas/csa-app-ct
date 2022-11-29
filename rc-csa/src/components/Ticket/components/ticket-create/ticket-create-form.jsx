@@ -17,13 +17,15 @@ import { useState } from 'react';
 import{CONSTANTS} from 'ct-tickets-helper-api'
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
-import { useUserListFetcher } from '../../../../hooks/use-register-user-connector/use-service-connector';
+//import {  useUserListFetcher } from '../../../../hooks/use-order-connector/use-order-service-connector';
 import { useFileDeleteService, useFileUploadService } from '../../../../hooks/use-file-upload-connector';
 import { useFindCustomerService } from '../../../../hooks/use-customer-connector';
 import { docToFormValuesCustomer } from './conversions';
 import { TICKET_STATUS, TICKET_WORKFLOW } from 'ct-tickets-helper-api/lib/constants';
 import Tickets from '../Ticket-list/ticket-list';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
+import { useUserListFetcher } from '../../../../hooks/use-register-user-connector';
+import { useOrderService } from '../../../../hooks/use-order-connector';
 
 
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
@@ -175,6 +177,18 @@ useEffect(async() => {
 
   console.log('use effect 1',formik.values.emai);
 },[formik?.values?.email]);
+
+
+const [orderId,setOrderId]=useState(null);
+const{execute:execOrderService} = useOrderService();
+useEffect(async() => {
+  if(formik?.values?.orderNumber &&formik?.values?.isEdit && orderId === null){
+     const order = await execOrderService(formik?.values?.orderNumber);
+     setOrderId(order?.data?.order?.id);
+ 
+     console.log('Order use effect ',order);
+  }
+ },[formik?.values?.orderNumber]);
 
 
 const{execute} = useFileUploadService();
@@ -379,7 +393,13 @@ const saveTicket =async (e)=>{
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                           isDisabled={!canManage || (!customerFound  || formik.values.isEdit) }/>
-                  </Spacings.Stack>
+
+                  {orderId &&
+                    <Link to={`/${projectKey}/orders/${orderId}/general`}>
+                            {formik.values.orderNumber}
+                        </Link>
+                      }
+                          </Spacings.Stack>
                   }
         </Spacings.Inline>
 
