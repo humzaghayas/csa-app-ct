@@ -94,3 +94,13 @@ export const FETCH_TICKETS=`
   }
 }
  `
+
+ export const FETCH_ORDER_INFO_BY_ORDERNUMBER=`
+ query($orderNumber:String){
+  order(orderNumber:$orderNumber){
+    id
+    orderState
+    orderNumber
+  }
+  }
+  `

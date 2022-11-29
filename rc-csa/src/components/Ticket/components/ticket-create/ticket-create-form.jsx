@@ -17,13 +17,15 @@ import { useState } from 'react';
 import{CONSTANTS} from 'ct-tickets-helper-api'
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
-import { useUserListFetcher } from '../../../../hooks/use-register-user-connector/use-service-connector';
+//import {  useUserListFetcher } from '../../../../hooks/use-order-connector/use-order-service-connector';
 import { useFileDeleteService, useFileUploadService } from '../../../../hooks/use-file-upload-connector';
 import { useFindCustomerService } from '../../../../hooks/use-customer-connector';
 import { docToFormValuesCustomer } from './conversions';
 import { TICKET_STATUS, TICKET_WORKFLOW } from 'ct-tickets-helper-api/lib/constants';
 import Tickets from '../Ticket-list/ticket-list';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { Link, useHistory, useRouteMatch } from 'react-router-dom';
+import { useUserListFetcher } from '../../../../hooks/use-register-user-connector';
+import { useOrderService } from '../../../../hooks/use-order-connector';
 
 
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
@@ -56,7 +58,13 @@ const getTicketContactTypesOpt= Object.keys(getTicketContactTypesVals).map((key)
 
 
 const TicketCreateForm = (props) => {
-  const dataLocale = useApplicationContext((context) => context.dataLocale);
+  //const dataLocale = useApplicationContext((context) => context.dataLocale);
+
+  const { dataLocale, entryPointUriPath,projectKey } =useApplicationContext((context) => ({
+    dataLocale: context.dataLocale ?? '',
+    entryPointUriPath:context.environment.entryPointUriPath,
+    projectKey:context.project.key
+  }));
 
   const formik = useFormik({
     // Pass initial values from the parent component.
@@ -171,6 +179,18 @@ useEffect(async() => {
 },[formik?.values?.email]);
 
 
+const [orderId,setOrderId]=useState(null);
+const{execute:execOrderService} = useOrderService();
+useEffect(async() => {
+  if(formik?.values?.orderNumber &&formik?.values?.isEdit && orderId === null){
+     const order = await execOrderService(formik?.values?.orderNumber);
+     setOrderId(order?.data?.order?.id);
+ 
+     console.log('Order use effect ',order);
+  }
+ },[formik?.values?.orderNumber]);
+
+
 const{execute} = useFileUploadService();
 const {deleteFileHandle} = useFileDeleteService();
 const deleteFileFromStorage=(e)=>{
@@ -232,7 +252,8 @@ const match = useRouteMatch();
 let history = useHistory();
 const saveTicket =async (e)=>{
   formik.handleSubmit(e);
-  //history.push(`${match.url}/Tickets`)
+
+  history.push(`/${projectKey}/${entryPointUriPath}/Tickets`);
 }
 
 
@@ -372,9 +393,26 @@ const saveTicket =async (e)=>{
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                           isDisabled={!canManage || (!customerFound  || formik.values.isEdit) }/>
-                  </Spacings.Stack>
+
+                  {orderId &&
+                    <Link to={`/${projectKey}/orders/${orderId}/general`}>
+                            {formik.values.orderNumber}
+                        </Link>
+                      }
+                          </Spacings.Stack>
                   }
         </Spacings.Inline>
+
+        {formik.values.isEdit && formik.values.category && (formik.values.category== CONSTANTS.TICKET_TYPE_REQUEST
+                      || formik.values.category== CONSTANTS.TICKET_TYPE_GENERAL_INFO_CHANGE)
+               && 
+          <Spacings.Stack scale="s">
+               <Link to={`/${projectKey}/${entryPointUriPath}/customer-account/${customer?.id}/Customers-summary`}>
+                    {formik.values.email}
+                </Link>
+          </Spacings.Stack>
+        }
+
         <Spacings.Stack scale="s">
         <SelectField
               name="priority"
