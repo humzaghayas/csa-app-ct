@@ -23,7 +23,7 @@ import { useFindCustomerService } from '../../../../hooks/use-customer-connector
 import { docToFormValuesCustomer } from './conversions';
 import { TICKET_STATUS, TICKET_WORKFLOW } from 'ct-tickets-helper-api/lib/constants';
 import Tickets from '../Ticket-list/ticket-list';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 
 
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
@@ -56,7 +56,13 @@ const getTicketContactTypesOpt= Object.keys(getTicketContactTypesVals).map((key)
 
 
 const TicketCreateForm = (props) => {
-  const dataLocale = useApplicationContext((context) => context.dataLocale);
+  //const dataLocale = useApplicationContext((context) => context.dataLocale);
+
+  const { dataLocale, entryPointUriPath,projectKey } =useApplicationContext((context) => ({
+    dataLocale: context.dataLocale ?? '',
+    entryPointUriPath:context.environment.entryPointUriPath,
+    projectKey:context.project.key
+  }));
 
   const formik = useFormik({
     // Pass initial values from the parent component.
@@ -232,7 +238,8 @@ const match = useRouteMatch();
 let history = useHistory();
 const saveTicket =async (e)=>{
   formik.handleSubmit(e);
-  //history.push(`${match.url}/Tickets`)
+
+  history.push(`/${projectKey}/${entryPointUriPath}/Tickets`);
 }
 
 
@@ -375,6 +382,17 @@ const saveTicket =async (e)=>{
                   </Spacings.Stack>
                   }
         </Spacings.Inline>
+
+        {formik.values.isEdit && formik.values.category && (formik.values.category== CONSTANTS.TICKET_TYPE_REQUEST
+                      || formik.values.category== CONSTANTS.TICKET_TYPE_GENERAL_INFO_CHANGE)
+               && 
+          <Spacings.Stack scale="s">
+               <Link to={`/${projectKey}/${entryPointUriPath}/customer-account/${customer?.id}/Customers-summary`}>
+                    {formik.values.email}
+                </Link>
+          </Spacings.Stack>
+        }
+
         <Spacings.Stack scale="s">
         <SelectField
               name="priority"
