@@ -36,18 +36,19 @@ import { transformErrors } from './transform-errors';
 import messages from './messages';
 import Spacings from '@commercetools-uikit/spacings';
 const rows = [
-  { Ordernumber: '00000001',Date:'Apr 11, 2022,2:54:47...',PaymentMethod:'Standard Delivery',Status:'Ready'},
-  { Ordernumber: '00000002',Date:'Apr 11, 2022,2:54:47...',PaymentMethod:'Standard Delivery',Status:'Ready'},
-  { Ordernumber: '00000003',Date:'Apr 11, 2022,2:54:47...',PaymentMethod:'Standard Delivery',Status:'Ready'},
+  { Ordernumber: '00000001',PaymentDate:'Apr 11, 2022,2:54:47...',PaymentMethod:'COD',Status:'Ready',CancelledDate:'--'},
+  { Ordernumber: '00000002',PaymentDate:'Apr 11, 2022,2:54:47...',PaymentMethod:'COD',Status:'Ready',CancelledDate:'--'},
+  { Ordernumber: '00000003',PaymentDate:'Apr 11, 2022,2:54:47...',PaymentMethod:'COD',Status:'Ready',CancelledDate:'--'},
 ];
 
 const columns = [
 
   { key: 'Ordernumber', label: 'Order number' },
  
-  { key: 'Date', label: 'Date' },
-  { key: 'PaymentMethod', label: 'PaymentMethod' },
+  { key: 'PaymentDate', label: 'Payment Date' },
+  { key: 'PaymentMethod', label: 'Payment Method' },
   { key: 'Status', label: 'Status' },
+  {key: 'CancelledDate', label: 'Cancelled Date'}
 ];
 const CustomerPayment = (props) => {
   const intl = useIntl();

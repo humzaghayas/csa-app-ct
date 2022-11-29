@@ -60,9 +60,12 @@ const CustomerAddressForm = (props) => {
   const formElements = (
     <Spacings.Stack scale="l">
       {/* <Spacings.Inline> */}
-      <Spacings.Stack scale="s">
+      <Spacings.Stack scale="m">
+            
+             <Spacings.Stack scale="s">
+             <SecondaryButton iconLeft={<PlusBoldIcon />} label="Add Address" onClick={() => setValue(true)} />
+             </Spacings.Stack>
              <Constraints.Horizontal min={13}>
-             <SecondaryButton iconLeft={<PlusBoldIcon />} label="Add Address" onClick={() => setValue(true)} />;
             <DataTable rows={rows} columns={columns}  />
 
           </Constraints.Horizontal>
