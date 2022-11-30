@@ -22,6 +22,7 @@ import {
   Switch,
   useHistory,
   useRouteMatch,
+  useParams
 } from 'react-router-dom';
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
@@ -38,8 +39,8 @@ const getCustomerPriorityOptions = Object.keys(CUSTOMER_PRIORITY).map((key) => (
 }));
 const rows = [
  
-  { id: '--',Subject:'test',Message:'test',From:'[customer]',DataSent:'5th Aug 2022 @10.00 AM',Status:'Read',Action:'--'},
-  { id: '--',Subject:'test',Message:'test',From:'[customer]',DataSent:'5th Aug 2022 @10.00 AM',Status:'Read',Action:'--'},
+  { id: '--',Subject:'test',Message:'test',From:'[customer]',DateSent:'5th Aug 2022 @10.00 AM',Status:'Read',Action:'--'},
+  { id: '--',Subject:'test',Message:'test',From:'[customer]',DateSent:'5th Aug 2022 @10.00 AM',Status:'Read',Action:'--'},
 ];
 
 const columns = [
@@ -47,7 +48,7 @@ const columns = [
   { key: 'Subject', label: 'Subject' },
   { key:'Message', label: 'Message' },
   { key: 'From', label: 'From' },
-  { key: 'DataSent', label: 'DataSent' },
+  { key: 'DateSent', label: 'Date Sent' },
   { key: 'Status', label: 'Status' },
   { key: 'Action', label: 'Action' },
 
@@ -64,6 +65,8 @@ const CustomerMessagesForm = (props) => {
     validate,
     enableReinitialize: true,
   });
+  const params = useParams();
+  const OrderId = params.id;
 
   const formElements = (
     <Spacings.Stack scale="l">
@@ -73,7 +76,7 @@ const CustomerMessagesForm = (props) => {
       <ContentNotification type="success">Your message was saved and sent to the customer along with a link for them to reply </ContentNotification>
       <Spacings.Inline>
       <SecondaryButton iconLeft={<MailIcon />} label="Send a Message" onClick={() => setValue(true)} size = "small"/>
-      <SecondaryButton  iconLeft={<CartIcon />} label="View Orders" onClick={() => push(`/csa_project/drl-b2b-extension/Customer-edit/Customers-orders`)} size = "small"/>
+      <SecondaryButton  iconLeft={<CartIcon />} label="View Orders" onClick={() => push(`/csa_project/csa-customer-tickets/customer-account/${OrderId}/Customers-orders`)} size = "small"/>
       </Spacings.Inline>  
              <Constraints.Horizontal min={13}>
            

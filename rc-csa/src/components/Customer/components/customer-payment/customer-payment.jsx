@@ -27,9 +27,6 @@ import {
   useDataTableSortingState,
 } from '@commercetools-uikit/hooks';
 import DataTable from '@commercetools-uikit/data-table';
-import ToggleInput from '@commercetools-uikit/toggle-input';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import IconButton from '@commercetools-uikit/icon-button';
 // import {
 //   useCustomerDetailsCreator,
 // } from '../../../../hooks/use-Customer-connector/use-Customere-graphql-connector';
@@ -38,69 +35,34 @@ import { docToFormValues, formValuesToDoc } from './conversions';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
 import Spacings from '@commercetools-uikit/spacings';
-import { MailIcon } from '@commercetools-uikit/icons';
+const rows = [
+  { Ordernumber: '00000001',PaymentDate:'Apr 11, 2022,2:54:47...',PaymentMethod:'COD',Status:'Ready',CancelledDate:'--'},
+  { Ordernumber: '00000002',PaymentDate:'Apr 11, 2022,2:54:47...',PaymentMethod:'COD',Status:'Ready',CancelledDate:'--'},
+  { Ordernumber: '00000003',PaymentDate:'Apr 11, 2022,2:54:47...',PaymentMethod:'COD',Status:'Ready',CancelledDate:'--'},
+];
 
-// function getIcon() {
-//   return(
-//     <div>
-//       <p>lahari</p>
-//     </div>
-//   )
-// }
-// const getIcon =   <div>Some Text <a>llll</a></div>
+const columns = [
 
-const CustomerOrder = (props) => {
+  { key: 'Ordernumber', label: 'Order number' },
+ 
+  { key: 'PaymentDate', label: 'Payment Date' },
+  { key: 'PaymentMethod', label: 'Payment Method' },
+  { key: 'Status', label: 'Status' },
+  {key: 'CancelledDate', label: 'Cancelled Date'}
+];
+const CustomerPayment = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
-  const params = useParams();
-  const OrderId = params.id;
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
-  const rows = [
-    { Ordernumber: '00000001',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status: 'Ordered'},
-    { Ordernumber: '00000002',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ordered'},
-    { Ordernumber: '00000003',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ordered'},
-    { Ordernumber: '00000003',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Cancelled'},
-  ];
-  // const { push } = useHistory();
-  const columns = [
-  
-    { key: 'Ordernumber', label: 'Order number'  },
-    { key: 'FirstName', label: 'Customer' },
-    { key: 'DateCreated', label: 'Date Created' },
-    { key: 'DeliveryMode', label: 'Delivery Mode',renderItem: (row) => (
-      <SecondaryButton label={row.DeliveryMode} onClick={() => alert('Button clicked')} />) },
-    { key: 'Status', label: 'Status',renderItem: (row) => (
-      <div>
-        <p>Ordered</p>
-      <IconButton
-      icon={<MailIcon />}
-      // label={row.Status}
-      onClick={() => push(`/csa_project/csa-customer-tickets/${OrderId}/customer-order-messages`)}
-    />
-    </div>)},
-  ];
+
   return (
     <Spacings.Stack scale="xl">
     
       {/* {data ? ( */}
         <Spacings.Stack scale="l">
-        <ToggleInput
-    isDisabled={false}
-    isChecked={true}
-    // onChange={(event) => {
-    //    if(event.target.checked == true){
-        
-    //    }else{
-
-    //    }
-    // }}
-    
-     onChange={(event) => alert(event.target.checked)}
-    size="medium"
-  />
- 
+         
           <DataTable
             isCondensed
             columns={columns}
@@ -122,8 +84,8 @@ const CustomerOrder = (props) => {
     </Spacings.Stack>
   );
 };
-CustomerOrder.displayName = 'CustomerDetails';
-CustomerOrder.propTypes = {
+CustomerPayment.displayName = 'CustomerDetails';
+CustomerPayment.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
 };
-export default CustomerOrder;
+export default CustomerPayment;
