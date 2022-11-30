@@ -88,7 +88,8 @@ const TicketCreateForm = (props) => {
   const [files, setFiles] = useState([]);
   const [customer, setCustomer] = useState(null);
   const [disableSubmitButton, setDisableSubmitButton] = useState(!canManage || !customerFound);
-  
+  const [isClosedCommentsPanel, setIsClosedCommentsPanel] = useState(true);
+
   const [workflowStatusses, setWorkflowStatusses] = useState([]);   
 
   useEffect(()=>{
@@ -492,19 +493,23 @@ const saveTicket =async (e)=>{
                     onBlur={formik.handleBlur}/>
 
                 {formik?.values?.comments && formik?.values?.comments.length > 0 && <>
-                  <CollapsibleMotion>
-                            {({ isOpen, toggle, containerStyles, registerContentNode }) => (
+                  <CollapsiblePanel
+                  isClosed={isClosedCommentsPanel}
+                  onToggle={()=>{setIsClosedCommentsPanel(!isClosedCommentsPanel);}}
+                  header="Show Comments"
+                                      >
+                            {/* {({ isOpen, toggle, containerStyles, registerContentNode }) => ( */}
                               <div>
 
-                              <SecondaryIconButton icon={<AngleUpDownIcon />} 
-                                                    label=""
+                              {/* <SecondaryIconButton icon={<AngleUpDownIcon />} 
+                                                    label="Show"
                                                     onClick={toggle}
-                                                  />
+                                                  >Show</SecondaryIconButton> */}
                                 {/* <button data-testid="button" onClick={toggle}>
                                   {isOpen ? 'Close' : 'Open'}
                                 </button> */}
-                                <div data-testid="container-node" style={containerStyles}>
-                                  <div data-testid="content-node" ref={registerContentNode}>
+                                {/* <div data-testid="container-node" style={containerStyles}>
+                                  <div data-testid="content-node" ref={registerContentNode}> */}
                                   {formik?.values?.comments?.map(function(cmt, index){
                                     //return (<Text.Detail>{cmt.comment}</Text.Detail>)
 
@@ -518,10 +523,10 @@ const saveTicket =async (e)=>{
                                   })}
                                       
                                   </div>
-                                </div>
-                              </div>
-                            )}
-                  </CollapsibleMotion>
+                              {/* //   </div>
+                              // </div> */}
+                            {/* // )} */}
+                  </CollapsiblePanel>
                   </>
                 }
                 <div>
