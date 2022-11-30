@@ -80,9 +80,10 @@ function getCreateTicketMutaion() {
 }
 exports.getCreateTicketMutaion = getCreateTicketMutaion;
 function getCreateTicketDraft(ticketInfo) {
+    var _a;
     return __awaiter(this, void 0, void 0, function () {
         var email, uuid, filesStr, d, commentsStr, orderNumberStr, value;
-        return __generator(this, function (_a) {
+        return __generator(this, function (_b) {
             email = ticketInfo.email;
             uuid = (0, uuid_1.v4)();
             if (!ticketInfo.key) {
@@ -95,7 +96,7 @@ function getCreateTicketDraft(ticketInfo) {
                 return "{\"name\":\"".concat(f.name, "\",\"url\":\"").concat(f.url, "\"}");
             }).toString();
             d = new Date().toISOString();
-            commentsStr = ticketInfo.comments.map(function (c) {
+            commentsStr = (_a = ticketInfo === null || ticketInfo === void 0 ? void 0 : ticketInfo.comments) === null || _a === void 0 ? void 0 : _a.map(function (c) {
                 if (c.createdAt) {
                     return "{\"comment\":\"".concat(c.comment, "\",\"createdAt\":\"").concat(c.createdAt, "\"}");
                 }

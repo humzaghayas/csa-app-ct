@@ -14,7 +14,8 @@ import{getTicketCategories,getTicketPriorityValues,getTicketContactTypes} from '
 import { ChainIcon, CollapsibleMotion, MultilineTextField, PrimaryButton, SecondaryButton,
   AngleUpDownIcon, 
   SecondaryIconButton,
-  Text} from '@commercetools-frontend/ui-kit';
+  Text,
+  DataTable} from '@commercetools-frontend/ui-kit';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useState } from 'react';
 import{CONSTANTS} from 'ct-tickets-helper-api'
@@ -58,6 +59,11 @@ const getTicketContactTypesOpt= Object.keys(getTicketContactTypesVals).map((key)
   label: getTicketContactTypesVals[key],
   value: key,
 })); 
+
+const columns = [
+  { key:'comment', label: 'Worklog' },
+  { key: 'createdAt', label: 'Created' },
+];
 
 
 const TicketCreateForm = (props) => {
@@ -261,6 +267,7 @@ const saveTicket =async (e)=>{
 }
 
 
+
   return (<>
     <form onSubmit={formik.handleSubmit}>
         <Spacings.Stack scale="l">
@@ -400,7 +407,7 @@ const saveTicket =async (e)=>{
 
                   {orderId &&
                     <Link to={`/${projectKey}/${entryPointUriPath}/Orders`}>
-                            <SecondaryButton iconLeft={<ChainIcon />} 
+                            <PrimaryButton iconLeft={<ChainIcon />} 
                               label={formik.values.orderNumber}
                             />
                         </Link>
@@ -413,7 +420,7 @@ const saveTicket =async (e)=>{
                && 
           <Spacings.Stack scale="s">
                <Link to={`/${projectKey}/${entryPointUriPath}/customer-account/${customer?.id}/Customers-summary`}>
-                   <SecondaryButton iconLeft={<ChainIcon />} 
+                   <PrimaryButton iconLeft={<ChainIcon />} 
                       label={formik.values.email}
                     />
                 </Link>
@@ -438,22 +445,37 @@ const saveTicket =async (e)=>{
             />
             </Spacings.Stack>
 
-            <Spacings.Stack scale="s">
-        <SelectField
-              name="assignedTo"
-              title="Assign To"
-              value={formik.values.assignedTo}
-              errors={formik.errors.assignedTo}
-              touched={formik.touched.assignedTo}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              options={getUsersToAssignTo}
-              isReadOnly={props.isReadOnly}
-              isRequired
-              horizontalConstraint={13}
-              isDisabled={!canManage || !customerFound }
-            />
-            </Spacings.Stack>
+            <Spacings.Inline scale="s">
+                    <SelectField
+                          name="assignedTo"
+                          title="Assign To"
+                          value={formik.values.assignedTo}
+                          errors={formik.errors.assignedTo}
+                          touched={formik.touched.assignedTo}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          options={getUsersToAssignTo}
+                          isReadOnly={props.isReadOnly}
+                          isRequired
+                          horizontalConstraint={13}
+                          isDisabled={!canManage || !customerFound }
+                      />
+
+                    <SelectField
+                        name="status"
+                        title="Ticket Status"
+                        value={formik.values.status}
+                        errors={formik.errors.status}
+                        touched={formik.touched.status}
+                        onBlur={formik.handleBlur}
+                        options={workflowStatusses}
+                        onChange={formik.handleChange}
+                        horizontalConstraint={13}
+                        isDisabled={!formik.values.isEdit}
+                      />
+
+                       
+            </Spacings.Inline>
 
 
             <Spacings.Stack scale="s">
@@ -485,7 +507,7 @@ const saveTicket =async (e)=>{
                     onBlur={formik.handleBlur}/>
 
                 <MultilineTextField name="commentMessage"
-                    title="Add Comments"
+                    title="Worklog"
                     value={formik.values.commentMessage}
                      isDisabled={!canManage || !customerFound}
                     touched={formik.touched.commentMessage}
@@ -496,7 +518,7 @@ const saveTicket =async (e)=>{
                   <CollapsiblePanel
                   isClosed={isClosedCommentsPanel}
                   onToggle={()=>{setIsClosedCommentsPanel(!isClosedCommentsPanel);}}
-                  header="Show Comments"
+                  header="Show Worklog History"
                                       >
                             {/* {({ isOpen, toggle, containerStyles, registerContentNode }) => ( */}
                               <div>
@@ -510,7 +532,7 @@ const saveTicket =async (e)=>{
                                 </button> */}
                                 {/* <div data-testid="container-node" style={containerStyles}>
                                   <div data-testid="content-node" ref={registerContentNode}> */}
-                                  {formik?.values?.comments?.map(function(cmt, index){
+                                  {/*formik?.values?.comments?.map(function(cmt, index){
                                     //return (<Text.Detail>{cmt.comment}</Text.Detail>)
 
                                     return (<>
@@ -520,7 +542,27 @@ const saveTicket =async (e)=>{
                                         <Text.Detail>{cmt.comment}</Text.Detail>
                                       </CollapsiblePanel>
                                     </>)
-                                  })}
+                                  })*/}
+
+
+                              {formik?.values?.comments ? 
+                                      <Spacings.Stack scale="l">
+                                      
+                                        <DataTable
+                                          isCondensed
+                                          columns={columns}
+                                          rows={formik?.values?.comments}
+                                          // itemRenderer={(item, column) => itemRenderer(item, column)}
+                                          maxHeight={600}
+                                          // sortedBy={tableSorting.value.key}
+                                          // sortDirection={tableSorting.value.order}
+                                          // onSortChange={tableSorting.onChange}
+                                          // onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
+                                          onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
+                                          // onRowClick={(row) => push(`Ticket-account/${row.id}/companies-general`)}
+                                        />
+                                      </Spacings.Stack>
+                                    : <p>Loading...</p>}
                                       
                                   </div>
                               {/* //   </div>
@@ -541,22 +583,6 @@ const saveTicket =async (e)=>{
                   <br/>
                   {files?.length>0 && <button onClick={deleteFileFromStorage}>Delete File</button>}
                 </div>
-              </Spacings.Stack>
-              <Spacings.Stack>
-                    <SelectField
-                        name="status"
-                        title="Ticket Status"
-                        value={formik.values.status}
-                        errors={formik.errors.status}
-                        touched={formik.touched.status}
-                        onBlur={formik.handleBlur}
-                        options={workflowStatusses}
-                        onChange={formik.handleChange}
-                        horizontalConstraint={13}
-                        isDisabled={!formik.values.isEdit}
-                      />
-
-                       
               </Spacings.Stack>
 
                   <Spacings.Inline>

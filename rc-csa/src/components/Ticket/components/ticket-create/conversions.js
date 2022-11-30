@@ -55,9 +55,12 @@ export const formValuesToDoc = (formValues) => {
       ? escapeQuotes(formValues.message)
       : undefined;
 
+      doc.comments = formValues.comments ?? [];
       if(!TextInput.isEmpty(formValues.commentMessage)){
-        doc.comments = formValues.comments ?? [];
+        
         doc.comments =formValues.comments.concat({"comment":formValues.commentMessage});
+      }else{
+        doc.comments =formValues.comments;
       }
     doc.files=  formValues?.files ?? null;
   return doc;

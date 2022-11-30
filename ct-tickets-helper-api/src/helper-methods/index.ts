@@ -63,7 +63,7 @@ export async function getCreateTicketDraft(ticketInfo){
     }).toString();
 
     const d = new Date().toISOString();
-    const commentsStr = ticketInfo.comments.map((c) =>{
+    const commentsStr = ticketInfo?.comments?.map((c) =>{
         if(c.createdAt){
             return `{\"comment\":\"${c.comment}\",\"createdAt\":\"${c.createdAt}\"}`
         }else{
