@@ -62,6 +62,15 @@ export async function getCreateTicketDraft(ticketInfo){
         return `{\"name\":\"${f.name}\",\"url\":\"${f.url}\"}`
     }).toString();
 
+    const d = new Date().toISOString();
+    const commentsStr = ticketInfo.comments.map((c) =>{
+        if(c.createdAt){
+            return `{\"comment\":\"${c.comment}\",\"createdAt\":\"${c.createdAt}\"}`
+        }else{
+            return `{\"comment\":\"${c.comment}\",\"createdAt\":\"${d}\"}`
+        }
+    }).toString();
+
     
     let orderNumberStr = '';
     if(ticketInfo.category && (ticketInfo.category == CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
@@ -72,7 +81,8 @@ export async function getCreateTicketDraft(ticketInfo){
     
     let value = `\"ticketData\":{	
         \"message\": \"${ticketInfo.message}\",
-        \"files\": [${filesStr}]
+        \"files\": [${filesStr}],
+        \"comments\":[${commentsStr}]
         ${orderNumberStr}}`;
         
     ticketDraft.value = getTicketValueString(ticketInfo,uuid);   
@@ -121,6 +131,7 @@ function getRandomInt(min, max) {
 
     ticket['message'] = data?.customObject?.value?.ticketData?.message ?? '';
     ticket['files'] = data?.customObject?.value?.ticketData?.files ?? '';
+    ticket['comments'] = data?.customObject?.value?.ticketData?.comments ?? [];
 
     // if(data?.customObject?.value?.category === CONSTANTS.TICKET_TYPE_REQUEST){
 

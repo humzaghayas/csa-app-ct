@@ -5,6 +5,9 @@ export const docToFormValues = (ticket, languages,isEdit) => {
   doc.message= ticket?.message ?? '';
   doc.files =ticket?.files ?? [];
 
+  doc.comments =ticket?.comments ?? [];
+
+
   if(doc.category && (doc.category == CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
     || doc.category == CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
     || doc.category == CONSTANTS.TICKET_TYPE_RETURNS)){
@@ -51,6 +54,11 @@ export const formValuesToDoc = (formValues) => {
     doc.message= !TextInput.isEmpty(formValues.message)
       ? escapeQuotes(formValues.message)
       : undefined;
+
+      if(!TextInput.isEmpty(formValues.commentMessage)){
+        doc.comments = formValues.comments ?? [];
+        doc.comments =formValues.comments.concat({"comment":formValues.commentMessage});
+      }
     doc.files=  formValues?.files ?? null;
   return doc;
 };
@@ -79,7 +87,7 @@ export const formValuesToDoc = (formValues) => {
     : undefined,
     status: !TextInput.isEmpty(formValues.status)
     ? formValues.status
-    : ''
+    : '',
     });
 
 

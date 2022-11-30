@@ -11,7 +11,10 @@ import messages from './messages';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import{getTicketCategories,getTicketPriorityValues,getTicketContactTypes} from 'ct-tickets-helper-api';
-import { ChainIcon, MultilineTextField, PrimaryButton, SecondaryButton } from '@commercetools-frontend/ui-kit';
+import { ChainIcon, CollapsibleMotion, MultilineTextField, PrimaryButton, SecondaryButton,
+  AngleUpDownIcon, 
+  SecondaryIconButton,
+  Text} from '@commercetools-frontend/ui-kit';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useState } from 'react';
 import{CONSTANTS} from 'ct-tickets-helper-api'
@@ -360,7 +363,7 @@ const saveTicket =async (e)=>{
                     isReadOnly={props.isReadOnly}
                     isRequired
                     horizontalConstraint={13}
-                    isDisabled={!canManage || !customerFound }
+                    isDisabled={!canManage || (!customerFound  || formik.values.isEdit) }
                   />
             </Spacings.Stack>
             <Spacings.Inline scale="s">
@@ -463,7 +466,7 @@ const saveTicket =async (e)=>{
                     touched={formik.touched.subject}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    isDisabled={!canManage || !customerFound }/>
+                    isDisabled={!canManage || (!customerFound  || formik.values.isEdit) }/>
               </Spacings.Stack>
 
 
@@ -475,11 +478,52 @@ const saveTicket =async (e)=>{
                     errors={
                       TextField.toFieldErrors(formik.errors).message
                     }
-                    isDisabled={!canManage || !customerFound }
+                    isDisabled={!canManage || (!customerFound  || formik.values.isEdit)}
                     touched={formik.touched.message}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}/>
 
+                <MultilineTextField name="commentMessage"
+                    title="Add Comments"
+                    value={formik.values.commentMessage}
+                     isDisabled={!canManage || !customerFound}
+                    touched={formik.touched.commentMessage}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}/>
+
+                {formik?.values?.comments && formik?.values?.comments.length > 0 && <>
+                  <CollapsibleMotion>
+                            {({ isOpen, toggle, containerStyles, registerContentNode }) => (
+                              <div>
+
+                              <SecondaryIconButton icon={<AngleUpDownIcon />} 
+                                                    label=""
+                                                    onClick={toggle}
+                                                  />
+                                {/* <button data-testid="button" onClick={toggle}>
+                                  {isOpen ? 'Close' : 'Open'}
+                                </button> */}
+                                <div data-testid="container-node" style={containerStyles}>
+                                  <div data-testid="content-node" ref={registerContentNode}>
+                                  {formik?.values?.comments?.map(function(cmt, index){
+                                    //return (<Text.Detail>{cmt.comment}</Text.Detail>)
+
+                                    return (<>
+                                    <CollapsiblePanel
+                                        header="Comment"
+                                      >
+                                        <Text.Detail>{cmt.comment}</Text.Detail>
+                                      </CollapsiblePanel>
+                                    </>)
+                                  })}
+                                      
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                  </CollapsibleMotion>
+                  </>
+                }
                 <div>
                    <input type='file' id="upload_file" 
                           name="upload_file" 
@@ -506,6 +550,8 @@ const saveTicket =async (e)=>{
                         horizontalConstraint={13}
                         isDisabled={!formik.values.isEdit}
                       />
+
+                       
               </Spacings.Stack>
 
                   <Spacings.Inline>
