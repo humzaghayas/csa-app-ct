@@ -76,6 +76,8 @@ export const useCreateOrUpdateTicket = ()=>{
         target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
       } });
     }catch (graphQlResponse) {
+
+      console.error(graphQlResponse);
       throw extractErrorFromGraphQlResponse(graphQlResponse);
     }
   }

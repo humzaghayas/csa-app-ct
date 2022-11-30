@@ -80,9 +80,10 @@ function getCreateTicketMutaion() {
 }
 exports.getCreateTicketMutaion = getCreateTicketMutaion;
 function getCreateTicketDraft(ticketInfo) {
+    var _a;
     return __awaiter(this, void 0, void 0, function () {
-        var email, uuid, filesStr, orderNumberStr, value;
-        return __generator(this, function (_a) {
+        var email, uuid, filesStr, d, commentsStr, orderNumberStr, value;
+        return __generator(this, function (_b) {
             email = ticketInfo.email;
             uuid = (0, uuid_1.v4)();
             if (!ticketInfo.key) {
@@ -94,13 +95,22 @@ function getCreateTicketDraft(ticketInfo) {
             filesStr = ticketInfo.files.map(function (f) {
                 return "{\"name\":\"".concat(f.name, "\",\"url\":\"").concat(f.url, "\"}");
             }).toString();
+            d = new Date().toISOString();
+            commentsStr = (_a = ticketInfo === null || ticketInfo === void 0 ? void 0 : ticketInfo.comments) === null || _a === void 0 ? void 0 : _a.map(function (c) {
+                if (c.createdAt) {
+                    return "{\"comment\":\"".concat(c.comment, "\",\"createdAt\":\"").concat(c.createdAt, "\"}");
+                }
+                else {
+                    return "{\"comment\":\"".concat(c.comment, "\",\"createdAt\":\"").concat(d, "\"}");
+                }
+            }).toString();
             orderNumberStr = '';
             if (ticketInfo.category && (ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
                 || ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
                 || ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_RETURNS)) {
                 orderNumberStr = ",\"orderNumber\":\"".concat(ticketInfo.orderNumber, "\"");
             }
-            value = "\"ticketData\":{\t\n        \"message\": \"".concat(ticketInfo.message, "\",\n        \"files\": [").concat(filesStr, "]\n        ").concat(orderNumberStr, "}");
+            value = "\"ticketData\":{\t\n        \"message\": \"".concat(ticketInfo.message, "\",\n        \"files\": [").concat(filesStr, "],\n        \"comments\":[").concat(commentsStr, "]\n        ").concat(orderNumberStr, "}");
             ticketDraft.value = getTicketValueString(ticketInfo, uuid);
             ticketDraft.value = ticketDraft.value.replace(constants_1.CONSTANTS.TICKET_DATA, value);
             return [2 /*return*/, ticketDraft];
@@ -124,10 +134,11 @@ function getForKey(email) {
 }
 exports.getForKey = getForKey;
 function getTicketFromCustomObject(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
     var ticket = createTicketFromCustomObject(data);
     ticket['message'] = (_d = (_c = (_b = (_a = data === null || data === void 0 ? void 0 : data.customObject) === null || _a === void 0 ? void 0 : _a.value) === null || _b === void 0 ? void 0 : _b.ticketData) === null || _c === void 0 ? void 0 : _c.message) !== null && _d !== void 0 ? _d : '';
     ticket['files'] = (_h = (_g = (_f = (_e = data === null || data === void 0 ? void 0 : data.customObject) === null || _e === void 0 ? void 0 : _e.value) === null || _f === void 0 ? void 0 : _f.ticketData) === null || _g === void 0 ? void 0 : _g.files) !== null && _h !== void 0 ? _h : '';
+    ticket['comments'] = (_m = (_l = (_k = (_j = data === null || data === void 0 ? void 0 : data.customObject) === null || _j === void 0 ? void 0 : _j.value) === null || _k === void 0 ? void 0 : _k.ticketData) === null || _l === void 0 ? void 0 : _l.comments) !== null && _m !== void 0 ? _m : [];
     // if(data?.customObject?.value?.category === CONSTANTS.TICKET_TYPE_REQUEST){
     //     ticket['requestType'] = data?.customObject?.value?.ticketData?.requestType ?? '';
     //     if(data?.customObject?.value?.ticketData?.requestType == CONSTANTS.TICKET_TYPE_GENERAL_INFO_CHANGE){
