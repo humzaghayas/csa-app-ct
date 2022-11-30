@@ -58,7 +58,7 @@ export const formValuesToDoc = (formValues) => {
       doc.comments = formValues.comments ?? [];
       if(!TextInput.isEmpty(formValues.commentMessage)){
         
-        doc.comments =formValues.comments.concat({"comment":formValues.commentMessage});
+        doc.comments =formValues.comments.concat({"comment":escapeQuotes(formValues.commentMessage)});
       }else{
         doc.comments =formValues.comments;
       }

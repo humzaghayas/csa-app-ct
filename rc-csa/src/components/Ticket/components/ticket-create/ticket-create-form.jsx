@@ -63,6 +63,7 @@ const getTicketContactTypesOpt= Object.keys(getTicketContactTypesVals).map((key)
 const columns = [
   { key:'comment', label: 'Worklog' },
   { key: 'createdAt', label: 'Created' },
+  { key: 'status', label: 'Status' },
 ];
 
 
@@ -90,8 +91,13 @@ const TicketCreateForm = (props) => {
 
   const{getUsersToAssignTo} =useUserListFetcher();
 
+
+
+  
   const [customerFound, setCustomerFound] = useState(formik.values.isEdit);
   const [files, setFiles] = useState([]);
+  const [commentsList, setCommentsList] = useState(formik.values.comments);
+  
   const [customer, setCustomer] = useState(null);
   const [disableSubmitButton, setDisableSubmitButton] = useState(!canManage || !customerFound);
   const [isClosedCommentsPanel, setIsClosedCommentsPanel] = useState(true);
@@ -170,6 +176,20 @@ useEffect(() => {
     });
 
     setFiles(f);
+    // renderOnce= false; 
+    console.log('render once');
+  }
+  console.log('render once12');
+});
+
+useEffect(() => {
+  // Update the document title using the browser API
+  if(commentsList.length ==0 && formik?.values?.comments?.length > 0){
+    if(!formik.values.comments){
+      formik.values.comments = [];
+    }
+    
+    setCommentsList(formik?.values?.comments);
     // renderOnce= false; 
     console.log('render once');
   }
@@ -266,7 +286,22 @@ const saveTicket =async (e)=>{
   history.push(`/${projectKey}/${entryPointUriPath}/Tickets`);
 }
 
+const [disableWLButton,setDisableWLButton] = useState(false);
+const addWorklog =(e) => {
 
+  if(!formik?.values?.commentMessage || formik?.values?.commentMessage == ''){
+    return;
+  }
+  let c= commentsList;
+  const cMessage = formik?.values?.commentMessage;
+
+  c=c.concat({"comment":cMessage,"status":"Please Submit To Persist Changes!"});
+  setCommentsList(c);
+
+  if(cMessage){
+    setDisableWLButton(true);
+  }
+}
 
   return (<>
     <form onSubmit={formik.handleSubmit}>
@@ -501,57 +536,42 @@ const saveTicket =async (e)=>{
                     errors={
                       TextField.toFieldErrors(formik.errors).message
                     }
-                    isDisabled={!canManage || (!customerFound  || formik.values.isEdit)}
+                    isReadOnly={formik.values.isEdit}
+                    isDisabled={!canManage || !customerFound  }
                     touched={formik.touched.message}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}/>
+            
+                <Spacings.Inline alignItems="center">
+                    <MultilineTextField name="commentMessage"
+                        title="Worklog"
+                        value={formik.values.commentMessage}
+                        isDisabled={!canManage || !customerFound}
+                        touched={formik.touched.commentMessage}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}/>
 
-                <MultilineTextField name="commentMessage"
-                    title="Worklog"
-                    value={formik.values.commentMessage}
-                     isDisabled={!canManage || !customerFound}
-                    touched={formik.touched.commentMessage}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}/>
-
-                {formik?.values?.comments && formik?.values?.comments.length > 0 && <>
+                    <PrimaryButton
+                      label="Add Worklog"
+                      onClick={addWorklog}
+                      isDisabled={disableWLButton}
+                      // isDisabled={disableSubmitButton }
+                    />
+                </Spacings.Inline>
+                {commentsList && commentsList.length > 0 && <>
                   <CollapsiblePanel
                   isClosed={isClosedCommentsPanel}
                   onToggle={()=>{setIsClosedCommentsPanel(!isClosedCommentsPanel);}}
-                  header="Show Worklog History"
-                                      >
-                            {/* {({ isOpen, toggle, containerStyles, registerContentNode }) => ( */}
+                  header="Show Worklog History" >
                               <div>
 
-                              {/* <SecondaryIconButton icon={<AngleUpDownIcon />} 
-                                                    label="Show"
-                                                    onClick={toggle}
-                                                  >Show</SecondaryIconButton> */}
-                                {/* <button data-testid="button" onClick={toggle}>
-                                  {isOpen ? 'Close' : 'Open'}
-                                </button> */}
-                                {/* <div data-testid="container-node" style={containerStyles}>
-                                  <div data-testid="content-node" ref={registerContentNode}> */}
-                                  {/*formik?.values?.comments?.map(function(cmt, index){
-                                    //return (<Text.Detail>{cmt.comment}</Text.Detail>)
-
-                                    return (<>
-                                    <CollapsiblePanel
-                                        header="Comment"
-                                      >
-                                        <Text.Detail>{cmt.comment}</Text.Detail>
-                                      </CollapsiblePanel>
-                                    </>)
-                                  })*/}
-
-
-                              {formik?.values?.comments ? 
+                              {commentsList ? 
                                       <Spacings.Stack scale="l">
                                       
                                         <DataTable
                                           isCondensed
                                           columns={columns}
-                                          rows={formik?.values?.comments}
+                                          rows={commentsList}
                                           // itemRenderer={(item, column) => itemRenderer(item, column)}
                                           maxHeight={600}
                                           // sortedBy={tableSorting.value.key}
@@ -565,10 +585,7 @@ const saveTicket =async (e)=>{
                                     : <p>Loading...</p>}
                                       
                                   </div>
-                              {/* //   </div>
-                              // </div> */}
-                            {/* // )} */}
-                  </CollapsiblePanel>
+                    </CollapsiblePanel>
                   </>
                 }
                 <div>
