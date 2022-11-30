@@ -11,7 +11,7 @@ import messages from './messages';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import{getTicketCategories,getTicketPriorityValues,getTicketContactTypes} from 'ct-tickets-helper-api';
-import { DateField, MultilineTextField, PrimaryButton, SecondaryButton } from '@commercetools-frontend/ui-kit';
+import { ChainIcon, MultilineTextField, PrimaryButton, SecondaryButton } from '@commercetools-frontend/ui-kit';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useState } from 'react';
 import{CONSTANTS} from 'ct-tickets-helper-api'
@@ -395,22 +395,26 @@ const saveTicket =async (e)=>{
                           isDisabled={!canManage || (!customerFound  || formik.values.isEdit) }/>
 
                   {orderId &&
-                    <Link to={`/${projectKey}/orders/${orderId}/general`}>
-                            {formik.values.orderNumber}
+                    <Link to={`/${projectKey}/${entryPointUriPath}/Orders`}>
+                            <SecondaryButton iconLeft={<ChainIcon />} 
+                              label={formik.values.orderNumber}
+                            />
                         </Link>
                       }
                           </Spacings.Stack>
                   }
         </Spacings.Inline>
 
-        {formik.values.isEdit && formik.values.category && (formik.values.category== CONSTANTS.TICKET_TYPE_REQUEST
-                      || formik.values.category== CONSTANTS.TICKET_TYPE_GENERAL_INFO_CHANGE)
+        {formik.values.isEdit && formik.values.category 
                && 
           <Spacings.Stack scale="s">
                <Link to={`/${projectKey}/${entryPointUriPath}/customer-account/${customer?.id}/Customers-summary`}>
-                    {formik.values.email}
+                   <SecondaryButton iconLeft={<ChainIcon />} 
+                      label={formik.values.email}
+                    />
                 </Link>
-          </Spacings.Stack>
+
+           </Spacings.Stack>
         }
 
         <Spacings.Stack scale="s">
