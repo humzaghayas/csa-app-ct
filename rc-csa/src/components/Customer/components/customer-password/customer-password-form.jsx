@@ -11,6 +11,10 @@ import messages from './messages';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import { EMPLOYEE_ROLES,CUSTOMER_GROUPS,CUSTOMER_PRIORITY} from './constants';
 import Constraints from '@commercetools-uikit/constraints';
+import PasswordField from '@commercetools-uikit/password-field';
+import PrimaryButton from '@commercetools-uikit/primary-button';
+import { ContentNotification } from '@commercetools-uikit/notifications';
+import { useState } from 'react';
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
 //   label: EMPLOYEE_ROLES[key],
 //   value: EMPLOYEE_ROLES[key],
@@ -28,6 +32,7 @@ const getCustomerPriorityOptions = Object.keys(CUSTOMER_PRIORITY).map((key) => (
 
 const CustomerPasswordForm = (props) => {
   const intl = useIntl();
+  const[password , setPassword] = useState(false)
   const formik = useFormik({
     initialValues: props.initialValues,
     onSubmit: props.onSubmit,
@@ -36,20 +41,36 @@ const CustomerPasswordForm = (props) => {
   });
 
   const formElements = (
-    <Spacings.Stack scale="l">
-      {/* <Spacings.Inline> */}
-      <CollapsiblePanel
-          data-testid="quote-summary-panel"
-          header={
-            <CollapsiblePanel.Header>
-              {/* {formatMessage(messages.panelTitle)} */}
-              {'Password'}
-            </CollapsiblePanel.Header>
-          }
-          scale="l">
-            <Constraints.Horizontal >
-             <Spacings.Stack scale="m">
-             <Spacings.Stack scale="s">
+    <Spacings.Stack scale="m">
+     
+            
+           
+           
+            
+             <PasswordField
+    title="My Password"
+    value="s3cr3t"
+    onChange={(event) => alert(event.target.value)}
+    horizontalConstraint={13}
+  />
+ 
+
+ <Spacings.Inline>
+               <PrimaryButton
+                label="Change Password"
+                onClick={() => setPassword(true)}
+               isDisabled={false}
+                // horizontalConstraint={13}
+               size = "big"
+  />
+  </Spacings.Inline>
+  {password == true ? <div >
+  <ContentNotification type="info" align="center" >A link send to your mail to reset the password</ContentNotification>
+ </div>: null}
+ {password == true ? <div >
+  <ContentNotification type="success" align="center" >your password has been changed successfully</ContentNotification>
+  </div>: null}
+             {/* <Spacings.Stack scale="s">
         <TextField
           name="Password Type"
           title="Password Type"
@@ -96,11 +117,9 @@ const CustomerPasswordForm = (props) => {
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
         />
-        </Spacings.Stack>
-        </Spacings.Stack>
-        </Constraints.Horizontal>
-      {/* </Spacings.Inline> */}
-     </CollapsiblePanel>
+        </Spacings.Stack> */}
+       
+       
     </Spacings.Stack>
   );
 

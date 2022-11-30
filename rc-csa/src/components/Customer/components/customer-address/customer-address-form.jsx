@@ -59,14 +59,11 @@ const CustomerAddressForm = (props) => {
 
   const formElements = (
     <Spacings.Stack scale="l">
-      {/* <Spacings.Inline> */}
-      <Spacings.Stack scale="s">
-             <Constraints.Horizontal min={13}>
-             <SecondaryButton iconLeft={<PlusBoldIcon />} label="Add Address" onClick={() => setValue(true)} />;
+     
+             <SecondaryButton iconLeft={<PlusBoldIcon />} label="Add Address" onClick={() => setValue(true)} />
+          
             <DataTable rows={rows} columns={columns}  />
 
-          </Constraints.Horizontal>
-          </Spacings.Stack>
         {value == true ? <div >
       <CollapsiblePanel
           data-testid="quote-summary-panel"

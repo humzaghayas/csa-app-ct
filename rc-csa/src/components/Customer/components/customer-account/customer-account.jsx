@@ -40,6 +40,7 @@ import NoImageIcon from '@commercetools-frontend/assets/images/camera.svg';
 import CustomerTickets from '../customer-Tickets/customer-tickets';
 
 import { useCustomerDetailsFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
+import CustomerPayment from '../customer-payment/customer-payment';
 
 
 const CustomerAccount = (props) => {
@@ -57,7 +58,7 @@ const CustomerAccount = (props) => {
   return (
     <TabularDetailPage
      title=" "
-         onPreviousPathClick={() => history.push(`/csa_project/drl-b2b-extension/Customers`)}
+         onPreviousPathClick={() => history.push(`/csa_project/csa-customer-tickets/Customers`)}
       //  onPreviousPathClick={() => history.push(`${match.url}`)}
       previousPathLabel="Go to View Customers"
      
@@ -68,26 +69,23 @@ const CustomerAccount = (props) => {
         
           <Avatar
     gravatarHash="20c9c1b252b46ab49d6f7a4cee9c3e68"
-    firstName="Lahari"
-    lastName="Ramurthi"
+    firstName={customer?.firstName}
+    lastName={customer?.lastName}
     size="l"
   />
  
-         <div className={styles.customerName}>
-
-         {/* <Text size="big" color="primary">Description</Text> */}
-         <h1>{customer?.firstName} 360 view</h1>
-           {/* <h3 className={styles.customerName}>Lahari</h3> */}
+         {/* <div className={styles.customerName}> */}
+         <Spacings.Stack scale="xs">
+         <Spacings.Stack scale="xl">
+        </Spacings.Stack>
+                    <h1>{customer?.firstName} 360° view</h1>
            <h4>{customer?.email}</h4>
-           {/* <div className={styles.customerDetails}>
-             <Spacings.Inline>
-             <h4>10010781</h4>
-             <h4>Software Engineer</h4>
-             <h4>Digital Commerce</h4>
-             </Spacings.Inline>
-           </div> */}
+         {/* <Text.Subheadline as="h2" isBold="true">{customer?.firstName} 360 view</Text.Subheadline>;
+         <Text.Subheadline as="h3" isBold="true">{customer?.email}</Text.Subheadline>; */}
+         </Spacings.Stack>
 
-         </div>
+
+         {/* </div> */}
      
          </Spacings.Inline>
          </Spacings.Stack>
@@ -106,7 +104,7 @@ const CustomerAccount = (props) => {
                 label="Orders"
               />
                <TabHeader
-                to={`${match.url}/Customers-summay`}
+                to={`${match.url}/Customers-payments`}
                 label="Payments"
               />
                <TabHeader
@@ -114,8 +112,8 @@ const CustomerAccount = (props) => {
                 label="Addresses"
               />
               <TabHeader to={`${match.url}/Customers-tickets`} label="Tickets" />
-              <TabHeader to={`${match.url}/Customers-sumary`} label="Returns" />
-              {/* <TabHeader to={`${match.url}/Customers-password`} label="Password" /> */}
+              {/* <TabHeader to={`${match.url}/Customers-sumary`} label="Returns" /> */}
+              <TabHeader to={`${match.url}/Customers-password`} label="Password" />
               {/* <div style="margin-left :500px"> */}
            
               {/* </div> */}
@@ -150,9 +148,9 @@ const CustomerAccount = (props) => {
         <Route path={`${match.path}/Customers-orders`}>
            <CustomerOrder />
         </Route>
-        {/* <Route path={`${match.path}/Customers-password`}>
+        <Route path={`${match.path}/Customers-password`}>
            <CustomerPassword />
-        </Route> */}
+        </Route>
         <Route path={`${match.path}/Customers-Address`}>
           <CustomerAddress />
         </Route>
@@ -162,8 +160,8 @@ const CustomerAccount = (props) => {
         <Route path={`${match.path}/Customers-tickets`}>
           <CustomerTickets />
         </Route>
-        <Route path={`${match.path}/Customers-sumary`}>
-           <CustomerPassword />
+        <Route path={`${match.path}/Customers-payments`}>
+          <CustomerPayment />
         </Route>
         <Route path={`${match.path}/Customers-sumary`}>
            <CustomerPassword />
