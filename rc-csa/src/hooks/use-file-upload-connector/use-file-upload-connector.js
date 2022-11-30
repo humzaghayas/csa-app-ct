@@ -3,7 +3,7 @@ import {ref, getDownloadURL, uploadBytesResumable,deleteObject ,storage,getForKe
 export const useFileUploadService = () => {
   
 
-  const execute =(formik,file,files,setFiles,setProgresspercent,setFileDeleteName,setFileDeleteUrl) =>{
+  const execute =(formik,file,files,setFiles,setProgresspercent,setFileDeleteName,setFileDeleteUrl,setImgUploaded) =>{
 
     const folder = getForKey(formik.values.email);
     
@@ -27,7 +27,7 @@ export const useFileUploadService = () => {
               <input type="radio" value={downloadURL} onClick={()=>{setFileDeleteName(file.name);setFileDeleteUrl(downloadURL);}} name="fileDeleteRadio" />&nbsp;&nbsp;<a  href={downloadURL}>{file.name}</a><br/>
             </div>));
           // files.push({name:file.name,url:downloadURL});
-
+          setImgUploaded(true);
           console.log('concat',formik.values.files);
           console.log('downloadURL',downloadURL);
         });

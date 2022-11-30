@@ -97,7 +97,7 @@ const TicketCreateForm = (props) => {
   const [customerFound, setCustomerFound] = useState(formik.values.isEdit);
   const [files, setFiles] = useState([]);
   const [commentsList, setCommentsList] = useState(formik.values.comments);
-  
+  const [imgUploaded, setImgUploaded] = useState(false);
   const [customer, setCustomer] = useState(null);
   const [disableSubmitButton, setDisableSubmitButton] = useState(!canManage || !customerFound);
   const [isClosedCommentsPanel, setIsClosedCommentsPanel] = useState(true);
@@ -253,9 +253,9 @@ const uploadFile = (e) => {
     console.log('File Not Found!');
     return;
   }
-
+  setImgUploaded(false);
   execute(formik,file,files,setFiles,setProgresspercent
-        ,setFileDeleteName,setFileDeleteUrl);
+        ,setFileDeleteName,setFileDeleteUrl,setImgUploaded);
   console.log('file uploaded');
   return false;
 }
@@ -593,7 +593,13 @@ const addWorklog =(e) => {
                           name="upload_file" 
                           ref={inputRef}
                           onChange={uploadFile}/>
-                   <button onClick={handleClick}>Upload</button>
+                   {/* <button onClick={handleClick}>Upload</button> */}
+
+                   {!imgUploaded &&
+                      <div className='outerbar'>
+                        <div className='innerbar' style={{ width: `${progresspercent}%` }}>{progresspercent}%</div>
+                      </div>
+                   }
   
                   <br/><br/>
                    {files}
