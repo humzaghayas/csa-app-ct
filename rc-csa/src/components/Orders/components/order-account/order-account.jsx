@@ -50,7 +50,7 @@ const OrderAccount = (props) => {
 
   return (
     <TabularDetailPage
-      title="Detail page"
+      title=" "
       //  onPreviousPathClick={() => history.push(`Order-list`)}
       onPreviousPathClick={() => history.push(`${match.url}`)}
       previousPathLabel="Go to View orders"
