@@ -51,9 +51,9 @@ const TicketAccount = (props) => {
 
   return (
     <TabularDetailPage
-      title="Detail page"
+      title="Ticket Details"
       //  onPreviousPathClick={() => history.push(`Ticket-list`)}
-      onPreviousPathClick={() => history.push(`${match.url}`)}
+      onPreviousPathClick={() => history.push(`/csa_project/csa-customer-tickets/Tickets`)}
       previousPathLabel="Go to View Tickets"
       tabControls={
         <>
@@ -64,10 +64,10 @@ const TicketAccount = (props) => {
                 label="General"
               />
               <TabHeader to={`${match.url}/tickets-history`} label="History" />
-              <TabHeader
+              {/* <TabHeader
                 to={`${match.url}/ticket-administration`}
                 label="Administration"
-              />
+              /> */}
                {/* <div className={styles.addEmployeeButton}>
        <SecondaryButton
             label="Add Employee"

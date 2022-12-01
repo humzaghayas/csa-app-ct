@@ -18,6 +18,7 @@ import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from './constants';
 import CustomerMessagesForm from './components/Customer/components/customer-messages/customer-messages-form';
 import CustomerMessages from './components/Customer/components/customer-messages/customer-messages';
+import CustomerReply from './components/Customer/components/customer-messages/customer-reply';
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
 
@@ -92,6 +93,9 @@ const ApplicationRoutes = () => {
         </Route>
         <Route path={`${match.path}/:id/customer-order-messages`}>
 	        <CustomerMessages linkToWelcome={match.url} />
+          </Route>
+          <Route path={`${match.path}/:id/customer-message-reply`}>
+	      <CustomerReply linkToWelcome={match.url} />
           </Route>
         <Route>
           <Welcome />
