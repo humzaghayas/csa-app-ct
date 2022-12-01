@@ -13,7 +13,7 @@ import {
   usePaginationState,
   useDataTableSortingState,
 } from '@commercetools-uikit/hooks';
-import { BackIcon } from '@commercetools-uikit/icons';
+import { BackIcon, RefreshIcon } from '@commercetools-uikit/icons';
 import Constraints from '@commercetools-uikit/constraints';
 import FlatButton from '@commercetools-uikit/flat-button';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
@@ -93,15 +93,17 @@ const Tickets = (props) => {
   }, [foundUser]);
 
   
-  const { data, error, loading } = useMcQuery(gql`${FETCH_TICKETS}`, {
+  const { data, error, loading,refetch } = useMcQuery(gql`${FETCH_TICKETS}`, {
     variables: {
       container:CONSTANTS.containerKey,
       limit: perPage.value,
       offset: (page.value - 1) * perPage.value,
+      sort:["lastModifiedAt desc"]
     },
     context: {
       target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
     },
+    fetchPolicy:"network-only"
   });
 
   rows = getTicketRows(data?.customObjects);
@@ -129,15 +131,26 @@ const Tickets = (props) => {
       {/* {loading && <LoadingSpinner />} */}
 
       { canManage  ?
-      <Spacings.Inline>
-      <SecondaryButton
-        label="Add Ticket"
-         data-track-event="click" 
-         onClick={() => push(`ticket-create`)}
-        iconLeft={<PlusBoldIcon />}
-        size="medium"
-      />
+      <Spacings.Stack >
+        <Spacings.Inline >
+          <SecondaryButton
+            label="Add Ticket"
+            data-track-event="click" 
+            onClick={() => push(`ticket-create`)}
+            iconLeft={<PlusBoldIcon />}
+            size="medium"
+          />
       </Spacings.Inline>
+        <Spacings.Inline >
+          <SecondaryButton
+              label="Refresh"
+              data-track-event="click" 
+              onClick={()=>{refetch()}}
+              iconLeft={<RefreshIcon />}
+              size="medium"
+          />
+        </Spacings.Inline>
+      </Spacings.Stack>
       : null}
 
       {/* {data ? ( */}
