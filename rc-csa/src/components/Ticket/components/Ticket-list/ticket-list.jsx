@@ -98,10 +98,12 @@ const Tickets = (props) => {
       container:CONSTANTS.containerKey,
       limit: perPage.value,
       offset: (page.value - 1) * perPage.value,
+      sort:["lastModifiedAt desc"]
     },
     context: {
       target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
     },
+    fetchPolicy:"network-only"
   });
 
   rows = getTicketRows(data?.customObjects);

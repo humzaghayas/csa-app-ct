@@ -116,6 +116,7 @@ export const useGetTicketById = (id) => {
     context: {
       target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
     },
+    fetchPolicy:"network-only"
   });
 
   const ticket = getTicketFromCustomObject(data);
