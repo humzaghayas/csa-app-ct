@@ -156,6 +156,7 @@ const CustomerAccount = (props) => {
         </Route>
         <Route  path={`${match.path}/customer-address-create`}>
            <CustomerAddressCreate customer={customer} />
+           </Route>
         <Route path={`${match.path}/Customers-payments`}>
           <CustomerPayment />
         </Route>
