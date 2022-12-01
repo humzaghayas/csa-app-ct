@@ -1,20 +1,20 @@
 import { TextInput } from '@commercetools-frontend/ui-kit';
 
-export const docToFormValues = (employee, languages) => ({
-  id: employee?.id ?? '',
-  salutation: employee?.salutation ?? '',
-  title: employee?.title ?? '',
-  firstName: employee?.firstName ?? '',
-  middleName: employee?.middleName ?? '',
-  lastName: employee?.lastName ?? '',
-  email: employee?.email ?? '',
-  dateOfBirth: employee?.dateOfBirth ?? '',
-  employeeNumber: employee?.employeeNumber ?? '',
-  externalId: employee?.externalId ?? '',
-  customerGroup: employee?.customerGroup ?? '',
-  roles: employee?.roles ?? '',
-  password: employee?.password ?? '',
-  confirmedPassword: employee?.confirmedPassword ?? '',
+export const docToFormValues = (customer,customeCustomerFields, languages) => ({
+  firstName: customer?.firstName ?? '',
+  middleName: customer?.middleName ?? '',
+  lastName: customer?.lastName ?? '',
+  //email: customer?.email ?? '',
+  dateOfBirth: customer?.dateOfBirth ?? '',
+  customerNumber: customer?.customerNumber ?? '',
+  customerGroup:customer?.customerGroup?.name ?? '',
+  companyName:customer?.companyName ?? '',
+  externalId: customer?.externalId ?? '',
+  occupation:customeCustomerFields?.occupation ?? '',
+  preferredLanguage:customeCustomerFields?.preferredLanguage[0] ?? '',
+  ageGroup:customeCustomerFields?.ageGroup[0] ?? '',
+  gender:customeCustomerFields?.gender[0] ?? '',
+  preferredCurrency:customeCustomerFields?.preferredCurrency[0] ?? '',
 });
 
 export const formValuesToDoc = (formValues) => ({
@@ -24,4 +24,22 @@ export const formValuesToDoc = (formValues) => ({
   dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
   ? formValues.dateOfBirth
   : undefined,
+  companyName: !TextInput.isEmpty(formValues.companyName)
+  ? formValues.companyName
+  : undefined,
+  occupation: !TextInput.isEmpty(formValues.occupation)
+  ? formValues.occupation
+  : undefined,
+  // dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
+  // ? formValues.dateOfBirth
+  // : undefined,
+  // dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
+  // ? formValues.dateOfBirth
+  // : undefined,
+  // dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
+  // ? formValues.dateOfBirth
+  // : undefined,
+  // dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
+  // ? formValues.dateOfBirth
+  // : undefined,
   });

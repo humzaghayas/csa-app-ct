@@ -16,6 +16,8 @@ import TicketCreate from './components/Ticket/components/ticket-create/ticket-cr
 import { PageUnauthorized } from '@commercetools-frontend/application-components';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from './constants';
+
+
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
 
@@ -87,8 +89,7 @@ const ApplicationRoutes = () => {
         </Route>
         <Route path={`${match.path}/customer-account/:id`}>
 	        <CustomerAccount linkToWelcome={match.url} />
-        </Route>
-       
+        </Route> 
         <Route>
           <Welcome />
         </Route>
