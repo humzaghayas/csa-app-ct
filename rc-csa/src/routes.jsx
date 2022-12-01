@@ -19,6 +19,7 @@ import { PERMISSIONS } from './constants';
 import CustomerMessagesForm from './components/Customer/components/customer-messages/customer-messages-form';
 import CustomerMessages from './components/Customer/components/customer-messages/customer-messages';
 import CustomerReply from './components/Customer/components/customer-messages/customer-reply';
+
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
 

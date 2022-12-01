@@ -4,8 +4,24 @@ mutation UpdateCustomerDetails(
   $actions: [CustomerUpdateAction!]!
 ) {
   updateCustomer(id: $id, version: $version, actions: $actions) {
-    firstName
+    id
     version
+    firstName
+    dateOfBirth
+    email
+    customerNumber
+    externalId
     lastName
+    companyName
+    customerGroup{
+      name
+    }
+    custom{
+      customFieldsRaw{
+        name
+        value
+      }
+    }
   }
-}
+  }
+

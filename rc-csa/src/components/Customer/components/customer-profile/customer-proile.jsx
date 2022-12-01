@@ -45,6 +45,21 @@ const CustomerProfile = (props) => {
   const showApiErrorNotification = useShowApiErrorNotification();
  const customer = props?.customer;
  
+ console.log("customerproile",customer?.custom?.customFieldsRaw);
+const customFieldsRaw1 = customer?.custom?.customFieldsRaw;
+ const transformCustomFieldsRawToCustomFields = customFieldsRaw => {
+  console.log("entere");
+  if (!customFieldsRaw || customFieldsRaw.length === 0) return null;
+  return customFieldsRaw.reduce(
+    (customFields, customField) => ({
+      ...customFields,
+      [customField.name]: customField.value,
+    }),
+    {}
+  );
+};
+const customeCustomerFields=transformCustomFieldsRawToCustomFields(customFieldsRaw1);
+//console.log("transformCustomFieldsRawToCustomFields",customeCustomerFields);
   const customerDetailsUpdater = useCustomerDetailsUpdater();
   const handleSubmit = useCallback(
     
@@ -85,7 +100,7 @@ const CustomerProfile = (props) => {
 
   return (
     <CustomerProfileForm
-    initialValues={docToFormValues(customer, projectLanguages)}
+    initialValues={docToFormValues(customer,customeCustomerFields, projectLanguages)}
     onSubmit={handleSubmit}
     isReadOnly={!canManage}
     dataLocale={dataLocale}

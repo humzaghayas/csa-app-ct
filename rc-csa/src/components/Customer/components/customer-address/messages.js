@@ -1,54 +1,21 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
-  backToEmployeesList: {
-    id: 'EmployeeDetails.backToEmployeesList',
-    defaultMessage: 'Back to Employees list',
+  backToWelcome: {
+    id: 'Address.backToWelcome',
+    defaultMessage: 'Back to Welcome page',
   },
-  duplicateKey: {
-    id: 'EmployeeDetails.duplicateKey',
-    defaultMessage: 'A Employee with this key already exists.',
+  title: {
+    id: 'Address.title',
+    defaultMessage: 'Customer Address list',
   },
-  EmployeeCreated: {
-    id: 'EmployeeDetails.EmployeeCreated',
-    defaultMessage: 'Employee Created',
-  },
-  EmployeeIdLabel: {
-    id: 'EmployeeDetails.EmployeeIdLabel',
-    defaultMessage: 'Id',
-  },
-  EmployeeNameLabel: {
-    id: 'EmployeeDetails.EmployeeNameLabel',
-    defaultMessage: 'Employee name',
-  },
-  EmployeeRolesLabel: {
-    id: 'EmployeeDetails.EmployeeRolesLabel',
-    defaultMessage: 'Employee roles',
-  },
-  EmployeeFirstNameLabel: {
-    id: 'EmployeeDetails.EmployeeFirstNameLabel',
-    defaultMessage: 'FirstName',
-  },
-  EmployeeLastNameLabel: {
-    id: 'EmployeeDetails.EmployeeLastNameLabel',
-    defaultMessage: 'LastName',
-  },
-  EmployeeEmailLabel: {
-    id: 'EmployeeDetails.EmployeeEmailLabel',
-    defaultMessage: 'Email',
-  },
-  hint: {
-    id: 'EmployeeDetails.hint',
+  demoHint: {
+    id: 'Address.demoHint',
     defaultMessage:
-      'This page demonstrates for instance how to use forms, notifications and how to update data using GraphQL, etc.',
+      'This page demonstrates how you can develop a component following some of the Merchant Center UX Guidelines and development best practices. For instance, fetching data using GraphQL, displaying data in a paginated table, writing functional tests, etc.',
   },
-  modalTitle: {
-    id: 'EmployeeDetails.modalTitle',
-    defaultMessage: 'Create Ticket',
-  },
-  EmployeeDetailsErrorMessage: {
-    id: 'EmployeeDetails.errorMessage',
-    defaultMessage:
-      'We were unable to fetch the Employee details. Please check your connection, the provided Employee ID and try again.',
+  noResults: {
+    id: 'Address.noResults',
+    defaultMessage: 'There are no Ticket available in this project.',
   },
 });

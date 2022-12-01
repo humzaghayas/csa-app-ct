@@ -75,6 +75,7 @@ const CustomerAddress = (props) => {
     onSubmit={handleSubmit}
     isReadOnly={!canManage}
     dataLocale={dataLocale}
+    customer={props.customer}
     >
       {(formProps) => {
         return (

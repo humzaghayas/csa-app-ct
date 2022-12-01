@@ -28,26 +28,63 @@ const getCustomerPriorityOptions = Object.keys(CUSTOMER_PRIORITY).map((key) => (
   label: key,
   value: CUSTOMER_PRIORITY[key],
 }));
-const rows = [
- 
-  { id: '--',CompanyName:'--',Address:'--',City:'--',PostalCode:'--',State:'--',Region:'--',Country:'--',AddressType:'--'},
-];
 
 const columns = [
-
-  { key: 'ContactName', label: 'ContactName' },
-  { key:'CompanyName', label: 'CompanyName' },
+  { key: 'firstName', label: 'Contact name' },
+  { key: 'company', label: 'Company Name' },
   { key: 'Address', label: 'Address' },
-  { key: 'City', label: 'City' },
-  { key: 'PostalCode', label: 'PostalCode' },
-  { key: 'State', label: 'State' },
-  { key: 'Region', label: 'Region' },
-  { key: 'Country', label: 'Country' },
- 
-  { key: 'AddressType', label: 'Address Type' },
+  { key: 'city', label: 'City Name' },
+  { key: 'postalCode', label: 'PostalCode' },
+  { key: 'state', label: 'state' },
+  { key: 'region', label: 'Region' },
+  { key: 'country', label: 'Country' },
 ];
 
+const itemRenderer = (item, column) => {
+  switch (column.key) {
+    case 'firstName':
+      return item.firstName + ' ' + item.lastName;
+    case 'company':
+      return item.company;
+    case 'Address':
+     const address = item.streetNumber + ',' + item.apartment + ',' + item.building
+      return address;
+    case 'city':
+      return item.city;
+    case 'postalCode':
+      return item.postalCode;
+    case 'state':
+      return item.state;
+    case 'region':
+      return item.region;
+    case 'country':
+      return item.country;
+    default:
+      return item[column.key];
+  }
+};
+
+// const rows = [
+ 
+//   { id: '--',CompanyName:'--',Address:'--',City:'--',PostalCode:'--',State:'--',Region:'--',Country:'--',AddressType:'--'},
+// ];
+
+// const columns = [
+
+//   { key: 'ContactName', label: 'ContactName' },
+//   { key:'CompanyName', label: 'CompanyName' },
+//   { key: 'Address', label: 'Address' },
+//   { key: 'City', label: 'City' },
+//   { key: 'PostalCode', label: 'PostalCode' },
+//   { key: 'State', label: 'State' },
+//   { key: 'Region', label: 'Region' },
+//   { key: 'Country', label: 'Country' },
+ 
+//   { key: 'AddressType', label: 'Address Type' },
+// ];
+
 const CustomerAddressForm = (props) => {
+  console.log("propsADdresForm",JSON.stringify(props.customer?.addresses));
    const[value , setValue] = useState(false)
   const intl = useIntl();
   const formik = useFormik({
@@ -59,11 +96,35 @@ const CustomerAddressForm = (props) => {
 
   const formElements = (
     <Spacings.Stack scale="l">
-     
-             <SecondaryButton iconLeft={<PlusBoldIcon />} label="Add Address" onClick={() => setValue(true)} />
-          
-            <DataTable rows={rows} columns={columns}  />
-
+      {/* <Spacings.Inline> */}
+      <Spacings.Stack scale="s">
+             <Constraints.Horizontal min={13}>
+             <SecondaryButton iconLeft={<PlusBoldIcon />} label="Add Address" onClick={() => setValue(true)} />;
+            {/* <DataTable rows={rows} columns={columns}  /> */}
+          {props.customer?.addresses ? (
+          <Spacings.Stack scale="l">
+            <DataTable
+              isCondensed
+              columns={columns}
+              rows={props.customer?.addresses}
+              itemRenderer={(item, column) => itemRenderer(item, column)}
+              maxHeight={600}
+              onRowClick={(row) => push(`customer-account/${row.id}/Customers-summary`)}
+            />
+            {/* <Pagination
+              page={page.value}
+              onPageChange={page.onChange}
+              perPage={perPage.value}
+              onPerPageChange={perPage.onChange}
+              totalItems={customersPaginatedResult.total}
+            /> */}
+            {/* <Switch>
+              <SuspendedRoute path={`${match.path}/:id`}>
+                 <CustomerAccount onClose={() => push(`${match.url}`)} /> 
+              </SuspendedRoute>
+            </Switch> */}
+          </Spacings.Stack>
+        ) : null}
         {value == true ? <div >
       <CollapsiblePanel
           data-testid="quote-summary-panel"

@@ -10,16 +10,13 @@ import Spacings from '@commercetools-uikit/spacings';
 import validate from './validate';
 import messages from './messages';
 
-
-import { EMPLOYEE_ROLES,CUSTOMER_GROUPS,CUSTOMER_PRIORITY} from './constants';
-import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import {
-  
-  Card,
-  Constraints,
-  Label
-  
-} from '@commercetools-frontend/ui-kit';
+  EMPLOYEE_ROLES,
+  CUSTOMER_GROUPS,
+  CUSTOMER_PRIORITY,
+} from './constants';
+import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
+import { Card, Constraints, Label } from '@commercetools-frontend/ui-kit';
 
 import styles from './customer-create.module.css';
 import { Pagination } from '@commercetools-uikit/pagination';
@@ -35,16 +32,38 @@ import {
 } from '@commercetools-uikit/hooks';
 import DataTable from '@commercetools-uikit/data-table';
 
-
 const rows = [
-  { TYPE: 'Cart',ID:'00000001',CREATED:'Apr 11, 2022,2:54:47...',STATUS:'--',UPDATED:'Apr 11, 2022,2:54:47...'},
-  { TYPE: 'Saved Cart',ID:'00000001',CREATED:'Apr 11, 2022,2:54:47...',STATUS:'--',UPDATED:'Apr 11, 2022,2:54:47...'},
-  { TYPE: 'Order',ID:'00000001',CREATED:'Apr 11, 2022,2:54:47...',STATUS:'COMPLETED',UPDATED:'Apr 11, 2022,2:54:47...'},
-  { TYPE: 'Ticket',ID:'00012875',CREATED:'jun 14, 2022,2:54:47...',STATUS:'COMPLETED',UPDATED:'Aug 14, 2022,2:54:47...'},
+  {
+    TYPE: 'Cart',
+    ID: '00000001',
+    CREATED: 'Apr 11, 2022,2:54:47...',
+    STATUS: '--',
+    UPDATED: 'Apr 11, 2022,2:54:47...',
+  },
+  {
+    TYPE: 'Saved Cart',
+    ID: '00000001',
+    CREATED: 'Apr 11, 2022,2:54:47...',
+    STATUS: '--',
+    UPDATED: 'Apr 11, 2022,2:54:47...',
+  },
+  {
+    TYPE: 'Order',
+    ID: '00000001',
+    CREATED: 'Apr 11, 2022,2:54:47...',
+    STATUS: 'COMPLETED',
+    UPDATED: 'Apr 11, 2022,2:54:47...',
+  },
+  {
+    TYPE: 'Ticket',
+    ID: '00012875',
+    CREATED: 'jun 14, 2022,2:54:47...',
+    STATUS: 'COMPLETED',
+    UPDATED: 'Aug 14, 2022,2:54:47...',
+  },
 ];
 
 const columns = [
-
   { key: 'TYPE', label: 'TYPE' },
   { key: 'ID', label: 'ID' },
   { key: 'STATUS', label: 'STATUS' },
@@ -68,149 +87,241 @@ const CustomerCreateForm = (props) => {
   const formElements = (
     <Spacings.Stack scale="xxl">
       <Spacings.Stack scale="l">
-      <Spacings.Inline>
-        <Spacings.Stack scale="m">
-        <div className={styles.amountCard}>
-          <Constraints.Horizontal constraint="xl">
-                  <Card  constraint="xl">
-                     <div className={styles.imageContainer}>
-                       <Label isBold={true} as='h1' >
-                       <div className={styles.FieldLabel}> 
-                       {'Name'}
-                       </div>
-                      </Label>
-                      <Text.Body  >
-                    <div className={styles.changePricesLabel}> 
-                      {props.customer?.firstName}
-                    </div>
-                     </Text.Body>
-                    </div>
-                  </Card>
-        </Constraints.Horizontal>
-        </div>
-       
-        </Spacings.Stack>
-        <Spacings.Stack scale="m">
-        <div className={styles.amountCard}>
-        <Constraints.Horizontal constraint="xl">
-                  <Card  constraint="xl">
-                     <div className={styles.imageContainer}>
-                       <Label isBold={true} as='h1' >
-                       <div className={styles.FieldLabel}> 
-                       {'Customer Number'}
-                       </div>
-                      </Label>
-                      <Text.Body  >
-                    <div className={styles.changePricesLabel}> 
-                      {props.customer?.customerNumber}
-                    </div>
-                     </Text.Body>
-                    </div>
-                  </Card>
-        </Constraints.Horizontal>
-        </div>
-          {/* <h2 >Customer Id</h2>
-          <h3>00000081</h3> */}
-        </Spacings.Stack>
-        <Spacings.Stack scale="m">
-        <div className={styles.amountCard}>
-        <Constraints.Horizontal constraint="xl">
-                  <Card  constraint="xl">
-                     <div className={styles.imageContainer}>
-                       <Label isBold={true} as='h1' >
-                       <div className={styles.FieldLabel}> 
-                       {'External Id'}
-                       </div>
-                      </Label>
-                      <Text.Body  >
-                    <div className={styles.changePricesLabel}> 
-                      {props.customer?.externalId}
-                    </div>
-                     </Text.Body>
-                    </div>
-                  </Card>
-        </Constraints.Horizontal>
-          </div>
-        </Spacings.Stack>
-          </Spacings.Inline>
+        <Spacings.Inline>
+          <Spacings.Stack scale="m">
+            <div className={styles.amountCard}>
+              <Constraints.Horizontal constraint="xl">
+                <Card constraint="xl">
+                  <div className={styles.imageContainer}>
+                    <Label isBold={true} as="h1">
+                      <div className={styles.FieldLabel}>{'Name'}</div>
+                    </Label>
+                    <Text.Body>
+                      <div className={styles.changePricesLabel}>
+                        {props.customer?.firstName}
+                      </div>
+                    </Text.Body>
+                  </div>
+                </Card>
+              </Constraints.Horizontal>
+            </div>
           </Spacings.Stack>
-          <Spacings.Stack scale="l">
-         {/* <div className={styles.dateTable}>
-          <DataTable
-            isCondensed
-            columns={columns}
-            rows={rows}
-         
-            maxHeight={600}
-          
-          />
-          <Pagination
-            page={page.value}
-            onPageChange={page.onChange}
-            perPage={perPage.value}
-            onPerPageChange={perPage.onChange}
-            // totalItems={data.total}
-          />
-          </div> */}
-        </Spacings.Stack>
-        <Spacings.Stack scale="l">
+          <Spacings.Stack scale="m">
+            <div className={styles.amountCard}>
+              <Constraints.Horizontal constraint="xl">
+                <Card constraint="xl">
+                  <div className={styles.imageContainer}>
+                    <Label isBold={true} as="h1">
+                      <div className={styles.FieldLabel}>
+                        {'Customer Number'}
+                      </div>
+                    </Label>
+                    <Text.Body>
+                      <div className={styles.changePricesLabel}>
+                        {props.customer?.customerNumber}
+                      </div>
+                    </Text.Body>
+                  </div>
+                </Card>
+              </Constraints.Horizontal>
+            </div>
+            {/* <h2 >Customer Id</h2>
+          <h3>00000081</h3> */}
+          </Spacings.Stack>
+          <Spacings.Stack scale="m">
+            <div className={styles.amountCard}>
+              <Constraints.Horizontal constraint="xl">
+                <Card constraint="xl">
+                  <div className={styles.imageContainer}>
+                    <Label isBold={true} as="h1">
+                      <div className={styles.FieldLabel}>{'External Id'}</div>
+                    </Label>
+                    <Text.Body>
+                      <div className={styles.changePricesLabel}>
+                        {props.customer?.externalId}
+                      </div>
+                    </Text.Body>
+                  </div>
+                </Card>
+              </Constraints.Horizontal>
+            </div>
+          </Spacings.Stack>
+        </Spacings.Inline>
+      </Spacings.Stack>
+      <Spacings.Stack scale="l">
         <div className={styles.dateTable}>
-      <Spacings.Inline>
-        <Spacings.Stack scale="m">
-        <div className={styles.amountCard}>
-          <Constraints.Horizontal constraint="xl">
-                  <Card  constraint="xl">
-                     <div className={styles.imageContainer}>
-                       <Label isBold={true} as='h1' >
-                       <div className={styles.FieldLabel}> 
-                       {'Delivery Address'}
-                       </div>
+          <Constraints.Horizontal constraint="l">
+            <Card constraint="l">
+              <Label isBold={true} as="h1">
+                <div className={styles.FieldLabel}>{'Aggregates'}</div>
+              </Label>
+              <Spacings.Inline>
+                <Spacings.Stack>
+                  <Constraints.Horizontal constraint="xl">
+                    <Card constraint="xl">
+                      <div className={styles.imageContainer}>
+                        <Label isBold={true} as="h1">
+                          <div className={styles.FieldLabel}>{'Order'}</div>
+                        </Label>
+                        <Text.Body>
+                          <div className={styles.changePricesLabel}>
+                            5
+                          </div>
+                        </Text.Body>
+                      </div>
+                    </Card>
+                  </Constraints.Horizontal>
+                </Spacings.Stack>
+                <Spacings.Stack>
+                <Constraints.Horizontal constraint="xl">
+                    <Card constraint="xl">
+                      <div className={styles.imageContainer}>
+                        <Label isBold={true} as="h1">
+                          <div className={styles.FieldLabel}>{'Sales'}</div>
+                        </Label>
+                        <Text.Body>
+                          <div className={styles.changePricesLabel}>
+                            125
+                          </div>
+                        </Text.Body>
+                      </div>
+                    </Card>
+                  </Constraints.Horizontal>
+                </Spacings.Stack>
+                <Spacings.Stack>
+                <Constraints.Horizontal constraint="xl">
+                    <Card constraint="xl">
+                      <div className={styles.imageContainer}>
+                        <Label isBold={true} as="h1">
+                          <div className={styles.FieldLabel}>{'Tickets'}</div>
+                        </Label>
+                        <Text.Body>
+                          <div className={styles.changePricesLabel}>
+                            10
+                          </div>
+                        </Text.Body>
+                      </div>
+                    </Card>
+                  </Constraints.Horizontal>
+                </Spacings.Stack>
+                <Spacings.Stack>
+                <Constraints.Horizontal constraint="xl">
+                    <Card constraint="xl">
+                      <div className={styles.imageContainer}>
+                        <Label isBold={true} as="h1">
+                          <div className={styles.FieldLabel}>{'Saved Cart'}</div>
+                        </Label>
+                        <Text.Body>
+                          <div className={styles.changePricesLabel}>
+                            1                         
+                        </div>
+                        </Text.Body>
+                      </div>
+                    </Card>
+                  </Constraints.Horizontal>
+                </Spacings.Stack>
+              </Spacings.Inline>
+            </Card>
+          </Constraints.Horizontal>
+        </div>
+        {/* <div className={styles.dateTable}>
+            <div className={styles.amountCard}>
+              <Constraints.Horizontal constraint="xl">
+                <Card constraint="xl">
+                  <div className={styles.imageContainer}>
+                    <Label isBold={true} as="h1">
+                      <div className={styles.FieldLabel}>{'External Id'}</div>
+                    </Label>
+                    <Text.Body>
+                      <div className={styles.changePricesLabel}>
+                        {props.customer?.externalId}
+                      </div>
+                    </Text.Body>
+                  </div>
+                </Card>
+              </Constraints.Horizontal>
+            </div>
+        </div> */}
+      </Spacings.Stack>
+      <Spacings.Stack scale="l">
+        <div className={styles.dateTable}>
+          <Spacings.Inline>
+            <Spacings.Stack scale="m">
+              <div className={styles.amountCard}>
+                <Constraints.Horizontal constraint="xl">
+                  <Card constraint="xl">
+                    <div className={styles.imageContainer}>
+                      <Label isBold={true} as="h1">
+                        <div className={styles.FieldLabel}>
+                          {'Shipping Address'}
+                        </div>
                       </Label>
-                      <Text.Body  >
-                      <div className={styles.changePricesLabel}> 
-                      {'Munchins Strasse'}
-                    </div>
-                    <div className={styles.changePricesLabel}> 
-                      {'Belgium'}
-                    </div>
-                     </Text.Body>
+                      <Text.Body>
+                        <div className={styles.changePricesLabel}>
+                          {props.customer?.defaultShippingAddress?.firstName}{' '}
+                          {props.customer?.defaultShippingAddress?.lastName}
+                          <br />
+                          {props.customer?.defaultShippingAddress?.streetNumber}
+                          ,{props.customer?.defaultShippingAddress?.apartment},
+                          {props.customer?.defaultShippingAddress?.building}
+                          <br />
+                          {props.customer?.defaultShippingAddress?.city}
+                          <br />
+                          {props.customer?.defaultShippingAddress?.region}
+                          <br />
+                          {props.customer?.defaultShippingAddress?.state}
+                          <br />
+                          {props.customer?.defaultShippingAddress?.country}
+                          <br />
+                          {props.customer?.defaultShippingAddress?.postalCode}
+                        </div>
+                      </Text.Body>
                     </div>
                   </Card>
-        </Constraints.Horizontal>
-        </div>
-       
-        </Spacings.Stack>
-        <Spacings.Stack scale="m">
-        <div className={styles.amountCard}>
-        <Constraints.Horizontal constraint="xl">
-                  <Card  constraint="xl">
-                     <div className={styles.imageContainer}>
-                       <Label isBold={true} as='h1' >
-                       <div className={styles.FieldLabel}> 
-                       {'Billing Address'}
-                       </div>
+                </Constraints.Horizontal>
+              </div>
+            </Spacings.Stack>
+            <Spacings.Stack scale="m">
+              <div className={styles.amountCard}>
+                <Constraints.Horizontal constraint="xl">
+                  <Card constraint="xl">
+                    <div className={styles.imageContainer}>
+                      <Label isBold={true} as="h1">
+                        <div className={styles.FieldLabel}>
+                          {'Billing Address'}
+                        </div>
                       </Label>
-                      <Text.Body  >
-                      <div className={styles.changePricesLabel}> 
-                      {'Munchins Strasse'}
-                    </div>
-                    <div className={styles.changePricesLabel}> 
-                      {'Belgium'}
-                    </div>
-                     </Text.Body>
+                      <Text.Body>
+                        <div className={styles.changePricesLabel}>
+                          {props.customer?.defaultBillingAddress?.firstName}{' '}
+                          {props.customer?.defaultBillingAddress?.lastName}
+                          <br />
+                          {props.customer?.defaultBillingAddress?.streetNumber},
+                          {props.customer?.defaultBillingAddress?.apartment},
+                          {props.customer?.defaultBillingAddress?.building}
+                          <br />
+                          {props.customer?.defaultBillingAddress?.city}
+                          <br />
+                          {props.customer?.defaultBillingAddress?.region}
+                          <br />
+                          {props.customer?.defaultBillingAddress?.state}
+                          <br />
+                          {props.customer?.defaultBillingAddress?.country}
+                          <br />
+                          {props.customer?.defaultBillingAddress?.postalCode}
+                        </div>
+                      </Text.Body>
                     </div>
                   </Card>
-        </Constraints.Horizontal>
-        </div>
-          {/* <h2 >Customer Id</h2>
+                </Constraints.Horizontal>
+              </div>
+              {/* <h2 >Customer Id</h2>
           <h3>00000081</h3> */}
-        </Spacings.Stack>
-      
+            </Spacings.Stack>
           </Spacings.Inline>
-          </div>
-         
-          </Spacings.Stack>
-{/*      
+        </div>
+      </Spacings.Stack>
+      {/*      
     <CollapsiblePanel
          data-testid="quote-summary-panel"
          header={
@@ -280,7 +391,7 @@ const CustomerCreateForm = (props) => {
        </Constraints.Horizontal>
   
     </CollapsiblePanel> */}
-   </Spacings.Stack>
+    </Spacings.Stack>
   );
 
   return props.children({

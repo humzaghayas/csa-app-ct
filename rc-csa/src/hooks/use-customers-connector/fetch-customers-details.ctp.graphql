@@ -9,5 +9,84 @@ query FetchCustomerDetails($id: String!) {
     externalId
     lastName
     companyName
+    customerGroup{
+      name
+    }
+    defaultBillingAddress {
+      id
+      streetName
+      streetNumber
+      apartment
+      building
+      pOBox
+      city
+      postalCode
+      region
+      state
+      country
+      additionalStreetInfo
+      additionalAddressInfo
+      firstName
+      lastName
+      salutation
+      title
+      company
+      department
+      externalId
+      __typename
+    }
+    defaultShippingAddress {
+      id
+      streetName
+      streetNumber
+      apartment
+      building
+      pOBox
+      city
+      postalCode
+      region
+      state
+      country
+      additionalStreetInfo
+      additionalAddressInfo
+      firstName
+      lastName
+      salutation
+      title
+      company
+      department
+      externalId
+      __typename
+    }
+    addresses {
+      id
+      externalId
+      key
+      streetName
+      streetNumber
+      apartment
+      building
+      pOBox
+      city
+      postalCode
+      region
+      state
+      country
+      additionalStreetInfo
+      additionalAddressInfo
+      firstName
+      lastName
+      salutation
+      title
+      company
+      department
+      externalId
+    }
+    custom{
+      customFieldsRaw{
+        name
+        value
+      }
+    }
   }
 }

@@ -5,7 +5,7 @@ import {
   useRouteMatch,
   Link,
   useHistory,
-  useParams
+  useParams,
 } from 'react-router-dom';
 import {
   TabularModalPage,
@@ -15,32 +15,27 @@ import {
   TabularDetailPage,
 } from '@commercetools-frontend/application-components';
 import PropTypes from 'prop-types';
-// import CustomerDetails from '../Customer-details/Customer-details';
-// import CustomerRules from '../Customer-rules/Customer-rules';
 
 import Spacings from '@commercetools-uikit/spacings';
 import { Fragment } from 'react';
 import styles from './customer-account-module.css';
 import Avatar from '@commercetools-uikit/avatar';
-// import RequiredApproval from '../required-approval';
-// import AddBudget from '../add-budget';
-// import AddNewRule from '../add-new-rule';
-// import EmployeeCreate from '../../../employees/components/employee-create';
-// import CustomerEmployees from '../Customer-employees/Customer-employees';
-// import { getCustomer } from '../../api';
 import { lazy, useState, useEffect } from 'react';
 import CustomerCreateForm from '../customer-create/customer-create-form';
 import CustomerCreate from '../customer-create/customer-create';
 import CustomerPassword from '../customer-password/customer-password';
 import CustomerProfile from '../customer-profile';
 import CustomerOrder from '../customer-orders/customer-order';
-import CustomerAddress from '../customer-address/customer-address'
+// import CustomerAddress from '../customer-address/customer-address';
 import Text from '@commercetools-uikit/text';
 import NoImageIcon from '@commercetools-frontend/assets/images/camera.svg';
 import CustomerTickets from '../customer-Tickets/customer-tickets';
-
+import CustomerList from '../customer-address/customer-address-list';
 import { useCustomerDetailsFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
+
+import CustomerAddressCreate from '../customer-address/customer-address-create';
 import CustomerPayment from '../customer-payment/customer-payment';
+
 
 
 const CustomerAccount = (props) => {
@@ -49,11 +44,11 @@ const CustomerAccount = (props) => {
   const history = useHistory();
   const params = useParams();
   const { push } = useHistory();
- // const [Customer, setData] = useState();
+  // const [Customer, setData] = useState();
 
-  const {customer, error, loading } = useCustomerDetailsFetcher(params.id);
+  const { customer, error, loading } = useCustomerDetailsFetcher(params.id);
 
-   console.log("customer",customer);
+  console.log('customer', JSON.stringify(customer));
   // console.log("params.id",params.id);
   return (
     <TabularDetailPage
@@ -61,7 +56,6 @@ const CustomerAccount = (props) => {
          onPreviousPathClick={() => history.push(`/csa_project/csa-customer-tickets/Customers`)}
       //  onPreviousPathClick={() => history.push(`${match.url}`)}
       previousPathLabel="Go to View Customers"
-     
       tabControls={
         <>
         <Spacings.Stack scale="xxl">
@@ -95,7 +89,7 @@ const CustomerAccount = (props) => {
                 to={`${match.url}/Customers-summary`}
                 label="Summary"
               />
-               <TabHeader
+              <TabHeader
                 to={`${match.url}/Customers-profile`}
                 label="Profile"
               />
@@ -107,7 +101,7 @@ const CustomerAccount = (props) => {
                 to={`${match.url}/Customers-payments`}
                 label="Payments"
               />
-               <TabHeader
+              <TabHeader
                 to={`${match.url}/Customers-Address`}
                 label="Addresses"
               />
@@ -139,51 +133,37 @@ const CustomerAccount = (props) => {
       <Switch>
         <Route path={`${match.path}/Customers-summary`}>
           {/* <CustomerDetails /> */}
-         <CustomerCreate customer={customer} />
+          <CustomerCreate customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-profile`}>
           {/* <CustomerDetails /> */}
-        <CustomerProfile customer={customer} />
+          <CustomerProfile customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-orders`}>
-           <CustomerOrder />
+          <CustomerOrder customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-password`}>
            <CustomerPassword />
         </Route>
         <Route path={`${match.path}/Customers-Address`}>
-          <CustomerAddress />
+          <CustomerList customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-sumary`}>
-           <CustomerPassword />
+          <CustomerPassword />
         </Route>
         <Route path={`${match.path}/Customers-tickets`}>
           <CustomerTickets />
         </Route>
+        <Route  path={`${match.path}/customer-address-create`}>
+           <CustomerAddressCreate customer={customer} />
         <Route path={`${match.path}/Customers-payments`}>
           <CustomerPayment />
         </Route>
         <Route path={`${match.path}/Customers-sumary`}>
            <CustomerPassword />
         </Route>
-        <Route path={`${match.path}/Customers-sumary`}>
-           <CustomerPassword />
-        </Route>
-        
-        {/* <Route path={`${match.path}/Customer-administration`}>
-        <CustomerCreateForm />
-        </Route> */}
-        {/* <Route path={`${match.path}/employee-create`}>
-           <EmployeeCreate />
-          </Route>
-        <Route path={`${match.path}/required-approval`}>
-           <RequiredApproval/>
-          </Route> */}
-          
-
       </Switch>
     </TabularDetailPage>
-
   );
 };
 CustomerAccount.displayName = 'Companies';
