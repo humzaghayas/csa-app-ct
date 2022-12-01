@@ -44,22 +44,22 @@ const columns = [
 const itemRenderer = (item, column) => {
   switch (column.key) {
     case 'firstName':
-      return item.firstName + ' ' + item.lastName;
+      return item.firstName?item.firstName:'--';
     case 'company':
-      return item.company;
+      return item.company?item.company:'--';
     case 'Address':
-     const address = item.streetNumber + ',' + item.apartment + ',' + item.building
-      return address;
+     //const address = item.streetNumber + ',' + item.apartment + ',' + item.building
+      return item.streetNumber?item.streetNumber:'--';
     case 'city':
-      return item.city;
+      return item.city?item.city:'--';
     case 'postalCode':
-      return item.postalCode;
+      return item.postalCode?item.postalCode:'--';
     case 'state':
-      return item.state;
+      return item.state?item.state:'--';
     case 'region':
-      return item.region;
+      return item.region?item.region:'--';
     case 'country':
-      return item.country;
+      return item.country?item.country:'--';
     default:
       return item[column.key];
   }
@@ -105,7 +105,7 @@ const CustomersAddressList = (props) => {
               rows={props.customer?.addresses}
               itemRenderer={(item, column) => itemRenderer(item, column)}
               maxHeight={600}
-              onRowClick={(row) => push(`${match.url}/${row.id}`)}
+              onRowClick={(row) => push(`${match.url}/${row.id}`+"+"+props.customer?.id)}
             />
             <Pagination
               page={page.value}

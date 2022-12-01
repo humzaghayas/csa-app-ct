@@ -40,8 +40,17 @@ const AddressDetails = (props) => {
  console.log("parms",JSON.stringify(params));
  console.log("propsCUstomerDetails",JSON.stringify(props));
  const custId = "ddca9941-549a-47b0-98b2-e940f6393e28";
- const { loading, error, customerAddress } = useCustomerAddressDetailsFetcher(custId);
+ const addressIds = params.id.split('+');
+ console.log("answer_array",addressIds);
+ const { loading, error, customerAddress } = useCustomerAddressDetailsFetcher(addressIds[1]);
  console.log("customerAddress",JSON.stringify(customerAddress));
+
+ const item = customerAddress?.addresses?.find(
+  (item) => item.id === addressIds[0]
+);
+
+console.log("item",item);
+
   const customerAddressDetailsUpdater = useCustomerAddressDetailsUpdater();
   const handleSubmit = useCallback(
     async (formikValues, formikHelpers) => {
@@ -50,7 +59,7 @@ const AddressDetails = (props) => {
         await customerAddressDetailsUpdater.execute({
           originalDraft: customerAddress,
           nextDraft: data,
-          addressId:params.id,
+          addressId:addressIds[0],
         });
         showNotification({
           kind: 'success',
@@ -81,7 +90,7 @@ const AddressDetails = (props) => {
 
   return (
     <AddressDetailsForm
-      initialValues={docToFormValues(customerAddress?.addresses[0], projectLanguages)}
+      initialValues={docToFormValues(item, projectLanguages)}
       onSubmit={handleSubmit}
       isReadOnly={!canManage}
       dataLocale={dataLocale}
@@ -96,17 +105,7 @@ const AddressDetails = (props) => {
        {(formProps) => {
         return (
           <FormModalPage
-            title={formatLocalizedString(
-              {
-                name: formProps.values?.name,
-              },
-              {
-                key: 'name',
-                locale: dataLocale,
-                fallbackOrder: projectLanguages,
-                fallback: NO_VALUE_FALLBACK,
-              }
-            )}
+            title="Customer Address"
             isOpen
             onClose={props.onClose}
             isPrimaryButtonDisabled={
