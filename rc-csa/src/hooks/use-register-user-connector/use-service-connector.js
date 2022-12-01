@@ -76,6 +76,8 @@ export const useCreateOrUpdateTicket = ()=>{
         target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
       } });
     }catch (graphQlResponse) {
+
+      console.error(graphQlResponse);
       throw extractErrorFromGraphQlResponse(graphQlResponse);
     }
   }
@@ -114,6 +116,7 @@ export const useGetTicketById = (id) => {
     context: {
       target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
     },
+    fetchPolicy:"network-only"
   });
 
   const ticket = getTicketFromCustomObject(data);

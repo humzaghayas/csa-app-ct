@@ -56,6 +56,9 @@ const CustomerOrder = (props) => {
   const match = useRouteMatch();
   const { push } = useHistory();
   const params = useParams();
+
+  const OrderId = params.id;
+
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
   const tableSorting = useDataTableSortingState('createdAt desc');
@@ -91,7 +94,7 @@ console.log("props",props);
   //     <IconButton
   //     icon={<MailIcon />}
   //     // label={row.Status}
-  //     onClick={() => push(`/csa_project/drl-b2b-extension/customer-order-messages`)}
+  //     onClick={() => push(`/csa_project/csa-customer-tickets/${OrderId}/customer-order-messages`)
   //   />
   //   </div>)},
   // ];
@@ -132,7 +135,9 @@ console.log("props",props);
      onChange={(event) => alert(event.target.checked)}
     size="medium"
   />
+
           {/* <DataTable
+
             isCondensed
             columns={columns}
             rows={rows}

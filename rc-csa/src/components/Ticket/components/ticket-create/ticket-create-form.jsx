@@ -11,19 +11,25 @@ import messages from './messages';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import{getTicketCategories,getTicketPriorityValues,getTicketContactTypes} from 'ct-tickets-helper-api';
-import { DateField, MultilineTextField, PrimaryButton, SecondaryButton } from '@commercetools-frontend/ui-kit';
+import { ChainIcon, CollapsibleMotion, MultilineTextField, PrimaryButton, SecondaryButton,
+  AngleUpDownIcon, 
+  SecondaryIconButton,
+  Text,
+  DataTable} from '@commercetools-frontend/ui-kit';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useState } from 'react';
 import{CONSTANTS} from 'ct-tickets-helper-api'
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
-import { useUserListFetcher } from '../../../../hooks/use-register-user-connector/use-service-connector';
+//import {  useUserListFetcher } from '../../../../hooks/use-order-connector/use-order-service-connector';
 import { useFileDeleteService, useFileUploadService } from '../../../../hooks/use-file-upload-connector';
 import { useFindCustomerService } from '../../../../hooks/use-customer-connector';
 import { docToFormValuesCustomer } from './conversions';
 import { TICKET_STATUS, TICKET_WORKFLOW } from 'ct-tickets-helper-api/lib/constants';
 import Tickets from '../Ticket-list/ticket-list';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { Link, useHistory, useRouteMatch } from 'react-router-dom';
+import { useUserListFetcher } from '../../../../hooks/use-register-user-connector';
+import { useOrderService } from '../../../../hooks/use-order-connector';
 
 
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
@@ -54,9 +60,21 @@ const getTicketContactTypesOpt= Object.keys(getTicketContactTypesVals).map((key)
   value: key,
 })); 
 
+const columns = [
+  { key:'comment', label: 'Worklog' },
+  { key: 'createdAt', label: 'Created' },
+  { key: 'status', label: 'Status' },
+];
+
 
 const TicketCreateForm = (props) => {
-  const dataLocale = useApplicationContext((context) => context.dataLocale);
+  //const dataLocale = useApplicationContext((context) => context.dataLocale);
+
+  const { dataLocale, entryPointUriPath,projectKey } =useApplicationContext((context) => ({
+    dataLocale: context.dataLocale ?? '',
+    entryPointUriPath:context.environment.entryPointUriPath,
+    projectKey:context.project.key
+  }));
 
   const formik = useFormik({
     // Pass initial values from the parent component.
@@ -73,11 +91,17 @@ const TicketCreateForm = (props) => {
 
   const{getUsersToAssignTo} =useUserListFetcher();
 
+
+
+  
   const [customerFound, setCustomerFound] = useState(formik.values.isEdit);
   const [files, setFiles] = useState([]);
+  const [commentsList, setCommentsList] = useState(formik.values.comments);
+  const [imgUploaded, setImgUploaded] = useState(false);
   const [customer, setCustomer] = useState(null);
   const [disableSubmitButton, setDisableSubmitButton] = useState(!canManage || !customerFound);
-  
+  const [isClosedCommentsPanel, setIsClosedCommentsPanel] = useState(true);
+
   const [workflowStatusses, setWorkflowStatusses] = useState([]);   
 
   useEffect(()=>{
@@ -158,6 +182,20 @@ useEffect(() => {
   console.log('render once12');
 });
 
+useEffect(() => {
+  // Update the document title using the browser API
+  if(commentsList.length ==0 && formik?.values?.comments?.length > 0){
+    if(!formik.values.comments){
+      formik.values.comments = [];
+    }
+    
+    setCommentsList(formik?.values?.comments);
+    // renderOnce= false; 
+    console.log('render once');
+  }
+  console.log('render once12');
+});
+
 useEffect(async() => {
  if(formik?.values?.email &&formik?.values?.isEdit && customer === null){
     const customerObj = await getCustomerByEmail(formik.values.email);
@@ -169,6 +207,18 @@ useEffect(async() => {
 
   console.log('use effect 1',formik.values.emai);
 },[formik?.values?.email]);
+
+
+const [orderId,setOrderId]=useState(null);
+const{execute:execOrderService} = useOrderService();
+useEffect(async() => {
+  if(formik?.values?.orderNumber &&formik?.values?.isEdit && orderId === null){
+     const order = await execOrderService(formik?.values?.orderNumber);
+     setOrderId(order?.data?.order?.id);
+ 
+     console.log('Order use effect ',order);
+  }
+ },[formik?.values?.orderNumber]);
 
 
 const{execute} = useFileUploadService();
@@ -203,9 +253,9 @@ const uploadFile = (e) => {
     console.log('File Not Found!');
     return;
   }
-
+  setImgUploaded(false);
   execute(formik,file,files,setFiles,setProgresspercent
-        ,setFileDeleteName,setFileDeleteUrl);
+        ,setFileDeleteName,setFileDeleteUrl,setImgUploaded);
   console.log('file uploaded');
   return false;
 }
@@ -232,9 +282,26 @@ const match = useRouteMatch();
 let history = useHistory();
 const saveTicket =async (e)=>{
   formik.handleSubmit(e);
-  //history.push(`${match.url}/Tickets`)
+
+  history.push(`/${projectKey}/${entryPointUriPath}/Tickets`);
 }
 
+const [disableWLButton,setDisableWLButton] = useState(false);
+const addWorklog =(e) => {
+
+  if(!formik?.values?.commentMessage || formik?.values?.commentMessage == ''){
+    return;
+  }
+  let c= commentsList;
+  const cMessage = formik?.values?.commentMessage;
+
+  c=c.concat({"comment":cMessage,"status":"Please Submit To Persist Changes!"});
+  setCommentsList(c);
+
+  if(cMessage){
+    setDisableWLButton(true);
+  }
+}
 
   return (<>
     <form onSubmit={formik.handleSubmit}>
@@ -339,7 +406,7 @@ const saveTicket =async (e)=>{
                     isReadOnly={props.isReadOnly}
                     isRequired
                     horizontalConstraint={13}
-                    isDisabled={!canManage || !customerFound }
+                    isDisabled={!canManage || (!customerFound  || formik.values.isEdit) }
                   />
             </Spacings.Stack>
             <Spacings.Inline scale="s">
@@ -372,9 +439,30 @@ const saveTicket =async (e)=>{
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                           isDisabled={!canManage || (!customerFound  || formik.values.isEdit) }/>
-                  </Spacings.Stack>
+
+                  {orderId &&
+                    <Link to={`/${projectKey}/${entryPointUriPath}/Orders`}>
+                            <PrimaryButton iconLeft={<ChainIcon />} 
+                              label={formik.values.orderNumber}
+                            />
+                        </Link>
+                      }
+                          </Spacings.Stack>
                   }
         </Spacings.Inline>
+
+        {formik.values.isEdit && formik.values.category 
+               && 
+          <Spacings.Stack scale="s">
+               <Link to={`/${projectKey}/${entryPointUriPath}/customer-account/${customer?.id}/Customers-summary`}>
+                   <PrimaryButton iconLeft={<ChainIcon />} 
+                      label={formik.values.email}
+                    />
+                </Link>
+
+           </Spacings.Stack>
+        }
+
         <Spacings.Stack scale="s">
         <SelectField
               name="priority"
@@ -392,22 +480,37 @@ const saveTicket =async (e)=>{
             />
             </Spacings.Stack>
 
-            <Spacings.Stack scale="s">
-        <SelectField
-              name="assignedTo"
-              title="Assign To"
-              value={formik.values.assignedTo}
-              errors={formik.errors.assignedTo}
-              touched={formik.touched.assignedTo}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              options={getUsersToAssignTo}
-              isReadOnly={props.isReadOnly}
-              isRequired
-              horizontalConstraint={13}
-              isDisabled={!canManage || !customerFound }
-            />
-            </Spacings.Stack>
+            <Spacings.Inline scale="s">
+                    <SelectField
+                          name="assignedTo"
+                          title="Assign To"
+                          value={formik.values.assignedTo}
+                          errors={formik.errors.assignedTo}
+                          touched={formik.touched.assignedTo}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          options={getUsersToAssignTo}
+                          isReadOnly={props.isReadOnly}
+                          isRequired
+                          horizontalConstraint={13}
+                          isDisabled={!canManage || !customerFound }
+                      />
+
+                    <SelectField
+                        name="status"
+                        title="Ticket Status"
+                        value={formik.values.status}
+                        errors={formik.errors.status}
+                        touched={formik.touched.status}
+                        onBlur={formik.handleBlur}
+                        options={workflowStatusses}
+                        onChange={formik.handleChange}
+                        horizontalConstraint={13}
+                        isDisabled={!formik.values.isEdit}
+                      />
+
+                       
+            </Spacings.Inline>
 
 
             <Spacings.Stack scale="s">
@@ -421,7 +524,7 @@ const saveTicket =async (e)=>{
                     touched={formik.touched.subject}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    isDisabled={!canManage || !customerFound }/>
+                    isDisabled={!canManage || (!customerFound  || formik.values.isEdit) }/>
               </Spacings.Stack>
 
 
@@ -433,37 +536,76 @@ const saveTicket =async (e)=>{
                     errors={
                       TextField.toFieldErrors(formik.errors).message
                     }
-                    isDisabled={!canManage || !customerFound }
+                    isReadOnly={formik.values.isEdit}
+                    isDisabled={!canManage || !customerFound  }
                     touched={formik.touched.message}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}/>
+            
+                <Spacings.Inline alignItems="center">
+                    <MultilineTextField name="commentMessage"
+                        title="Worklog"
+                        value={formik.values.commentMessage}
+                        isDisabled={!canManage || !customerFound}
+                        touched={formik.touched.commentMessage}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}/>
 
+                    <PrimaryButton
+                      label="Add Worklog"
+                      onClick={addWorklog}
+                      isDisabled={disableWLButton}
+                      // isDisabled={disableSubmitButton }
+                    />
+                </Spacings.Inline>
+                {commentsList && commentsList.length > 0 && <>
+                  <CollapsiblePanel
+                  isClosed={isClosedCommentsPanel}
+                  onToggle={()=>{setIsClosedCommentsPanel(!isClosedCommentsPanel);}}
+                  header="Show Worklog History" >
+                              <div>
+
+                              {commentsList ? 
+                                      <Spacings.Stack scale="l">
+                                      
+                                        <DataTable
+                                          isCondensed
+                                          columns={columns}
+                                          rows={commentsList}
+                                          // itemRenderer={(item, column) => itemRenderer(item, column)}
+                                          maxHeight={600}
+                                          // sortedBy={tableSorting.value.key}
+                                          // sortDirection={tableSorting.value.order}
+                                          // onSortChange={tableSorting.onChange}
+                                          // onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
+                                          onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
+                                          // onRowClick={(row) => push(`Ticket-account/${row.id}/companies-general`)}
+                                        />
+                                      </Spacings.Stack>
+                                    : <p>Loading...</p>}
+                                      
+                                  </div>
+                    </CollapsiblePanel>
+                  </>
+                }
                 <div>
                    <input type='file' id="upload_file" 
                           name="upload_file" 
                           ref={inputRef}
                           onChange={uploadFile}/>
-                   <button onClick={handleClick}>Upload</button>
+                   {/* <button onClick={handleClick}>Upload</button> */}
+
+                   {!imgUploaded &&
+                      <div className='outerbar'>
+                        <div className='innerbar' style={{ width: `${progresspercent}%` }}>{progresspercent}%</div>
+                      </div>
+                   }
   
                   <br/><br/>
                    {files}
                   <br/>
                   {files?.length>0 && <button onClick={deleteFileFromStorage}>Delete File</button>}
                 </div>
-              </Spacings.Stack>
-              <Spacings.Stack>
-                    <SelectField
-                        name="status"
-                        title="Ticket Status"
-                        value={formik.values.status}
-                        errors={formik.errors.status}
-                        touched={formik.touched.status}
-                        onBlur={formik.handleBlur}
-                        options={workflowStatusses}
-                        onChange={formik.handleChange}
-                        horizontalConstraint={13}
-                        isDisabled={!formik.values.isEdit}
-                      />
               </Spacings.Stack>
 
                   <Spacings.Inline>

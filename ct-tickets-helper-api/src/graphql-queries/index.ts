@@ -1,6 +1,6 @@
 export const FETCH_TICKETS=`
- query FetchTickets($container:String!,$limit:Int,$offset:Int) {
-    customObjects(container: $container,limit:$limit,offset:$offset){
+ query FetchTickets($container:String!,$limit:Int,$offset:Int,$sort:[String!]) {
+    customObjects(container: $container,limit:$limit,offset:$offset,sort:$sort){
       total
       count
       offset
@@ -94,3 +94,13 @@ export const FETCH_TICKETS=`
   }
 }
  `
+
+ export const FETCH_ORDER_INFO_BY_ORDERNUMBER=`
+ query($orderNumber:String){
+  order(orderNumber:$orderNumber){
+    id
+    orderState
+    orderNumber
+  }
+  }
+  `

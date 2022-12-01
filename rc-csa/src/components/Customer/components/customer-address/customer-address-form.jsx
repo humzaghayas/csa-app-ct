@@ -125,9 +125,6 @@ const CustomerAddressForm = (props) => {
             </Switch> */}
           </Spacings.Stack>
         ) : null}
-
-          </Constraints.Horizontal>
-          </Spacings.Stack>
         {value == true ? <div >
       <CollapsiblePanel
           data-testid="quote-summary-panel"

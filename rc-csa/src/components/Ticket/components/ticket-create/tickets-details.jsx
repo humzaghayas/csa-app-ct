@@ -30,7 +30,9 @@ const TicketDetailsP = (props) => {
       let data =formValuesToDoc(formValues);
 
       console.log("data from form",data);
-      await execute(data);
+      let t = await execute(data);
+
+      console.log(t);
     },
     [execute]
   );
