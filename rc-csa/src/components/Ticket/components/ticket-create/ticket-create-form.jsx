@@ -298,9 +298,11 @@ const addWorklog =(e) => {
   c=c.concat({"comment":cMessage,"status":"Please Submit To Persist Changes!"});
   setCommentsList(c);
 
-  if(cMessage){
-    setDisableWLButton(true);
-  }
+  formik.values.comments = c;
+
+  // if(cMessage){
+  //   setDisableWLButton(true);
+  // }
 }
 
   return (<>
@@ -441,7 +443,7 @@ const addWorklog =(e) => {
                           isDisabled={!canManage || (!customerFound  || formik.values.isEdit) }/>
 
                   {orderId &&
-                    <Link to={`/${projectKey}/${entryPointUriPath}/Orders`}>
+                    <Link to={`/${projectKey}/${entryPointUriPath}/customer-account/${customer?.id}/Customers-orders`}>
                             <PrimaryButton iconLeft={<ChainIcon />} 
                               label={formik.values.orderNumber}
                             />

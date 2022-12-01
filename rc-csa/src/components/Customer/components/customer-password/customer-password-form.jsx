@@ -26,10 +26,10 @@ const CustomerPasswordForm = (props) => {
     enableReinitialize: true,
   });
   const rows = [
-    { TicketNumber: '00000001',FirstName:'Lahari',PasswordRequest:'',Link:''},
-    { TicketNumber: '00000002',FirstName:'Lahari',PasswordRequest:'',Link:''},
-    { TicketNumber: '00000003',FirstName:'Lahari',PasswordRequest:'',Link:''},
-    { TicketNumber: '00000003',FirstName:'Lahari',PasswordRequest:'',Link:''},
+    { TicketNumber: '00000001',FirstName:'Lahari',PasswordRequest:'',LastUpdated:'Nov 24, 2022,2:54:47...',},
+    { TicketNumber: '00000002',FirstName:'Lahari',PasswordRequest:'',LastUpdated:'jun 05, 2022,2:54:47...'},
+    { TicketNumber: '00000003',FirstName:'Lahari',PasswordRequest:'',LastUpdated:'May 21, 2022,2:54:47...'},
+    { TicketNumber: '00000003',FirstName:'Lahari',PasswordRequest:'',LastUpdated:'Apr 11, 2022,2:54:47...'},
   ];
   // const { push } = useHistory();
   const columns = [
@@ -39,13 +39,13 @@ const CustomerPasswordForm = (props) => {
     { key: 'PasswordRequest', label: 'Password Request',renderItem: (row) => (
       <div>
          <PrimaryButton
-                 label="Forgot/Change Password"
+                 label="Change Password"
                 //  onClick={() => setPassword(true)}
               isDisabled={false}
                 size = "big"
   />
     </div>) },
-    { key: 'Link', label: 'Link'  },
+    { key: 'LastUpdated', label: 'Last Updated'  },
     // { key: 'DeliveryMode', label: 'Delivery Mode',renderItem: (row) => (
     //   <SecondaryButton label={row.DeliveryMode} onClick={() => alert('Button clicked')} />) },
   //   { key: 'Status', label: 'Status',renderItem: (row) => (

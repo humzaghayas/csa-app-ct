@@ -89,159 +89,92 @@ const CustomerCreateForm = (props) => {
       <Spacings.Stack scale="l">
         <Spacings.Inline>
           <Spacings.Stack scale="m">
-            <div className={styles.amountCard}>
+          
               <Constraints.Horizontal constraint="xl">
-                <Card constraint="xl">
-                  <div className={styles.imageContainer}>
-                    <Label isBold={true} as="h1">
-                      <div className={styles.FieldLabel}>{'Name'}</div>
-                    </Label>
-                    <Text.Body>
-                      <div className={styles.changePricesLabel}>
-                        {props.customer?.firstName}
-                      </div>
-                    </Text.Body>
-                  </div>
+                <Card constraint="xl" theme="dark" insetScale="l">
+                <Text.Subheadline as="h4" isBold={true} tone="information">{'Name'}</Text.Subheadline>
+                <Text.Subheadline as="h3"  > {props.customer?.firstName}</Text.Subheadline>
+                 
                 </Card>
               </Constraints.Horizontal>
-            </div>
+            
           </Spacings.Stack>
           <Spacings.Stack scale="m">
-            <div className={styles.amountCard}>
+           
               <Constraints.Horizontal constraint="xl">
-                <Card constraint="xl">
-                  <div className={styles.imageContainer}>
-                    <Label isBold={true} as="h1">
-                      <div className={styles.FieldLabel}>
-                        {'Customer Number'}
-                      </div>
-                    </Label>
-                    <Text.Body>
-                      <div className={styles.changePricesLabel}>
-                        {props.customer?.customerNumber}
-                      </div>
-                    </Text.Body>
-                  </div>
+                <Card constraint="xl" theme="dark" insetScale="l">
+                <Text.Subheadline as="h4" isBold={true} tone="information">{'Customer Number'}</Text.Subheadline>
+                <Text.Subheadline as="h3" > {props.customer?.customerNumber}</Text.Subheadline>
+                 
                 </Card>
               </Constraints.Horizontal>
-            </div>
-            {/* <h2 >Customer Id</h2>
-          <h3>00000081</h3> */}
+          
+            
           </Spacings.Stack>
           <Spacings.Stack scale="m">
-            <div className={styles.amountCard}>
+           
               <Constraints.Horizontal constraint="xl">
-                <Card constraint="xl">
-                  <div className={styles.imageContainer}>
-                    <Label isBold={true} as="h1">
-                      <div className={styles.FieldLabel}>{'External Id'}</div>
-                    </Label>
-                    <Text.Body>
-                      <div className={styles.changePricesLabel}>
-                        {props.customer?.externalId}
-                      </div>
-                    </Text.Body>
-                  </div>
+                <Card constraint="xl" theme="dark" insetScale="l">
+                <Text.Subheadline as="h4" isBold={true} tone="information">{'External Id'}</Text.Subheadline>
+                <Text.Subheadline as="h3" > {props.customer?.externalId}</Text.Subheadline>
+                
                 </Card>
               </Constraints.Horizontal>
-            </div>
+            
           </Spacings.Stack>
         </Spacings.Inline>
       </Spacings.Stack>
-      <Spacings.Stack scale="l">
-        <div className={styles.dateTable}>
+      <br />
+      <br />
+      <Spacings.Stack scale="xl">
+       
           <Constraints.Horizontal constraint="l">
-            <Card constraint="l">
-              <Label isBold={true} as="h1">
-                <div className={styles.FieldLabel}>{'Aggregates'}</div>
-              </Label>
+            <Card constraint="xl" min={23} max={27} >
+            <Text.Subheadline as="h4" isBold={true} tone="positive">{'Aggregates'}</Text.Subheadline>
+           <br />
               <Spacings.Inline>
-                <Spacings.Stack>
-                  <Constraints.Horizontal constraint="xl">
-                    <Card constraint="xl">
-                      <div className={styles.imageContainer}>
-                        <Label isBold={true} as="h1">
-                          <div className={styles.FieldLabel}>{'Order'}</div>
-                        </Label>
-                        <Text.Body>
-                          <div className={styles.changePricesLabel}>
-                            5
-                          </div>
-                        </Text.Body>
-                      </div>
+                <Spacings.Stack scale="l">
+                  <Constraints.Horizontal >
+                    <Card constraint="xl" theme="dark" insetScale="l">
+                    <Text.Subheadline as="h4" isBold={true} tone="information">{'Order'}</Text.Subheadline>
+                <Text.Subheadline as="h3" >  5</Text.Subheadline>
+                     
                     </Card>
                   </Constraints.Horizontal>
                 </Spacings.Stack>
-                <Spacings.Stack>
-                <Constraints.Horizontal constraint="xl">
-                    <Card constraint="xl">
-                      <div className={styles.imageContainer}>
-                        <Label isBold={true} as="h1">
-                          <div className={styles.FieldLabel}>{'Sales'}</div>
-                        </Label>
-                        <Text.Body>
-                          <div className={styles.changePricesLabel}>
-                            125
-                          </div>
-                        </Text.Body>
-                      </div>
+                <Spacings.Stack scale="l">
+                <Constraints.Horizontal >
+                    <Card constraint="xl" theme="dark" insetScale="l">
+                    <Text.Subheadline as="h4" isBold={true} tone="information">{'Sales'}</Text.Subheadline>
+                <Text.Subheadline as="h3" >125</Text.Subheadline>
+                     
                     </Card>
                   </Constraints.Horizontal>
                 </Spacings.Stack>
-                <Spacings.Stack>
-                <Constraints.Horizontal constraint="xl">
-                    <Card constraint="xl">
-                      <div className={styles.imageContainer}>
-                        <Label isBold={true} as="h1">
-                          <div className={styles.FieldLabel}>{'Tickets'}</div>
-                        </Label>
-                        <Text.Body>
-                          <div className={styles.changePricesLabel}>
-                            10
-                          </div>
-                        </Text.Body>
-                      </div>
+                <Spacings.Stack scale="l">
+                <Constraints.Horizontal >
+                    <Card constraint="xl" theme="dark" insetScale="l">
+                    <Text.Subheadline as="h4" isBold={true} tone="information">{'Tickets'}</Text.Subheadline>
+                <Text.Subheadline as="h3" >10</Text.Subheadline>
+                      
                     </Card>
                   </Constraints.Horizontal>
                 </Spacings.Stack>
-                <Spacings.Stack>
-                <Constraints.Horizontal constraint="xl">
-                    <Card constraint="xl">
-                      <div className={styles.imageContainer}>
-                        <Label isBold={true} as="h1">
-                          <div className={styles.FieldLabel}>{'Saved Cart'}</div>
-                        </Label>
-                        <Text.Body>
-                          <div className={styles.changePricesLabel}>
-                            1                         
-                        </div>
-                        </Text.Body>
-                      </div>
+                <br/>
+                <Spacings.Stack scale="l">
+                <Constraints.Horizontal min={13}>
+                <Card constraint="xl" insetScale="l" theme="dark">
+                    <Text.Subheadline as="h4" isBold={true} tone="information">{'Saved Cart'}</Text.Subheadline>
+                <Text.Subheadline as="h3" >1</Text.Subheadline>
+                     
                     </Card>
                   </Constraints.Horizontal>
                 </Spacings.Stack>
               </Spacings.Inline>
             </Card>
           </Constraints.Horizontal>
-        </div>
-        {/* <div className={styles.dateTable}>
-            <div className={styles.amountCard}>
-              <Constraints.Horizontal constraint="xl">
-                <Card constraint="xl">
-                  <div className={styles.imageContainer}>
-                    <Label isBold={true} as="h1">
-                      <div className={styles.FieldLabel}>{'External Id'}</div>
-                    </Label>
-                    <Text.Body>
-                      <div className={styles.changePricesLabel}>
-                        {props.customer?.externalId}
-                      </div>
-                    </Text.Body>
-                  </div>
-                </Card>
-              </Constraints.Horizontal>
-            </div>
-        </div> */}
+       
+     
       </Spacings.Stack>
       <Spacings.Stack scale="l">
         <div className={styles.dateTable}>
@@ -249,16 +182,10 @@ const CustomerCreateForm = (props) => {
             <Spacings.Stack scale="m">
               <div className={styles.amountCard}>
                 <Constraints.Horizontal constraint="xl">
-                  <Card constraint="xl">
-                    <div className={styles.imageContainer}>
-                      <Label isBold={true} as="h1">
-                        <div className={styles.FieldLabel}>
-                          {'Shipping Address'}
-                        </div>
-                      </Label>
-                      <Text.Body>
-                        <div className={styles.changePricesLabel}>
-                          {props.customer?.defaultShippingAddress?.firstName}{' '}
+                <Card constraint="xl" theme="dark" insetScale="xl">
+                    <Text.Subheadline as="h4" isBold={true} tone="information">{'Shipping Address'}</Text.Subheadline>
+                <Text.Subheadline as="h3" >
+                {props.customer?.defaultShippingAddress?.firstName}{' '}
                           {props.customer?.defaultShippingAddress?.lastName}
                           <br />
                           {props.customer?.defaultShippingAddress?.streetNumber}
@@ -274,9 +201,8 @@ const CustomerCreateForm = (props) => {
                           {props.customer?.defaultShippingAddress?.country}
                           <br />
                           {props.customer?.defaultShippingAddress?.postalCode}
-                        </div>
-                      </Text.Body>
-                    </div>
+                </Text.Subheadline>
+                  
                   </Card>
                 </Constraints.Horizontal>
               </div>
@@ -284,16 +210,10 @@ const CustomerCreateForm = (props) => {
             <Spacings.Stack scale="m">
               <div className={styles.amountCard}>
                 <Constraints.Horizontal constraint="xl">
-                  <Card constraint="xl">
-                    <div className={styles.imageContainer}>
-                      <Label isBold={true} as="h1">
-                        <div className={styles.FieldLabel}>
-                          {'Billing Address'}
-                        </div>
-                      </Label>
-                      <Text.Body>
-                        <div className={styles.changePricesLabel}>
-                          {props.customer?.defaultBillingAddress?.firstName}{' '}
+                <Card constraint="xl" theme="dark" insetScale="xl">
+                    <Text.Subheadline as="h4" isBold={true} tone="information">{'Shipping Address'}</Text.Subheadline>
+                <Text.Subheadline as="h3" >
+                {props.customer?.defaultBillingAddress?.firstName}{' '}
                           {props.customer?.defaultBillingAddress?.lastName}
                           <br />
                           {props.customer?.defaultBillingAddress?.streetNumber},
@@ -309,88 +229,17 @@ const CustomerCreateForm = (props) => {
                           {props.customer?.defaultBillingAddress?.country}
                           <br />
                           {props.customer?.defaultBillingAddress?.postalCode}
-                        </div>
-                      </Text.Body>
-                    </div>
+                          </Text.Subheadline>
+                 
                   </Card>
                 </Constraints.Horizontal>
               </div>
-              {/* <h2 >Customer Id</h2>
-          <h3>00000081</h3> */}
+             
             </Spacings.Stack>
           </Spacings.Inline>
         </div>
       </Spacings.Stack>
-      {/*      
-    <CollapsiblePanel
-         data-testid="quote-summary-panel"
-         header={
-           <CollapsiblePanel.Header>
-             {/* {formatMessage(messages.panelTitle)} 
-             {'Essentials'}
-           </CollapsiblePanel.Header>
-         }
-         scale="l">
-           <Constraints.Horizontal >
-            <Spacings.Stack scale="m">
-            <Spacings.Stack scale="s">
-       <TextField
-         name="Name"
-         title="Name"
-         value="Lahari"
-        //  value={formik.values.title}
-         errors={formik.errors.title}
-         touched={formik.touched.title}
-         onChange={formik.handleChange}
-         onBlur={formik.handleBlur}
-         horizontalConstraint={13}
-       />
-       </Spacings.Stack>
-       <Spacings.Stack scale="s">
-         <TextField
-         name="Id"
-         title="Id"
-         value="10010781"
-        //  value={formik.values.firstName}
-         errors={formik.errors.firstName}
-         touched={formik.touched.firstName}
-         onChange={formik.handleChange}
-         onBlur={formik.handleBlur}
-         horizontalConstraint={13}
-       />
     
-    </Spacings.Stack>
-    <Spacings.Stack scale="s">
-       <TextField
-         name="Original Id"
-         title="Original Id"
-         value="10010781"
-        //  value={formik.values.middleName}
-         errors={formik.errors.middleName}
-         touched={formik.touched.middleName}
-         onChange={formik.handleChange}
-         onBlur={formik.handleBlur}
-         horizontalConstraint={13}
-       />
-       </Spacings.Stack>
-       <Spacings.Stack scale="s">
-       <TextField
-         name="Customer Id"
-         title="Customer Id"
-         value="0000081"
-        //  value={formik.values.lastName}
-         errors={formik.errors.lastName}
-         touched={formik.touched.lastName}
-         onChange={formik.handleChange}
-         onBlur={formik.handleBlur}
-         horizontalConstraint={13}
-       />
-    </Spacings.Stack>
-   
-       </Spacings.Stack>
-       </Constraints.Horizontal>
-  
-    </CollapsiblePanel> */}
     </Spacings.Stack>
   );
 

@@ -45,6 +45,8 @@ import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
 import { useCreateEntry, useUserFetcher } from '../../../../hooks/use-register-user-connector/use-service-connector';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { SecondaryIconButton } from '@commercetools-frontend/ui-kit';
+import Grid from '@commercetools-uikit/grid';
 
 let rows = null;
 
@@ -132,23 +134,50 @@ const Tickets = (props) => {
 
       { canManage  ?
       <Spacings.Stack >
-        <Spacings.Inline >
-          <SecondaryButton
-            label="Add Ticket"
-            data-track-event="click" 
-            onClick={() => push(`ticket-create`)}
-            iconLeft={<PlusBoldIcon />}
-            size="medium"
-          />
-      </Spacings.Inline>
-        <Spacings.Inline >
-          <SecondaryButton
+
+          <Grid gridGap="16px" gridAutoColumns="12fr" gridTemplateColumns="repeat(12, 1fr)">
+            <Grid.Item >
+              <SecondaryButton
+                    label="Add Ticket"
+                    data-track-event="click" 
+                    onClick={() => push(`ticket-create`)}
+                    iconLeft={<PlusBoldIcon />}
+                    size="medium"
+                  />
+
+
+            </Grid.Item>
+            <Grid.Item></Grid.Item>
+            <Grid.Item></Grid.Item>
+            <Grid.Item></Grid.Item>
+            <Grid.Item></Grid.Item>
+            <Grid.Item></Grid.Item>
+            <Grid.Item></Grid.Item>
+            <Grid.Item></Grid.Item>
+            <Grid.Item></Grid.Item>
+            <Grid.Item></Grid.Item>
+            <Grid.Item></Grid.Item>
+            <Grid.Item>
+           
+            <SecondaryIconButton
               label="Refresh"
               data-track-event="click" 
               onClick={()=>{refetch()}}
-              iconLeft={<RefreshIcon />}
+              icon={<RefreshIcon />}
               size="medium"
+              
           />
+
+            </Grid.Item>
+            
+          </Grid>
+
+
+
+
+        <Spacings.Inline  >
+          
+      
         </Spacings.Inline>
       </Spacings.Stack>
       : null}
