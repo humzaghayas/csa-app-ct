@@ -56,11 +56,23 @@ export const formValuesToDoc = (formValues) => {
       : undefined;
 
       doc.comments = formValues.comments ?? [];
-      if(!TextInput.isEmpty(formValues.commentMessage)){
+      // if(!TextInput.isEmpty(formValues.commentMessage)){
         
-        doc.comments =formValues.comments.concat({"comment":escapeQuotes(formValues.commentMessage)});
-      }else{
-        doc.comments =formValues.comments;
+      //   doc.comments =formValues.comments.concat({"comment":escapeQuotes(formValues.commentMessage)});
+      // }else{
+      //   doc.comments =formValues.comments;
+      // }
+
+      if(formValues.comments && formValues.comments.length != 0){
+        doc.comments = formValues.comments.map(c => {
+          let cmt = {"comment":escapeQuotes(c.comment)};
+
+          if(c.createdAt){
+            cmt.createdAt = c.createdAt;
+          }
+
+          return cmt;
+        })
       }
     doc.files=  formValues?.files ?? null;
   return doc;

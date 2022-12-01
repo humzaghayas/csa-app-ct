@@ -298,9 +298,11 @@ const addWorklog =(e) => {
   c=c.concat({"comment":cMessage,"status":"Please Submit To Persist Changes!"});
   setCommentsList(c);
 
-  if(cMessage){
-    setDisableWLButton(true);
-  }
+  formik.values.comments = c;
+
+  // if(cMessage){
+  //   setDisableWLButton(true);
+  // }
 }
 
   return (<>

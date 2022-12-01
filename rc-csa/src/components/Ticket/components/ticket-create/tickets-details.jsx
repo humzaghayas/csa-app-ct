@@ -43,9 +43,7 @@ const TicketDetailsP = (props) => {
 
   return (
     <Spacings.Stack scale="xl">
-      <Text.Headline as="h1">
-        Manage Channel
-      </Text.Headline>
+
       <TicketCreateForm
         initialValues={docToFormValues(ticket, languages,true)}
         onSubmit={handleSubmit}
