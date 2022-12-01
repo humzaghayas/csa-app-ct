@@ -68,14 +68,13 @@ const CustomerAccount = (props) => {
     size="l"
   />
  
-         {/* <div className={styles.customerName}> */}
+        
          <Spacings.Stack scale="xs">
          <Spacings.Stack scale="xl">
         </Spacings.Stack>
                     <h1>{customer?.firstName} 360° view</h1>
            <h4>{customer?.email}</h4>
-         {/* <Text.Subheadline as="h2" isBold="true">{customer?.firstName} 360 view</Text.Subheadline>;
-         <Text.Subheadline as="h3" isBold="true">{customer?.email}</Text.Subheadline>; */}
+       
          </Spacings.Stack>
 
 
@@ -156,6 +155,7 @@ const CustomerAccount = (props) => {
         </Route>
         <Route  path={`${match.path}/customer-address-create`}>
            <CustomerAddressCreate customer={customer} />
+           </Route>
         <Route path={`${match.path}/Customers-payments`}>
           <CustomerPayment />
         </Route>
