@@ -443,7 +443,7 @@ const addWorklog =(e) => {
                           isDisabled={!canManage || (!customerFound  || formik.values.isEdit) }/>
 
                   {orderId &&
-                    <Link to={`/${projectKey}/${entryPointUriPath}/Orders`}>
+                    <Link to={`/${projectKey}/${entryPointUriPath}/customer-account/${customer?.id}/Customers-orders`}>
                             <PrimaryButton iconLeft={<ChainIcon />} 
                               label={formik.values.orderNumber}
                             />
