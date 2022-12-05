@@ -211,7 +211,7 @@ const CustomerCreateForm = (props) => {
               <div className={styles.amountCard}>
                 <Constraints.Horizontal constraint="xl">
                 <Card constraint="xl" theme="dark" insetScale="xl">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">{'Shipping Address'}</Text.Subheadline>
+                    <Text.Subheadline as="h4" isBold={true} tone="information">{'Billing Address'}</Text.Subheadline>
                 <Text.Subheadline as="h3" >
                 {props.customer?.defaultBillingAddress?.firstName}{' '}
                           {props.customer?.defaultBillingAddress?.lastName}
