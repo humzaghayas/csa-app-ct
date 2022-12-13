@@ -27,22 +27,33 @@ const cors = require('cors');
 
 const app = express();
 
-// Automatically allow cross-origin requests
 app.use(cors({ origin: true }));
 
-// Add middleware to authenticate requests
-// app.use(myMiddleware);
+app.get('/', async(req, res) => {
+    const {page,perPage } = req.query;
 
-// build multiple CRUD interfaces:
-// app.get('/:id', (req, res) => res.send(Widgets.getById(req.params.id)));
-// app.post('/', (req, res) => res.send(Widgets.create()));
-// app.put('/:id', (req, res) => res.send(Widgets.update(req.params.id, req.body)));
-// app.delete('/:id', (req, res) => res.send(Widgets.delete(req.params.id)));
-app.get('/test', async(req, res) => {
-        const results =await customObjectsService.getTickets(CONSTANTS.SUBSCTIONTION_CONTAINER,
-        CONSTANTS.SUBSCTIONTION_KEY);
-    res.status(200).json({result: `Message with ID: ${JSON.stringify(results)} added.`});
+    try{
+        let p = !page? 1:Number.parseInt(page);
+        let perP = !perPage ?10: Number.parseInt(perPage);
+        const results =await customObjectsService.getTickets(p,perP);
+        res.status(200).json({result: `${JSON.stringify(results)}`});
+    }catch(err){
+        res.status(400).json({Error: `${JSON.stringify(err)}`});
+    }
 } );
+
+app.post('/create-ticket', async(req, res) =>{
+
+    const {data} = req.body;
+    const result =await customObjectsService.createTicket(data);
+
+    if(result.error){
+        res.status(400).json({result: JSON.stringify(result.errors)});    
+    }else{
+        res.status(200).json({result: JSON.stringify(result)});
+    }
+
+});
 
 // Expose Express API as a single Cloud Function:
 exports.tickets = functions.https.onRequest(app);
