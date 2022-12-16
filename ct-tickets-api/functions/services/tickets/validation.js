@@ -10,7 +10,7 @@ module.exports = ()=>{
         if (!data.customerId || data.customerId == '') isValid.errors.push('customerId Missing!');
         if (!data.email || data.email == '') isValid.errors.push('Email Missing!');
             
-        if (!data.source || data.source == '') isValid.errors.push('ContactType Field Missing!');
+        if (!data.contactType || data.contactType == '') isValid.errors.push('ContactType Field Missing!');
         if (!data.priority || data.priority == '') isValid.errors.push('Priority Field Missing!');
       
         if (!data.subject || data.subject == '' ) isValid.errors.push('Subject Field Missing!');
