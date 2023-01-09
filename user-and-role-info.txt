@@ -1,0 +1,11 @@
+{
+    "container": "mc-user-info",
+    "key": "mc-user-roles",
+    "value": ["admin","agent"]
+}
+
+{
+    "container": "mc-user-info",
+    "key": "mc-users",
+    "value": [{"email":"humza.ghayas@royalcyber.com","role":"admin"}]
+}

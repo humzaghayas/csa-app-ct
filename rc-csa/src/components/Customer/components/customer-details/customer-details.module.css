@@ -1,0 +1,44 @@
+.TicketLogoName{
+    display: flex;
+    flex-direction: column;
+
+}
+.TicketLogo{
+    margin-top: 15px;
+    position: relative;
+}
+.LogoImage{
+    margin-top: 5px;
+    width: 128px;
+    height: 115px;
+    padding-top: 5px;
+}
+.TicketLogoBackground{
+    width: 130px;
+    height: 130px;
+    background-color: white;
+    border: 1px solid black;
+    margin-top: 10px;
+}
+.LogoIcon{
+
+position: absolute;
+top: 10%;
+}
+
+.deleteIcon {
+  
+    position: absolute;
+    top: 01px;
+    left: 85px;
+    right: var(--spacing-s);
+  }
+  .controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 40px;
+    width: 100%;
+    /* color needs to be transparent */
+    background-color: color-mod(var(--color-solid) alpha(20%));
+  }

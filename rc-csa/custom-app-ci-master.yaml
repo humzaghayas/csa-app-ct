@@ -1,0 +1,124 @@
+name: B2B Custom App CI/CD release (master) flow
+on:
+  repository_dispatch:
+    types: custom-app
+  push:
+    branches:
+      - master
+    paths:
+      - 'packages/b2b-extension-custom-app/**'
+      - '.github/workflows/custom-app-ci-master.yaml'
+      - '*.json'
+env:
+  COMPANY_MS_URL: https://ms-company-${{ secrets.MS_DOMAIN }}
+  GATEWAY_MS_URL: https://ms-gateway-${{ secrets.MS_DOMAIN }}
+  PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+  CDN_URL: https://${{ secrets.FIREBASE_PROJECT_ID }}.firebaseapp.com
+  PROJECT_PATH: packages/b2b-extension-custom-app      
+jobs:
+  lint:
+    name: Lint (node.js)
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: |
+          cd packages/b2b-extension-custom-app
+          yarn install --no-audit
+      - name: Lint Node.js
+        run: |
+          cd packages/b2b-extension-custom-app
+          yarn lint
+      - name: Lint Markdown
+        run: |
+          cd packages/b2b-extension-custom-app
+          yarn lint-md    
+  test:        
+    name: Test
+    needs: lint
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies
+        run: |
+          cd packages/b2b-extension-custom-app
+          yarn install
+      - name: Unit Testing
+        run: |
+          cd packages/b2b-extension-custom-app
+          yarn test
+  
+  build_and_deploy:
+    name: Build and Deploy
+    needs: lint
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x]    
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies
+        run: |
+          cd packages/b2b-extension-custom-app
+          yarn install
+
+      - name: Generate ENV configuration file
+        run: |
+          cd packages/b2b-extension-custom-app        
+          cat << EOF > env-generated.json
+          {
+            "applicationName": "b2b-extension-custom-app",
+            "frontendHost": "mc.commercetools.co",
+            "mcApiUrl": "https://mc-api.commercetools.co",
+            "location": "us",
+            "env": "production",
+            "cdnUrl": "$CDN_URL",
+            "servedByProxy": true,
+            "apiUrl":"$COMPANY_MS_URL",
+            "graphqlApiUrl":"$GATEWAY_MS_URL"
+          }
+          EOF
+      - name: Generate HEADERS configuration file
+        run: |
+          cd packages/b2b-extension-custom-app        
+          cat << EOF > headers-generated.json
+          {
+            "csp": {
+              "script-src": ["$CDN_URL", "$COMPANY_MS_URL", "$GATEWAY_MS_URL"],
+              "connect-src": ["$CDN_URL", "$COMPANY_MS_URL", "$GATEWAY_MS_URL"],
+              "style-src": ["$CDN_URL", "$COMPANY_MS_URL", "$GATEWAY_MS_URL"]
+            }
+          }
+          EOF
+      - name: Build
+        run: |
+          cd packages/b2b-extension-custom-app
+          yarn build
+          yarn run compile-html:firebase
+
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting

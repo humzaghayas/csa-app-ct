@@ -1,0 +1,22 @@
+query queryMyquotes {
+  quotes{
+    count
+    total
+    results{
+      id,
+      totalPrice{
+        centAmount,
+        currencyCode
+      }
+      company{
+        id,
+        name
+      }
+      quoteNumber,
+      quoteState,
+      employeeEmail,
+      percentageDiscount,
+      createdAt   
+    }
+  }
+}
