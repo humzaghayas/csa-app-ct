@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getTicketRows = void 0;
+exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.createTicketHistory = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getTicketRows = void 0;
 var constants_1 = require("../constants");
 var graphql_queries_1 = require("../graphql-queries");
 var uuid_1 = require("uuid");
@@ -118,11 +118,34 @@ function getCreateTicketDraft(ticketInfo) {
     });
 }
 exports.getCreateTicketDraft = getCreateTicketDraft;
+function createTicketHistory(ticketInfo, ticketDraft) {
+    return __awaiter(this, void 0, void 0, function () {
+        var history, h, historyString;
+        return __generator(this, function (_a) {
+            history = ticketInfo.history;
+            if (!history) {
+                history = [];
+            }
+            h = { user: ticketInfo.email };
+            h[constants_1.CONSTANTS.PRIORITY] = ticketInfo.priority;
+            h[constants_1.CONSTANTS.STATUS] = ticketInfo.status;
+            h[constants_1.CONSTANTS.ASSIGNED_TO] = ticketInfo.assignedTo;
+            h['operationDate'] = new Date().toUTCString();
+            history.push(h);
+            historyString = history === null || history === void 0 ? void 0 : history.map(function (h) {
+                return "{\"".concat(constants_1.CONSTANTS.PRIORITY, "\":\"").concat(h[constants_1.CONSTANTS.PRIORITY], "\",\n                \"").concat(constants_1.CONSTANTS.STATUS, "\":\"").concat(h[constants_1.CONSTANTS.STATUS], "\",\n                \"").concat(constants_1.CONSTANTS.ASSIGNED_TO, "\":\"").concat(h[constants_1.CONSTANTS.ASSIGNED_TO], "\",\n                \"user\":\"").concat(h.user, "\",\"operationDate\":\"").concat(h.operationDate, "\"}");
+            }).toString();
+            ticketDraft.value = ticketDraft.value.replace(constants_1.CONSTANTS.TICKET_HISTORY, "\"history\":[".concat(historyString, "]"));
+            return [2 /*return*/];
+        });
+    });
+}
+exports.createTicketHistory = createTicketHistory;
 function getTicketValueString(ticketInfo, uuid) {
     var currentDate = new Date().toUTCString();
     var email = ticketInfo.email;
     var customerId = ticketInfo.customerId;
-    return "{\n        \"id\": \"".concat(uuid, "\",\n        \"customerId\": \"").concat(customerId, "\",\n        \"email\":\"").concat(email, "\",\n        \"source\": \"").concat(ticketInfo.contactType, "\",\n        \"status\": \"").concat(ticketInfo.status, "\",\n        \"priority\": \"").concat(ticketInfo.priority, "\",\n        \"category\": \"").concat(ticketInfo.category, "\",\n        \"subject\": \"").concat(ticketInfo.subject, "\",\n        \"type\":\"").concat(ticketInfo.category, "\",\n        \"createdAt\": \"").concat(currentDate, "\",\n        \"modifiedAt\": \"").concat(currentDate, "\",\n        \"createdBy\":\"").concat(ticketInfo.createdBy, "\",\n        \"assignedTo\":\"").concat(ticketInfo.assignedTo, "\",\n        ").concat(constants_1.CONSTANTS.TICKET_DATA, "\n    }");
+    return "{\n        \"id\": \"".concat(uuid, "\",\n        \"customerId\": \"").concat(customerId, "\",\n        \"email\":\"").concat(email, "\",\n        \"source\": \"").concat(ticketInfo.contactType, "\",\n        \"status\": \"").concat(ticketInfo.status, "\",\n        \"priority\": \"").concat(ticketInfo.priority, "\",\n        \"category\": \"").concat(ticketInfo.category, "\",\n        \"subject\": \"").concat(ticketInfo.subject, "\",\n        \"type\":\"").concat(ticketInfo.category, "\",\n        \"createdAt\": \"").concat(currentDate, "\",\n        \"modifiedAt\": \"").concat(currentDate, "\",\n        \"createdBy\":\"").concat(ticketInfo.createdBy, "\",\n        \"assignedTo\":\"").concat(ticketInfo.assignedTo, "\",\n        ").concat(constants_1.CONSTANTS.TICKET_DATA, ",\n        ").concat(constants_1.CONSTANTS.TICKET_HISTORY, "\n    }");
 }
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -158,7 +181,7 @@ function getTicketFromCustomObject(data) {
 }
 exports.getTicketFromCustomObject = getTicketFromCustomObject;
 function createTicketFromCustomObject(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20;
     return {
         id: (_b = (_a = data === null || data === void 0 ? void 0 : data.customObject) === null || _a === void 0 ? void 0 : _a.id) !== null && _b !== void 0 ? _b : '',
         key: (_d = (_c = data === null || data === void 0 ? void 0 : data.customObject) === null || _c === void 0 ? void 0 : _c.key) !== null && _d !== void 0 ? _d : '',
@@ -176,7 +199,8 @@ function createTicketFromCustomObject(data) {
         customerId: (_9 = (_8 = data === null || data === void 0 ? void 0 : data.customObject) === null || _8 === void 0 ? void 0 : _8.value.customerId) !== null && _9 !== void 0 ? _9 : '',
         assignedTo: (_11 = (_10 = data === null || data === void 0 ? void 0 : data.customObject) === null || _10 === void 0 ? void 0 : _10.value.assignedTo) !== null && _11 !== void 0 ? _11 : '',
         createdBy: (_13 = (_12 = data === null || data === void 0 ? void 0 : data.customObject) === null || _12 === void 0 ? void 0 : _12.value.createdBy) !== null && _13 !== void 0 ? _13 : '',
-        orderNumber: (_17 = (_16 = (_15 = (_14 = data === null || data === void 0 ? void 0 : data.customObject) === null || _14 === void 0 ? void 0 : _14.value) === null || _15 === void 0 ? void 0 : _15.ticketData) === null || _16 === void 0 ? void 0 : _16.orderNumber) !== null && _17 !== void 0 ? _17 : ''
+        orderNumber: (_17 = (_16 = (_15 = (_14 = data === null || data === void 0 ? void 0 : data.customObject) === null || _14 === void 0 ? void 0 : _14.value) === null || _15 === void 0 ? void 0 : _15.ticketData) === null || _16 === void 0 ? void 0 : _16.orderNumber) !== null && _17 !== void 0 ? _17 : '',
+        history: (_20 = (_19 = (_18 = data === null || data === void 0 ? void 0 : data.customObject) === null || _18 === void 0 ? void 0 : _18.value) === null || _19 === void 0 ? void 0 : _19.history) !== null && _20 !== void 0 ? _20 : []
     };
 }
 function escapeQuotes(field) {

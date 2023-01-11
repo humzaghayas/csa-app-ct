@@ -34,12 +34,18 @@ exports.CONSTANTS = {
     USER_CONTRAINER_KEY: "mc-users",
     USER_CONTAINER: "mc-user-info",
     TICKET_DATA: "{{TICKET_DATA}}",
+    TICKET_HISTORY: "{{TICKET_HISTORY}}",
     TICKET_TYPE_RESET_PASSWORD: 'passwordReset',
     TICKET_TYPE_GENERAL_INFO_CHANGE: 'generalInfoChange',
     TICKET_TYPE_ORDER_INQUIRY: 'orderInquiry',
     TICKET_TYPE_PAYMENT_METHODS: 'paymentMethod',
     TICKET_TYPE_RETURNS: 'returns',
-    TICKET_INITIAL_STATUS: exports.TICKET_STATUS.new.name
+    TICKET_INITIAL_STATUS: exports.TICKET_STATUS.new.name,
+    CREATE_OPERATION: 'CREATED',
+    STATUS_OPERATION: 'UPDATED',
+    PRIORITY: 'Priority',
+    STATUS: 'Status',
+    ASSIGNED_TO: 'Assigned_To'
 };
 exports.TICKET_TYPE = (_b = {},
     _b[exports.CONSTANTS.TICKET_TYPE_REQUEST] = "Request",

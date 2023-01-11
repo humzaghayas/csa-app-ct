@@ -90,6 +90,30 @@ export async function getCreateTicketDraft(ticketInfo){
     return ticketDraft;
 }
 
+export async function createTicketHistory(ticketInfo,ticketDraft){
+
+    let history = ticketInfo.history;
+    if(!history){
+        history = [];
+    }
+
+    let h = {user:ticketInfo.email};
+    h[CONSTANTS.PRIORITY] = ticketInfo.priority;
+    h[CONSTANTS.STATUS] = ticketInfo.status;
+    h[CONSTANTS.ASSIGNED_TO] = ticketInfo.assignedTo;
+    h['operationDate']= new Date().toUTCString();
+    history.push(h);
+
+    const historyString = history?.map((h) =>{
+        return `{\"${CONSTANTS.PRIORITY}\":\"${h[CONSTANTS.PRIORITY] }\",
+                \"${CONSTANTS.STATUS}\":\"${h[CONSTANTS.STATUS] }\",
+                \"${CONSTANTS.ASSIGNED_TO}\":\"${h[CONSTANTS.ASSIGNED_TO] }\",
+                \"user\":\"${h.user}\",\"operationDate\":\"${h.operationDate}\"}`
+    }).toString();
+
+    ticketDraft.value =  ticketDraft.value.replace(CONSTANTS.TICKET_HISTORY,`\"history\":[${historyString}]`);
+}
+
 function getTicketValueString( ticketInfo,uuid){
 
     const currentDate = new Date().toUTCString();
@@ -110,7 +134,8 @@ function getTicketValueString( ticketInfo,uuid){
         \"modifiedAt\": \"${currentDate}\",
         \"createdBy\":\"${ticketInfo.createdBy}\",
         \"assignedTo\":\"${ticketInfo.assignedTo}\",
-        ${CONSTANTS.TICKET_DATA}
+        ${CONSTANTS.TICKET_DATA},
+        ${CONSTANTS.TICKET_HISTORY}
     }`
 }
 
@@ -173,7 +198,8 @@ function createTicketFromCustomObject(data){
         customerId: data?.customObject?.value.customerId ?? '',
         assignedTo: data?.customObject?.value.assignedTo ?? '',
         createdBy: data?.customObject?.value.createdBy ?? '',
-        orderNumber: data?.customObject?.value?.ticketData?.orderNumber ?? ''
+        orderNumber: data?.customObject?.value?.ticketData?.orderNumber ?? '',
+        history : data?.customObject?.value?.history ?? []
     }
 }
 
