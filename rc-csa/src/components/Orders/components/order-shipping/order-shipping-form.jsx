@@ -27,7 +27,7 @@ const getTicketPriorityOptions = Object.keys(TICKET_PRIORITY).map((key) => ({
 }));
 
 
-const OrderCreateForm = (props) => {
+const OrderShippingForm = (props) => {
   const intl = useIntl();
   const formik = useFormik({
     initialValues: props.initialValues,
@@ -44,16 +44,76 @@ const OrderCreateForm = (props) => {
           header={
             <CollapsiblePanel.Header>
               {/* {formatMessage(messages.panelTitle)} */}
-              {'Product Details'}
+              {'Shipping Details'}
             </CollapsiblePanel.Header>
           }
           scale="l">
             <Constraints.Horizontal >
              <Spacings.Stack scale="m">
-             <Spacings.Stack scale="s">
+           
+     
+    
+     <Spacings.Stack scale="s">
+      
+        <SelectField
+          name="Shipped Quantity"
+          title="Shipped Quantity"
+          value={formik.values.roles}
+          errors={formik.errors.roles}
+          touched={formik.touched.roles}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          
+          options={getTicketPriorityOptions}
+          isReadOnly={props.isReadOnly}
+          isRequired
+          horizontalConstraint={13}
+        />
+        </Spacings.Stack>
+        <Spacings.Stack scale="s">
+        
         <TextField
-          name="Product Code"
-          title="Product Code"
+          name="Shipping Tax"
+          title="Shipping Tax"
+          value={formik.values.firstName}
+          errors={formik.errors.firstName}
+          touched={formik.touched.firstName}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          horizontalConstraint={13}
+        />
+      
+        </Spacings.Stack>
+        <Spacings.Stack scale="s">
+        
+        <TextField
+          name="Street Number"
+          title="Street Number"
+          value={formik.values.firstName}
+          errors={formik.errors.firstName}
+          touched={formik.touched.firstName}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          horizontalConstraint={13}
+        />
+      
+        </Spacings.Stack>
+        <Spacings.Stack scale="s">
+        <TextField
+          name="Street Name"
+          title="Street Name"
+          value={formik.values.firstName}
+          errors={formik.errors.firstName}
+          touched={formik.touched.firstName}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          horizontalConstraint={13}
+        />
+        </Spacings.Stack>
+        <Spacings.Stack scale="s">
+        <TextField
+          name="Building"
+          title="Building"
           value={formik.values.title}
           errors={formik.errors.title}
           touched={formik.touched.title}
@@ -63,25 +123,12 @@ const OrderCreateForm = (props) => {
         />
         </Spacings.Stack>
         <Spacings.Stack scale="s">
-          <TextField
-          name="Product Name"
-          title="Product Name"
-          value={formik.values.firstName}
-          errors={formik.errors.firstName}
-          touched={formik.touched.firstName}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-     
-     </Spacings.Stack>
-     <Spacings.Stack scale="s">
         <TextField
-          name="Item Price"
-          title="Item Price"
-          value={formik.values.middleName}
-          errors={formik.errors.middleName}
-          touched={formik.touched.middleName}
+          name="City"
+          title="City"
+          value={formik.values.title}
+          errors={formik.errors.title}
+          touched={formik.touched.title}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
@@ -89,25 +136,11 @@ const OrderCreateForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale="s">
         <TextField
-          name="allocated"
-          title="allocated"
-          value={formik.values.lastName}
-          errors={formik.errors.lastName}
-          touched={formik.touched.lastName}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-     </Spacings.Stack>
-     <Spacings.Stack scale="s">
-        
-        <TextField
-          name="returned"
-          title="returned"
-          isRequired
-          value={formik.values.email}
-          errors={formik.errors.email}
-          touched={formik.touched.email}
+          name="Postal Code"
+          title="Postal Code"
+          value={formik.values.title}
+          errors={formik.errors.title}
+          touched={formik.touched.title}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
@@ -115,19 +148,28 @@ const OrderCreateForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale="s">
         <TextField
-          name="cancelled"
-          title="cancelled"
-          value={formik.values.employeeNumber}
-          errors={formik.errors.employeeNumber}
-          touched={formik.touched.employeeNumber}
+          name="State"
+          title="State"
+          value={formik.values.title}
+          errors={formik.errors.title}
+          touched={formik.touched.title}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
         />
         </Spacings.Stack>
-    
-     
-        
+        <Spacings.Stack scale="s">
+        <TextField
+          name="Country"
+          title="Country"
+          value={formik.values.title}
+          errors={formik.errors.title}
+          touched={formik.touched.title}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          horizontalConstraint={13}
+        />
+        </Spacings.Stack>
         <Spacings.Stack scale="s">
         <Spacings.Inline>
                 <SecondaryButton
@@ -160,8 +202,8 @@ const OrderCreateForm = (props) => {
     handleReset: formik.handleReset,
   });
 };
-OrderCreateForm.displayName = 'OrderCreateForm';
-OrderCreateForm.propTypes = {
+OrderShippingForm.displayName = 'OrderShippingForm';
+OrderShippingForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   initialValues: PropTypes.shape({
     id: PropTypes.string,
@@ -170,4 +212,4 @@ OrderCreateForm.propTypes = {
   dataLocale: PropTypes.string.isRequired,
 };
 
-export default OrderCreateForm;
+export default OrderShippingForm;

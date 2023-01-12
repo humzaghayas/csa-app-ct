@@ -24,6 +24,7 @@ import { Pagination } from '@commercetools-uikit/pagination';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import { SuspendedRoute } from '@commercetools-frontend/application-shell';
+import SearchSelectField from '@commercetools-uikit/async-select-field';
 import {
   formatLocalizedString,
   transformLocalizedFieldToLocalizedString,
@@ -31,6 +32,7 @@ import {
 import messages from './messages';
 // import toggleFeature from '@commercetools-frontend/application-shell/node_modules/@flopflip/react-broadcast/dist/declarations/src/components/toggle-feature';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
+import SearchSelectInput from '@commercetools-uikit/search-select-input';
 
 import {
   // BinLinearIcon,
@@ -57,18 +59,19 @@ import OrderAccount from '../order-account/order-account';
 // };
 
 const rows = [
-  { OrderNumber: '00012875',Customer:'Lahari',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
-  { OrderNumber: '00012876',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
-  { OrderNumber: '00012877',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
-  { OrderNumber: '00012879',Customer:'RanjithKumar',Created:'Nov 11, 2022,2:54:47...',Modified:'Dec 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
+  { OrderNumber: '00012875',Customer:'Lahari',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...',Type:'Change',Status:'In Progress',DeliveryMode:'standard'},
+  { OrderNumber: '00012876',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Type:'Cancel',Status:'In Progress',DeliveryMode:'standard'},
+  { OrderNumber: '00012877',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Type:'Enquiry',Status:'In Progress',DeliveryMode:'standard'},
+  { OrderNumber: '00012879',Customer:'RanjithKumar',Created:'Nov 11, 2022,2:54:47...',Modified:'Dec 11, 2022,2:54:47...',Type:'Cancel',Status:'In Progress',DeliveryMode:'standard'},
 ];
 
 const columns = [
 
   { key: 'OrderNumber', label: 'Order Number' },
   { key:'Customer', label: 'Customer' },
-  { key: 'Created', label: 'Created' },
-  { key: 'Modified', label: 'Modified' },
+  { key: 'Created', label: 'Order Placed' },
+  { key: 'Modified', label: 'Query Raised' },
+  { key: 'Type', label: 'Type' },
   { key: 'Status', label: 'Status' },
   { key: 'DeliveryMode', label: 'Delivery Mode' },
  
@@ -83,8 +86,8 @@ const Orders = (props) => {
   const { page, perPage } = usePaginationState();
 
   return (
-    <Spacings.Stack scale="xl">
-      <Spacings.Stack scale="xs">
+    <Spacings.Stack scale="l">
+    
         <FlatButton
           as={RouterLink}
           to={props.linkToWelcome}
@@ -92,30 +95,140 @@ const Orders = (props) => {
           icon={<BackIcon />}
         />
         <Text.Headline as="h2" intlMessage={messages.title} />
-        
-        {/* <Spacings.Inline> */}
-      {/* <SecondaryButton
-        label="Add Order"
-         data-track-event="click" 
-         onClick={() => push(`ticket-create`)}
-        iconLeft={<PlusBoldIcon />}
-        size="medium"
-      /> */}
-      {/* </Spacings.Inline> */}
-  {/* <AccessibleButton label="Log in" onClick={() => {}}>
-    Log in
-  </AccessibleButton> */}
-      </Spacings.Stack>
+          {/* <Spacings.Stack scale="m"> */}
+        <Spacings.Inline scale="l" alignItems="flex-end">
+      
+        {/* <SearchSelectField
+    title=" "
+    id="customer"
+    name="customer"
+    isRequired={false}
+    horizontalConstraint={7}
+    optionType="single-lined"
+    isAutofocussed={false}
+    backspaceRemovesValue={true}
+    isClearable={true}
+    isDisabled={false}
+    isReadOnly={false}
+    isMulti={false}
+    onChange={() => {}}
+    // noOptionsMessage="No exact match found"
+    // loadingMessage="loading exact matches"
+    placeholder="Search by Order Number"
+    loadOptions={() => {}}
+    
+    cacheOptions={false}
+  /> */}
+  {/* </Spacings.Stack>
+  <Spacings.Stack scale="m"> */}
+  <SearchSelectInput
+      id="customers"
+      name="customers"
+      horizontalConstraint={7}
+      optionType="single-lined"
+      isAutofocussed={false}
+      backspaceRemovesValue={true}
+      isClearable={true}
+      isDisabled={false}
+      isReadOnly={false}
+      isMulti={true}
+      onChange={() => {}}
+      defaultOptions={[
+        {
+          label: 'Animals',
+          options: [
+            { value: 'dogs', label: 'Dogs' },
+            { value: 'whales', label: 'Whales' },
+            { value: 'antilopes', label: 'Antilopes' },
+            { value: 'snakes', label: 'Snakes' },
+          ],
+        },
+        {
+          label: 'Flavours',
+          options: [
+            {
+              value: 'vanilla',
+              label: 'Vanilla',
+            },
+            {
+              value: 'chocolate',
+              label: 'Chocolate',
+            },
+            {
+              value: 'strawberry',
+              label: 'Strawberry',
+            },
+            {
+              value: 'salted-caramel',
+              label: 'Salted Caramel',
+            },
+          ],
+        },
+      ]}
+      noOptionsMessage="No exact match found"
+      loadingMessage="loading exact matches"
+      placeholder="Filter By Order Status          "
+      // eslint-disable-next-line no-undef
+      loadOptions={() => {}}
+      cacheOptions={false}
+    />
+    
+    <SearchSelectInput
+      id="customers"
+      name="customers"
+      horizontalConstraint={7}
+      optionType="single-lined"
+      isAutofocussed={false}
+      backspaceRemovesValue={true}
+      isClearable={true}
+      isDisabled={false}
+      isReadOnly={false}
+      isMulti={true}
+      onChange={() => {}}
+      defaultOptions={[
+        {
+          label: 'Animals',
+          options: [
+            { value: 'dogs', label: 'Dogs' },
+            { value: 'whales', label: 'Whales' },
+            { value: 'antilopes', label: 'Antilopes' },
+            { value: 'snakes', label: 'Snakes' },
+          ],
+        },
+        {
+          label: 'Flavours',
+          options: [
+            {
+              value: 'vanilla',
+              label: 'Vanilla',
+            },
+            {
+              value: 'chocolate',
+              label: 'Chocolate',
+            },
+            {
+              value: 'strawberry',
+              label: 'Strawberry',
+            },
+            {
+              value: 'salted-caramel',
+              label: 'Salted Caramel',
+            },
+          ],
+        },
+      ]}
+      noOptionsMessage="No exact match found"
+      loadingMessage="loading exact matches"
+      placeholder="Search By Order Number"
+      // eslint-disable-next-line no-undef
+      loadOptions={() => {}}
+      cacheOptions={false}
+    />
+    </Spacings.Inline>
+         {/* </Spacings.Stack> */}
+   
       {/* {loading && <LoadingSpinner />} */}
-      {/* <Spacings.Inline>
-      <SecondaryButton
-        label="Add Ticket"
-         data-track-event="click" 
-          onClick={() => push(`ticket-details`)}
-        iconLeft={<PlusBoldIcon />}
-        size="medium"
-      />
-      </Spacings.Inline> */}
+     
       {/* {data ? ( */}
         <Spacings.Stack scale="l">
          

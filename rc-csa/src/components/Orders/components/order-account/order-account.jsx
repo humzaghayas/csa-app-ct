@@ -31,7 +31,8 @@ import styles from './Order-account-module.css';
 import { lazy, useState, useEffect } from 'react';
 
 import OrderCreate from '../order-create/order-create';
-
+import OrderShipping from '../order-shipping/order-shipping';
+import OrderStatus from '../order-status/order-status';
 
 const OrderAccount = (props) => {
   const match = useRouteMatch();
@@ -52,7 +53,7 @@ const OrderAccount = (props) => {
     <TabularDetailPage
       title=" "
       //  onPreviousPathClick={() => history.push(`Order-list`)}
-      onPreviousPathClick={() => history.push(`${match.url}`)}
+      onPreviousPathClick={() => history.push(`/csa_project/csa-customer-tickets/Orders`)}
       previousPathLabel="Go to View orders"
       tabControls={
         <>
@@ -60,9 +61,16 @@ const OrderAccount = (props) => {
             <Spacings.Inline>
               <TabHeader
                 to={`${match.url}/orders-general`}
-                label="General"
+                label="Product Details"
               />
-           
+            <TabHeader
+                to={`${match.url}/orders-shipping-details`}
+                label="Shipping Details"
+              />
+                 <TabHeader
+                to={`${match.url}/orders-status`}
+                label="Order Status"
+              />
             </Spacings.Inline>
           </Spacings.Stack>
         </>
@@ -70,10 +78,17 @@ const OrderAccount = (props) => {
     >
       <Switch>
         <Route path={`${match.path}/orders-general`}>
-          {/* <OrderDetails /> */}
+         
          <OrderCreate />
         </Route>
-    
+        <Route path={`${match.path}/orders-shipping-details`}>
+         
+         <OrderShipping />
+        </Route>
+        <Route path={`${match.path}/orders-status`}>
+         
+        <OrderStatus />
+        </Route>
         {/* <Route path={`${match.path}/employee-create`}>
            <EmployeeCreate />
           </Route>
