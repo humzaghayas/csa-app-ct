@@ -11,18 +11,15 @@ import {
   convertToActionData,
 } from '../../helpers';
 
+import {FETCH_CUSTOMERS_GRAPHQL, FETCH_CUSTOMERS_ADDRESS_DETAILS,
+  FETCH_CUSTOMERS_DETAILS, FETCH_CUSTOMERS_ORDERS, UPDATE_CUSTOMERS_ADDRESS_DETAILS,
+  UPDATE_CUSTOMERS_DETAILS} from 'ct-tickets-helper-api';
+  
+import { gql } from '@apollo/client';
 
-import FetchCustomersQuery from './fetch-customers.ctp.graphql';
-import FetchCustomerDetailsQuery from './fetch-customers-details.ctp.graphql';
-import UpdateCustomerDetailsMutation from './update-customers-details.ctp.graphql';
-
-import FetchCustomerAddressDetailsQuery from './fetch-customers-address-details.ctp.graphql';
-import UpdateCustomerAddressDetailsMutation from './update-customers-address-details.ctp.graphql';
-
-import FectchCustomerOrdersListQuery from './fetch-customers-orders.ctp.graphql';
 
 export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
-  const { data, error, loading } = useMcQuery(FetchCustomersQuery, {
+  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMERS_GRAPHQL}`, {
     variables: {
       limit: perPage.value,
       offset: (page.value - 1) * perPage.value,
@@ -41,7 +38,7 @@ export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
 };
 
 export const useCustomerDetailsFetcher = (id) => {
-  const { data, error, loading } = useMcQuery(FetchCustomerDetailsQuery, {
+  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMERS_DETAILS}`, {
     variables: {
       id,
     },
@@ -59,7 +56,7 @@ export const useCustomerDetailsFetcher = (id) => {
 
 export const useCustomerDetailsUpdater = () => {
   const [updateCustomerDetails, { loading }] = useMcMutation(
-    UpdateCustomerDetailsMutation
+    gql`${UPDATE_CUSTOMERS_DETAILS}`
   );
 
   const syncStores = createSyncCustomers();
@@ -90,9 +87,8 @@ export const useCustomerDetailsUpdater = () => {
   };
 };
 
-
 export const useCustomerAddressDetailsFetcher = (id) => {
-  const { data, error, loading } = useMcQuery(FetchCustomerAddressDetailsQuery, {
+  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMERS_ADDRESS_DETAILS}`, {
     variables: {
       id,
     },
@@ -108,10 +104,9 @@ export const useCustomerAddressDetailsFetcher = (id) => {
   };
 };
 
-
 export const useCustomerAddressDetailsUpdater = () => {
   const [updateCustomerDetails, { loading }] = useMcMutation(
-    UpdateCustomerAddressDetailsMutation
+    gql`${UPDATE_CUSTOMERS_ADDRESS_DETAILS}`
   );
 
   const syncStores = createSyncCustomers();
@@ -153,9 +148,9 @@ export const useCustomerAddressDetailsUpdater = () => {
 
 export const useCustomerAddressDetailsCreator = () => {
   const [CreateCustomerAddress, { loading }] = useMcMutation(
-    UpdateCustomerAddressDetailsMutation
+    gql`${UPDATE_CUSTOMERS_ADDRESS_DETAILS}`
   );
-
+    console.log("===========================customer address update =====================")
   const syncStores = createSyncCustomers();
     const execute = async ({ originalDraft,nextDraft }) => {
       const actions1 = syncStores.buildActions(
@@ -195,7 +190,7 @@ export const useCustomerAddressDetailsCreator = () => {
 };
 
 export const useCustomersOrdersFetcher = ({ page, perPage, tableSorting, customerId}) => {
-  const { data, error, loading } = useMcQuery(FectchCustomerOrdersListQuery, {
+  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMERS_ORDERS}`, {
     variables: {
       limit: perPage.value,
       offset: (page.value - 1) * perPage.value,

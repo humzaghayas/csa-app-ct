@@ -5,7 +5,7 @@ import Tickets from './components/Ticket/components/Ticket-list/ticket-list';
 
 import Welcome from './components/welcome';
 
-import TicketDetails from './components/Ticket/components/ticket-details/ticket-details';
+// import TicketDetails from './components/Ticket/components/Ticket-history/ticket-details';
 import TicketAccount from './components/Ticket/components/ticket-account/ticket-account';
 import Customers from './components/Customer/components/customer-list/customer-list';
 import CustomerAccount from './components/Customer/components/customer-account/customer-account';
@@ -57,13 +57,13 @@ const ApplicationRoutes = () => {
          
         </Route>
         
-        <Route  path={`${match.path}/ticket-details`}>
+        {/* <Route  path={`${match.path}/ticket-details`}>
             {canManageTickets ? (
               <TicketDetails linkToWelcome={match.url} />
             ):(
               <PageUnauthorized />
             )}
-        </Route>
+        </Route> */}
         <Route  path={`${match.path}/ticket-create`}>
            {canManageTickets ? (
               <TicketCreate linkToWelcome={match.url} />

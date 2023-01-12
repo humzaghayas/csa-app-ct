@@ -26,6 +26,22 @@ export function getTicketRows(customObjects){
    return []
 }
 
+export function getOrderRows(orderPaginationResult){
+    if(orderPaginationResult?.results){
+        return orderPaginationResult?.results.map(order =>{
+            return {
+                id:order?.id, 
+                orderNumber: order?.orderNumber,
+                customer: order?.customer?.firstName+" "+order?.customer?.lastName,
+                createdAt: order?.createdAt,
+                lastModifiedAt:order?.lastModifiedAt,
+                orderState:order?.orderState,
+                shippingMethodName:order?.shippingInfo?.shippingMethodName
+            }
+        });
+    }
+}
+
 export function getTicketCategories(){
 
     return TICKET_TYPE

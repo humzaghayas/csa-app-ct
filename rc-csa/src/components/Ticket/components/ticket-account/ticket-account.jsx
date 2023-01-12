@@ -29,8 +29,8 @@ import styles from './Ticket-account-module.css';
 // import TicketEmployees from '../Ticket-employees/Ticket-employees';
 import { getTicket } from '../../api';
 import { lazy, useState, useEffect } from 'react';
-import TicketDetailsForm from '../ticket-details/ticket-details-form';
-import TicketDetails from '../ticket-details/ticket-details';
+// import TicketDetailsForm from '../Ticket-history/ticket-details-form';
+import TicketHistory from '../Ticket-history/ticket-history';
 import TicketDetailsP from '../ticket-create/tickets-details';
 
 
@@ -88,9 +88,10 @@ const TicketAccount = (props) => {
           {/* <TicketDetails /> */}
          <TicketDetailsP />
         </Route>
-        {/* <Route path={`${match.path}/tickets-history`}>
-        <TicketDetailsForm />
+         <Route path={`${match.path}/tickets-history`}>
+          <TicketHistory />
         </Route>
+        {/*
         <Route path={`${match.path}/Ticket-administration`}>
         <TicketDetailsForm />
         </Route> */}

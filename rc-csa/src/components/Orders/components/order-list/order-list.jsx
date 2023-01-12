@@ -31,7 +31,7 @@ import {
 import messages from './messages';
 // import toggleFeature from '@commercetools-frontend/application-shell/node_modules/@flopflip/react-broadcast/dist/declarations/src/components/toggle-feature';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
-
+import { useOrdersFetcher } from '../../../../hooks/use-orders-connector/use-orders-connector';
 import {
   // BinLinearIcon,
   // IconButton,
@@ -42,6 +42,7 @@ import {
 } from '@commercetools-uikit/icons';
 
 import OrderAccount from '../order-account/order-account';
+import { getOrderRows } from 'ct-tickets-helper-api';
 
 // import { getCompanies } from '../../api';
 // import { useEffect } from 'react';
@@ -56,6 +57,8 @@ import OrderAccount from '../order-account/order-account';
 //   sortDirection: 'desc',
 // };
 
+
+
 const rows = [
   { OrderNumber: '00012875',Customer:'Lahari',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
   { OrderNumber: '00012876',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
@@ -65,22 +68,33 @@ const rows = [
 
 const columns = [
 
-  { key: 'OrderNumber', label: 'Order Number' },
-  { key:'Customer', label: 'Customer' },
-  { key: 'Created', label: 'Created' },
-  { key: 'Modified', label: 'Modified' },
-  { key: 'Status', label: 'Status' },
-  { key: 'DeliveryMode', label: 'Delivery Mode' },
+  { key: 'orderNumber', label: 'Order Number' },
+  { key:'customer', label: 'Customer' },
+  { key: 'createdAt', label: 'Created' },
+  { key: 'lastModifiedAt', label: 'Modified' },
+  { key: 'orderState', label: 'Status' },
+  { key: 'shippingMethodName', label: 'Delivery Mode' },
  
 ];
 
 
-const Orders = (props) => {
+
+
+
+const Orders =  (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
+  const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
+
+  const { ordersPaginatedResult, error, loading } =  useOrdersFetcher({
+    page,
+    perPage,
+    tableSorting,
+  });
+  console.log(ordersPaginatedResult);
 
   return (
     <Spacings.Stack scale="xl">
@@ -116,13 +130,13 @@ const Orders = (props) => {
         size="medium"
       />
       </Spacings.Inline> */}
-      {/* {data ? ( */}
+      {ordersPaginatedResult?(
         <Spacings.Stack scale="l">
          
           <DataTable
             isCondensed
             columns={columns}
-            rows={rows}
+            rows={getOrderRows(ordersPaginatedResult)}
             // itemRenderer={(item, column) => itemRenderer(item, column)}
             maxHeight={600}
             // sortedBy={tableSorting.value.key}
@@ -136,7 +150,7 @@ const Orders = (props) => {
             onPageChange={page.onChange}
             perPage={perPage.value}
             onPerPageChange={perPage.onChange}
-            // totalItems={data.total}
+            totalItems={ordersPaginatedResult.total}
           />
            <Switch>
             {/* <SuspendedRoute path={`${match.path}/:id`}>
@@ -152,7 +166,7 @@ const Orders = (props) => {
             </SuspendedRoute> */}
           </Switch> 
         </Spacings.Stack>
-      {/* ) : null} */}
+      ):null}
     </Spacings.Stack>
   );
 };
