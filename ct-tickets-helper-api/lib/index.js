@@ -18,6 +18,8 @@ exports.deleteObject = exports.listAll = exports.uploadBytesResumable = exports.
 __exportStar(require("./graphql-queries"), exports);
 __exportStar(require("./helper-methods"), exports);
 __exportStar(require("./constants"), exports);
+__exportStar(require("./customer-graphql-queries"), exports);
+__exportStar(require("./order-graphql-queries"), exports);
 var firebase_1 = require("./firebase");
 Object.defineProperty(exports, "app", { enumerable: true, get: function () { return firebase_1.app; } });
 Object.defineProperty(exports, "storage", { enumerable: true, get: function () { return firebase_1.storage; } });
