@@ -34,7 +34,7 @@ module.exports = ()=>{
             
 
             console.log('results',result);
-            const rows = getTicketRows(result?.body?.data?.customObjects);;
+            const rows = getTicketRows(result?.body?.data?.customObjects);
             return rows;
         }catch(error){
             console.log(`Error: ${error}`);
@@ -66,6 +66,58 @@ module.exports = ()=>{
                 .execute();
             
             return result?.body?.data?.createOrUpdateCustomObject;
+        }catch(error){
+            console.log(`Error: ${error}`);
+            return {error:true,message:"Error creating Ticket!"}
+        }
+    };
+
+
+    customObjectsService.deleteTickets = async () => {
+        try {
+
+            const apiRoot =  getApiRoot();
+
+
+            const result = await apiRoot.withProjectKey({projectKey}).graphql()
+            .post({
+                body : {
+                    query: FETCH_TICKETS,
+                    variables: {
+                        container:CONSTANTS.containerKey,
+                        limit: 50,
+                        offset: 0,
+                        sort:["lastModifiedAt desc"]
+                        },
+                }
+            })
+            .execute();
+
+            const deleteCustomObj = `mutation($id:String,$version:Long){
+                deleteCustomObject(version:$version,id:$id){
+                 value
+               } 
+               }`;
+
+
+            // for (const c of result?.body?.data?.customObjects?.results){
+
+
+            // //let c = result?.body?.data?.customObjects?.results[0];
+            //     const result1 = await apiRoot.withProjectKey({projectKey}).graphql()
+            //     .post({
+            //         body : {
+            //             query: deleteCustomObj,
+            //             variables: {
+            //                 version:c.version,
+            //                 id:c.id
+            //               },
+            //         }
+            //     })
+            //     .execute();
+            // }
+            
+            return "test";//result?.body?.data?.createOrUpdateCustomObject;
         }catch(error){
             console.log(`Error: ${error}`);
             return {error:true,message:"Error creating Ticket!"}

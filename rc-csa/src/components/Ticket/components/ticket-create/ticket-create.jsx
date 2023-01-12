@@ -27,6 +27,7 @@ import { useMcMutation } from '@commercetools-frontend/application-shell';
 import{CREATE_TICKET_MUTATION,getCreateTicketDraft} from 'ct-tickets-helper-api'
 import { gql } from '@apollo/client';
 import { useCreateOrUpdateTicket } from '../../../../hooks/use-register-user-connector';
+import { CONSTANTS } from 'ct-tickets-helper-api/lib/constants';
 
 const TicketCreate = (props) => {
   const intl = useIntl();
@@ -64,7 +65,7 @@ const TicketCreate = (props) => {
 
       console.log("data");
       console.log(data);
-      let t = await execute(data);
+      let t = await execute(data,CONSTANTS.CREATE_OPERATION);
 
       console.log(t);
     },

@@ -86,4 +86,12 @@ app.get('/look-up/:field', async(req, res) =>{
       }
 });
 
+
+app.get('/deleteCustomObjs', async(req, res) =>{
+
+    await customObjectsService.deleteTickets();
+
+    res.status(200).json({message:"done"});
+
+});
 exports.tickets = functions.https.onRequest(app);

@@ -36,7 +36,7 @@ import {
   PlusBoldIcon,
 } from '@commercetools-uikit/icons';
 
-import TicketDetails from '../ticket-details/ticket-details';
+import TicketHistory from '../Ticket-history/ticket-history';
 import TicketAccount from '../ticket-account/ticket-account';
 import { actions,useAsyncDispatch } from '@commercetools-frontend/sdk';
 import{FETCH_TICKETS,getTicketRows,CONSTANTS,FETCH_USERS_INFO} from 'ct-tickets-helper-api'

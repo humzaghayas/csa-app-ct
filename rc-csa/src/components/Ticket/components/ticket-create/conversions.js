@@ -36,7 +36,8 @@ const docToFormCommonValues=(ticket,isEdit)=>(
     subject: ticket?.subject ?? '',
     isEdit:isEdit ?? false,
     createdBy:ticket?.createdBy ?? '',
-    assignedTo:ticket?.assignedTo ?? ''
+    assignedTo:ticket?.assignedTo ?? '',
+    history:ticket?.history ?? []
   }
 );
 
@@ -75,6 +76,8 @@ export const formValuesToDoc = (formValues) => {
         })
       }
     doc.files=  formValues?.files ?? null;
+
+    doc.history = formValues?.history ?? [];
   return doc;
 };
 
