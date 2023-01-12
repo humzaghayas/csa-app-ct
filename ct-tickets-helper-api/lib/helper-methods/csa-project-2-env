@@ -1,0 +1,7 @@
+
+CTP_PROJECT_KEY=csa-project-2
+CTP_CLIENT_SECRET=DAkgjtFrFwPLsqcPxy2cuygm13kbKv4E
+CTP_CLIENT_ID=31mRXLNONW7IZL8rSyL7sd0x
+CTP_AUTH_URL=https://auth.us-central1.gcp.commercetools.com
+CTP_API_URL=https://api.us-central1.gcp.commercetools.com
+CTP_SCOPES=manage_project:csa-project-2
