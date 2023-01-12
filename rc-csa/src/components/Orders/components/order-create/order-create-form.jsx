@@ -87,44 +87,8 @@ const OrderCreateForm = (props) => {
           horizontalConstraint={13}
         />
         </Spacings.Stack>
-        <Spacings.Stack scale="s">
-        <TextField
-          name="allocated"
-          title="allocated"
-          value={formik.values.lastName}
-          errors={formik.errors.lastName}
-          touched={formik.touched.lastName}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-     </Spacings.Stack>
-     <Spacings.Stack scale="s">
         
-        <TextField
-          name="returned"
-          title="returned"
-          isRequired
-          value={formik.values.email}
-          errors={formik.errors.email}
-          touched={formik.touched.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-        <Spacings.Stack scale="s">
-        <TextField
-          name="cancelled"
-          title="cancelled"
-          value={formik.values.employeeNumber}
-          errors={formik.errors.employeeNumber}
-          touched={formik.touched.employeeNumber}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
+       
     
      
         
