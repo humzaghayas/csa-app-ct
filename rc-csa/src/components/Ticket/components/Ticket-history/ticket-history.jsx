@@ -11,13 +11,20 @@ import { transformErrors } from './transform-errors';
 // import messages from './messages';
 import { useGetTicketById } from '../../../../hooks/use-register-user-connector';
 import { CollapsiblePanel, Constraints, DataTable, Spacings } from '@commercetools-frontend/ui-kit';
+import SearchSelectInput from '@commercetools-uikit/search-select-input';
 
 const columns = [
-  { key:'Priority', label: 'Priority' },
+  {key:'id', label: 'Ticket Id'},
+  { key: 'operationDate', label: 'Ticket Raised' },
+  {key:'reason' , label:'Reason'},
+  {key:'Solution' , label:'Solution'},
   { key: 'Status', label: 'Status' },
+  { key:'Priority', label: 'Priority' },
   { key: 'Assigned_To', label: 'Assigned To' },
-  { key: 'user', label: 'User' },
-  { key: 'operationDate', label: 'Operation Date' }
+  {key:'TimeSpent' , label:'Time Spent'},
+  {key:'Rating' , label:'Customer Rating'}
+  // { key: 'user', label: 'User' },
+ 
 ];
 
 const TicketHistory = (props) => {
@@ -49,11 +56,61 @@ const TicketHistory = (props) => {
               scale="l">
                 <Constraints.Horizontal >
                     <Spacings.Stack scale="m">
-
+                    <SearchSelectInput
+      id="customers"
+      name="customers"
+      horizontalConstraint={7}
+      optionType="single-lined"
+      isAutofocussed={false}
+      backspaceRemovesValue={true}
+      isClearable={true}
+      isDisabled={false}
+      isReadOnly={false}
+      isMulti={true}
+      onChange={() => {}}
+      defaultOptions={[
+        {
+          label: 'Animals',
+          options: [
+            { value: 'dogs', label: 'Dogs' },
+            { value: 'whales', label: 'Whales' },
+            { value: 'antilopes', label: 'Antilopes' },
+            { value: 'snakes', label: 'Snakes' },
+          ],
+        },
+        {
+          label: 'Flavours',
+          options: [
+            {
+              value: 'vanilla',
+              label: 'Vanilla',
+            },
+            {
+              value: 'chocolate',
+              label: 'Chocolate',
+            },
+            {
+              value: 'strawberry',
+              label: 'Strawberry',
+            },
+            {
+              value: 'salted-caramel',
+              label: 'Salted Caramel',
+            },
+          ],
+        },
+      ]}
+      noOptionsMessage="No exact match found"
+      loadingMessage="loading exact matches"
+      placeholder="search by Ticket id/Date"
+      // eslint-disable-next-line no-undef
+      loadOptions={() => {}}
+      cacheOptions={false}
+    />
 
                     {ticket.history ? 
                             <Spacings.Stack scale="l">
-                            
+                         
                               <DataTable
                                 isCondensed
                                 columns={columns}
