@@ -36,6 +36,9 @@ const OrderCreateForm = (props) => {
     enableReinitialize: true,
   });
 
+  console.log("Formik:");
+  console.log(formik);
+
   const formElements = (
     <Spacings.Stack scale="l">
      
@@ -54,7 +57,7 @@ const OrderCreateForm = (props) => {
         <TextField
           name="Product Code"
           title="Product Code"
-          value={formik.values.title}
+          value={formik.values.productCode}
           errors={formik.errors.title}
           touched={formik.touched.title}
           onChange={formik.handleChange}
@@ -66,7 +69,7 @@ const OrderCreateForm = (props) => {
           <TextField
           name="Product Name"
           title="Product Name"
-          value={formik.values.firstName}
+          value={formik.values.productName}
           errors={formik.errors.firstName}
           touched={formik.touched.firstName}
           onChange={formik.handleChange}
@@ -79,7 +82,7 @@ const OrderCreateForm = (props) => {
         <TextField
           name="Item Price"
           title="Item Price"
-          value={formik.values.middleName}
+          value={formik.values.itemPrice}
           errors={formik.errors.middleName}
           touched={formik.touched.middleName}
           onChange={formik.handleChange}

@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getTicketRows = void 0;
+exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getOrderRows = exports.getTicketRows = void 0;
 var constants_1 = require("../constants");
 var graphql_queries_1 = require("../graphql-queries");
 var uuid_1 = require("uuid");
@@ -62,6 +62,24 @@ function getTicketRows(customObjects) {
     return [];
 }
 exports.getTicketRows = getTicketRows;
+function getOrderRows(orderPaginationResult) {
+    if (orderPaginationResult === null || orderPaginationResult === void 0 ? void 0 : orderPaginationResult.results) {
+        return orderPaginationResult === null || orderPaginationResult === void 0 ? void 0 : orderPaginationResult.results.map(function (order) {
+            var _a, _b, _c;
+            return {
+                id: order === null || order === void 0 ? void 0 : order.id,
+                OrderNumber: order === null || order === void 0 ? void 0 : order.orderNumber,
+                Customer: ((_a = order === null || order === void 0 ? void 0 : order.customer) === null || _a === void 0 ? void 0 : _a.firstName) + " " + ((_b = order === null || order === void 0 ? void 0 : order.customer) === null || _b === void 0 ? void 0 : _b.lastName),
+                Created: order === null || order === void 0 ? void 0 : order.createdAt,
+                Modified: order === null || order === void 0 ? void 0 : order.lastModifiedAt,
+                Type: order === null || order === void 0 ? void 0 : order.type,
+                Status: order === null || order === void 0 ? void 0 : order.orderState,
+                DeliveryMode: (_c = order === null || order === void 0 ? void 0 : order.shippingInfo) === null || _c === void 0 ? void 0 : _c.shippingMethodName
+            };
+        });
+    }
+}
+exports.getOrderRows = getOrderRows;
 function getTicketCategories() {
     return constants_1.TICKET_TYPE;
 }

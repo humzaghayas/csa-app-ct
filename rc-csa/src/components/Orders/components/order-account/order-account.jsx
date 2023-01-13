@@ -78,15 +78,12 @@ const OrderAccount = (props) => {
     >
       <Switch>
         <Route path={`${match.path}/orders-general`}>
-         
          <OrderCreate />
         </Route>
         <Route path={`${match.path}/orders-shipping-details`}>
-         
          <OrderShipping />
         </Route>
         <Route path={`${match.path}/orders-status`}>
-         
         <OrderStatus />
         </Route>
         {/* <Route path={`${match.path}/employee-create`}>

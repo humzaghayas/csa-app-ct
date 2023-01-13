@@ -33,7 +33,8 @@ import messages from './messages';
 // import toggleFeature from '@commercetools-frontend/application-shell/node_modules/@flopflip/react-broadcast/dist/declarations/src/components/toggle-feature';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import SearchSelectInput from '@commercetools-uikit/search-select-input';
-
+import { useOrdersFetcher } from '../../../../hooks/use-orders-connector/use-orders-connector';
+import { getOrderRows } from 'ct-tickets-helper-api';
 import {
   // BinLinearIcon,
   // IconButton,
@@ -84,6 +85,14 @@ const Orders = (props) => {
   const { push } = useHistory();
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
+  const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
+
+  const { ordersPaginatedResult, error, loading } =  useOrdersFetcher({
+    page,
+    perPage,
+    tableSorting,
+  });
+  console.log(ordersPaginatedResult);
 
   return (
     <Spacings.Stack scale="l">
@@ -229,13 +238,13 @@ const Orders = (props) => {
    
       {/* {loading && <LoadingSpinner />} */}
      
-      {/* {data ? ( */}
+      {ordersPaginatedResult?(
         <Spacings.Stack scale="l">
          
           <DataTable
             isCondensed
             columns={columns}
-            rows={rows}
+            rows={getOrderRows(ordersPaginatedResult)}
             // itemRenderer={(item, column) => itemRenderer(item, column)}
             maxHeight={600}
             // sortedBy={tableSorting.value.key}
@@ -249,7 +258,7 @@ const Orders = (props) => {
             onPageChange={page.onChange}
             perPage={perPage.value}
             onPerPageChange={perPage.onChange}
-            // totalItems={data.total}
+            totalItems={ordersPaginatedResult?.total}
           />
            <Switch>
             {/* <SuspendedRoute path={`${match.path}/:id`}>
@@ -265,7 +274,7 @@ const Orders = (props) => {
             </SuspendedRoute> */}
           </Switch> 
         </Spacings.Stack>
-      {/* ) : null} */}
+      ):null}
     </Spacings.Stack>
   );
 };
