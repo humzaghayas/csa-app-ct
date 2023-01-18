@@ -31,6 +31,7 @@ import styles from './Order-account-module.css';
 import { lazy, useState, useEffect } from 'react';
 
 import OrderCreate from '../order-create/order-create';
+import OrderShipping from '../order-shipping/order-shipping';
 
 
 const OrderAccount = (props) => {
@@ -52,7 +53,7 @@ const OrderAccount = (props) => {
     <TabularDetailPage
       title=" "
       //  onPreviousPathClick={() => history.push(`Order-list`)}
-      onPreviousPathClick={() => history.push(`${match.url}`)}
+      onPreviousPathClick={() => history.push(`/csa-project-2/csa-customer-tickets/Orders`)}
       previousPathLabel="Go to View orders"
       tabControls={
         <>
@@ -62,7 +63,10 @@ const OrderAccount = (props) => {
                 to={`${match.url}/orders-general`}
                 label="General"
               />
-           
+            <TabHeader
+                to={`${match.url}/orders-shipping`}
+                label="Shipping & Delivery"
+              />
             </Spacings.Inline>
           </Spacings.Stack>
         </>
@@ -70,10 +74,13 @@ const OrderAccount = (props) => {
     >
       <Switch>
         <Route path={`${match.path}/orders-general`}>
-          {/* <OrderDetails /> */}
+        
          <OrderCreate />
         </Route>
-    
+        <Route path={`${match.path}/orders-shipping`}>
+        
+      <OrderShipping />
+       </Route>
         {/* <Route path={`${match.path}/employee-create`}>
            <EmployeeCreate />
           </Route>
