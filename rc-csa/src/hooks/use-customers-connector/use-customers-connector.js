@@ -10,17 +10,16 @@ import {
   extractErrorFromGraphQlResponse,
   convertToActionData,
 } from '../../helpers';
-// import{getForKey,CONSTANTS} from 'ct-tickets-helper-api'
+
+
 import FetchCustomersQuery from './fetch-customers.ctp.graphql';
 import FetchCustomerDetailsQuery from './fetch-customers-details.ctp.graphql';
 import UpdateCustomerDetailsMutation from './update-customers-details.ctp.graphql';
 
 import FetchCustomerAddressDetailsQuery from './fetch-customers-address-details.ctp.graphql';
 import UpdateCustomerAddressDetailsMutation from './update-customers-address-details.ctp.graphql';
-import CustomerPasswordResetToken from './customers-password-reset-token.ctp.graphql';
-import CustomerPasswordReset from './customers-password-reset.ctp.graphql';
+
 import FectchCustomerOrdersListQuery from './fetch-customers-orders.ctp.graphql';
-import { gql } from '@apollo/client';
 
 export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
   const { data, error, loading } = useMcQuery(FetchCustomersQuery, {
@@ -91,78 +90,16 @@ export const useCustomerDetailsUpdater = () => {
   };
 };
 
-export const usePasswordResetToken = (email) => {
-  const [createOrUpdateCustomObject, { loading }] = useMcMutation(
-    CustomerPasswordResetToken
-  );
-  const execute = async () => {
-    try {
-      return await createOrUpdateCustomObject({
-        variables: {
-          email: 'humza@test.com',
-          // email: '"' + email + '"',
-          // email: email,
-        },
-        context: {
-          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-        },
-      });
-    } catch (graphQlResponse) {
-      throw extractErrorFromGraphQlResponse(graphQlResponse);
-    }
-  };
-
-  return {
-    loading,
-    execute,
-  };
-};
-
-export const usePasswordReset = () => {
-  const [customersPasswordReset, { loading }] = useMcMutation(
-    CustomerPasswordReset
-  );
-
-  const syncStores = createSyncCustomers();
-  const execute = async ({ originalDraft }) => {
-    // const actions = syncStores.buildActions(
-    //   // nextDraft,
-    //   convertToActionData(originalDraft)
-    // );
-    try {
-      return await customersPasswordReset({
-        context: {
-          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-        },
-        variables: {
-          tokenValue: originalDraft.tokenValue,
-          newPassword: originalDraft.newPassword,
-          // actions: createGraphQlUpdateActions(actions),
-        },
-      });
-    } catch (graphQlResponse) {
-      throw extractErrorFromGraphQlResponse(graphQlResponse);
-    }
-  };
-
-  return {
-    loading,
-    execute,
-  };
-};
 
 export const useCustomerAddressDetailsFetcher = (id) => {
-  const { data, error, loading } = useMcQuery(
-    FetchCustomerAddressDetailsQuery,
-    {
-      variables: {
-        id,
-      },
-      context: {
-        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-      },
-    }
-  );
+  const { data, error, loading } = useMcQuery(FetchCustomerAddressDetailsQuery, {
+    variables: {
+      id,
+    },
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    },
+  });
 
   return {
     customerAddress: data?.customer,
@@ -171,20 +108,21 @@ export const useCustomerAddressDetailsFetcher = (id) => {
   };
 };
 
+
 export const useCustomerAddressDetailsUpdater = () => {
   const [updateCustomerDetails, { loading }] = useMcMutation(
     UpdateCustomerAddressDetailsMutation
   );
 
   const syncStores = createSyncCustomers();
-  const execute = async ({ originalDraft, nextDraft, addressId }) => {
+  const execute = async ({ originalDraft, nextDraft,addressId }) => {
     const actions = syncStores.buildActions(
       nextDraft,
       convertToActionData(originalDraft)
     );
-    console.log('actions', actions);
+    console.log("actions",actions);
     const address = nextDraft;
-
+    
     try {
       return await updateCustomerDetails({
         context: {
@@ -193,14 +131,12 @@ export const useCustomerAddressDetailsUpdater = () => {
         variables: {
           customerId: originalDraft.id,
           version: originalDraft.version,
-          actions: [
-            {
-              changeAddress: {
-                addressId: addressId,
+          actions: [{
+            changeAddress:{
+              addressId:addressId,
                 address,
-              },
-            },
-          ],
+          },
+        }],
         },
       });
     } catch (graphQlResponse) {
@@ -214,18 +150,19 @@ export const useCustomerAddressDetailsUpdater = () => {
   };
 };
 
+
 export const useCustomerAddressDetailsCreator = () => {
   const [CreateCustomerAddress, { loading }] = useMcMutation(
     UpdateCustomerAddressDetailsMutation
   );
 
   const syncStores = createSyncCustomers();
-  const execute = async ({ originalDraft, nextDraft }) => {
-    const actions1 = syncStores.buildActions(
-      nextDraft,
-      convertToActionData(originalDraft)
-    );
-    const address = nextDraft;
+    const execute = async ({ originalDraft,nextDraft }) => {
+      const actions1 = syncStores.buildActions(
+        nextDraft,
+       convertToActionData(originalDraft)
+      );
+      const address = nextDraft;
     try {
       return await CreateCustomerAddress({
         context: {
@@ -239,14 +176,12 @@ export const useCustomerAddressDetailsCreator = () => {
         variables: {
           customerId: originalDraft.id,
           version: originalDraft.version,
-          actions: [
-            {
-              addAddress: {
+          actions: [{
+            addAddress:{
                 address,
-              },
-            },
-          ],
-        },
+          },
+        }],
+      },
       });
     } catch (graphQlResponse) {
       throw extractErrorFromGraphQlResponse(graphQlResponse);
@@ -259,18 +194,13 @@ export const useCustomerAddressDetailsCreator = () => {
   };
 };
 
-export const useCustomersOrdersFetcher = ({
-  page,
-  perPage,
-  tableSorting,
-  customerId,
-}) => {
+export const useCustomersOrdersFetcher = ({ page, perPage, tableSorting, customerId}) => {
   const { data, error, loading } = useMcQuery(FectchCustomerOrdersListQuery, {
     variables: {
       limit: perPage.value,
       offset: (page.value - 1) * perPage.value,
       sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
-      where: 'customerId=' + '"' + customerId + '"',
+      where:"customerId="+'"'+customerId+'"',
     },
     context: {
       target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,

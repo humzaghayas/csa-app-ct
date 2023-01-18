@@ -49,14 +49,10 @@ import {
 } from '@commercetools-frontend/application-shell';
 import { gql } from '@apollo/client';
 import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
-import { FETCH_TICKETS, FETCH_TICKETS_BY_ID } from 'ct-tickets-helper-api/lib/graphql-queries';
+import { FETCH_CUSTOMER_TICKETS } from 'ct-tickets-helper-api/lib/graphql-queries/index';
 import { CONSTANTS } from 'ct-tickets-helper-api/lib/constants';
 import TicketAccount from '../../../Ticket/components/ticket-account/ticket-account';
 import { ContentNotification } from '@commercetools-uikit/notifications';
-// const rows = [
-
-//   { id: '00012875',Customer:'Lahari',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...',Website:'Electronics Site',Status:'In process',Priority:'Moderate',Category:'Enquiry',Subject:'ticket 2'},
-// ];
 
 let rows = null;
 
@@ -105,14 +101,16 @@ const CustomerTickets = (props) => {
   // const id = params.id;
   const { data, error, loading, refetch } = useMcQuery(
     gql`
-      ${FETCH_TICKETS_BY_ID}
+      ${FETCH_CUSTOMER_TICKETS}
     `,
     {
       variables: {
-        container: CONSTANTS.containerKey,
-        limit: perPage.value,
-        offset: (page.value - 1) * perPage.value,
-        sort: ['lastModifiedAt desc'],
+        container: "ticket-container",
+        where: "value(email=\"humza@test.com\")"
+        // container: CONSTANTS.containerKey,
+        // limit: perPage.value,
+        // offset: (page.value - 1) * perPage.value,
+        // sort: ['lastModifiedAt desc'],
       },
       context: {
         target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,

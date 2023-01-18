@@ -32,6 +32,7 @@ import { lazy, useState, useEffect } from 'react';
 import TicketDetailsForm from '../ticket-details/ticket-details-form';
 import TicketDetails from '../ticket-details/ticket-details';
 import TicketDetailsP from '../ticket-create/tickets-details';
+import TicketHistory from '../Ticket-history/ticket-history';
 
 
 const TicketAccount = (props) => {
@@ -85,8 +86,11 @@ const TicketAccount = (props) => {
     >
       <Switch>
         <Route path={`${match.path}/tickets-general`}>
-          {/* <TicketDetails /> */}
          <TicketDetailsP />
+        </Route>
+
+        <Route path={`${match.path}/tickets-history`}>
+          <TicketHistory />
         </Route>
         {/* <Route path={`${match.path}/tickets-history`}>
         <TicketDetailsForm />

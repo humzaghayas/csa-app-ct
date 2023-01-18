@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   PageNotFound,
   FormModalPage,
@@ -13,8 +13,6 @@ import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import {
   useShowNotification,
   useShowApiErrorNotification,
-  showApiErrorNotification,
-  showNotification,
 } from '@commercetools-frontend/actions-global';
 import { PERMISSIONS } from '../../../../constants';
 // import {
@@ -24,10 +22,6 @@ import { docToFormValues, formValuesToDoc } from './conversions';
 import CustomerPasswordForm from './customer-password-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
-import {
-  useCustomerDetailsFetcher,
-  usePasswordResetToken,
-} from '../../../../hooks/use-customers-connector/use-customers-connector';
 
 const CustomerPassword = (props) => {
   const intl = useIntl();
@@ -42,60 +36,51 @@ const CustomerPassword = (props) => {
   // const showNotification = useShowNotification();
   // const showApiErrorNotification = useShowApiErrorNotification();
   // const CustomerDetailsCreator = useCustomerDetailsCreator();
+  const handleSubmit = useCallback(
+    // async (formikValues, formikHelpers) => {
+    //   const data = formValuesToDoc(formikValues);
+    //   try {
+    //     await CustomerDetailsCreator.execute({
+    //       nextDraft: data,
+    //     });
+    //     showNotification({
+    //       kind: 'success',
+    //       domain: DOMAINS.SIDE,
+    //       text: intl.formatMessage(messages.CustomerPasswordd),
+    //     });
+    //   } catch (graphQLErrors) {
+    //     const transformedErrors = transformErrors(graphQLErrors);
+    //     if (transformedErrors.unmappedErrors.length > 0) {
+    //       showApiErrorNotification({
+    //         errors: transformedErrors.unmappedErrors,
+    //       });
+    //     }
 
-  // Password reset token
-  // const customer = useCustomerDetailsFetcher(params.id);
-  // const customer = props?.customer;
-  // console.log('customer', JSON.stringify(customer));
-  // console.log('customer', customer);
-  // const { execute } = usePasswordResetToken();
-  // useEffect(() => {
-  //   execute(customer.email);
-  // }, [customer.email]);
-  const handleSubmit = useCallback();
-  // async (formikValues, formikHelpers) => {
-  //   const data = formValuesToDoc(formikValues);
-  //   try {
-  //     await passwordResetToken.execute({
-  //       originalDraft: customer,
-  //       nextDraft: data,
-  //     });
-  //     showNotification({
-  //       kind: 'success',
-  //       domain: DOMAINS.SIDE,
-  //       text: 'Customer Updated',
-  //     });
-  //   } catch (graphQLErrors) {
-  //     const transformedErrors = transformErrors(graphQLErrors);
-  //     if (transformedErrors.unmappedErrors.length > 0) {
-  //       showApiErrorNotification({
-  //         errors: transformedErrors.unmappedErrors,
-  //       });
-  //     }
-
-  //     formikHelpers.setErrors(transformedErrors.formErrors);
-  //   }
-  // },
-  // [
-  //   customer,
-  //   passwordResetToken,
-  //   dataLocale,
-  //   intl,
-  //   projectLanguages,
-  //   showApiErrorNotification,
-  //   showNotification,
-  // ]
+    //     formikHelpers.setErrors(transformedErrors.formErrors);
+    //   }
+    // },
+    // [
+    //   CustomerDetailsCreator,
+    //   dataLocale,
+    //   intl,
+    //   projectLanguages,
+    //   showApiErrorNotification,
+    //   showNotification,
+    // ]
+  );
 
   return (
     <CustomerPasswordForm
-      initialValues={docToFormValues(null, projectLanguages)}
-      onSubmit={handleSubmit}
-      isReadOnly={!canManage}
-      dataLocale={dataLocale}
+    initialValues={docToFormValues(null, projectLanguages)}
+    onSubmit={handleSubmit}
+    isReadOnly={!canManage}
+    dataLocale={dataLocale}
     >
       {(formProps) => {
         return (
-          <React.Fragment>{formProps.formElements}</React.Fragment>
+          <React.Fragment>
+          {formProps.formElements}
+        </React.Fragment>
           // <FormModalPage
           //   title={intl.formatMessage(messages.modalTitle)}
           //   isOpen
