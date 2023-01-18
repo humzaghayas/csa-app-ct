@@ -1,0 +1,9 @@
+{
+    "applicationName": "csa-app",
+    "frontendHost": "mc.commercetools.co",
+    "mcApiUrl": "https://mc-api.commercetools.co",
+    "location": "us",
+    "env": "production",
+    "cdnUrl": "https://csa-project-1d161.firebaseapp.com",
+    "servedByProxy": true
+}
