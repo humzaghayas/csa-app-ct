@@ -40,10 +40,10 @@ import {
   // SecondaryButton,
   PlusBoldIcon,
 } from '@commercetools-uikit/icons';
-
+import './order-list-module.css';
 import OrderAccount from '../order-account/order-account';
 import { getOrderRows } from 'ct-tickets-helper-api';
-
+import MoneyField from '@commercetools-uikit/money-field';
 // import { getCompanies } from '../../api';
 // import { useEffect } from 'react';
 
@@ -60,20 +60,33 @@ import { getOrderRows } from 'ct-tickets-helper-api';
 
 
 const rows = [
-  { OrderNumber: '00012875',Customer:'Lahari',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
-  { OrderNumber: '00012876',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
-  { OrderNumber: '00012877',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
-  { OrderNumber: '00012879',Customer:'RanjithKumar',Created:'Nov 11, 2022,2:54:47...',Modified:'Dec 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
+  { OrderNumber: 'CS0012875',Customer:'Lahari',OrderTotal:'$350.00',NooforderItems:'1',TotalItems:'1',OrderStatus:'',ShipmentStatus:"",PaymentStatus:'',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...'},
+  { OrderNumber: 'CS0012875',Customer:'Lahari',OrderTotal:'$350.00',NooforderItems:'1',TotalItems:'1',OrderStatus:'',ShipmentStatus:"",PaymentStatus:'',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...'},
+  { OrderNumber: 'CS0012875',Customer:'Lahari',OrderTotal:'$350.00',NooforderItems:'1',TotalItems:'1',OrderStatus:'',ShipmentStatus:"",PaymentStatus:'',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...'},
+  // { OrderNumber: '00012876',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
+  // { OrderNumber: '00012877',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
+  // { OrderNumber: '00012879',Customer:'RanjithKumar',Created:'Nov 11, 2022,2:54:47...',Modified:'Dec 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
 ];
 
 const columns = [
-
-  { key: 'orderNumber', label: 'Order Number' },
+{ key: 'orderNumber', label: 'Order Number' },
   { key:'customer', label: 'Customer' },
+  { key: 'orderTotal', label: 'Order Total' },
+  { key: 'NooforderItems', label: 'No.of order Items' },
+  { key: 'TotalItems', label: 'Total Items' },
+  { key: 'OrderStatus', label: 'Order Status' },
+  { key: 'ShipmentStatus', label: 'Shipment Status' },
+  { key: 'PaymentStatus', label: 'Payment Status' },
   { key: 'createdAt', label: 'Created' },
   { key: 'lastModifiedAt', label: 'Modified' },
-  { key: 'orderState', label: 'Status' },
-  { key: 'shippingMethodName', label: 'Delivery Mode' },
+  
+
+  // { key: 'orderNumber', label: 'Order Number' },
+  // { key:'customer', label: 'Customer' },
+  // { key: 'createdAt', label: 'Created' },
+  // { key: 'lastModifiedAt', label: 'Modified' },
+  // { key: 'orderState', label: 'Status' },
+  // { key: 'shippingMethodName', label: 'Delivery Mode' },
  
 ];
 
@@ -130,6 +143,22 @@ const Orders =  (props) => {
         size="medium"
       />
       </Spacings.Inline> */}
+      <Spacings.Stack scale="l" className='css-294zjy-container' >
+       
+        <MoneyField
+    title="Price"
+    value={
+    // { amount: '30', currencyCode: 'CustomerEmailAddress' },
+    // { amount: '30', currencyCode: 'FirstName' },
+    // { amount: '30', currencyCode: 'LastName' },
+    { amount: '30', currencyCode: 'OrderNO' },
+    { amount: '30', currencyCode: 'SKU' },
+    { amount: '30', currencyCode: 'Store' }
+  }
+    onChange={(event) => alert(event.target.value)}
+    currencies={['OrderNO','SKU','Store']}
+  />
+  </Spacings.Stack>
       {ordersPaginatedResult?(
         <Spacings.Stack scale="l">
          
