@@ -2,21 +2,16 @@ import LocalizedTextInput from '@commercetools-uikit/localized-text-input';
 import { transformLocalizedFieldToLocalizedString } from '@commercetools-frontend/l10n';
 import { TextInput } from '@commercetools-frontend/ui-kit';
 
-export const docToFormValues = (employee, languages) => ({
-  id: employee?.id ?? '',
-  salutation: employee?.salutation ?? '',
-  title: employee?.title ?? '',
-  firstName: employee?.firstName ?? '',
-  middleName: employee?.middleName ?? '',
-  lastName: employee?.lastName ?? '',
-  email: employee?.email ?? '',
-  dateOfBirth: employee?.dateOfBirth ?? '',
-  employeeNumber: employee?.employeeNumber ?? '',
-  externalId: employee?.externalId ?? '',
-  customerGroup: employee?.customerGroup ?? '',
-  roles: employee?.roles ?? '',
-  password: employee?.password ?? '',
-  confirmedPassword: employee?.confirmedPassword ?? '',
+export const docToFormValues = (order, languages) => ({
+  id:order?.id,
+  quantity:order?.lineItems.map(item => item.quantity).reduce((a,b)=>a+b,0),
+  streetNumber:order?.shippingAddress?.streetNumber,
+  streetName:order?.shippingAddress?.streetName,
+  postalCode:order?.shippingAddress?.postalCode,
+  country:order?.shippingAddress?.country,
+  city:order?.shippingAddress?.city,
+  state:order?.shippingAddress?.state,
+  building:order?.shippingAddress?.building
 });
 
 /*export const formValuesToDoc = (formValues) => ({

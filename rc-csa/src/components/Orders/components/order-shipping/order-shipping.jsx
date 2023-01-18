@@ -22,10 +22,13 @@ import { docToFormValues, formValuesToDoc } from './conversions';
 import OrderShippingForm from './order-shipping-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
+import { useRouteMatch } from 'react-router-dom';
+import { useFetchOrderById} from '../../../../hooks/use-orders-connector';
 
 const OrderShipping = (props) => {
   const intl = useIntl();
   const params = useParams();
+  const match = useRouteMatch();
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
@@ -33,6 +36,8 @@ const OrderShipping = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
+
+  const {order} = useFetchOrderById(match.params.id);
   // const showNotification = useShowNotification();
   // const showApiErrorNotification = useShowApiErrorNotification();
   // const TicketDetailsCreator = useTicketDetailsCreator();
@@ -71,7 +76,7 @@ const OrderShipping = (props) => {
 
   return (
     <OrderShippingForm
-    initialValues={docToFormValues(null, projectLanguages)}
+    initialValues={docToFormValues(order, projectLanguages)}
     onSubmit={handleSubmit}
     isReadOnly={!canManage}
     dataLocale={dataLocale}

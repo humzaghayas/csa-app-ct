@@ -1,3 +1,4 @@
 export {
-    useOrdersFetcher
+    useOrdersFetcher,
+    useFetchOrderById
 } from './use-orders-connector';

@@ -36,7 +36,12 @@ export function getOrderRows(orderPaginationResult){
                 createdAt: order?.createdAt,
                 lastModifiedAt:order?.lastModifiedAt,
                 orderState:order?.orderState,
-                shippingMethodName:order?.shippingInfo?.shippingMethodName
+                shipmentStatus:order?.shipmentStatus,
+                paymentStatus:order?.paymentStatus,
+                shippingMethodName:order?.shippingInfo?.shippingMethodName,
+                orderTotal:order?.orderTotal,
+                noOforderItems:order?.lineitems?.length,
+                totalItems:order?.lineitems?.quantity
             }
         });
     }

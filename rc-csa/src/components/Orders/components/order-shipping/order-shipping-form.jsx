@@ -27,6 +27,8 @@ const getTicketPriorityOptions = Object.keys(TICKET_PRIORITY).map((key) => ({
 }));
 
 
+
+
 const OrderShippingForm = (props) => {
   const intl = useIntl();
   const formik = useFormik({
@@ -35,6 +37,9 @@ const OrderShippingForm = (props) => {
     validate,
     enableReinitialize: true,
   });
+
+  // console.log("order shipping form");
+  // console.log(formik.values);
 
   const formElements = (
     <Spacings.Stack scale="l">
@@ -55,18 +60,18 @@ const OrderShippingForm = (props) => {
     
      <Spacings.Stack scale="s">
       
-        <SelectField
+        <TextField
           name="Shipped Quantity"
           title="Shipped Quantity"
-          value={formik.values.roles}
+          value={formik.values?.quantity}
           errors={formik.errors.roles}
           touched={formik.touched.roles}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           
-          options={getTicketPriorityOptions}
-          isReadOnly={props.isReadOnly}
-          isRequired
+          // options={getTicketPriorityOptions}
+          // isReadOnly={props.isReadOnly}
+          // isRequired
           horizontalConstraint={13}
         />
         </Spacings.Stack>
@@ -75,7 +80,7 @@ const OrderShippingForm = (props) => {
         <TextField
           name="Shipping Tax"
           title="Shipping Tax"
-          value={formik.values.firstName}
+          value={formik.values?.tax}
           errors={formik.errors.firstName}
           touched={formik.touched.firstName}
           onChange={formik.handleChange}
@@ -89,7 +94,7 @@ const OrderShippingForm = (props) => {
         <TextField
           name="Street Number"
           title="Street Number"
-          value={formik.values.firstName}
+          value={formik.values?.streetNumber}
           errors={formik.errors.firstName}
           touched={formik.touched.firstName}
           onChange={formik.handleChange}
@@ -102,7 +107,7 @@ const OrderShippingForm = (props) => {
         <TextField
           name="Street Name"
           title="Street Name"
-          value={formik.values.firstName}
+          value={formik.values?.streetName}
           errors={formik.errors.firstName}
           touched={formik.touched.firstName}
           onChange={formik.handleChange}
@@ -114,7 +119,7 @@ const OrderShippingForm = (props) => {
         <TextField
           name="Building"
           title="Building"
-          value={formik.values.title}
+          value={formik.values?.building}
           errors={formik.errors.title}
           touched={formik.touched.title}
           onChange={formik.handleChange}
@@ -126,7 +131,7 @@ const OrderShippingForm = (props) => {
         <TextField
           name="City"
           title="City"
-          value={formik.values.title}
+          value={formik.values?.city}
           errors={formik.errors.title}
           touched={formik.touched.title}
           onChange={formik.handleChange}
@@ -138,7 +143,7 @@ const OrderShippingForm = (props) => {
         <TextField
           name="Postal Code"
           title="Postal Code"
-          value={formik.values.title}
+          value={formik.values?.postalCode}
           errors={formik.errors.title}
           touched={formik.touched.title}
           onChange={formik.handleChange}
@@ -150,7 +155,7 @@ const OrderShippingForm = (props) => {
         <TextField
           name="State"
           title="State"
-          value={formik.values.title}
+          value={formik.values?.state}
           errors={formik.errors.title}
           touched={formik.touched.title}
           onChange={formik.handleChange}
@@ -162,7 +167,7 @@ const OrderShippingForm = (props) => {
         <TextField
           name="Country"
           title="Country"
-          value={formik.values.title}
+          value={formik.values?.country}
           errors={formik.errors.title}
           touched={formik.touched.title}
           onChange={formik.handleChange}
