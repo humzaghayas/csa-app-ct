@@ -82,7 +82,7 @@ const PasswordResetForm = (props) => {
             horizontalConstraint={13}
             isRequired
           />
-          <TextField
+          {/* <TextField
             name="confirmPassword"
             title="Confirm Password"
             value={formik.values.confirmPassword}
@@ -91,17 +91,14 @@ const PasswordResetForm = (props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             horizontalConstraint={13}
-          />
+          /> */}
         </Spacings.Inline>
         <Spacings.Inline>
-          <SecondaryButton
-            label="Cancel"
-            // onClick={formik.handleReset}
-          />
+          <SecondaryButton label="Cancel" onClick={formik.handleReset} />
           <PrimaryButton
             type="submit"
             label="Submit"
-            // onClick={formik.handleSubmit}
+            onClick={formik.handleSubmit}
             // isDisabled={formik.isSubmitting}
           />
         </Spacings.Inline>

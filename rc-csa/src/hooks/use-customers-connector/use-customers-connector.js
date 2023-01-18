@@ -10,7 +10,7 @@ import {
   extractErrorFromGraphQlResponse,
   convertToActionData,
 } from '../../helpers';
-
+// import{getForKey,CONSTANTS} from 'ct-tickets-helper-api'
 import FetchCustomersQuery from './fetch-customers.ctp.graphql';
 import FetchCustomerDetailsQuery from './fetch-customers-details.ctp.graphql';
 import UpdateCustomerDetailsMutation from './update-customers-details.ctp.graphql';
@@ -20,6 +20,7 @@ import UpdateCustomerAddressDetailsMutation from './update-customers-address-det
 import CustomerPasswordResetToken from './customers-password-reset-token.ctp.graphql';
 import CustomerPasswordReset from './customers-password-reset.ctp.graphql';
 import FectchCustomerOrdersListQuery from './fetch-customers-orders.ctp.graphql';
+import { gql } from '@apollo/client';
 
 export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
   const { data, error, loading } = useMcQuery(FetchCustomersQuery, {
@@ -90,25 +91,20 @@ export const useCustomerDetailsUpdater = () => {
   };
 };
 
-export const usePasswordResetToken = () => {
-  const [emailPasswordResetToken, { loading }] = useMcMutation(
+export const usePasswordResetToken = (email) => {
+  const [createOrUpdateCustomObject, { loading }] = useMcMutation(
     CustomerPasswordResetToken
   );
-
-  const syncStores = createSyncCustomers();
-  const execute = async ({ originalDraft, nextDraft }) => {
-    const actions = syncStores.buildActions(
-      nextDraft,
-      convertToActionData(originalDraft)
-    );
+  const execute = async () => {
     try {
-      return await emailPasswordResetToken({
+      return await createOrUpdateCustomObject({
+        variables: {
+          email: 'humza@test.com',
+          // email: '"' + email + '"',
+          // email: email,
+        },
         context: {
           target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-        },
-        variables: {
-          email: originalDraft.email,
-          actions: createGraphQlUpdateActions(actions),
         },
       });
     } catch (graphQlResponse) {
@@ -128,11 +124,11 @@ export const usePasswordReset = () => {
   );
 
   const syncStores = createSyncCustomers();
-  const execute = async ({ originalDraft, nextDraft }) => {
-    const actions = syncStores.buildActions(
-      nextDraft,
-      convertToActionData(originalDraft)
-    );
+  const execute = async ({ originalDraft }) => {
+    // const actions = syncStores.buildActions(
+    //   // nextDraft,
+    //   convertToActionData(originalDraft)
+    // );
     try {
       return await customersPasswordReset({
         context: {
@@ -141,7 +137,7 @@ export const usePasswordReset = () => {
         variables: {
           tokenValue: originalDraft.tokenValue,
           newPassword: originalDraft.newPassword,
-          actions: createGraphQlUpdateActions(actions),
+          // actions: createGraphQlUpdateActions(actions),
         },
       });
     } catch (graphQlResponse) {

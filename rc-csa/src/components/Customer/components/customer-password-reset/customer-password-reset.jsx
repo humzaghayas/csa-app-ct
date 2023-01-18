@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   PageNotFound,
   FormModalPage,
@@ -24,7 +24,11 @@ import { docToFormValues, formValuesToDoc } from './conversions';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
 import PasswordResetForm from './customer-password-reset-form';
-import { usePasswordReset } from '../../../../hooks/use-customers-connector/use-customers-connector';
+import {
+  useCustomerDetailsFetcher,
+  usePasswordReset,
+  usePasswordResetToken,
+} from '../../../../hooks/use-customers-connector/use-customers-connector';
 
 const PasswordReset = (props) => {
   const intl = useIntl();
@@ -36,12 +40,30 @@ const PasswordReset = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
-  const customer = props?.customer;
+
   // const handleSubmit = useCallback();
   // console.log("props",JSON.stringify(props));
   // const showNotification = useShowNotification();
   // const showApiErrorNotification = useShowApiErrorNotification();
   // const CustomerPasswordToken = usePasswordResetToken();
+
+  // Password reset token
+  // const customer = useCustomerDetailsFetcher(params.id);
+  // const customer = props?.customer;
+  // console.log('customer', JSON.stringify(customer));
+  // console.log('customer', customer);
+  // const { execute } = usePasswordResetToken();
+  // useEffect(() => {
+  //   execute(customer.email);
+  // }, [customer.email]);
+
+  //Password token
+  const customer = useCustomerDetailsFetcher(params.id);
+  // console.log('customer', customer);
+  const { execute } = usePasswordResetToken(customer.email);
+  useEffect(() => {
+    execute(customer.email);
+  }, [customer.email]);
 
   //Password reset
   const passwordReset = usePasswordReset();
@@ -51,7 +73,7 @@ const PasswordReset = (props) => {
       try {
         await passwordReset.execute({
           originalDraft: customer,
-          nextDraft: data,
+          // nextDraft: data,
         });
         showNotification({
           kind: 'success',
