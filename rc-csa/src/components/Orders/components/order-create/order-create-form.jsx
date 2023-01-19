@@ -38,12 +38,12 @@ const rows = [
 ];
 
 const columns = [
-  { key: 'product', label: 'product' },
-  { key: 'unitPrice', label: 'originalUnitPrice' },
-  { key: 'unitPrice', label: 'UnitPrice' },
+  { key: 'product', label: 'Product' },
+  { key: 'unitPrice', label: 'Original Unit Price' },
+  { key: 'unitPrice', label: 'Unit Price' },
   { key: 'quantity', label: 'Qty' },
   // { key: 'lineItemState', label: 'LineItemState' },
-  { key: 'subTotalPrice', label: 'subTotal' },
+  { key: 'subTotalPrice', label: 'Sub Total' },
   { key: 'tax', label: 'Tax' },
   { key: 'totalPrice', label: 'Total' },
 ];
@@ -53,10 +53,14 @@ const itemRenderer = (item, column) => {
     case 'product':
       return <div>
                 <Spacings.Stack scale='s'>
-                    <img src={item.product.image} height={50} width={50}/>
-                    <div>{item.product.name}</div>
-                    <div>SKU: {item.product.sku}</div>
-                    <div>Key: {item.product.key}</div>
+                  <Spacings.Inline>
+                    <img src={item.product.image} height={65} width={65}/>
+                    <Spacings.Stack scale='s'>
+                      <div>{item.product.name}</div>
+                      <div>SKU: {item.product.sku}</div>
+                      <div>Key: {item.product.key}</div>
+                    </Spacings.Stack>
+                  </Spacings.Inline>
                 </Spacings.Stack>
               </div>;
     default:
