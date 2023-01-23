@@ -42,7 +42,7 @@ import {
 } from '@commercetools-uikit/icons';
 import './order-list-module.css';
 import OrderAccount from '../order-account/order-account';
-import { getOrderRows } from 'ct-tickets-helper-api';
+import { getOrderRows } from './rows';
 import MoneyField from '@commercetools-uikit/money-field';
 // import { getCompanies } from '../../api';
 // import { useEffect } from 'react';
@@ -71,12 +71,12 @@ const rows = [
 const columns = [
 { key: 'orderNumber', label: 'Order Number' },
   { key:'customer', label: 'Customer' },
-  { key: 'orderTotal', label: 'Order Total' },
-  { key: 'NooforderItems', label: 'No.of order Items' },
-  { key: 'TotalItems', label: 'Total Items' },
-  { key: 'OrderStatus', label: 'Order Status' },
-  { key: 'ShipmentStatus', label: 'Shipment Status' },
-  { key: 'PaymentStatus', label: 'Payment Status' },
+  { key: 'totalPrice', label: 'Order Total' },
+  { key: 'noOforderItems', label: 'No.of order Items' },
+  { key: 'totalItems', label: 'Total Items' },
+  { key: 'orderState', label: 'Order Status' },
+  { key: 'shipmentStatus', label: 'Shipment Status' },
+  { key: 'paymentStatus', label: 'Payment Status' },
   { key: 'createdAt', label: 'Created' },
   { key: 'lastModifiedAt', label: 'Modified' },
   
@@ -107,7 +107,10 @@ const Orders =  (props) => {
     perPage,
     tableSorting,
   });
-  console.log(ordersPaginatedResult);
+
+  // console.log(ordersPaginatedResult);
+  // const orderRows = ;
+  // console.log(orderRows);
 
   return (
     <Spacings.Stack scale="xl">

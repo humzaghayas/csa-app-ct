@@ -8,17 +8,29 @@ import DateInput from '@commercetools-uikit/date-input';
 import Spacings from '@commercetools-uikit/spacings';
 import validate from './validate';
 import messages from './messages';
-import { EMPLOYEE_ROLES,CUSTOMER_GROUPS,TICKET_PRIORITY} from './constants';
+import { SHIPMENT_STATUS,PAYMENT_STATUS,ORDER_STATE} from './constants';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import { PrimaryButton, SecondaryButton } from '@commercetools-uikit/buttons';
 import DataTable from '@commercetools-uikit/data-table';
+import { MoneyField } from '@commercetools-frontend/ui-kit';
 //import iphone from './iphone.jpg'
 
-const getTicketPriorityOptions = Object.keys(TICKET_PRIORITY).map((key) => ({
+const getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
   label: key,
-  value: TICKET_PRIORITY[key],
+  value: ORDER_STATE[key],
 }));
+
+const getPaymentStates = Object.keys(PAYMENT_STATUS).map((key) => ({
+  label: key,
+  value: PAYMENT_STATUS[key],
+}));
+
+const getShipmentStates = Object.keys(SHIPMENT_STATUS).map((key) => ({
+  label: key,
+  value: SHIPMENT_STATUS[key],
+}));
+
 const rows = [
   {product: '', originalUnitPrice: '$350.00' ,UnitPrice:'$350.00',Qty:'3',LineItemState:'',subTotal:'$1150.00',Tax:"0",Total:'$1150.00'},
   {product: '', originalUnitPrice: '$350.00' ,UnitPrice:'$350.00',Qty:'3',LineItemState:'',subTotal:'$1150.00',Tax:"0",Total:'$1150.00'},
@@ -26,26 +38,36 @@ const rows = [
 ];
 
 const columns = [
-  { key: 'product', label: 'product' 
-  ,renderItem: (row) => (
-    <div>
-      {/* <img src={iphone} alt="" /> */}
-      <Spacings.Stack scale='s'>
-     <div>iphone</div>
-     <div>SKU:iphone</div>
-     <div>Key:iphone</div>
-     </Spacings.Stack>
-  </div>
-  )
-  },
-  { key: 'originalUnitPrice', label: 'originalUnitPrice' },
-  { key: 'UnitPrice', label: 'UnitPrice' },
-  { key: 'Qty', label: 'Qty' },
-  { key: 'LineItemState', label: 'LineItemState' },
-  { key: 'subTotal', label: 'subTotal' },
-  { key: 'Tax', label: 'Tax' },
-  { key: 'Total', label: 'Total' },
+  { key: 'product', label: 'Product' },
+  { key: 'unitPrice', label: 'Original Unit Price' },
+  { key: 'unitPrice', label: 'Unit Price' },
+  { key: 'quantity', label: 'Qty' },
+  // { key: 'lineItemState', label: 'LineItemState' },
+  { key: 'subTotalPrice', label: 'Sub Total' },
+  { key: 'tax', label: 'Tax' },
+  { key: 'totalPrice', label: 'Total' },
 ];
+
+const itemRenderer = (item, column) => {
+  switch (column.key) {
+    case 'product':
+      return <div>
+                <Spacings.Stack scale='s'>
+                  <Spacings.Inline>
+                    <img src={item.product.image} height={65} width={65}/>
+                    <Spacings.Stack scale='s'>
+                      <div>{item.product.name}</div>
+                      <div>SKU: {item.product.sku}</div>
+                      <div>Key: {item.product.key}</div>
+                    </Spacings.Stack>
+                  </Spacings.Inline>
+                </Spacings.Stack>
+              </div>;
+    default:
+      return item[column.key];
+  }
+}
+
 
 const OrderCreateForm = (props) => {
   const intl = useIntl();
@@ -55,6 +77,9 @@ const OrderCreateForm = (props) => {
     validate,
     enableReinitialize: true,
   });
+
+  console.log("Order details LineItems");
+  console.log(formik?.values);
 
   const formElements = (
     <Spacings.Stack scale="l">
@@ -71,58 +96,54 @@ const OrderCreateForm = (props) => {
             <Constraints.Horizontal >
              <Spacings.Stack scale="m">
             
-        
-     
-
-      
      <Spacings.Stack scale="s">
       
         <SelectField
-          name="order workflow status"
-          title="order workflow status"
-          value={formik.values.roles}
+          name="Order status"
+          title="Order status"
+          value={formik.values.orderState}
           errors={formik.errors.roles}
           touched={formik.touched.roles}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           
-          options={getTicketPriorityOptions}
+          options={getOrderStates}
           isReadOnly={props.isReadOnly}
-          isRequired
+          // isRequired
           horizontalConstraint={13}
         />
         </Spacings.Stack>
         <Spacings.Stack scale="s">
       
       <SelectField
-        name="payment status"
-        title="payment status"
-        value={formik.values.roles}
+        name="Payment status"
+        title="Payment status"
+        value={formik.values.paymentState}
         errors={formik.errors.roles}
         touched={formik.touched.roles}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         
-        options={getTicketPriorityOptions}
+        options={getPaymentStates}
         isReadOnly={props.isReadOnly}
-        isRequired
+        // isRequired
         horizontalConstraint={13}
       />
       </Spacings.Stack>
       <Spacings.Stack scale="s">
       
         <SelectField
-          name="shipment status"
-          title="shipment status"
-          value={formik.values.roles}
+          name="Shipment status"
+          title="Shipment status"
+          value={formik.values.shipmentState}
           errors={formik.errors.roles}
           touched={formik.touched.roles}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           
-          options={getTicketPriorityOptions}
+          options={getShipmentStates}
           isReadOnly={props.isReadOnly}
-          isRequired
+          // isRequired
           horizontalConstraint={13}
         />
         </Spacings.Stack>
@@ -158,11 +179,12 @@ const OrderCreateForm = (props) => {
             <Constraints.Horizontal >
              <Spacings.Stack scale="m">
             
-             <DataTable rows={rows} columns={columns} />
-     
-
-       
-       
+             {formik?.values?.lineItems? 
+             <DataTable 
+             rows={formik.values.lineItems} 
+             columns={columns} 
+             itemRenderer={itemRenderer}
+             />:null}
               </Spacings.Stack>
         </Constraints.Horizontal>
        
