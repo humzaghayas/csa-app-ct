@@ -9,7 +9,7 @@ const config = {
   cloudIdentifier: 'gcp-us',
   env: {
     development: {
-      initialProjectKey: '${env:CTP_INITIAL_PROJECT_KEY}'
+      initialProjectKey: '${env:CTP_INITIAL_PROJECT_KEY}',
     },
     production: {
       applicationId: 'clajfnkej00b71f012e79u0r0',
@@ -50,7 +50,7 @@ const config = {
         'csa-project-1d161.firebaseapp.com',
         'https://firebasestorage.googleapis.com/',
       ],
-      'img-src':[
+      'img-src': [
         'http://localhost:3001',
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
@@ -86,6 +86,12 @@ const config = {
     {
       uriPath: 'Orders',
       defaultLabel: 'Orders',
+      labelAllLocales: [],
+      permissions: [PERMISSIONS.View],
+    },
+    {
+      uriPath: 'ATG',
+      defaultLabel: 'ATG',
       labelAllLocales: [],
       permissions: [PERMISSIONS.View],
     },
