@@ -1,5 +1,5 @@
 import { useIntl } from 'react-intl';
-import { Switch, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Pagination } from '@commercetools-uikit/pagination';
@@ -11,8 +11,6 @@ import {
 import DataTable from '@commercetools-uikit/data-table';
 import Spacings from '@commercetools-uikit/spacings';
 import { getCategories } from '../../api';
-import AtgSubcategory from '../atg-account-subcategory/atg-account';
-import { SuspendedRoute } from '@commercetools-frontend/application-shell';
 
 const QUERY = {
   perPage: 20,
@@ -161,7 +159,9 @@ const AtgCategories = (props) => {
           columns={columns}
           rows={rows}
           maxHeight={600}
-          onRowClick={(row) => push(`atg-subcategory/${row.id}/atg-category`)}
+          // onRowClick={(row) => push(`atg-subcategory/${row.id}/atg-category`)}
+          // onRowClick={(row) => push(`${row.id}/atg-category`)}
+          onRowClick={(row) => push(`${row.id}/atg-category`)}
         />
 
         <Pagination
@@ -172,11 +172,14 @@ const AtgCategories = (props) => {
           // totalItems={data.total}
         />
 
-        <Switch>
-          <SuspendedRoute path={`${match.path}/:id`}>
+        {/* <Switch>
+          {/* <SuspendedRoute path={`${match.path}/atg-subcategory/:id`}>
             <AtgSubcategory onClose={() => push(`${match.url}`)} />
-          </SuspendedRoute>
-        </Switch>
+          </SuspendedRoute> */}
+        {/* <Route path={`${match.path}/:id/atg-category`}>
+            <AtgCategory />
+          </Route>
+        </Switch> */}
         {/* <DataTable
             isCondensed
             columns={columns}

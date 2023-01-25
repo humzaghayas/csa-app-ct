@@ -10,7 +10,8 @@ import {
 } from '@commercetools-uikit/hooks';
 import DataTable from '@commercetools-uikit/data-table';
 import Spacings from '@commercetools-uikit/spacings';
-import { getCategories } from '../../api';
+import { getById } from '../../api';
+import { formValuesToDoc } from './conversions';
 
 const AtgCategory = (props) => {
   const intl = useIntl();
@@ -20,25 +21,30 @@ const AtgCategory = (props) => {
 
   // const OrderId = params.id;
 
-  const id = 'mpcat70053';
+  const id = params.id;
+  const QUERY = {
+    categoryId: id,
+  };
   const { page, perPage } = usePaginationState();
   const tableSorting = useDataTableSortingState('id desc');
 
-  // const [data, setData] = useState();
+  const [data, setData] = useState();
 
-  // //const apiUrl ="http://localhost:4456";
-  // const apiUrl =
-  //   'http://192.168.16.201:8080/rest/model/atg/commerce/catalog/ProductCatalogActor/getCategory';
-  // useEffect(() => {
-  //   getCategory({ url: apiUrl, id }).then((res) => setData(res));
-  // }, [apiUrl, id]);
+  // const id = formValuesToDoc(formValues);
+  // console.log('id', id);
+  // // //const apiUrl ="http://localhost:4456";
+  const apiUrl =
+    'http://192.168.16.201:8080/rest/model/atg/commerce/catalog/ProductCatalogActor/getCategory';
+  useEffect(() => {
+    getById({ url: apiUrl, payload: QUERY }).then((res) => setData(res));
+  }, [apiUrl, QUERY]);
 
-  // console.log('data', data);
+  console.log('data', data);
   const rows = [
     {
-      id: 'params?.rootCategories[0].id',
-      displayName: 'params?.rootCategories[0].displayName',
-      description: 'Apr 11, 2022,2:54:47...',
+      id: id,
+      displayName: 'Air Compressor Tools',
+      description: 'Line pressure ranges of 80 - 110psi',
       type: 'Standard Delivery',
       defaultParentCategory: 'params?.rootCategories[0].defaultParentCategory',
     },
@@ -152,7 +158,7 @@ const AtgCategory = (props) => {
           columns={columns}
           rows={rows}
           maxHeight={600}
-          // onRowClick={(row) => push(`${row.id}/category`)}
+          onRowClick={(row) => push(`${row.id}/category`)}
         />
 
         <Pagination

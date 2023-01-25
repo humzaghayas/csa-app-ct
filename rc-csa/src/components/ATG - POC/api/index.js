@@ -13,6 +13,22 @@ const fetchResource = async (url, { method = 'GET', headers, body } = {}) => {
   throw data;
 };
 
+const fetchResourcePost = async (
+  url,
+  { method = 'POST', headers, body } = {}
+) => {
+  const response = await fetch(url, {
+    method,
+    ...(headers && { headers }),
+    ...(body && { body: JSON.stringify(body) }),
+  });
+  const data = await response.json();
+  if (response.ok) {
+    return data;
+  }
+  throw data;
+};
+
 export const getCategories = async ({ url, query }) => {
   let queryString;
   if (query) {
@@ -31,15 +47,25 @@ export const getCategory = async ({ url, id }) => {
 //   return fetchResource(`${url}/${id}`, { method: 'DELETE' });
 // };
 
-// export const createTicket = async ({ url, payload }) => {
-//   return fetchResource(url, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: payload,
-//   });
-// };
+export const getById = async ({ url, payload }) => {
+  return fetchResource(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: payload,
+  });
+};
+
+export const login = async ({ url, payload }) => {
+  return fetchResource(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: payload,
+  });
+};
 
 // export const updateTicket = async ({ url, payload }) => {
 //   return fetchResource(`${url}/${payload.id}`, {

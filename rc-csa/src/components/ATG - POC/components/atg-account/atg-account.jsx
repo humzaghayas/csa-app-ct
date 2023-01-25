@@ -17,7 +17,15 @@ import Avatar from '@commercetools-uikit/avatar';
 import AtgLogin from '../atg-login/atg-login';
 import AtgCategories from '../atg-categories/atg-categories';
 import AtgCategory from '../atg-category/atg-category';
+import AtgCustomer from '../atg-customer/atg-customer';
+import { useEffect, useState } from 'react';
+import { getById } from '../../api';
 // import CustomerAddress from '../customer-address/customer-address';
+
+// const QUERY = {
+//   login: 'joe783',
+//   password: 'tempPassword',
+// };
 
 const AtgAccount = (props) => {
   const match = useRouteMatch();
@@ -30,6 +38,14 @@ const AtgAccount = (props) => {
 
   // console.log('customer', JSON.stringify(customer));
   // console.log("params.id",params.id);
+  // const [data, setData] = useState();
+  // const apiUrl =
+  //   'http://192.168.16.201:8080/rest/model/atg/userprofiling/ProfileActor/login';
+  // useEffect(() => {
+  //   getById({ url: apiUrl, payload: QUERY }).then((res) => setData(res));
+  // }, [apiUrl, QUERY]);
+
+  // console.log('data', data);
   return (
     <TabularDetailPage
       title=" "
@@ -64,7 +80,7 @@ const AtgAccount = (props) => {
                 to={`${match.url}/atg-categories`}
                 label="Categories"
               />
-              {/* <TabHeader to={`${match.url}/atg-category`} label="Category" /> */}
+              <TabHeader to={`${match.url}/atg-customer`} label="Customer" />
               {/* <TabHeader
                 to={`${match.url}/Customers-Address`}
                 label="Addresses"
@@ -84,13 +100,13 @@ const AtgAccount = (props) => {
       }
     >
       <Switch>
-        {/* <Route path={`${match.path}/atg-login`}>
-          <AtgLogin />
-        </Route> */}
+        <Route path={`${match.path}/atg-customer`}>
+          <AtgCustomer />
+        </Route>
         <Route path={`${match.path}/atg-categories`}>
           <AtgCategories />
         </Route>
-        <Route path={`${match.path}/atg-category`}>
+        <Route path={`${match.path}/:id/atg-category`}>
           <AtgCategory />
         </Route>
         {/* <Route path={`${match.path}/Customers-password`}>

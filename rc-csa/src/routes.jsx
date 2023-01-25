@@ -20,7 +20,6 @@ import CustomerMessagesForm from './components/Customer/components/customer-mess
 import CustomerMessages from './components/Customer/components/customer-messages/customer-messages';
 import CustomerReply from './components/Customer/components/customer-messages/customer-reply';
 import AtgAccount from './components/ATG - POC/components/atg-account/atg-account';
-import AtgSubcategory from './components/ATG - POC/components/atg-account-subcategory/atg-account';
 
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
@@ -80,9 +79,6 @@ const ApplicationRoutes = () => {
         </Route>
         <Route path={`${match.path}/ATG`}>
           <AtgAccount linkToWelcome={match.url} />
-        </Route>
-        <Route path={`${match.path}/atg-subcategory/:id`}>
-          <AtgSubcategory linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/order-edit/:id`}>
           <OrderAccount linkToWelcome={match.url} />
