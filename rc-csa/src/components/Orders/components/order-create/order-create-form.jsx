@@ -8,13 +8,11 @@ import DateInput from '@commercetools-uikit/date-input';
 import Spacings from '@commercetools-uikit/spacings';
 import validate from './validate';
 import messages from './messages';
-import { SHIPMENT_STATUS,PAYMENT_STATUS,ORDER_STATE} from './constants';
+import { SHIPMENT_STATUS,PAYMENT_STATUS,ORDER_STATE, ORDER_UPDATE_ACTIONS_LIST} from './constants';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import { PrimaryButton, SecondaryButton } from '@commercetools-uikit/buttons';
 import DataTable from '@commercetools-uikit/data-table';
-import { MoneyField } from '@commercetools-frontend/ui-kit';
-//import iphone from './iphone.jpg'
 
 const getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
   label: key,
@@ -39,7 +37,7 @@ const rows = [
 
 const columns = [
   { key: 'product', label: 'Product' },
-  { key: 'unitPrice', label: 'Original Unit Price' },
+  // { key: 'unitPrice', label: 'Original Unit Price' },
   { key: 'unitPrice', label: 'Unit Price' },
   { key: 'quantity', label: 'Qty' },
   // { key: 'lineItemState', label: 'LineItemState' },
@@ -69,18 +67,80 @@ const itemRenderer = (item, column) => {
 }
 
 
+
+
 const OrderCreateForm = (props) => {
   const intl = useIntl();
   const formik = useFormik({
     initialValues: props.initialValues,
     onSubmit: props.onSubmit,
+    onChange: props.onChange,
     validate,
     enableReinitialize: true,
   });
+  
 
-  console.log("Order details LineItems");
-  console.log(formik?.values);
+  const onChange = (e)=>{
+    console.log(e?.target);
+    const id = e?.target?.id;
+    const value = e?.target?.value;
+    const orderId = formik?.values?.id;
+    const version = formik?.values?.version;
+    const actions = [];
+    // eslint-disable-next-line default-case
+    switch(id){
+      case 'orderState':
+        console.log("Order State")
+        console.log(value);
+        actions.push({
+          "changeOrderState":{
+           "orderState":value 
+          }
+        })
+        e.payload={
+          actions,
+          version:version,
+          orderId
+        };
+        props.onChange(e);
+        break;
+      case 'paymentState':
+        console.log("Payment State");
+        console.log(value);
+        actions.push({
+          "changePaymentState":{
+           "paymentState":value 
+          }
+        })
+        e.payload={
+          actions,
+          version:version,
+          orderId
+        }
+        props.onChange(e);
+        break;
+      case 'shipmentState':
+        console.log("Shipment State")
+        console.log(value)
+        actions.push({
+          "changeShipmentState":{
+           "shipmentState":value 
+          }
+        })
+        e.payload={
+          actions,
+          version:version,
+          orderId
+        }
+        props.onChange(e);
+        break;
+    }
+  }
 
+
+  // console.log("Order details LineItems");
+  // console.log(props.onSubmit);
+  // console.log(props);
   const formElements = (
     <Spacings.Stack scale="l">
      
@@ -99,29 +159,29 @@ const OrderCreateForm = (props) => {
      <Spacings.Stack scale="s">
       
         <SelectField
-          name="Order status"
+          id='orderState'
+          name="orderState"
           title="Order status"
           value={formik.values.orderState}
-          errors={formik.errors.roles}
-          touched={formik.touched.roles}
-          onChange={formik.handleChange}
+          // errors={formik.errors.orderState}
+          // touched={formik.touched.orderState}
+          onChange={onChange}
           onBlur={formik.handleBlur}
-          
           options={getOrderStates}
-          isReadOnly={props.isReadOnly}
-          // isRequired
+          // isReadOnly={props.isReadOnly}
           horizontalConstraint={13}
         />
         </Spacings.Stack>
         <Spacings.Stack scale="s">
       
       <SelectField
+        id='paymentState'
         name="Payment status"
         title="Payment status"
         value={formik.values.paymentState}
         errors={formik.errors.roles}
         touched={formik.touched.roles}
-        onChange={formik.handleChange}
+        onChange={onChange}
         onBlur={formik.handleBlur}
         
         options={getPaymentStates}
@@ -133,36 +193,20 @@ const OrderCreateForm = (props) => {
       <Spacings.Stack scale="s">
       
         <SelectField
+          id='shipmentState'
           name="Shipment status"
           title="Shipment status"
           value={formik.values.shipmentState}
           errors={formik.errors.roles}
           touched={formik.touched.roles}
-          onChange={formik.handleChange}
+          onChange={onChange}
           onBlur={formik.handleBlur}
-          
           options={getShipmentStates}
           isReadOnly={props.isReadOnly}
-          // isRequired
           horizontalConstraint={13}
         />
         </Spacings.Stack>
-       
-        <Spacings.Stack scale="s">
-        <Spacings.Inline>
-                <SecondaryButton
-                  onClick={formik.handleReset}
-                  
-                  label="Edit"
-                />
-                <PrimaryButton
-                  onClick={formik.handleSubmit}
-                  
-                  label="Submit"
-                />
-              </Spacings.Inline>
-              </Spacings.Stack>
-              </Spacings.Stack>
+        </Spacings.Stack>
         </Constraints.Horizontal>
        
       {/* </Spacings.Inline> */}

@@ -1,4 +1,5 @@
 export {
     useOrdersFetcher,
-    useFetchOrderById
+    useFetchOrderById,
+    useOrderUpdateById
 } from './use-orders-connector';
