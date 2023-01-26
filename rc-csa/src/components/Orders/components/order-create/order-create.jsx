@@ -23,7 +23,10 @@ import OrderCreateForm from './order-create-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
 import { useRouteMatch } from 'react-router-dom';
-import { useFetchOrderById} from '../../../../hooks/use-orders-connector';
+import { useFetchOrderById, useOrderUpdateById} from '../../../../hooks/use-orders-connector';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { useReducer } from 'react';
 
 const OrderCreate = (props) => {
   const intl = useIntl();
@@ -36,47 +39,70 @@ const OrderCreate = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
-  const {order} = useFetchOrderById(match.params.id);
-  // const showNotification = useShowNotification();
-  // const showApiErrorNotification = useShowApiErrorNotification();
-  // const TicketDetailsCreator = useTicketDetailsCreator();
-  const handleSubmit = useCallback(
-    // async (formikValues, formikHelpers) => {
-    //   const data = formValuesToDoc(formikValues);
-    //   try {
-    //     await TicketDetailsCreator.execute({
-    //       nextDraft: data,
-    //     });
-    //     showNotification({
-    //       kind: 'success',
-    //       domain: DOMAINS.SIDE,
-    //       text: intl.formatMessage(messages.OrderCreated),
-    //     });
-    //   } catch (graphQLErrors) {
-    //     const transformedErrors = transformErrors(graphQLErrors);
-    //     if (transformedErrors.unmappedErrors.length > 0) {
-    //       showApiErrorNotification({
-    //         errors: transformedErrors.unmappedErrors,
-    //       });
-    //     }
 
-    //     formikHelpers.setErrors(transformedErrors.formErrors);
-    //   }
-    // },
-    // [
-    //   TicketDetailsCreator,
-    //   dataLocale,
-    //   intl,
-    //   projectLanguages,
-    //   showApiErrorNotification,
-    //   showNotification,
-    // ]
-  );
+  const {executeFetchOrder} = useFetchOrderById(match.params.id);
+
+  const {executeUpdateOrder} = useOrderUpdateById();
+  const showNotification = useShowNotification();
+  const showApiErrorNotification = useShowApiErrorNotification();
+  
+  const [order,setOrder] = useState(async()=>{
+    return await executeFetchOrder(match.params.id);
+  });
+
+  const [reducerValue, forceUpdate] = useReducer(x => x+1,0);
+
+  useEffect(()=>{
+    const fetchData = async ()=>{
+      const result  = await executeFetchOrder(match.params.id);
+      setOrder(result);
+    }
+    fetchData();
+  },[reducerValue]);
+  
+  // console.log(order);
+
+
+  const handleSubmit = useCallback(
+    async(formikValues) =>{
+      console.log("In Handle Submit");
+      console.log(formikValues);
+    }
+  )
+
+  const handleChange = useCallback (
+    async (e)=>
+    {
+      console.log("handle Change");  
+      console.log(e);
+      const payload = e?.payload;
+      try{
+        const result = await executeUpdateOrder(payload);
+        // window.location.reload(true)
+        // console.log(result);
+        forceUpdate();
+          showNotification({
+          kind: 'success',
+          domain: DOMAINS.SIDE,
+          text: intl.formatMessage(messages.OrderUpdated),
+        }); 
+      }catch (graphQLErrors) {
+              console.log(graphQLErrors.message)
+              const transformedErrors = transformErrors(graphQLErrors);
+              if (transformedErrors.unmappedErrors.length > 0) {
+                showApiErrorNotification({
+                  errors: transformedErrors.unmappedErrors,
+                });
+              }
+      }
+  }
+  )
 
   return (
     <OrderCreateForm
-    initialValues={docToFormValues(order, projectLanguages)}
+    initialValues={docToFormValues(order?.data?.order, projectLanguages)}
     onSubmit={handleSubmit}
+    onChange={handleChange}
     isReadOnly={!canManage}
     dataLocale={dataLocale}
     >
