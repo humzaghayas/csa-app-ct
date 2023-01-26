@@ -40,8 +40,8 @@ const OrderCreate = (props) => {
     demandedPermissions: [PERMISSIONS.Manage],
   });
 
-
   const {executeFetchOrder} = useFetchOrderById(match.params.id);
+
   const {executeUpdateOrder} = useOrderUpdateById();
   const showNotification = useShowNotification();
   const showApiErrorNotification = useShowApiErrorNotification();
@@ -58,7 +58,7 @@ const OrderCreate = (props) => {
       setOrder(result);
     }
     fetchData();
-  },[reducerValue])
+  },[reducerValue]);
   
   // console.log(order);
 
@@ -94,8 +94,6 @@ const OrderCreate = (props) => {
                   errors: transformedErrors.unmappedErrors,
                 });
               }
-      
-              // formikHelpers.setErrors(transformedErrors.formErrors);
       }
   }
   )
