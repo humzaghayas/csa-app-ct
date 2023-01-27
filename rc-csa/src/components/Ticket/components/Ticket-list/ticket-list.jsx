@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { lazy,useEffect,useState } from 'react';
+import { lazy, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import {
   Link as RouterLink,
@@ -8,7 +8,10 @@ import {
   useRouteMatch,
 } from 'react-router-dom';
 // import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
-import { GRAPHQL_TARGETS, NO_VALUE_FALLBACK } from '@commercetools-frontend/constants';
+import {
+  GRAPHQL_TARGETS,
+  NO_VALUE_FALLBACK,
+} from '@commercetools-frontend/constants';
 import {
   usePaginationState,
   useDataTableSortingState,
@@ -22,7 +25,10 @@ import { ContentNotification } from '@commercetools-uikit/notifications';
 import { Pagination } from '@commercetools-uikit/pagination';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
-import { SuspendedRoute, useMcQuery } from '@commercetools-frontend/application-shell';
+import {
+  SuspendedRoute,
+  useMcQuery,
+} from '@commercetools-frontend/application-shell';
 import messages from './messages';
 
 import SecondaryButton from '@commercetools-uikit/secondary-button';
@@ -38,12 +44,15 @@ import {
 
 import TicketDetails from '../ticket-details/ticket-details';
 import TicketAccount from '../ticket-account/ticket-account';
-import { actions,useAsyncDispatch } from '@commercetools-frontend/sdk';
-import{FETCH_TICKETS,getTicketRows,CONSTANTS,FETCH_USERS_INFO} from 'ct-tickets-helper-api'
-import {  gql } from '@apollo/client';
+import { actions, useAsyncDispatch } from '@commercetools-frontend/sdk';
+import { FETCH_TICKETS, getTicketRows, CONSTANTS } from 'ct-tickets-helper-api';
+import { gql } from '@apollo/client';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
-import { useCreateEntry, useUserFetcher } from '../../../../hooks/use-register-user-connector/use-service-connector';
+import {
+  useCreateEntry,
+  useUserFetcher,
+} from '../../../../hooks/use-register-user-connector/use-service-connector';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { SecondaryIconButton } from '@commercetools-frontend/ui-kit';
 import Grid from '@commercetools-uikit/grid';
@@ -51,7 +60,7 @@ import Grid from '@commercetools-uikit/grid';
 let rows = null;
 
 const columns = [
-  { key:'Customer', label: 'Customer' },
+  { key: 'Customer', label: 'Customer' },
   { key: 'Created', label: 'Created' },
   { key: 'Modified', label: 'Modified' },
   { key: 'Source', label: 'Source' },
@@ -62,7 +71,6 @@ const columns = [
   { key: 'assignedTo', label: 'Assignee' },
   { key: 'createdBy', label: 'Created By' },
 ];
-
 
 const Tickets = (props) => {
   const intl = useIntl();
@@ -80,33 +88,37 @@ const Tickets = (props) => {
   });
 
   const { user } = useApplicationContext((context) => ({
-    user: context.user ?? ''
+    user: context.user ?? '',
   }));
 
-  const {foundUser} = useUserFetcher(user.email);
-  const {execute} = useCreateEntry(user.email);
+  const { foundUser } = useUserFetcher(user.email);
+  const { execute } = useCreateEntry(user.email);
 
   useEffect(() => {
-    if(canManage && foundUser == false){
+    if (canManage && foundUser == false) {
       console.log('calling execute !');
       execute();
     }
     console.log('inside hook !');
   }, [foundUser]);
 
-  
-  const { data, error, loading,refetch } = useMcQuery(gql`${FETCH_TICKETS}`, {
-    variables: {
-      container:CONSTANTS.containerKey,
-      limit: perPage.value,
-      offset: (page.value - 1) * perPage.value,
-      sort:["lastModifiedAt desc"]
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-    fetchPolicy:"network-only"
-  });
+  const { data, error, loading, refetch } = useMcQuery(
+    gql`
+      ${FETCH_TICKETS}
+    `,
+    {
+      variables: {
+        container: CONSTANTS.containerKey,
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        sort: ['lastModifiedAt desc'],
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+      fetchPolicy: 'network-only',
+    }
+  );
 
   rows = getTicketRows(data?.customObjects);
 
@@ -117,7 +129,6 @@ const Tickets = (props) => {
       </ContentNotification>
     );
   }
-
 
   return (
     <Spacings.Stack scale="xl">
@@ -132,20 +143,21 @@ const Tickets = (props) => {
       </Spacings.Stack>
       {/* {loading && <LoadingSpinner />} */}
 
-      { canManage  ?
-      <Spacings.Stack >
-
-          <Grid gridGap="16px" gridAutoColumns="12fr" gridTemplateColumns="repeat(12, 1fr)">
-            <Grid.Item >
+      {canManage ? (
+        <Spacings.Stack>
+          <Grid
+            gridGap="16px"
+            gridAutoColumns="12fr"
+            gridTemplateColumns="repeat(12, 1fr)"
+          >
+            <Grid.Item>
               <SecondaryButton
-                    label="Add Ticket"
-                    data-track-event="click" 
-                    onClick={() => push(`ticket-create`)}
-                    iconLeft={<PlusBoldIcon />}
-                    size="medium"
-                  />
-
-
+                label="Add Ticket"
+                data-track-event="click"
+                onClick={() => push(`ticket-create`)}
+                iconLeft={<PlusBoldIcon />}
+                size="medium"
+              />
             </Grid.Item>
             <Grid.Item></Grid.Item>
             <Grid.Item></Grid.Item>
@@ -158,35 +170,26 @@ const Tickets = (props) => {
             <Grid.Item></Grid.Item>
             <Grid.Item></Grid.Item>
             <Grid.Item>
-           
-            <SecondaryIconButton
-              label="Refresh"
-              data-track-event="click" 
-              onClick={()=>{refetch()}}
-              icon={<RefreshIcon />}
-              size="medium"
-              
-          />
-
+              <SecondaryIconButton
+                label="Refresh"
+                data-track-event="click"
+                onClick={() => {
+                  refetch();
+                }}
+                icon={<RefreshIcon />}
+                size="medium"
+              />
             </Grid.Item>
-            
           </Grid>
 
-
-
-
-        <Spacings.Inline  >
-          
-      
-        </Spacings.Inline>
-      </Spacings.Stack>
-      : null}
+          <Spacings.Inline></Spacings.Inline>
+        </Spacings.Stack>
+      ) : null}
 
       {/* {data ? ( */}
 
-      {rows ? 
+      {rows ? (
         <Spacings.Stack scale="l">
-         
           <DataTable
             isCondensed
             columns={columns}
@@ -207,21 +210,23 @@ const Tickets = (props) => {
             onPerPageChange={perPage.onChange}
             totalItems={data?.customObjects?.total}
           />
-           <Switch>
+          <Switch>
             {/* <SuspendedRoute path={`${match.path}/:id`}>
                 <TicketAccount onClose={() => push(`${match.url}`)} />  
             </SuspendedRoute> */}
-            
+
             <SuspendedRoute path={`${match.path}/:id`}>
               <TicketAccount onClose={() => push(`${match.url}`)} />
             </SuspendedRoute>
-          
-          {/* <SuspendedRoute path={`${match.path}/ticket-details`}>
+
+            {/* <SuspendedRoute path={`${match.path}/ticket-details`}>
             <TicketDetails  onClose={() => push(`${match.url}`)} />
             </SuspendedRoute> */}
-          </Switch> 
+          </Switch>
         </Spacings.Stack>
-      : <p>Loading...</p>}
+      ) : (
+        <p>Loading...</p>
+      )}
       {/* ) : null} */}
     </Spacings.Stack>
   );

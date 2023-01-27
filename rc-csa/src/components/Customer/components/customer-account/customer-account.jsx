@@ -1,34 +1,24 @@
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
   useRouteMatch,
-  Link,
   useHistory,
   useParams,
 } from 'react-router-dom';
 import {
-  TabularModalPage,
   useModalState,
   TabHeader,
-  TabularMainPage,
   TabularDetailPage,
 } from '@commercetools-frontend/application-components';
 import PropTypes from 'prop-types';
 
 import Spacings from '@commercetools-uikit/spacings';
-import { Fragment } from 'react';
-import styles from './customer-account-module.css';
 import Avatar from '@commercetools-uikit/avatar';
-import { lazy, useState, useEffect } from 'react';
-import CustomerCreateForm from '../customer-create/customer-create-form';
 import CustomerCreate from '../customer-create/customer-create';
 import CustomerPassword from '../customer-password/customer-password';
 import CustomerProfile from '../customer-profile';
 import CustomerOrder from '../customer-orders/customer-order';
 // import CustomerAddress from '../customer-address/customer-address';
-import Text from '@commercetools-uikit/text';
-import NoImageIcon from '@commercetools-frontend/assets/images/camera.svg';
 import CustomerTickets from '../customer-Tickets/customer-tickets';
 import CustomerList from '../customer-address/customer-address-list';
 import { useCustomerDetailsFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';

@@ -20,30 +20,27 @@ import AtgCategory from '../atg-category/atg-category';
 import AtgCustomer from '../atg-customer/atg-customer';
 import { useEffect, useState } from 'react';
 import { getById } from '../../api';
+import AtgProducts from '../atg-products/atg-products';
 // import CustomerAddress from '../customer-address/customer-address';
 
-// const QUERY = {
-//   login: 'joe783',
-//   password: 'tempPassword',
-// };
+const QUERY = {
+  login: 'joe783',
+  password: 'tempPassword',
+};
 
 const AtgAccount = (props) => {
   const match = useRouteMatch();
   const tabsModalState = useModalState(true);
   const history = useHistory();
   const params = useParams();
-  // const [Customer, setData] = useState();
 
-  // const { customer, error, loading } = useCustomerDetailsFetcher(params.id);
-
-  // console.log('customer', JSON.stringify(customer));
   // console.log("params.id",params.id);
-  // const [data, setData] = useState();
-  // const apiUrl =
-  //   'http://192.168.16.201:8080/rest/model/atg/userprofiling/ProfileActor/login';
-  // useEffect(() => {
-  //   getById({ url: apiUrl, payload: QUERY }).then((res) => setData(res));
-  // }, [apiUrl, QUERY]);
+  const [data, setData] = useState();
+  const apiUrl =
+    'http://192.168.16.201:8080/rest/model/atg/userprofiling/ProfileActor/login';
+  useEffect(() => {
+    getById({ url: apiUrl, payload: QUERY }).then((res) => setData(res));
+  }, [apiUrl, QUERY]);
 
   // console.log('data', data);
   return (
@@ -108,6 +105,9 @@ const AtgAccount = (props) => {
         </Route>
         <Route path={`${match.path}/:id/atg-category`}>
           <AtgCategory />
+        </Route>
+        <Route path={`${match.path}/:id/atg-products`}>
+          <AtgProducts />
         </Route>
         {/* <Route path={`${match.path}/Customers-password`}>
           <CustomerPassword />

@@ -15,7 +15,7 @@ import { formValuesToDoc } from './conversions';
 import { useAsyncDispatch } from '@commercetools-frontend/sdk';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
-const AtgCategory = (props) => {
+const AtgProducts = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
@@ -52,31 +52,42 @@ const AtgCategory = (props) => {
   console.log('data', data);
   const rows = [
     {
-      id: data?.childCategories[0].id,
-      displayName: data?.childCategories[0].displayName,
-      description: data?.childCategories[0].description,
+      repositoryId: data?.childProducts[0].repositoryId,
+      displayName: data?.childProducts[0].displayName,
+      description: data?.childProducts[0].description,
+      largeImageUrl: data?.childProducts[0].description,
+      longDescription: data?.childProducts[0].description,
     },
     {
-      id: data?.childCategories[1].id,
-      displayName: data?.childCategories[1].displayName,
-      description: data?.childCategories[1].description,
+      repositoryId: data?.childProducts[1].repositoryId,
+      displayName: data?.childProducts[1].displayName,
+      description: data?.childProducts[1].description,
+      largeImageUrl: data?.childProducts[1].description,
+      longDescription: data?.childProducts[1].description,
+    },
+
+    {
+      repositoryId: data?.childProducts[2].repositoryId,
+      displayName: data?.childProducts[2].displayName,
+      description: data?.childProducts[2].description,
+      largeImageUrl: data?.childProducts[2].description,
+      longDescription: data?.childProducts[2].description,
     },
     {
-      id: data?.childCategories[2].id,
-      displayName: data?.childCategories[2].displayName,
-      description: data?.childCategories[2].description,
-    },
-    {
-      id: data?.childCategories[3].id,
-      displayName: data?.childCategories[3].displayName,
-      description: data?.childCategories[3].description,
+      repositoryId: data?.childProducts[3].repositoryId,
+      displayName: data?.childProducts[3].displayName,
+      description: data?.childProducts[3].description,
+      largeImageUrl: data?.childProducts[3].description,
+      longDescription: data?.childProducts[3].description,
     },
   ];
 
   const columns = [
-    { key: 'id', label: 'ID' },
+    { key: 'repositoryId', label: 'Product ID' },
     { key: 'displayName', label: 'Display Name' },
     { key: 'description', label: 'Description' },
+    { key: 'largeImageUrl', label: 'Image URL' },
+    { key: 'longDescription', label: 'DefaultParentCategory' },
   ];
 
   return (
@@ -87,11 +98,7 @@ const AtgCategory = (props) => {
           columns={columns}
           rows={rows}
           maxHeight={600}
-          onRowClick={(row) =>
-            push(
-              `/csa-project-2/csa-customer-tickets/ATG/${row.id}/atg-products`
-            )
-          }
+          // onRowClick={(row) => push(`/csa-project-2/csa-customer-tickets/ATG/${row.id}/category`)}
         />
 
         <Pagination
@@ -105,8 +112,8 @@ const AtgCategory = (props) => {
     </Spacings.Stack>
   );
 };
-AtgCategory.displayName = 'AtgCategory';
-AtgCategory.propTypes = {
+AtgProducts.displayName = 'AtgProducts';
+AtgProducts.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
 };
-export default AtgCategory;
+export default AtgProducts;

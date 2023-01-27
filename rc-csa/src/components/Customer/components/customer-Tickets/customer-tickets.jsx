@@ -2,42 +2,18 @@ import { useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
-import {
-  PageNotFound,
-  FormModalPage,
-} from '@commercetools-frontend/application-components';
-import { useCallback } from 'react';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
-import {
-  DOMAINS,
-  GRAPHQL_TARGETS,
-  NO_VALUE_FALLBACK,
-} from '@commercetools-frontend/constants';
+import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
-import {
-  useShowNotification,
-  useShowApiErrorNotification,
-} from '@commercetools-frontend/actions-global';
 import { PERMISSIONS } from '../../../../constants';
 import { Pagination } from '@commercetools-uikit/pagination';
-import {
-  Link as RouterLink,
-  Switch,
-  useHistory,
-  useRouteMatch,
-} from 'react-router-dom';
-import {
-  usePaginationState,
-  useDataTableSortingState,
-} from '@commercetools-uikit/hooks';
+import { Switch, useHistory, useRouteMatch } from 'react-router-dom';
+import { usePaginationState } from '@commercetools-uikit/hooks';
 import DataTable from '@commercetools-uikit/data-table';
 // import {
 //   useCustomerDetailsCreator,
 // } from '../../../../hooks/use-Customer-connector/use-Customere-graphql-connector';
-import { docToFormValues, formValuesToDoc } from './conversions';
 
-import { transformErrors } from './transform-errors';
-import messages from './messages';
 import Spacings from '@commercetools-uikit/spacings';
 import {
   useCreateEntry,
@@ -49,10 +25,9 @@ import {
 } from '@commercetools-frontend/application-shell';
 import { gql } from '@apollo/client';
 import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
-import { FETCH_TICKETS, FETCH_TICKETS_BY_ID } from 'ct-tickets-helper-api/lib/graphql-queries';
-import { CONSTANTS } from 'ct-tickets-helper-api/lib/constants';
-import TicketAccount from '../../../Ticket/components/ticket-account/ticket-account';
-import { ContentNotification } from '@commercetools-uikit/notifications';
+import { FETCH_TICKETS_BY_ID } from 'ct-tickets-helper-api/lib/graphql-queries';
+// import { CONSTANTS } from 'ct-tickets-helper-api/lib/constants';
+// import TicketAccount from '../../../Ticket/components/ticket-account/ticket-account';
 // const rows = [
 
 //   { id: '00012875',Customer:'Lahari',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...',Website:'Electronics Site',Status:'In process',Priority:'Moderate',Category:'Enquiry',Subject:'ticket 2'},
@@ -109,7 +84,7 @@ const CustomerTickets = (props) => {
     `,
     {
       variables: {
-        container: CONSTANTS.containerKey,
+        // container: CONSTANTS.containerKey,
         limit: perPage.value,
         offset: (page.value - 1) * perPage.value,
         sort: ['lastModifiedAt desc'],
