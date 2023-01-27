@@ -2,7 +2,8 @@ import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import Spacings from '@commercetools-uikit/spacings';
 import Channels from './components/channels';
 import Tickets from './components/Ticket/components/Ticket-list/ticket-list';
-
+import Products from './components/Products/components/product-list/product-list';
+import ProductAccount from './components/Products/components/product-account/product-account';
 import Welcome from './components/welcome';
 
 // import TicketDetails from './components/Ticket/components/Ticket-history/ticket-details';
@@ -79,6 +80,12 @@ const ApplicationRoutes = () => {
         </Route>
         <Route  path={`${match.path}/order-edit/:id`}>
       <OrderAccount linkToWelcome={match.url} />
+        </Route>
+        <Route path={`${match.path}/Products`}>
+      <Products  linkToWelcome={match.url} />
+        </Route>
+        <Route  path={`${match.path}/product-edit/:id`}>
+     <ProductAccount  linkToWelcome={match.url} />
         </Route>
         <Route  path={`${match.path}/customer-edit/:lahari`}>
         <CustomerAccount  linkToWelcome={match.url} />
