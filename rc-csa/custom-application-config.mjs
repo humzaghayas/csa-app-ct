@@ -89,6 +89,12 @@ const config = {
       labelAllLocales: [],
       permissions: [PERMISSIONS.View],
     },
+    {
+      uriPath: 'Products',
+      defaultLabel: 'Products',
+      labelAllLocales: [],
+      permissions: [PERMISSIONS.View],
+    },
   ],
 };
 
