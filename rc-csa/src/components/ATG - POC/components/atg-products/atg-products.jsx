@@ -87,7 +87,7 @@ const AtgProducts = (props) => {
     { key: 'displayName', label: 'Display Name' },
     { key: 'description', label: 'Description' },
     // { key: 'largeImageUrl', label: 'Image URL' },
-    { key: 'longDescription', label: 'DefaultParentCategory' },
+    { key: 'longDescription', label: 'Detailed Description' },
   ];
 
   return (
