@@ -43,7 +43,7 @@ const AtgCategories = (props) => {
 
   //const apiUrl ="http://localhost:4456";
   const apiUrl = `${atgPublicURL}/rest/model/atg/commerce/catalog/ProductCatalogActor/getCurrentCatalogRootCategories`;
-  //'https://192.168.16.201:8443/rest/model/atg/commerce/catalog/ProductCatalogActor/getCurrentCatalogRootCategories';
+  // 'https://192.168.16.201:8443/rest/model/atg/commerce/catalog/ProductCatalogActor/getCurrentCatalogRootCategories';
   useEffect(() => {
     getCategories({ url: apiUrl, query }, dispatch).then((res) => setData(res));
   }, [apiUrl, query]);

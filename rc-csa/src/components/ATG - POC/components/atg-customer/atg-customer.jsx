@@ -19,6 +19,7 @@ import {
 } from '@commercetools-uikit/hooks';
 import { getCategories } from '../../api';
 import { useEffect, useState } from 'react';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 // import CustomerCreate from '../customer-create/customer-create';
 
@@ -43,6 +44,9 @@ const QUERY = {
 };
 
 const AtgCustomer = (props) => {
+  const atgPublicURL = useApplicationContext(
+    (context) => context.environment.atgPublicURL
+  );
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
@@ -52,8 +56,8 @@ const AtgCustomer = (props) => {
   const [data, setData] = useState();
 
   //const apiUrl ="http://localhost:4456";
-  const apiUrl =
-    'http://192.168.16.201:8080/rest/model/atg/userprofiling/ProfileActor/detailed';
+  const apiUrl = `${atgPublicURL}/rest/model/atg/userprofiling/ProfileActor/detailed`;
+  // 'http://192.168.16.201:8080/rest/model/atg/userprofiling/ProfileActor/detailed';
   useEffect(() => {
     getCategories({ url: apiUrl, query }).then((res) => setData(res));
   }, [apiUrl, query]);

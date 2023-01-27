@@ -21,6 +21,7 @@ import AtgCustomer from '../atg-customer/atg-customer';
 import { useEffect, useState } from 'react';
 import { getById } from '../../api';
 import AtgProducts from '../atg-products/atg-products';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 // import CustomerAddress from '../customer-address/customer-address';
 
 const QUERY = {
@@ -29,6 +30,9 @@ const QUERY = {
 };
 
 const AtgAccount = (props) => {
+  const atgPublicURL = useApplicationContext(
+    (context) => context.environment.atgPublicURL
+  );
   const match = useRouteMatch();
   const tabsModalState = useModalState(true);
   const history = useHistory();
@@ -36,8 +40,8 @@ const AtgAccount = (props) => {
 
   // console.log("params.id",params.id);
   const [data, setData] = useState();
-  const apiUrl =
-    'http://192.168.16.201:8080/rest/model/atg/userprofiling/ProfileActor/login';
+  const apiUrl = `${atgPublicURL}/rest/model/atg/userprofiling/ProfileActor/login`;
+  // 'http://192.168.16.201:8080/rest/model/atg/userprofiling/ProfileActor/login';
   useEffect(() => {
     getById({ url: apiUrl, payload: QUERY }).then((res) => setData(res));
   }, [apiUrl, QUERY]);

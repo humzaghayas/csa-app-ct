@@ -55,30 +55,30 @@ const AtgProducts = (props) => {
       repositoryId: data?.childProducts[0].repositoryId,
       displayName: data?.childProducts[0].displayName,
       description: data?.childProducts[0].description,
-      largeImageUrl: data?.childProducts[0].description,
-      longDescription: data?.childProducts[0].description,
+      largeImageUrl: data?.childProducts[0].largeImageUrl,
+      longDescription: data?.childProducts[0].longDescription,
     },
     {
       repositoryId: data?.childProducts[1].repositoryId,
       displayName: data?.childProducts[1].displayName,
       description: data?.childProducts[1].description,
-      largeImageUrl: data?.childProducts[1].description,
-      longDescription: data?.childProducts[1].description,
+      largeImageUrl: data?.childProducts[1].largeImageUrl,
+      longDescription: data?.childProducts[1].longDescription,
     },
 
     {
       repositoryId: data?.childProducts[2].repositoryId,
       displayName: data?.childProducts[2].displayName,
       description: data?.childProducts[2].description,
-      largeImageUrl: data?.childProducts[2].description,
-      longDescription: data?.childProducts[2].description,
+      largeImageUrl: data?.childProducts[2].largeImageUrl,
+      longDescription: data?.childProducts[2].longDescription,
     },
     {
       repositoryId: data?.childProducts[3].repositoryId,
       displayName: data?.childProducts[3].displayName,
       description: data?.childProducts[3].description,
-      largeImageUrl: data?.childProducts[3].description,
-      longDescription: data?.childProducts[3].description,
+      largeImageUrl: data?.childProducts[3].largeImageUrl,
+      longDescription: data?.childProducts[3].longDescription,
     },
   ];
 
@@ -86,7 +86,7 @@ const AtgProducts = (props) => {
     { key: 'repositoryId', label: 'Product ID' },
     { key: 'displayName', label: 'Display Name' },
     { key: 'description', label: 'Description' },
-    { key: 'largeImageUrl', label: 'Image URL' },
+    // { key: 'largeImageUrl', label: 'Image URL' },
     { key: 'longDescription', label: 'DefaultParentCategory' },
   ];
 
