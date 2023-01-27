@@ -11,6 +11,8 @@ import {
 import DataTable from '@commercetools-uikit/data-table';
 import Spacings from '@commercetools-uikit/spacings';
 import { getCategories } from '../../api';
+import {  useAsyncDispatch } from '@commercetools-frontend/sdk';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 const QUERY = {
   perPage: 20,
@@ -20,6 +22,10 @@ const QUERY = {
 };
 
 const AtgCategories = (props) => {
+
+  const atgPublicURL = useApplicationContext(
+    context => context.environment.atgPublicURL
+  );
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
@@ -33,11 +39,13 @@ const AtgCategories = (props) => {
 
   const [data, setData] = useState();
 
+  const dispatch = useAsyncDispatch();
+
   //const apiUrl ="http://localhost:4456";
-  const apiUrl =
-    'http://192.168.16.201:8080/rest/model/atg/commerce/catalog/ProductCatalogActor/getCurrentCatalogRootCategories';
+  const apiUrl =`${atgPublicURL}/rest/model/atg/commerce/catalog/ProductCatalogActor/getCurrentCatalogRootCategories`;
+    //'https://192.168.16.201:8443/rest/model/atg/commerce/catalog/ProductCatalogActor/getCurrentCatalogRootCategories';
   useEffect(() => {
-    getCategories({ url: apiUrl, query }).then((res) => setData(res));
+    getCategories({ url: apiUrl, query },dispatch).then((res) => setData(res));
   }, [apiUrl, query]);
 
   console.log('data', data);

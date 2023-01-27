@@ -12,6 +12,8 @@ import DataTable from '@commercetools-uikit/data-table';
 import Spacings from '@commercetools-uikit/spacings';
 import { getById } from '../../api';
 import { formValuesToDoc } from './conversions';
+import {  useAsyncDispatch } from '@commercetools-frontend/sdk';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 const AtgCategory = (props) => {
   const intl = useIntl();
@@ -19,6 +21,10 @@ const AtgCategory = (props) => {
   const { push } = useHistory();
   const params = useParams();
 
+
+  const atgPublicURL = useApplicationContext(
+    context => context.environment.atgPublicURL
+  );
   // const OrderId = params.id;
 
   const id = params.id;
@@ -28,15 +34,20 @@ const AtgCategory = (props) => {
   const { page, perPage } = usePaginationState();
   const tableSorting = useDataTableSortingState('id desc');
 
-  const [data, setData] = useState();
+  const [data, setData] = useState(null);
 
   // const id = formValuesToDoc(formValues);
   // console.log('id', id);
   // // //const apiUrl ="http://localhost:4456";
   const apiUrl =
-    'http://192.168.16.201:8080/rest/model/atg/commerce/catalog/ProductCatalogActor/getCategory';
+    `${atgPublicURL}/rest/model/atg/commerce/catalog/ProductCatalogActor/getCategory`;
+
+    const dispatch = useAsyncDispatch();
   useEffect(() => {
-    getById({ url: apiUrl, payload: QUERY }).then((res) => setData(res));
+
+    if(!data){
+      getById({ url: apiUrl, payload: QUERY },dispatch).then((res) => setData(res));
+    }
   }, [apiUrl, QUERY]);
 
   console.log('data', data);

@@ -9,12 +9,16 @@ const config = {
   cloudIdentifier: 'gcp-us',
   env: {
     development: {
-      initialProjectKey: '${env:CTP_INITIAL_PROJECT_KEY}',
+      initialProjectKey: '${env:CTP_INITIAL_PROJECT_KEY}'      
     },
     production: {
       applicationId: 'clajfnkej00b71f012e79u0r0',
       url: 'https://csa-project-1d161.firebaseapp.com',
     },
+   
+  },
+  additionalEnv: {
+    atgPublicURL:'${env:atgPublicURL}'
   },
   oAuthScopes: {
     view: [
@@ -37,14 +41,15 @@ const config = {
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
         'https://firebasestorage.googleapis.com/',
-        'http://192.168.16.201',
+        'http://192.168.16.201:8080/',
       ],
       'connect-src': [
         'http://localhost:3001',
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
         'https://firebasestorage.googleapis.com/',
-        'http://192.168.16.201',
+        'http://192.168.16.201:8080/',
+        'https://192.168.16.201:8443',
       ],
       'style-src': [
         'http://localhost:3001',
