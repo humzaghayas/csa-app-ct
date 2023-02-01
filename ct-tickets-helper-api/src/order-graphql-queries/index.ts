@@ -638,3 +638,12 @@ export const UPDATE_ORDER_BY_ID = `mutation updateOrderById($version:Long!,
         paymentState
       }
   }`
+export const CREATE_EDIT_ORDER_BY_ID = `mutation createOrderEdit($draft:OrderEditDraft!){
+    createOrderEdit(draft:$draft){
+      id
+      version
+      result{
+        type
+      }
+    }
+  }`

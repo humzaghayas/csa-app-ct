@@ -22,8 +22,8 @@ import { docToFormValues, formValuesToDoc } from './conversions';
 import OrderCreateForm from './order-create-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
-import { useRouteMatch } from 'react-router-dom';
-import { useFetchOrderById, useOrderUpdateById} from '../../../../hooks/use-orders-connector';
+import { useRouteMatch, useHistory } from 'react-router-dom';
+import { useFetchOrderById, useOrderUpdateById, useCreateOrderEditById,useOrderEditApply} from '../../../../hooks/use-orders-connector';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useReducer } from 'react';
@@ -32,6 +32,7 @@ const OrderCreate = (props) => {
   const intl = useIntl();
   const params = useParams();
   const match = useRouteMatch();
+  const { push } = useHistory();
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
@@ -41,8 +42,9 @@ const OrderCreate = (props) => {
   });
 
   const {executeFetchOrder} = useFetchOrderById(match.params.id);
-
   const {executeUpdateOrder} = useOrderUpdateById();
+  const {executeCreateOrderEdit} = useCreateOrderEditById();
+  const {executeOrderEditApply} = useOrderEditApply();
   const showNotification = useShowNotification();
   const showApiErrorNotification = useShowApiErrorNotification();
   
@@ -60,13 +62,70 @@ const OrderCreate = (props) => {
     fetchData();
   },[reducerValue]);
   
-  // console.log(order);
-
 
   const handleSubmit = useCallback(
-    async(formikValues) =>{
+    async(e) =>{
       console.log("In Handle Submit");
-      console.log(formikValues);
+      const orderItem = e.orderItem;
+      if(!orderItem.isQuantityUpdated){
+        try{
+          const draft= {
+            resource : {
+             id: order?.data?.order?.id,
+             typeId: "order"
+           },
+           stagedActions: [
+             {
+                changeLineItemQuantity: {
+                  lineItemId: orderItem?.lineItemId,
+                  quantity: orderItem?.quantity
+               } 
+             }
+           ],
+           comment: orderItem?.comment?orderItem?.comment:"No Comment"
+         }
+         console.log(draft);
+          const result = await executeCreateOrderEdit(draft);
+          const data = await result.data.createOrderEdit;
+          const orderEditId  = data?.id;
+          const editVersion  = data?.version;
+          const orderVersion = order?.data?.order?.version;
+          const resulType = data?.result?.type;
+
+          const payload = {
+            resourceVersion:orderVersion,
+            editVersion:editVersion
+          }
+
+          console.log(payload);
+          console.log(resulType);
+          console.log(resulType=="PreviewSuccess");
+          
+          if(resulType=="PreviewSuccess"){
+            console.log("Apply edit");
+            const result2 = await executeOrderEditApply(payload,orderEditId)
+            console.log(result2);
+          }
+
+          console.log(result.data.createOrderEdit);
+          forceUpdate();
+            showNotification({
+            kind: 'success',
+            domain: DOMAINS.SIDE,
+            text: intl.formatMessage(messages.OrderUpdated),
+          }); 
+        }
+        catch (graphQLErrors) {
+          console.log(graphQLErrors.message)
+          const transformedErrors = transformErrors(graphQLErrors);
+          if (transformedErrors.unmappedErrors.length > 0) {
+            showApiErrorNotification({
+              errors: transformedErrors.unmappedErrors,
+            });
+          }
+        }
+      }
+      push(`${match.url}`);
     }
   )
 
