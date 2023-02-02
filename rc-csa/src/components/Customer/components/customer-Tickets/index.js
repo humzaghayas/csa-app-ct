@@ -1,1 +1,1 @@
-export { default } from './customer-tickets';
+export { default } from './customer-proile';

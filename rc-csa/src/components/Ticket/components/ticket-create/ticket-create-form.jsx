@@ -278,6 +278,32 @@ const handleTicketCategory=(e)=>{
   formik.handleChange(e);
 }
 
+
+const handleChangeOperation=(e)=>{
+
+    console.log('formik.values.category',e);
+    if(e.target.name === 'assignedTo'){
+      if(formik.values.operation && 
+        (formik.values.operation === CONSTANTS.STATUS_OPERATION
+          || formik.values.operation === STATUS_ASIGNEE_OPERATION)){
+        formik.values.operation = CONSTANTS.STATUS_ASIGNEE_OPERATION;
+      }else{
+        formik.values.operation = CONSTANTS.ASSIGNEE_OPERATION;
+      }
+    }else if(e.target.name === 'status'){
+      if(formik.values.operation && 
+        (formik.values.operation === CONSTANTS.ASSIGNEE_OPERATION 
+          || formik.values.operation === CONSTANTS.STATUS_ASIGNEE_OPERATION)){
+        formik.values.operation = CONSTANTS.STATUS_ASIGNEE_OPERATION;
+      }else{
+        formik.values.operation = CONSTANTS.STATUS_OPERATION;
+      }
+    }else{
+      formik.values.operation = CONSTANTS.UPDATE_OPERATION;
+    }
+  formik.handleChange(e);
+}
+
 const match = useRouteMatch();
 let history = useHistory();
 const saveTicket =async (e)=>{
@@ -489,7 +515,7 @@ const addWorklog =(e) => {
                           value={formik.values.assignedTo}
                           errors={formik.errors.assignedTo}
                           touched={formik.touched.assignedTo}
-                          onChange={formik.handleChange}
+                          onChange={handleChangeOperation}
                           onBlur={formik.handleBlur}
                           options={getUsersToAssignTo}
                           isReadOnly={props.isReadOnly}
@@ -506,7 +532,7 @@ const addWorklog =(e) => {
                         touched={formik.touched.status}
                         onBlur={formik.handleBlur}
                         options={workflowStatusses}
-                        onChange={formik.handleChange}
+                        onChange={handleChangeOperation}
                         horizontalConstraint={13}
                         isDisabled={!formik.values.isEdit}
                       />

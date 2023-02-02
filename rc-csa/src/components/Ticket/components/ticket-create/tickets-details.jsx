@@ -9,6 +9,7 @@ import TicketCreateForm from './ticket-create-form';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
 import { useCreateOrUpdateTicket, useGetTicketById } from '../../../../hooks/use-register-user-connector';
+import { CONSTANTS } from 'ct-tickets-helper-api/lib/constants';
 
 const TicketDetailsP = (props) => {
   const match = useRouteMatch();
@@ -30,6 +31,7 @@ const TicketDetailsP = (props) => {
       let data =formValuesToDoc(formValues);
 
       console.log("data from form",data);
+      const opr = formValues?.operation ?? '';
       let t = await execute(data);
 
       console.log(t);

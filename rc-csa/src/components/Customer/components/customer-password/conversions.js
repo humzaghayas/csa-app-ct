@@ -9,7 +9,7 @@ export const docToFormValues = (employee, languages) => ({
   firstName: employee?.firstName ?? '',
   middleName: employee?.middleName ?? '',
   lastName: employee?.lastName ?? '',
-  email: employee?.email ?? undefined,
+  email: employee?.email ?? '',
   dateOfBirth: employee?.dateOfBirth ?? '',
   employeeNumber: employee?.employeeNumber ?? '',
   externalId: employee?.externalId ?? '',
@@ -35,30 +35,32 @@ export const docToFormValues = (employee, languages) => ({
 });*/
 export const formValuesToDoc = (formValues) => ({
   salutation: !TextInput.isEmpty(formValues.salutation)
-    ? formValues.salutation
-    : undefined,
-  title: !TextInput.isEmpty(formValues.title) ? formValues.title : undefined,
+  ? formValues.salutation
+  : undefined,
+  title: !TextInput.isEmpty(formValues.title)
+  ? formValues.title
+  : undefined,
   firstName: !TextInput.isEmpty(formValues.firstName)
-    ? formValues.firstName
-    : undefined,
+  ? formValues.firstName
+  : undefined,
   middleName: !TextInput.isEmpty(formValues.middleName)
-    ? formValues.middleName
-    : undefined,
+  ? formValues.middleName
+  : undefined,
   lastName: !TextInput.isEmpty(formValues.lastName)
-    ? formValues.lastName
-    : undefined,
+  ? formValues.lastName
+  : undefined,
   email: formValues.email,
   dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
-    ? formValues.dateOfBirth
-    : undefined,
+  ? formValues.dateOfBirth
+  : undefined,
   employeeNumber: !TextInput.isEmpty(formValues.employeeNumber)
-    ? formValues.employeeNumber
-    : undefined,
+  ? formValues.employeeNumber
+  : undefined,
   externalId: !TextInput.isEmpty(formValues.externalId)
-    ? formValues.externalId
-    : undefined,
-  customerGroup: { key: formValues.customerGroup },
+  ? formValues.externalId
+  : undefined,
+  customerGroup:{key:formValues.customerGroup} ,
   roles: formValues.roles,
   password: formValues.password,
   confirmedPassword: undefined,
-});
+  });

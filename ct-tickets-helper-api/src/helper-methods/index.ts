@@ -26,6 +26,46 @@ export function getTicketRows(customObjects){
    return []
 }
 
+export function getOrderRows(orderPaginationResult){
+    if(orderPaginationResult?.results){
+        return orderPaginationResult?.results.map(order =>{
+            return {
+                id:order?.id, 
+                orderNumber: order?.orderNumber,
+                customer: order?.customer?.firstName+" "+order?.customer?.lastName,
+                createdAt: order?.createdAt,
+                lastModifiedAt:order?.lastModifiedAt,
+                orderState:order?.orderState,
+                shipmentStatus:order?.shipmentStatus,
+                paymentStatus:order?.paymentStatus,
+                shippingMethodName:order?.shippingInfo?.shippingMethodName,
+                orderTotal:order?.orderTotal,
+                noOforderItems:order?.lineitems?.length,
+                totalItems:order?.lineitems?.quantity
+            }
+        });
+    }
+}
+
+export function getCartRows(cartPaginationResult){
+    console.log(cartPaginationResult.results);
+    if(cartPaginationResult?.results){
+        return cartPaginationResult?.results.map(carts =>{
+            return {
+                id:carts.id, 
+                customer: carts.customer?.firstName+" "+carts.customer?.lastName,
+                createdAt: carts.createdAt,
+                lastModifiedAt:carts.lastModifiedAt,
+                cartState:carts.cartState,
+                // orderTotal:cart?.orderTotal,
+                // noOforderItems:cart?.lineitems?.length,
+                // totalItems:cart?.lineitems?.quantity
+                
+            }
+        });
+    }
+}
+
 export function getTicketCategories(){
 
     return TICKET_TYPE
@@ -90,6 +130,30 @@ export async function getCreateTicketDraft(ticketInfo){
     return ticketDraft;
 }
 
+export async function createTicketHistory(ticketInfo,ticketDraft){
+
+    let history = ticketInfo.history;
+    if(!history){
+        history = [];
+    }
+
+    let h = {user:ticketInfo.email};
+    h[CONSTANTS.PRIORITY] = ticketInfo.priority;
+    h[CONSTANTS.STATUS] = ticketInfo.status;
+    h[CONSTANTS.ASSIGNED_TO] = ticketInfo.assignedTo;
+    h['operationDate']= new Date().toUTCString();
+    history.push(h);
+
+    const historyString = history?.map((h) =>{
+        return `{\"${CONSTANTS.PRIORITY}\":\"${h[CONSTANTS.PRIORITY] }\",
+                \"${CONSTANTS.STATUS}\":\"${h[CONSTANTS.STATUS] }\",
+                \"${CONSTANTS.ASSIGNED_TO}\":\"${h[CONSTANTS.ASSIGNED_TO] }\",
+                \"user\":\"${h.user}\",\"operationDate\":\"${h.operationDate}\"}`
+    }).toString();
+
+    ticketDraft.value =  ticketDraft.value.replace(CONSTANTS.TICKET_HISTORY,`\"history\":[${historyString}]`);
+}
+
 function getTicketValueString( ticketInfo,uuid){
 
     const currentDate = new Date().toUTCString();
@@ -110,7 +174,8 @@ function getTicketValueString( ticketInfo,uuid){
         \"modifiedAt\": \"${currentDate}\",
         \"createdBy\":\"${ticketInfo.createdBy}\",
         \"assignedTo\":\"${ticketInfo.assignedTo}\",
-        ${CONSTANTS.TICKET_DATA}
+        ${CONSTANTS.TICKET_DATA},
+        ${CONSTANTS.TICKET_HISTORY}
     }`
 }
 
@@ -173,7 +238,8 @@ function createTicketFromCustomObject(data){
         customerId: data?.customObject?.value.customerId ?? '',
         assignedTo: data?.customObject?.value.assignedTo ?? '',
         createdBy: data?.customObject?.value.createdBy ?? '',
-        orderNumber: data?.customObject?.value?.ticketData?.orderNumber ?? ''
+        orderNumber: data?.customObject?.value?.ticketData?.orderNumber ?? '',
+        history : data?.customObject?.value?.history ?? []
     }
 }
 

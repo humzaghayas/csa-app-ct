@@ -31,7 +31,7 @@ import {
 import messages from './messages';
 // import toggleFeature from '@commercetools-frontend/application-shell/node_modules/@flopflip/react-broadcast/dist/declarations/src/components/toggle-feature';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
-
+import { useOrdersFetcher } from '../../../../hooks/use-orders-connector/use-orders-connector';
 import {
   // BinLinearIcon,
   // IconButton,
@@ -40,9 +40,10 @@ import {
   // SecondaryButton,
   PlusBoldIcon,
 } from '@commercetools-uikit/icons';
-
+import './order-list-module.css';
 import OrderAccount from '../order-account/order-account';
-
+import { getOrderRows } from './rows';
+import MoneyField from '@commercetools-uikit/money-field';
 // import { getCompanies } from '../../api';
 // import { useEffect } from 'react';
 
@@ -56,31 +57,60 @@ import OrderAccount from '../order-account/order-account';
 //   sortDirection: 'desc',
 // };
 
+
+
 const rows = [
-  { OrderNumber: '00012875',Customer:'Lahari',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
-  { OrderNumber: '00012876',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
-  { OrderNumber: '00012877',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
-  { OrderNumber: '00012879',Customer:'RanjithKumar',Created:'Nov 11, 2022,2:54:47...',Modified:'Dec 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
+  { OrderNumber: 'CS0012875',Customer:'Lahari',OrderTotal:'$350.00',NooforderItems:'1',TotalItems:'1',OrderStatus:'',ShipmentStatus:"",PaymentStatus:'',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...'},
+  { OrderNumber: 'CS0012875',Customer:'Lahari',OrderTotal:'$350.00',NooforderItems:'1',TotalItems:'1',OrderStatus:'',ShipmentStatus:"",PaymentStatus:'',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...'},
+  { OrderNumber: 'CS0012875',Customer:'Lahari',OrderTotal:'$350.00',NooforderItems:'1',TotalItems:'1',OrderStatus:'',ShipmentStatus:"",PaymentStatus:'',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...'},
+  // { OrderNumber: '00012876',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
+  // { OrderNumber: '00012877',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
+  // { OrderNumber: '00012879',Customer:'RanjithKumar',Created:'Nov 11, 2022,2:54:47...',Modified:'Dec 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
 ];
 
 const columns = [
+  { key: 'orderNumber', label: 'Order Number' },
+  { key:'customer', label: 'Customer' },
+  { key: 'totalPrice', label: 'Order Total' },
+  { key: 'noOforderItems', label: 'No.of order Items' },
+  { key: 'totalItems', label: 'Total Items' },
+  { key: 'orderState', label: 'Order Status' },
+  { key: 'shipmentStatus', label: 'Shipment Status' },
+  { key: 'paymentStatus', label: 'Payment Status' },
+  { key: 'createdAt', label: 'Created' },
+  { key: 'lastModifiedAt', label: 'Modified' },
+  
 
-  { key: 'OrderNumber', label: 'Order Number' },
-  { key:'Customer', label: 'Customer' },
-  { key: 'Created', label: 'Created' },
-  { key: 'Modified', label: 'Modified' },
-  { key: 'Status', label: 'Status' },
-  { key: 'DeliveryMode', label: 'Delivery Mode' },
+  // { key: 'orderNumber', label: 'Order Number' },
+  // { key:'customer', label: 'Customer' },
+  // { key: 'createdAt', label: 'Created' },
+  // { key: 'lastModifiedAt', label: 'Modified' },
+  // { key: 'orderState', label: 'Status' },
+  // { key: 'shippingMethodName', label: 'Delivery Mode' },
  
 ];
 
 
-const Orders = (props) => {
+
+
+
+const Orders =  (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
+  const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
+
+  const { ordersPaginatedResult, error, loading } =  useOrdersFetcher({
+    page,
+    perPage,
+    tableSorting,
+  });
+
+  // console.log(ordersPaginatedResult);
+  // const orderRows = ;
+  // console.log(orderRows);
 
   return (
     <Spacings.Stack scale="xl">
@@ -116,13 +146,29 @@ const Orders = (props) => {
         size="medium"
       />
       </Spacings.Inline> */}
-      {/* {data ? ( */}
+      <Spacings.Stack scale="l" className='css-294zjy-container' >
+       
+        <MoneyField
+    title="Price"
+    value={
+    // { amount: '30', currencyCode: 'CustomerEmailAddress' },
+    // { amount: '30', currencyCode: 'FirstName' },
+    // { amount: '30', currencyCode: 'LastName' },
+    { amount: '30', currencyCode: 'OrderNO' },
+    { amount: '30', currencyCode: 'SKU' },
+    { amount: '30', currencyCode: 'Store' }
+  }
+    onChange={(event) => alert(event.target.value)}
+    currencies={['OrderNO','SKU','Store']}
+  />
+  </Spacings.Stack>
+      {ordersPaginatedResult?(
         <Spacings.Stack scale="l">
          
           <DataTable
             isCondensed
             columns={columns}
-            rows={rows}
+            rows={getOrderRows(ordersPaginatedResult)}
             // itemRenderer={(item, column) => itemRenderer(item, column)}
             maxHeight={600}
             // sortedBy={tableSorting.value.key}
@@ -136,7 +182,7 @@ const Orders = (props) => {
             onPageChange={page.onChange}
             perPage={perPage.value}
             onPerPageChange={perPage.onChange}
-            // totalItems={data.total}
+            totalItems={ordersPaginatedResult.total}
           />
            <Switch>
             {/* <SuspendedRoute path={`${match.path}/:id`}>
@@ -152,7 +198,7 @@ const Orders = (props) => {
             </SuspendedRoute> */}
           </Switch> 
         </Spacings.Stack>
-      {/* ) : null} */}
+      ):null}
     </Spacings.Stack>
   );
 };

@@ -32,9 +32,11 @@ import NoImageIcon from '@commercetools-frontend/assets/images/camera.svg';
 import CustomerTickets from '../customer-Tickets/customer-tickets';
 import CustomerList from '../customer-address/customer-address-list';
 import { useCustomerDetailsFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
-import PasswordReset from '../customer-password-reset/customer-password-reset';
+
 import CustomerAddressCreate from '../customer-address/customer-address-create';
 import CustomerPayment from '../customer-payment/customer-payment';
+
+
 
 const CustomerAccount = (props) => {
   const match = useRouteMatch();
@@ -50,32 +52,36 @@ const CustomerAccount = (props) => {
   // console.log("params.id",params.id);
   return (
     <TabularDetailPage
-      title=" "
-      onPreviousPathClick={() =>
-        history.push(`/csa_project/csa-customer-tickets/Customers`)
-      }
+     title=" "
+         onPreviousPathClick={() => history.push(`/csa_project/csa-customer-tickets/Customers`)}
       //  onPreviousPathClick={() => history.push(`${match.url}`)}
       previousPathLabel="Go to View Customers"
       tabControls={
         <>
-          <Spacings.Stack scale="xxl">
-            <Spacings.Inline>
-              <Avatar
-                gravatarHash="20c9c1b252b46ab49d6f7a4cee9c3e68"
-                firstName={customer?.firstName}
-                lastName={customer?.lastName}
-                size="l"
-              />
+        <Spacings.Stack scale="xxl">
+          <Spacings.Inline>
+        
+          <Avatar
+    gravatarHash="20c9c1b252b46ab49d6f7a4cee9c3e68"
+    firstName={customer?.firstName}
+    lastName={customer?.lastName}
+    size="l"
+  />
+ 
+        
+         <Spacings.Stack scale="xs">
+         <Spacings.Stack scale="xl">
+        </Spacings.Stack>
+                    <h1>{customer?.firstName} 360° view</h1>
+           <h4>{customer?.email}</h4>
+       
+         </Spacings.Stack>
 
-              <Spacings.Stack scale="xs">
-                <Spacings.Stack scale="xl"></Spacings.Stack>
-                <h1>{customer?.firstName} 360° view</h1>
-                <h4>{customer?.email}</h4>
-              </Spacings.Stack>
 
-              {/* </div> */}
-            </Spacings.Inline>
-          </Spacings.Stack>
+         {/* </div> */}
+     
+         </Spacings.Inline>
+         </Spacings.Stack>
           <Spacings.Stack scale="xl">
             <Spacings.Inline>
               <TabHeader
@@ -86,8 +92,11 @@ const CustomerAccount = (props) => {
                 to={`${match.url}/Customers-profile`}
                 label="Profile"
               />
-              <TabHeader to={`${match.url}/Customers-orders`} label="Orders" />
-              <TabHeader
+               <TabHeader
+                to={`${match.url}/Customers-orders`}
+                label="Orders"
+              />
+               <TabHeader
                 to={`${match.url}/Customers-payments`}
                 label="Payments"
               />
@@ -95,23 +104,17 @@ const CustomerAccount = (props) => {
                 to={`${match.url}/Customers-Address`}
                 label="Addresses"
               />
-              <TabHeader
-                to={`${match.url}/Customers-tickets`}
-                label="Tickets"
-              />
+              <TabHeader to={`${match.url}/Customers-tickets`} label="Tickets" />
               {/* <TabHeader to={`${match.url}/Customers-sumary`} label="Returns" /> */}
-              <TabHeader
-                to={`${match.url}/Customers-password`}
-                label="Password"
-              />
+              <TabHeader to={`${match.url}/Customers-password`} label="Password" />
               {/* <div style="margin-left :500px"> */}
-
+           
               {/* </div> */}
               {/* <TabHeader
                 to={`${match.url}/Customer-administration`}
                 label="Administration"
               /> */}
-              {/* <div className={styles.addEmployeeButton}>
+               {/* <div className={styles.addEmployeeButton}>
        <SecondaryButton
             label="Add Employee"
             data-track-event="click"
@@ -139,7 +142,7 @@ const CustomerAccount = (props) => {
           <CustomerOrder customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-password`}>
-          <CustomerPassword />
+           <CustomerPassword />
         </Route>
         <Route path={`${match.path}/Customers-Address`}>
           <CustomerList customer={customer} />
@@ -150,17 +153,14 @@ const CustomerAccount = (props) => {
         <Route path={`${match.path}/Customers-tickets`}>
           <CustomerTickets />
         </Route>
-        <Route path={`${match.path}/customer-address-create`}>
-          <CustomerAddressCreate customer={customer} />
-        </Route>
+        <Route  path={`${match.path}/customer-address-create`}>
+           <CustomerAddressCreate customer={customer} />
+           </Route>
         <Route path={`${match.path}/Customers-payments`}>
           <CustomerPayment />
         </Route>
         <Route path={`${match.path}/Customers-sumary`}>
-          <CustomerPassword />
-        </Route>
-        <Route path={`${match.path}/Password-reset`}>
-          <PasswordReset />
+           <CustomerPassword />
         </Route>
       </Switch>
     </TabularDetailPage>

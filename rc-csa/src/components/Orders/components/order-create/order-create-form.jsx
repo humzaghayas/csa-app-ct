@@ -8,23 +8,65 @@ import DateInput from '@commercetools-uikit/date-input';
 import Spacings from '@commercetools-uikit/spacings';
 import validate from './validate';
 import messages from './messages';
-import { EMPLOYEE_ROLES,CUSTOMER_GROUPS,TICKET_PRIORITY} from './constants';
+import { SHIPMENT_STATUS,PAYMENT_STATUS,ORDER_STATE} from './constants';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import { PrimaryButton, SecondaryButton } from '@commercetools-uikit/buttons';
-// const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
-//   label: EMPLOYEE_ROLES[key],
-//   value: EMPLOYEE_ROLES[key],
-// }));
+import DataTable from '@commercetools-uikit/data-table';
+import { MoneyField } from '@commercetools-frontend/ui-kit';
+//import iphone from './iphone.jpg'
 
-// const getCustomerGroupsOptions = Object.keys(CUSTOMER_GROUPS).map((key) => ({
-//   label: key,
-//   value: CUSTOMER_GROUPS[key],
-// }));
-const getTicketPriorityOptions = Object.keys(TICKET_PRIORITY).map((key) => ({
+const getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
   label: key,
-  value: TICKET_PRIORITY[key],
+  value: ORDER_STATE[key],
 }));
+
+const getPaymentStates = Object.keys(PAYMENT_STATUS).map((key) => ({
+  label: key,
+  value: PAYMENT_STATUS[key],
+}));
+
+const getShipmentStates = Object.keys(SHIPMENT_STATUS).map((key) => ({
+  label: key,
+  value: SHIPMENT_STATUS[key],
+}));
+
+const rows = [
+  {product: '', originalUnitPrice: '$350.00' ,UnitPrice:'$350.00',Qty:'3',LineItemState:'',subTotal:'$1150.00',Tax:"0",Total:'$1150.00'},
+  {product: '', originalUnitPrice: '$350.00' ,UnitPrice:'$350.00',Qty:'3',LineItemState:'',subTotal:'$1150.00',Tax:"0",Total:'$1150.00'},
+  {product: '', originalUnitPrice: '$350.00' ,UnitPrice:'$350.00',Qty:'3',LineItemState:'',subTotal:'$1150.00',Tax:"0",Total:'$1150.00'},
+];
+
+const columns = [
+  { key: 'product', label: 'Product' },
+  { key: 'unitPrice', label: 'Original Unit Price' },
+  { key: 'unitPrice', label: 'Unit Price' },
+  { key: 'quantity', label: 'Qty' },
+  // { key: 'lineItemState', label: 'LineItemState' },
+  { key: 'subTotalPrice', label: 'Sub Total' },
+  { key: 'tax', label: 'Tax' },
+  { key: 'totalPrice', label: 'Total' },
+];
+
+const itemRenderer = (item, column) => {
+  switch (column.key) {
+    case 'product':
+      return <div>
+                <Spacings.Stack scale='s'>
+                  <Spacings.Inline>
+                    <img src={item.product.image} height={65} width={65}/>
+                    <Spacings.Stack scale='s'>
+                      <div>{item.product.name}</div>
+                      <div>SKU: {item.product.sku}</div>
+                      <div>Key: {item.product.key}</div>
+                    </Spacings.Stack>
+                  </Spacings.Inline>
+                </Spacings.Stack>
+              </div>;
+    default:
+      return item[column.key];
+  }
+}
 
 
 const OrderCreateForm = (props) => {
@@ -36,6 +78,9 @@ const OrderCreateForm = (props) => {
     enableReinitialize: true,
   });
 
+  console.log("Order details LineItems");
+  console.log(formik?.values);
+
   const formElements = (
     <Spacings.Stack scale="l">
      
@@ -44,119 +89,102 @@ const OrderCreateForm = (props) => {
           header={
             <CollapsiblePanel.Header>
               {/* {formatMessage(messages.panelTitle)} */}
-              {'Order Details'}
+              {'Order Summary'}
             </CollapsiblePanel.Header>
           }
           scale="l">
             <Constraints.Horizontal >
              <Spacings.Stack scale="m">
-             <Spacings.Stack scale="s">
-        <TextField
-          name="Product Code"
-          title="Product Code"
-          value={formik.values.title}
-          errors={formik.errors.title}
-          touched={formik.touched.title}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-        <Spacings.Stack scale="s">
-          <TextField
-          name="Product Name"
-          title="Product Name"
-          value={formik.values.firstName}
-          errors={formik.errors.firstName}
-          touched={formik.touched.firstName}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-     
-     </Spacings.Stack>
-     <Spacings.Stack scale="s">
-        <TextField
-          name="Item Price"
-          title="Item Price"
-          value={formik.values.middleName}
-          errors={formik.errors.middleName}
-          touched={formik.touched.middleName}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-        <Spacings.Stack scale="s">
-        <TextField
-          name="allocated"
-          title="allocated"
-          value={formik.values.lastName}
-          errors={formik.errors.lastName}
-          touched={formik.touched.lastName}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-     </Spacings.Stack>
-     <Spacings.Stack scale="s">
-        
-        <TextField
-          name="returned"
-          title="returned"
-          isRequired
-          value={formik.values.email}
-          errors={formik.errors.email}
-          touched={formik.touched.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-        <Spacings.Stack scale="s">
-        <TextField
-          name="cancelled"
-          title="cancelled"
-          value={formik.values.employeeNumber}
-          errors={formik.errors.employeeNumber}
-          touched={formik.touched.employeeNumber}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
+            
      <Spacings.Stack scale="s">
       
         <SelectField
-          name="shipped quantity"
-          title="shipped quantity"
-          value={formik.values.roles}
+          name="Order status"
+          title="Order status"
+          value={formik.values.orderState}
           errors={formik.errors.roles}
           touched={formik.touched.roles}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           
-          options={getTicketPriorityOptions}
+          options={getOrderStates}
           isReadOnly={props.isReadOnly}
-          isRequired
+          // isRequired
           horizontalConstraint={13}
         />
         </Spacings.Stack>
-     
+        <Spacings.Stack scale="s">
+      
+      <SelectField
+        name="Payment status"
+        title="Payment status"
+        value={formik.values.paymentState}
+        errors={formik.errors.roles}
+        touched={formik.touched.roles}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        
+        options={getPaymentStates}
+        isReadOnly={props.isReadOnly}
+        // isRequired
+        horizontalConstraint={13}
+      />
+      </Spacings.Stack>
+      <Spacings.Stack scale="s">
+      
+        <SelectField
+          name="Shipment status"
+          title="Shipment status"
+          value={formik.values.shipmentState}
+          errors={formik.errors.roles}
+          touched={formik.touched.roles}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          
+          options={getShipmentStates}
+          isReadOnly={props.isReadOnly}
+          // isRequired
+          horizontalConstraint={13}
+        />
         </Spacings.Stack>
+       
         <Spacings.Stack scale="s">
         <Spacings.Inline>
                 <SecondaryButton
                   onClick={formik.handleReset}
-                  isDisabled={formik.isSubmitting}
-                  label="Reset"
+                  
+                  label="Edit"
                 />
                 <PrimaryButton
                   onClick={formik.handleSubmit}
-                  isDisabled={formik.isSubmitting || !formik.dirty}
+                  
                   label="Submit"
                 />
               </Spacings.Inline>
+              </Spacings.Stack>
+              </Spacings.Stack>
+        </Constraints.Horizontal>
+       
+      {/* </Spacings.Inline> */}
+     </CollapsiblePanel>
+     <CollapsiblePanel
+          data-testid="quote-summary-panel"
+          header={
+            <CollapsiblePanel.Header>
+              {/* {formatMessage(messages.panelTitle)} */}
+              {'Order Items'}
+            </CollapsiblePanel.Header>
+          }
+          scale="l">
+            <Constraints.Horizontal >
+             <Spacings.Stack scale="m">
+            
+             {formik?.values?.lineItems? 
+             <DataTable 
+             rows={formik.values.lineItems} 
+             columns={columns} 
+             itemRenderer={itemRenderer}
+             />:null}
               </Spacings.Stack>
         </Constraints.Horizontal>
        
