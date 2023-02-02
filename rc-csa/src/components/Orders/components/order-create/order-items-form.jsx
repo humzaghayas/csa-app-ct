@@ -32,14 +32,12 @@ const OrderItemsForm = (props) => {
 
   // Only contains the form elements, no buttons.
   const formElements = (
-    <Spacings.Stack scale="l">
-     <Spacings.Inline>
-      <Constraints.Horizontal>
-        <Spacings.Stack scale='m'>
-          <Spacings.Stack scale='s'>
+    <Spacings.Stack scale="xl">
+    
+          <Spacings.Stack scale='l'>
             <img src={formik?.values?.product?.image} height={80} width={80}/>
           </Spacings.Stack>
-          <Spacings.Stack scale='s'>
+          <Spacings.Stack scale='l'>
           <TextField
             name="product"
             title="Product"
@@ -50,7 +48,7 @@ const OrderItemsForm = (props) => {
             horizontalConstraint={6}
           />
           </Spacings.Stack>
-          <Spacings.Stack scale='s'>
+          <Spacings.Stack scale='l'>
           <NumberField
             name="quantity"
             title="Quantity"
@@ -61,9 +59,7 @@ const OrderItemsForm = (props) => {
             horizontalConstraint={6}
           />
           </Spacings.Stack>
-        </Spacings.Stack>
-      </Constraints.Horizontal>
-     </Spacings.Inline>
+      
     </Spacings.Stack>
   );
 
