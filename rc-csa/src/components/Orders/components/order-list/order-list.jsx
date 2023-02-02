@@ -69,7 +69,7 @@ const rows = [
 ];
 
 const columns = [
-{ key: 'orderNumber', label: 'Order Number' },
+  { key: 'orderNumber', label: 'Order Number' },
   { key:'customer', label: 'Customer' },
   { key: 'totalPrice', label: 'Order Total' },
   { key: 'noOforderItems', label: 'No.of order Items' },

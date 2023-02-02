@@ -104,3 +104,17 @@ export const FETCH_TICKETS=`
   }
   }
   `
+
+  export const FETCH_CUSTOMER_TICKETS =`
+  query($container:String!,$where:String) {
+      customObjects(container:$container,
+      where:$where){
+        offset
+        total
+        results{
+          key
+          version
+          value
+        }
+      }
+    }`

@@ -1,5 +1,4 @@
 import MoneyField from '@commercetools-uikit/money-field';
-import { func } from 'prop-types';
 
 export function getOrderRows(orderPaginationResult){
     console.log(orderPaginationResult.results);
@@ -8,7 +7,8 @@ export function getOrderRows(orderPaginationResult){
             return {
                 id:order?.id, 
                 orderNumber: order?.orderNumber,
-                customer: fullName(order?.customer?.firstName,order?.customer?.lastName),
+                customer: order?.customer?.firstName??'--',
+                //+" "+order?.customer?.lastName,
                 createdAt: order?.createdAt,
                 lastModifiedAt:order?.lastModifiedAt,
                 orderState:order?.orderState,
@@ -27,10 +27,4 @@ function amountCalculator(centAmount,fractionDigits){
   centAmount = centAmount/100;
   centAmount = "$"+centAmount+".00";
   return centAmount;
-}
-
-function fullName(firstName, lastName){
-    const f1 = firstName?firstName:"";
-    const f2 = lastName?lastName:"";
-    return f1+" "+f2;
 }

@@ -2,8 +2,7 @@ import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import Spacings from '@commercetools-uikit/spacings';
 import Channels from './components/channels';
 import Tickets from './components/Ticket/components/Ticket-list/ticket-list';
-import Products from './components/Products/components/product-list/product-list';
-import ProductAccount from './components/Products/components/product-account/product-account';
+
 import Welcome from './components/welcome';
 
 // import TicketDetails from './components/Ticket/components/Ticket-history/ticket-details';
@@ -12,7 +11,9 @@ import Customers from './components/Customer/components/customer-list/customer-l
 import CustomerAccount from './components/Customer/components/customer-account/customer-account';
 import CustomerCreate from './components/Customer/components/customer-create/customer-create';
 import Orders from './components/Orders/components/order-list/order-list';
+import Cart from './components/Cart/components/cart-list/cart-list';
 import OrderAccount from './components/Orders/components/order-account/order-account';
+import CartAccount from './components/Cart/components/cart-account/cart-account';
 import TicketCreate from './components/Ticket/components/ticket-create/ticket-create';
 import { PageUnauthorized } from '@commercetools-frontend/application-components';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
@@ -20,6 +21,7 @@ import { PERMISSIONS } from './constants';
 import CustomerMessagesForm from './components/Customer/components/customer-messages/customer-messages-form';
 import CustomerMessages from './components/Customer/components/customer-messages/customer-messages';
 import CustomerReply from './components/Customer/components/customer-messages/customer-reply';
+import AtgAccount from './components/ATG - POC/components/atg-account/atg-account';
 
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
@@ -76,16 +78,19 @@ const ApplicationRoutes = () => {
          <Customers linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/Orders`}>
-      <Orders linkToWelcome={match.url} />
+          <Orders linkToWelcome={match.url} />
+        </Route>
+        <Route path={`${match.path}/Cart`}>
+          <Cart linkToWelcome={match.url} />
+        </Route>
+        <Route path={`${match.path}/ATG`}>
+          <AtgAccount linkToWelcome={match.url} />
         </Route>
         <Route  path={`${match.path}/order-edit/:id`}>
       <OrderAccount linkToWelcome={match.url} />
         </Route>
-        <Route path={`${match.path}/Products`}>
-      <Products  linkToWelcome={match.url} />
-        </Route>
-        <Route  path={`${match.path}/product-edit/:id`}>
-     <ProductAccount  linkToWelcome={match.url} />
+        <Route  path={`${match.path}/cart-edit/:id`}>
+      <CartAccount linkToWelcome={match.url} />
         </Route>
         <Route  path={`${match.path}/customer-edit/:lahari`}>
         <CustomerAccount  linkToWelcome={match.url} />
