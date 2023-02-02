@@ -12,7 +12,13 @@ import { SHIPMENT_STATUS,PAYMENT_STATUS,ORDER_STATE, ORDER_UPDATE_ACTIONS_LIST} 
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import { PrimaryButton, SecondaryButton } from '@commercetools-uikit/buttons';
+import {PlusBoldIcon} from '@commercetools-uikit/icons';
 import DataTable from '@commercetools-uikit/data-table';
+import OrderItemsForm from './order-items-form';
+import { useHistory, useRouteMatch, Switch, Route,useParams } from 'react-router-dom';
+import OrderItemDetails from './order-items-details';
+import { SuspendedRoute } from '@commercetools-frontend/application-shell';
+import OrderLineItems from './order-line-items';
 
 const getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
   label: key,
@@ -78,7 +84,8 @@ const OrderCreateForm = (props) => {
     validate,
     enableReinitialize: true,
   });
-  
+  const params = useParams();
+   const lineItemId = params.id;
 
   const onChange = (e)=>{
     console.log(e?.target);
@@ -142,8 +149,8 @@ const OrderCreateForm = (props) => {
   // console.log(props.onSubmit);
   // console.log(props);
   const formElements = (
-    <Spacings.Stack scale="l">
-     
+    <Spacings.Stack scale="xl">
+     <Spacings.Stack scale="l">
      <CollapsiblePanel
           data-testid="quote-summary-panel"
           header={
@@ -153,7 +160,7 @@ const OrderCreateForm = (props) => {
             </CollapsiblePanel.Header>
           }
           scale="l">
-            <Constraints.Horizontal >
+            <Constraints.Horizontal min={13}>
              <Spacings.Stack scale="m">
             
      <Spacings.Stack scale="s">
@@ -207,10 +214,12 @@ const OrderCreateForm = (props) => {
         />
         </Spacings.Stack>
         </Spacings.Stack>
+     
         </Constraints.Horizontal>
-       
       {/* </Spacings.Inline> */}
      </CollapsiblePanel>
+     </Spacings.Stack>
+     <Spacings.Stack scale='l'>
      <CollapsiblePanel
           data-testid="quote-summary-panel"
           header={
@@ -221,7 +230,8 @@ const OrderCreateForm = (props) => {
           }
           scale="l">
             <Constraints.Horizontal >
-             <Spacings.Stack scale="m">
+              <Spacings.Stack scale="m">
+             <Spacings.Stack scale="s">
             
              {formik?.values?.lineItems? 
              <DataTable 
@@ -230,10 +240,38 @@ const OrderCreateForm = (props) => {
              itemRenderer={itemRenderer}
              />:null}
               </Spacings.Stack>
+            {/* <Spacings.Stack scale="s">
+              <Spacings.Inline>
+            <SecondaryButton
+          label="Add Line Items"
+          isDisabled={true}
+          data-track-event="click"
+          onClick={() => push(`order-line-items`)}
+          iconLeft={<PlusBoldIcon />}
+          size="medium"
+        />
+        </Spacings.Inline>
+            </Spacings.Stack> */}
+            </Spacings.Stack>
+              <Switch>
+              <SuspendedRoute path={`${match.path}/:id/order-item`}>
+                <OrderItemDetails 
+                  onClose={() => push(`${match.url}`)} 
+                  orderId = {formik?.values?.id} 
+                  orderItems={formik?.values?.lineItems}
+                  onSubmit = {onSubmit}
+                />
+              </SuspendedRoute>
+              <Route  path={`${match.path}/order-line-items`}>
+                 <OrderLineItems  onClose={() => push(`${match.url}`)} />
+              </Route>
+              </Switch>
+
         </Constraints.Horizontal>
        
       {/* </Spacings.Inline> */}
      </CollapsiblePanel>
+     </Spacings.Stack>
     </Spacings.Stack>
   );
 
