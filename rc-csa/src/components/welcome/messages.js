@@ -40,7 +40,7 @@ export default defineMessages({
     id: 'Welcome.cardTicketsTitle',
     defaultMessage: 'Fetching Tickets',
   },
-   cardTicketsContent: {
+  cardTicketsContent: {
     id: 'Welcome.cardTicketsContent',
     defaultMessage:
       'Demo example to fetch some data using GraphQL and displaying it in a paginated table.',
@@ -49,18 +49,27 @@ export default defineMessages({
     id: 'Welcome.cardCustomersTitle',
     defaultMessage: 'Fetching Customers',
   },
-   cardCustomersContent: {
+  cardCustomersContent: {
     id: 'Welcome.cardCustomersContent',
     defaultMessage:
       'Demo example to fetch some data using GraphQL and displaying it in a paginated table.',
   },
   cardOrdersTitle: {
     id: 'Welcome.cardOrdersTitle',
-    defaultMessage: 'Fetching Customers',
+    defaultMessage: 'Fetching Orders',
   },
   cardOrdersContent: {
     id: 'Welcome.cardOrdersContent',
     defaultMessage:
       'Demo example to fetch some data using GraphQL and displaying it in a paginated table.',
+  },
+  cardAtgTitle: {
+    id: 'Welcome.cardAtgTitle',
+    defaultMessage: 'ATG Module',
+  },
+  cardAtgContent: {
+    id: 'Welcome.cardAtgContent',
+    defaultMessage:
+      'Demo example to fetch ATG data using REST and displaying it in a paginated table.',
   },
 });

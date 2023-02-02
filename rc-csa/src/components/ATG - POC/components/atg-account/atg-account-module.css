@@ -1,0 +1,30 @@
+.addEmployeeButton{
+   margin-right: 800px;
+   margin-left: auto;
+   padding-left: 100px;
+}
+.customerDetails{
+   display: flex;
+   flex-direction: row;
+}
+.customerName{
+   color: blue;
+   background-color: blue;
+}
+.customerImage{
+   border: 1px solid black
+}
+.LogoImage{
+   margin-top: 5px;
+   width: 128px;
+   height: 115px;
+   padding-top: 5px;
+}
+.companyLogoBackground{
+   width: 130px;
+   height: 130px;
+   background-color: white;
+   border: 1px solid black;
+   margin-top: 10px;
+   border-radius: 4px;
+}
