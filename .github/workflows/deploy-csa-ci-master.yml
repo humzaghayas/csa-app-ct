@@ -51,6 +51,13 @@ jobs:
           npm run compile-html
           firebase use ${{ PROJECT_ID }}
 
+      - name: Install Build
+        run: |
+          cd rc-csa
+          npm run build
+          npm run compile-html
+          firebase use $PROJECT_ID
+          
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
