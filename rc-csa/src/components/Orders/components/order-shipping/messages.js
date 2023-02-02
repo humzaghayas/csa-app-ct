@@ -16,6 +16,9 @@ export default defineMessages({
   EmployeeIdLabel: {
     id: 'EmployeeDetails.EmployeeIdLabel',
     defaultMessage: 'Id',
+  },OrderUpdated: {
+    id: 'EmployeeDetails.EmployeeCreated',
+    defaultMessage: 'Order Updated',
   },
   EmployeeNameLabel: {
     id: 'EmployeeDetails.EmployeeNameLabel',

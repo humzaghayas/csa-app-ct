@@ -8,14 +8,14 @@ High: 'High',
 export const ORDER_STATE = {
     Open:'Open',
     Confirmed:'Confirmed',
-    Completed:'Completed',
-    Canceled:'Canceled'
+    Completed:'Complete',
+    Cancelled:'Cancelled'
 }
 export const PAYMENT_STATUS = {
-    BalanceDue:'Balance Due',
+    BalanceDue:'BalanceDue',
     Pending:'Pending',
     Paid:'Paid',
-    CreditOwed:'Credit Owed',
+    CreditOwed:'CreditOwed',
     Failed:'Failed'
 }
 export const SHIPMENT_STATUS = {
@@ -24,5 +24,17 @@ export const SHIPMENT_STATUS = {
     Partial:'Partial',
     Delayed:'Delayed',
     Shipped:'Shipped',
-    BackOrder:'Back order'
+    Backorder:'Backorder'
+}
+
+
+const ChangeOrderState = "changeOrderState";
+const ChangePaymentState= "changePaymentState";
+const ChangeShipmentState= "changeShipmentState";
+
+
+export const ORDER_UPDATE_ACTIONS_LIST ={
+    ChangeOrderState,
+    ChangePaymentState,
+    ChangeShipmentState
 }
