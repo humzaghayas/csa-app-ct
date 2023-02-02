@@ -78,13 +78,10 @@ const ApplicationRoutes = () => {
          <Customers linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/Orders`}>
-          <Orders linkToWelcome={match.url} />
+      <Orders linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/Cart`}>
-          <Cart linkToWelcome={match.url} />
-        </Route>
-        <Route path={`${match.path}/ATG`}>
-          <AtgAccount linkToWelcome={match.url} />
+      <Cart linkToWelcome={match.url} />
         </Route>
         <Route  path={`${match.path}/order-edit/:id`}>
       <OrderAccount linkToWelcome={match.url} />
@@ -109,6 +106,9 @@ const ApplicationRoutes = () => {
           </Route>
           <Route path={`${match.path}/:id/customer-message-reply`}>
 	      <CustomerReply linkToWelcome={match.url} />
+          </Route>
+          <Route path={`${match.path}/ATG`}>
+        <AtgAccount linkToWelcome={match.url} />
           </Route>
         <Route>
           <Welcome />

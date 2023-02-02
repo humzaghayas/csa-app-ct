@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { lazy,useState } from 'react';
+import { lazy, useState } from 'react';
 import { useIntl } from 'react-intl';
 import {
   Link as RouterLink,
@@ -33,12 +33,10 @@ import messages from './messages';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import { useCartsFetcher } from '../../../../hooks/use-cart-connector/use-cart-connector';
 import './cart-list-module.css';
-import CartAccount from '../cart-account/cart-account'
+import CartAccount from '../cart-account/cart-account';
 import { getCartRows } from './rows';
 import MoneyField from '@commercetools-uikit/money-field';
 import { useOrdersFetcher } from '../../../../hooks/use-orders-connector/use-orders-connector';
-
-
 
 const rows = [
   // { CartNumber: 'CS0012875',Customer:'Lahari',CartTotal:'$350.00',NooforderItems:'1',TotalItems:'1',CartStatus:'',ShipmentStatus:"",PaymentStatus:'',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...'},
@@ -51,17 +49,16 @@ const rows = [
 
 const columns = [
   { key: 'id', label: 'Cart Number' },
-  { key:'customer', label: 'Customer' },
+  { key: 'customer', label: 'Customer' },
   { key: 'totalPrice', label: 'Cart Total' },
   { key: 'noOforderItems', label: 'No.of order Items' },
   { key: 'totalItems', label: 'Total Items' },
   { key: 'cartState', label: 'Cart Status' },
   { key: 'createdAt', label: 'Created' },
   { key: 'lastModifiedAt', label: 'Modified' },
-
 ];
 
-const Cart =  (props) => {
+const Cart = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
@@ -69,8 +66,8 @@ const Cart =  (props) => {
   const { page, perPage } = usePaginationState();
   const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
 
-  const { cartPaginatedResult, data, error, loading } =  useCartsFetcher({
-   // data,
+  const { cartPaginatedResult, data, error, loading } = useCartsFetcher({
+    // data,
     page,
     perPage,
     tableSorting,
@@ -90,17 +87,17 @@ const Cart =  (props) => {
           icon={<BackIcon />}
         />
         <Text.Headline as="h2" intlMessage={messages.title} />
-        
+
         {/* <Spacings.Inline> */}
-      {/* <SecondaryButton
+        {/* <SecondaryButton
         label="Add Order"
          data-track-event="click" 
          onClick={() => push(`ticket-create`)}
         iconLeft={<PlusBoldIcon />}
         size="medium"
       /> */}
-      {/* </Spacings.Inline> */}
-  {/* <AccessibleButton label="Log in" onClick={() => {}}>
+        {/* </Spacings.Inline> */}
+        {/* <AccessibleButton label="Log in" onClick={() => {}}>
     Log in
   </AccessibleButton> */}
       </Spacings.Stack>
@@ -114,25 +111,23 @@ const Cart =  (props) => {
         size="medium"
       />
       </Spacings.Inline> */}
-      <Spacings.Stack scale="l" className='css-294zjy-container' >
-       
+      <Spacings.Stack scale="l" className="css-294zjy-container">
         <MoneyField
-    title="Price"
-    value={
-    // { amount: '30', currencyCode: 'CustomerEmailAddress' },
-    // { amount: '30', currencyCode: 'FirstName' },
-    // { amount: '30', currencyCode: 'LastName' },
-    { amount: '30', currencyCode: 'OrderNO' },
-    { amount: '30', currencyCode: 'SKU' },
-    { amount: '30', currencyCode: 'Store' }
-  }
-    onChange={(event) => alert(event.target.value)}
-    currencies={['OrderNO','SKU','Store']}
-  />
-  </Spacings.Stack>
-      {cartPaginatedResult?(
+          title="Price"
+          value={
+            // { amount: '30', currencyCode: 'CustomerEmailAddress' },
+            // { amount: '30', currencyCode: 'FirstName' },
+            // { amount: '30', currencyCode: 'LastName' },
+            ({ amount: '30', currencyCode: 'OrderNO' },
+            { amount: '30', currencyCode: 'SKU' },
+            { amount: '30', currencyCode: 'Store' })
+          }
+          onChange={(event) => alert(event.target.value)}
+          currencies={['OrderNO', 'SKU', 'Store']}
+        />
+      </Spacings.Stack>
+      {cartPaginatedResult ? (
         <Spacings.Stack scale="l">
-         
           <DataTable
             isCondensed
             columns={columns}
@@ -153,21 +148,21 @@ const Cart =  (props) => {
             onPerPageChange={perPage.onChange}
             totalItems={cartPaginatedResult.total}
           />
-           <Switch>
+          <Switch>
             {/* <SuspendedRoute path={`${match.path}/:id`}>
                 <TicketAccount onClose={() => push(`${match.url}`)} />  
             </SuspendedRoute> */}
-            
+
             <SuspendedRoute path={`${match.path}/:id`}>
               <CartAccount onClose={() => push(`${match.url}`)} />
             </SuspendedRoute>
-          
-          {/* <SuspendedRoute path={`${match.path}/ticket-details`}>
+
+            {/* <SuspendedRoute path={`${match.path}/ticket-details`}>
             <TicketDetails  onClose={() => push(`${match.url}`)} />
             </SuspendedRoute> */}
-          </Switch> 
+          </Switch>
         </Spacings.Stack>
-      ):null}
+      ) : null}
     </Spacings.Stack>
   );
 };
