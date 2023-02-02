@@ -8,9 +8,20 @@ on:
     types: deploy-csa
   push:
     branches: [ "main" ]
+    paths:
+      - 'rc-csa/**'
+      - '.github/workflows/deploy-csa-ci-master.yml'
+      - '*.json'
+      - '*.yml'
+      - '*.yaml'
   pull_request:
     branches: [ "main" ]
-
+    paths:
+      - 'rc-csa/**'
+      - '.github/workflows/deploy-csa-ci-master.yml'
+      - '*.json'
+      - '*.yml'
+      - '*.yaml'    
 env:
   FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
   PROJECT_ID: ${{secrets.PROJECT_ID}}
@@ -34,7 +45,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd tcs-order-create-api-extension
+          cd rc-csa
           npm install --production
 
       - name: Deploy to Firebase
