@@ -7,6 +7,7 @@ import { useAsyncDispatch, actions } from '@commercetools-frontend/sdk';
 import { MC_API_PROXY_TARGETS } from '@commercetools-frontend/constants';
 import { gql } from '@apollo/client';
 import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import {
   FETCH_ORDERS,
   FETCH_ORDER_BY_ID,
@@ -109,12 +110,17 @@ export const useCreateOrderEditById = () =>{
 
 }
 export const useOrderEditApply = () =>{
+
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
+
     const dispatch = useAsyncDispatch();
     const executeOrderEditApply = async(payload,orderEditId) =>{
       const result = await dispatch(
         actions.post({
           mcApiProxyTarget: MC_API_PROXY_TARGETS.COMMERCETOOLS_PLATFORM,
-          uri : "csa-project-2/orders/edits/"+orderEditId+"/apply",
+          uri : projectKey+"/orders/edits/"+orderEditId+"/apply",
           payload
         })
       )

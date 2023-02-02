@@ -167,11 +167,6 @@ const OrderShippingForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale="s">
         <Spacings.Inline>
-                <SecondaryButton
-                  // onClick={formik.handleReset}
-                  isDisabled={formik.isSubmitting}
-                  label="Edit"
-                />
                 <PrimaryButton
                   label="Submit"
                   onClick={onSubmit}
