@@ -43,6 +43,36 @@ const ShippingAddressForm = (props) => {
 
   const formElements = (
     <Spacings.Stack scale="l">
+      <Spacings.Stack scale="l"> 
+       <CollapsiblePanel
+          data-testid="address-summary-panel"
+          header={
+            <CollapsiblePanel.Header>
+              {/* {formatMessage(messages.panelTitle)} */}
+              {'Shipping Method'}
+            </CollapsiblePanel.Header>
+          }
+          scale="l">
+          <Constraints.Horizontal min={13}>
+            
+          
+      <Spacings.Inline>
+        <SelectField
+          name="streetNumber"
+          title="Shipping method"
+          value={formik.values.streetNumber}
+          errors={formik.errors.streetNumber}
+          touched={formik.touched.streetNumber}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          horizontalConstraint={13}
+        />
+        
+        </Spacings.Inline>
+        </Constraints.Horizontal>
+        </CollapsiblePanel>
+        </Spacings.Stack>
+
        <Spacings.Stack scale="l"> 
        <CollapsiblePanel
           data-testid="address-summary-panel"

@@ -19,13 +19,12 @@ import ShippingAddressForm from './add-shipping-address-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
 import validate from './validate';
-import { useCartsFetcher ,
-         useShippingAddressCreator,
-         useAddLineItem,
-         useFetchCartById
+import {
+  useCartsFetcher,
+  useShippingAddressCreator,
+  useAddLineItem,
+  useFetchCartById,
 } from '../../../../hooks/use-cart-connector/use-cart-connector';
-
-
 
 const ShippingAddress = (props) => {
   const intl = useIntl();
@@ -48,7 +47,6 @@ const ShippingAddress = (props) => {
         await shippingAddressCreator.execute({
           originalDraft: cart,
           nextDraft: data,
-          
         });
         showNotification({
           kind: 'success',
@@ -63,7 +61,7 @@ const ShippingAddress = (props) => {
           });
         }
 
-     //  formikHelpers.setErrors(transformedErrors.formErrors);
+        //  formikHelpers.setErrors(transformedErrors.formErrors);
       }
     },
     [
@@ -109,6 +107,5 @@ const ShippingAddress = (props) => {
   );
 };
 ShippingAddress.displayName = 'ShippingAddress';
-
 
 export default ShippingAddress;

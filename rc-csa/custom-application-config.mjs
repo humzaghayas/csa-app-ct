@@ -9,16 +9,15 @@ const config = {
   cloudIdentifier: 'gcp-us',
   env: {
     development: {
-      initialProjectKey: '${env:CTP_INITIAL_PROJECT_KEY}'      
+      initialProjectKey: '${env:CTP_INITIAL_PROJECT_KEY}',
     },
     production: {
       applicationId: 'clajfnkej00b71f012e79u0r0',
       url: 'https://csa-project-1d161.firebaseapp.com',
     },
-   
   },
   additionalEnv: {
-    atgPublicURL:'${env:atgPublicURL}'
+    atgPublicURL: '${env:atgPublicURL}',
   },
   oAuthScopes: {
     view: [
