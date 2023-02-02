@@ -13,10 +13,6 @@ import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import { PrimaryButton, SecondaryButton } from '@commercetools-uikit/buttons';
 import DataTable from '@commercetools-uikit/data-table';
-import OrderItemsForm from './order-items-form';
-import { useHistory, useRouteMatch, Switch } from 'react-router-dom';
-import OrderItemDetails from './order-items-details';
-import { SuspendedRoute } from '@commercetools-frontend/application-shell';
 
 const getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
   label: key,
@@ -75,8 +71,6 @@ const itemRenderer = (item, column) => {
 
 const OrderCreateForm = (props) => {
   const intl = useIntl();
-  const { push } = useHistory();
-  const match = useRouteMatch();
   const formik = useFormik({
     initialValues: props.initialValues,
     onSubmit: props.onSubmit,
@@ -141,11 +135,6 @@ const OrderCreateForm = (props) => {
         props.onChange(e);
         break;
     }
-  }
-
-  const onSubmit = (e) =>{
-    // console.log("In order create form");
-    props.onSubmit(e);
   }
 
 
@@ -239,23 +228,8 @@ const OrderCreateForm = (props) => {
              rows={formik.values.lineItems} 
              columns={columns} 
              itemRenderer={itemRenderer}
-             onRowClick={(row) =>{ push(`${match.url}/${row.id}/order-item`);
-              }
-            }
              />:null}
               </Spacings.Stack>
-
-              <Switch>
-              <SuspendedRoute path={`${match.path}/:id`}>
-                <OrderItemDetails 
-                  onClose={() => push(`${match.url}`)} 
-                  orderId = {formik?.values?.id} 
-                  orderItems={formik?.values?.lineItems}
-                  onSubmit = {onSubmit}
-                />
-              </SuspendedRoute>
-              </Switch>
-
         </Constraints.Horizontal>
        
       {/* </Spacings.Inline> */}
