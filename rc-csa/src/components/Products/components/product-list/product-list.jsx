@@ -60,6 +60,7 @@ import RadioField from '@commercetools-uikit/radio-field';
 import RadioInput from '@commercetools-uikit/radio-input';
 //import Constraints from '@commercetools-uikit/constraints';
 import { current } from '@reduxjs/toolkit';
+//import { it } from 'node:test';
 // import { getCompanies } from '../../api';
 // import { useEffect } from 'react';
 
@@ -148,6 +149,8 @@ const Products =  (props) => {
   const[filterValue, setFilterValue] = useState('Search by Product Name')
   const[searchArray, setSearchArray] = useState([{name : ''}]);
   const[newArray,setNewArray]=useState([])
+  const[number,setNumber]=useState(false)
+  //const[integer,setInteger]=useState(1)
   
  
   const intl = useIntl();
@@ -177,19 +180,37 @@ const Products =  (props) => {
   useEffect(() => {
   
     console.log("filtervalueeeeuseeffecttttttt",filterValue);
-   },[filterValue])
+    console.log("ArrayyyyyyAfterrrrrrruseEfeect",searchArray);
+   },[filterValue,searchArray])
   const changeFilter = (e) =>{
    setFilterValue(e.target.value)
-  
+   if(number === true){
+    setSearchArray([...searchArray,{name: `${e.target.value}`}])
+    setNumber(false)
+   }
+  //  if(integer == 2){
+  //    searchArray.shift();
+  //  }
+  // console.log("ArrayyyyyyAfterrrrrrr",searchArray);
    }
    const  handleFilter = () =>{
 
     setSearchArray([...searchArray,{name: `${filterValue}`}])
-    
+  //  setNewArray(...new Set(searchArray))
   
+  
+    //removeDuplicates();
     console.log("ArrayyyyyyAfterrrrrrr",searchArray);
-   
+    //console.log("ArrayyyyyyAfterrrrrrr",JSON.stringify(removeDuplicates(item => item.name)));
     }
+    // const removeDuplicates = (data,key) => {
+    //   return[
+    //     ...new Map(
+    //       data.map(x => [key(x),x])
+    //     ).values()
+    //   ]
+    
+    // }
   const handleChangeSearch = event => {
     setSearchValue(...searchValue,event.target.value.value)
     // setSearchValue({...searchValue, [event.target.value.name]:event.target.value.value})
@@ -346,6 +367,7 @@ const Products =  (props) => {
       <Spacings.Inline>
         {/* <Spacings.Inline> */}
         {/* <div className="search-results-drop"> */}
+        <div className="search-options-dropdown">
       <SelectField
     title=" "
     value={filterValue}
@@ -358,7 +380,7 @@ const Products =  (props) => {
     onChange={(e) =>{
        changeFilter(e)
     }
-     
+   
   //     (event) => {
   //     alert(event.target.value)
   //     console.log('filter value beforeeeeeeeee',event.target.value)
@@ -370,6 +392,7 @@ const Products =  (props) => {
     }
     horizontalConstraint={5}
   />
+   </div>
    <Constraints.Horizontal min={13}>
          <SearchSelectInput
       id="customers"
@@ -399,7 +422,9 @@ const Products =  (props) => {
    </Constraints.Horizontal>
     {/* <Spacings.Inline> */}
     <div className="filter-button">
-     <SecondaryButton iconLeft={<FilterIcon />} label="Add Filter" onClick={handleFilter} size="big"/> 
+     <SecondaryButton iconLeft={<FilterIcon />} label="Add Filter" onClick={() => {setNumber(true)
+   // setInteger(integer + 1)
+    }} size="big"/> 
      </div>
      {/* </Spacings.Inline> */}
      </Spacings.Inline>
