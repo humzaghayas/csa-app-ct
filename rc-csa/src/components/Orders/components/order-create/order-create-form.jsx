@@ -250,7 +250,7 @@ const OrderCreateForm = (props) => {
             }
              />:null}
               </Spacings.Stack>
-            <Spacings.Stack scale="s">
+            {/* <Spacings.Stack scale="s">
               <Spacings.Inline>
             <SecondaryButton
           label="Add Line Items"
@@ -261,7 +261,7 @@ const OrderCreateForm = (props) => {
           size="medium"
         />
         </Spacings.Inline>
-            </Spacings.Stack>
+            </Spacings.Stack> */}
             </Spacings.Stack>
               <Switch>
               <SuspendedRoute path={`${match.path}/:id/order-item`}>
