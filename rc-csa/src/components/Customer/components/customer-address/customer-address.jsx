@@ -37,36 +37,7 @@ const CustomerAddress = (props) => {
   // const showApiErrorNotification = useShowApiErrorNotification();
   // const CustomerDetailsCreator = useCustomerDetailsCreator();
   const handleSubmit = useCallback(
-    // async (formikValues, formikHelpers) => {
-    //   const data = formValuesToDoc(formikValues);
-    //   try {
-    //     await CustomerDetailsCreator.execute({
-    //       nextDraft: data,
-    //     });
-    //     showNotification({
-    //       kind: 'success',
-    //       domain: DOMAINS.SIDE,
-    //       text: intl.formatMessage(messages.CustomerAddressd),
-    //     });
-    //   } catch (graphQLErrors) {
-    //     const transformedErrors = transformErrors(graphQLErrors);
-    //     if (transformedErrors.unmappedErrors.length > 0) {
-    //       showApiErrorNotification({
-    //         errors: transformedErrors.unmappedErrors,
-    //       });
-    //     }
-
-    //     formikHelpers.setErrors(transformedErrors.formErrors);
-    //   }
-    // },
-    // [
-    //   CustomerDetailsCreator,
-    //   dataLocale,
-    //   intl,
-    //   projectLanguages,
-    //   showApiErrorNotification,
-    //   showNotification,
-    // ]
+    
   );
 
   return (

@@ -19,13 +19,16 @@ import { PERMISSIONS } from '../../../../constants';
 //   useTicketDetailsCreator,
 // } from '../../../../hooks/use-Ticket-connector/use-Tickete-graphql-connector';
 import { docToFormValues, formValuesToDoc } from './conversions';
-import TicketDetailsForm from './ticket-details-form';
+import OrderShippingForm from './order-shipping-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
+import { useRouteMatch } from 'react-router-dom';
+import { useFetchOrderById} from '../../../../hooks/use-orders-connector';
 
-const TicketDetails = (props) => {
+const OrderShipping = (props) => {
   const intl = useIntl();
   const params = useParams();
+  const match = useRouteMatch();
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
@@ -33,6 +36,8 @@ const TicketDetails = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
+
+  const {order} = useFetchOrderById(match.params.id);
   // const showNotification = useShowNotification();
   // const showApiErrorNotification = useShowApiErrorNotification();
   // const TicketDetailsCreator = useTicketDetailsCreator();
@@ -46,7 +51,7 @@ const TicketDetails = (props) => {
     //     showNotification({
     //       kind: 'success',
     //       domain: DOMAINS.SIDE,
-    //       text: intl.formatMessage(messages.TicketDetailsd),
+    //       text: intl.formatMessage(messages.OrderShippingd),
     //     });
     //   } catch (graphQLErrors) {
     //     const transformedErrors = transformErrors(graphQLErrors);
@@ -70,8 +75,8 @@ const TicketDetails = (props) => {
   );
 
   return (
-    <TicketDetailsForm
-    initialValues={docToFormValues(null, projectLanguages)}
+    <OrderShippingForm
+    initialValues={docToFormValues(order, projectLanguages)}
     onSubmit={handleSubmit}
     isReadOnly={!canManage}
     dataLocale={dataLocale}
@@ -98,11 +103,11 @@ const TicketDetails = (props) => {
           // </FormModalPage>
         );
       }}
-    </TicketDetailsForm>
+    </OrderShippingForm>
   );
 };
-TicketDetails.displayName = 'TicketDetails';
-TicketDetails.propTypes = {
+OrderShipping.displayName = 'OrderDetails';
+OrderShipping.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
-export default TicketDetails;
+export default OrderShipping;

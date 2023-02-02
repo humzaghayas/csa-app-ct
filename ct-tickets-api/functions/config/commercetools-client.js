@@ -6,7 +6,7 @@ const {
 } = require ('@commercetools/sdk-client-v2')
 require('dotenv').config()
 
-const getClient=()=> {
+const getApiRoot=()=> {
   const authMiddlewareOptions = {
     host: process.env.AUTH_URL,
     projectKey:process.env.PROJECT_KEY,
@@ -36,4 +36,4 @@ const getClient=()=> {
 }
 
 const projectKey = process.env.PROJECT_KEY;
-module.exports={projectKey,getClient}
+module.exports={projectKey, getApiRoot}

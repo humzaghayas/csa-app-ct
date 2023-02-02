@@ -5,13 +5,15 @@ import Tickets from './components/Ticket/components/Ticket-list/ticket-list';
 
 import Welcome from './components/welcome';
 
-import TicketDetails from './components/Ticket/components/ticket-details/ticket-details';
+// import TicketDetails from './components/Ticket/components/Ticket-history/ticket-details';
 import TicketAccount from './components/Ticket/components/ticket-account/ticket-account';
 import Customers from './components/Customer/components/customer-list/customer-list';
 import CustomerAccount from './components/Customer/components/customer-account/customer-account';
 import CustomerCreate from './components/Customer/components/customer-create/customer-create';
 import Orders from './components/Orders/components/order-list/order-list';
+import Cart from './components/Cart/components/cart-list/cart-list';
 import OrderAccount from './components/Orders/components/order-account/order-account';
+import CartAccount from './components/Cart/components/cart-account/cart-account';
 import TicketCreate from './components/Ticket/components/ticket-create/ticket-create';
 import { PageUnauthorized } from '@commercetools-frontend/application-components';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
@@ -57,13 +59,13 @@ const ApplicationRoutes = () => {
          
         </Route>
         
-        <Route  path={`${match.path}/ticket-details`}>
+        {/* <Route  path={`${match.path}/ticket-details`}>
             {canManageTickets ? (
               <TicketDetails linkToWelcome={match.url} />
             ):(
               <PageUnauthorized />
             )}
-        </Route>
+        </Route> */}
         <Route  path={`${match.path}/ticket-create`}>
            {canManageTickets ? (
               <TicketCreate linkToWelcome={match.url} />
@@ -77,8 +79,14 @@ const ApplicationRoutes = () => {
         <Route path={`${match.path}/Orders`}>
       <Orders linkToWelcome={match.url} />
         </Route>
+        <Route path={`${match.path}/Cart`}>
+      <Cart linkToWelcome={match.url} />
+        </Route>
         <Route  path={`${match.path}/order-edit/:id`}>
       <OrderAccount linkToWelcome={match.url} />
+        </Route>
+        <Route  path={`${match.path}/cart-edit/:id`}>
+      <CartAccount linkToWelcome={match.url} />
         </Route>
         <Route  path={`${match.path}/customer-edit/:lahari`}>
         <CustomerAccount  linkToWelcome={match.url} />

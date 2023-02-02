@@ -16,16 +16,21 @@ import {
 } from '@commercetools-frontend/actions-global';
 import { PERMISSIONS } from '../../../../constants';
 // import {
-//   useTicketCreateCreator,
+//   useTicketDetailsCreator,
 // } from '../../../../hooks/use-Ticket-connector/use-Tickete-graphql-connector';
 import { docToFormValues, formValuesToDoc } from './conversions';
-import TicketCreateForm from './ticket-create-form';
+import CartViewForm from './cart-view-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
+import { useRouteMatch } from 'react-router-dom';
+import { useFetchCartById} from '../../../../hooks/use-cart-connector/use-cart-connector';
+import Spacings from '@commercetools-uikit/spacings';
+import { PlusBoldIcon, SecondaryButton } from '@commercetools-frontend/ui-kit';
 
-const TicketCreate = (props) => {
+const CartView = (props) => {
   const intl = useIntl();
   const params = useParams();
+  const match = useRouteMatch();
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
@@ -33,23 +38,34 @@ const TicketCreate = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
+  const {cart} = useFetchCartById(match.params.id);
   // const showNotification = useShowNotification();
   // const showApiErrorNotification = useShowApiErrorNotification();
-  // const TicketCreateCreator = useTicketCreateCreator();
+  // const TicketDetailsCreator = useTicketDetailsCreator();
+  const handleSubmit = useCallback(
+    
+  );
 
   return (
-    <TicketCreateForm
-    initialValues={docToFormValues(null, projectLanguages)}
+    <CartViewForm
+    initialValues={docToFormValues(cart, projectLanguages)}
     onSubmit={handleSubmit}
     isReadOnly={!canManage}
     dataLocale={dataLocale}
     >
-
-    </TicketCreateForm>
+      {(formProps) => {
+        return (
+          <React.Fragment>
+           
+          {formProps.formElements}
+        </React.Fragment>
+        );
+      }}
+    </CartViewForm>
   );
 };
-TicketCreate.displayName = 'TicketCreate';
-TicketCreate.propTypes = {
+CartView.displayName = 'CartDetails';
+CartView.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
-export default TicketCreate;
+export default CartView;

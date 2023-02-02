@@ -46,7 +46,7 @@ const itemRenderer = (item, column) => {
     case 'firstName':
       return item.firstName?item.firstName:'--';
     case 'company':
-      return item.company?item.company:'--';
+      return item.company?item.company:'---';
     case 'Address':
      //const address = item.streetNumber + ',' + item.apartment + ',' + item.building
       return item.streetNumber?item.streetNumber:'--';

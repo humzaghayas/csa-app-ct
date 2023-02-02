@@ -111,8 +111,6 @@ export const FETCH_TICKETS=`
       where:$where){
         offset
         total
-        createdAt
-        lastModifiedAt
         results{
           key
           version

@@ -6,7 +6,7 @@ import {
 } from '@commercetools-frontend/application-shell';
 import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
 import{getForKey,CONSTANTS,FETCH_USERS_INFO,CREATE_CUSTOMOBJECT_MUTATION,FETCH_USERS_LIST,FETCH_TICKETS_BY_ID} from 'ct-tickets-helper-api'
-import { getCreateTicketDraft, getTicketFromCustomObject } from 'ct-tickets-helper-api';
+import { getCreateTicketDraft, getTicketFromCustomObject ,createTicketHistory} from 'ct-tickets-helper-api';
 import { extractErrorFromGraphQlResponse } from '../../helpers';
 
 export const useUserFetcher = (email) => {
@@ -64,10 +64,12 @@ export const useCreateOrUpdateTicket = ()=>{
 
   const [createOrUpdateCustomObject, {  loading }] = useMcMutation(gql`${CREATE_CUSTOMOBJECT_MUTATION}`);
 
-  const execute = async (data) => {
+  const execute = async (data,operation) => {
     console.log("createTicket");
 
-    const ticketDraft = await getCreateTicketDraft(data);
+    let ticketDraft = await getCreateTicketDraft(data);
+
+    await createTicketHistory(data,ticketDraft,operation);
     try {
       return await createOrUpdateCustomObject({ variables: {
         draft: ticketDraft,

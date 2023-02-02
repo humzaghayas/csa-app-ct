@@ -2,22 +2,70 @@ import LocalizedTextInput from '@commercetools-uikit/localized-text-input';
 import { transformLocalizedFieldToLocalizedString } from '@commercetools-frontend/l10n';
 import { TextInput } from '@commercetools-frontend/ui-kit';
 
-export const docToFormValues = (employee, languages) => ({
-  id: employee?.id ?? '',
-  salutation: employee?.salutation ?? '',
-  title: employee?.title ?? '',
-  firstName: employee?.firstName ?? '',
-  middleName: employee?.middleName ?? '',
-  lastName: employee?.lastName ?? '',
-  email: employee?.email ?? '',
-  dateOfBirth: employee?.dateOfBirth ?? '',
-  employeeNumber: employee?.employeeNumber ?? '',
-  externalId: employee?.externalId ?? '',
-  customerGroup: employee?.customerGroup ?? '',
-  roles: employee?.roles ?? '',
-  password: employee?.password ?? '',
-  confirmedPassword: employee?.confirmedPassword ?? '',
+export const docToFormValues = (order, languages) => ({
+  id:order?.id,
+  orderState:order?.orderState,
+  paymentState:order?.paymentState,
+  shipmentState:order?.shipmentState,
+  lineItems:getLineItems(order?.lineItems),
+  totalPrice:amountCalculator(order?.totalPrice?.centAmount,order?.totalPrice?.fractionDigits),
+  taxedPrice:{
+    totalGross:amountCalculator(order?.taxedPrice?.totalGross?.centAmount,order?.taxedPrice?.totalGross?.fractionDigits),
+    totalNet:amountCalculator(order?.taxedPrice?.totalNet?.centAmount,order?.taxedPrice?.totalNet?.fractionDigits),
+    totalTax:amountCalculator(order?.taxedPrice?.totalTax?.centAmount,order?.taxedPrice?.totalTax?.fractionDigits),
+  },
+  totalItems:order?.lineItems?.length
 });
+
+export function getLineItems(lineItems){
+  if(lineItems){
+      return lineItems.map(lineItem =>{
+          return {
+              id:lineItem?.id, 
+              productName: lineItem?.orderNumber,
+              productId:lineItem?.productId,
+              productKey:lineItem?.productKey,
+              quantity:lineItem?.quantity,
+              product:{
+                name:lineItem?.name,
+                sku:lineItem?.variant?.sku,
+                key:lineItem?.variant?.key,
+                image:lineItem?.variant?.images[0]?.url
+              },
+              variant:{
+                id:lineItem?.variant?.id,
+                sku:lineItem?.variant?.sku,
+                key:lineItem?.variant?.key,
+                price:getPrices(lineItem?.variant?.prices),
+              },
+              unitPrice:amountCalculator(lineItem?.price?.value?.centAmount,lineItem?.price?.value?.fractionDigits),
+              state:lineItem?.state,
+              tax:lineItem?.taxRate?.amount,
+              subTotalPrice:amountCalculator(lineItem?.totalPrice?.centAmount,lineItem?.totalPrice?.fractionDigits),
+              totalPrice:amountCalculator(lineItem?.totalPrice?.centAmount,lineItem?.totalPrice?.fractionDigits)
+          }
+      });
+  }
+}
+
+export function getPrices(prices){
+  if(prices){
+    return prices.map(price=>{
+      return{
+        id:price?.id,
+        currencyCode:price?.value?.currencyCode,
+        amount:amountCalculator(price?.value?.centAmount,price?.value?.fractionDigits)
+      }
+    })
+  }
+}
+
+function amountCalculator(centAmount,fractionDigits){
+  centAmount = centAmount/100;
+  centAmount = "$"+centAmount+".00";
+  return centAmount;
+}
+
 
 /*export const formValuesToDoc = (formValues) => ({
   salutation: formValues.salutation,

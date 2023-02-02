@@ -49,7 +49,7 @@ import {
 } from '@commercetools-frontend/application-shell';
 import { gql } from '@apollo/client';
 import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
-import { FETCH_CUSTOMER_TICKETS } from 'ct-tickets-helper-api/lib/graphql-queries/index';
+import { FETCH_TICKETS, FETCH_CUSTOMER_TICKETS } from 'ct-tickets-helper-api/lib/graphql-queries';
 import { CONSTANTS } from 'ct-tickets-helper-api/lib/constants';
 import TicketAccount from '../../../Ticket/components/ticket-account/ticket-account';
 import { ContentNotification } from '@commercetools-uikit/notifications';
@@ -98,15 +98,15 @@ const CustomerTickets = (props) => {
     }
     console.log('inside hook !');
   }, [foundUser]);
-  // const id = params.id;
+   const id = params.id;
   const { data, error, loading, refetch } = useMcQuery(
     gql`
       ${FETCH_CUSTOMER_TICKETS}
     `,
     {
       variables: {
-        container: "ticket-container",
-        where: "value(email=\"humza@test.com\")"
+        "container": "ticket-container",
+        "where": "value(email=\"humza@test.com\")"
         // container: CONSTANTS.containerKey,
         // limit: perPage.value,
         // offset: (page.value - 1) * perPage.value,
