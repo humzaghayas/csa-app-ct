@@ -47,10 +47,6 @@ jobs:
         run: |
           cd rc-csa
           npm install --production
- 
-      - name: Install Build
-        run: |
-          cd rc-csa
           npm run build
           npm run compile-html
           firebase use $PROJECT_ID
