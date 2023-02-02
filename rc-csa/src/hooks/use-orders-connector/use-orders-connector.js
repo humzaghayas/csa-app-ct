@@ -3,9 +3,15 @@ import {
   useMcMutation,
   useMcLazyQuery
 } from '@commercetools-frontend/application-shell';
+import { useAsyncDispatch, actions } from '@commercetools-frontend/sdk';
+import { MC_API_PROXY_TARGETS } from '@commercetools-frontend/constants';
 import { gql } from '@apollo/client';
 import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
-import {FETCH_ORDERS,FETCH_ORDER_BY_ID,UPDATE_ORDER_BY_ID} from 'ct-tickets-helper-api';
+import {
+  FETCH_ORDERS,
+  FETCH_ORDER_BY_ID,
+  UPDATE_ORDER_BY_ID,
+  CREATE_EDIT_ORDER_BY_ID} from 'ct-tickets-helper-api';
 
 export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
 
@@ -76,4 +82,46 @@ export const useOrderUpdateById = () =>{
     loading
   };
 
+}
+export const useCreateOrderEditById = () =>{
+
+  const [useCreateOrderEditByIdV,{loading}] = useMcMutation(gql`${CREATE_EDIT_ORDER_BY_ID}`);
+  
+   const executeCreateOrderEdit = async(draft) =>{
+    // console.log("In use orders connectors")
+    // console.log(draft);
+    return await useCreateOrderEditByIdV(
+      {
+        variables: {
+          draft
+        },
+        context: {
+          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+        }
+      }
+    )
+  }
+  
+  return {
+    executeCreateOrderEdit,
+    loading
+  };
+
+}
+export const useOrderEditApply = () =>{
+    const dispatch = useAsyncDispatch();
+    const executeOrderEditApply = async(payload,orderEditId) =>{
+      const result = await dispatch(
+        actions.post({
+          mcApiProxyTarget: MC_API_PROXY_TARGETS.COMMERCETOOLS_PLATFORM,
+          uri : "csa-project-2/orders/edits/"+orderEditId+"/apply",
+          payload
+        })
+      )
+       return result;
+    }
+  
+  return {
+    executeOrderEditApply,
+  };
 }
