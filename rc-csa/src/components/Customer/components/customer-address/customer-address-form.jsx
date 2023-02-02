@@ -64,24 +64,6 @@ const itemRenderer = (item, column) => {
   }
 };
 
-// const rows = [
- 
-//   { id: '--',CompanyName:'--',Address:'--',City:'--',PostalCode:'--',State:'--',Region:'--',Country:'--',AddressType:'--'},
-// ];
-
-// const columns = [
-
-//   { key: 'ContactName', label: 'ContactName' },
-//   { key:'CompanyName', label: 'CompanyName' },
-//   { key: 'Address', label: 'Address' },
-//   { key: 'City', label: 'City' },
-//   { key: 'PostalCode', label: 'PostalCode' },
-//   { key: 'State', label: 'State' },
-//   { key: 'Region', label: 'Region' },
-//   { key: 'Country', label: 'Country' },
- 
-//   { key: 'AddressType', label: 'Address Type' },
-// ];
 
 const CustomerAddressForm = (props) => {
   console.log("propsADdresForm",JSON.stringify(props.customer?.addresses));

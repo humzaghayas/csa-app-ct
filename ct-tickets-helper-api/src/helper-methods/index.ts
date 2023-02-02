@@ -47,6 +47,25 @@ export function getOrderRows(orderPaginationResult){
     }
 }
 
+export function getCartRows(cartPaginationResult){
+    console.log(cartPaginationResult.results);
+    if(cartPaginationResult?.results){
+        return cartPaginationResult?.results.map(carts =>{
+            return {
+                id:carts.id, 
+                customer: carts.customer?.firstName+" "+carts.customer?.lastName,
+                createdAt: carts.createdAt,
+                lastModifiedAt:carts.lastModifiedAt,
+                cartState:carts.cartState,
+                // orderTotal:cart?.orderTotal,
+                // noOforderItems:cart?.lineitems?.length,
+                // totalItems:cart?.lineitems?.quantity
+                
+            }
+        });
+    }
+}
+
 export function getTicketCategories(){
 
     return TICKET_TYPE

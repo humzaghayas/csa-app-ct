@@ -105,30 +105,25 @@ const Welcome = () => {
               content={intl.formatMessage(messages.cardChannelsContent)}
               linkTo={`${match.url}/channels`}
             />
-             <InfoCard
+            <InfoCard
               title={intl.formatMessage(messages.cardTicketsTitle)}
               content={intl.formatMessage(messages.cardTicketsContent)}
               linkTo={`${match.url}/Tickets`}
             />
-              <InfoCard
+            <InfoCard
               title={intl.formatMessage(messages.cardCustomersTitle)}
               content={intl.formatMessage(messages.cardCustomersContent)}
               linkTo={`${match.url}/Customers`}
             />
-             <InfoCard
-              title={intl.formatMessage(messages.cardOrdersTitle)}
-              content={intl.formatMessage(messages.cardOrdersContent)}
-              linkTo={`${match.url}/Tickets`}
-            />
-              <InfoCard
+            <InfoCard
               title={intl.formatMessage(messages.cardOrdersTitle)}
               content={intl.formatMessage(messages.cardOrdersContent)}
               linkTo={`${match.url}/Orders`}
             />
-              <InfoCard
-              title={intl.formatMessage(messages.cardOrdersTitle)}
-              content={intl.formatMessage(messages.cardOrdersContent)}
-              linkTo={`${match.url}/Products`}
+            <InfoCard
+              title={intl.formatMessage(messages.cardAtgTitle)}
+              content={intl.formatMessage(messages.cardAtgContent)}
+              linkTo={`${match.url}/ATG`}
             />
           </Grid>
         </Spacings.Stack>
