@@ -47,6 +47,9 @@ jobs:
         run: |
           cd rc-csa
           npm install --production
+          npm run build
+          npm run compile-html
+          firebase use ${{ PROJECT_ID }}
 
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
