@@ -37,7 +37,7 @@ export const FETCH_ORDERS = `query FetchAllOrders($limit: Int!, $offset: Int!, $
         }
       }
     }
-  }`;
+  }`
 export const FETCH_ORDER_BY_ORDER_NUMBER = `query($orderNumber:String!){
   order(orderNumber:$orderNumber){
       id
@@ -324,10 +324,11 @@ fragment taxedPriceLineItem on LineItem{
               fractionDigits
          }
       } 
-}`;
+}`
 export const FETCH_ORDER_BY_ID = `query($id:String!){
     order(id:$id){
         id
+        version
         createdAt
         lastModifiedAt
           createdBy{
@@ -625,4 +626,24 @@ export const FETCH_ORDER_BY_ID = `query($id:String!){
                 fractionDigits
            }
         } 
-  }`;
+  }`
+export const UPDATE_ORDER_BY_ID = `mutation updateOrderById($version:Long!,
+    $actions:[OrderUpdateAction!]!,
+    $id:String!){
+      updateOrder(version:$version,actions:$actions,id:$id){
+        id
+        orderState
+        orderNumber
+        shipmentState
+        paymentState
+      }
+  }`
+export const CREATE_EDIT_ORDER_BY_ID = `mutation createOrderEdit($draft:OrderEditDraft!){
+    createOrderEdit(draft:$draft){
+      id
+      version
+      result{
+        type
+      }
+    }
+  }`

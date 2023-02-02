@@ -32,6 +32,7 @@ import { lazy, useState, useEffect } from 'react';
 
 import OrderCreate from '../order-create/order-create';
 import OrderShipping from '../order-shipping/order-shipping';
+import OrderLineItems from '../order-create/order-line-items';
 
 
 const OrderAccount = (props) => {
@@ -80,6 +81,9 @@ const OrderAccount = (props) => {
         <Route path={`${match.path}/orders-shipping`}>
         
       <OrderShipping />
+       </Route>
+       <Route path={`${match.path}/order-line-items`}>
+         <OrderLineItems />
        </Route>
         {/* <Route path={`${match.path}/employee-create`}>
            <EmployeeCreate />
