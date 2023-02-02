@@ -7,7 +7,8 @@ on:
   repository_dispatch:
     types: deploy-csa
   push:
-    branches: [ "main" ]
+    branches: 
+      - master
     paths:
       - 'rc-csa/**'
       - '.github/workflows/deploy-csa-ci-master.yml'
@@ -15,7 +16,10 @@ on:
       - '*.yml'
       - '*.yaml'
   pull_request:
-    branches: [ "main" ]
+    branches: 
+      - master
+    types: 
+      - closed
     paths:
       - 'rc-csa/**'
       - '.github/workflows/deploy-csa-ci-master.yml'
@@ -26,38 +30,110 @@ env:
   FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
   PROJECT_ID: ${{secrets.PROJECT_ID}}
   PROJECT_PATH: rc-csa
+  CDN_URL: https://${{ secrets.PROJECT_ID }}.firebaseapp.com
   
 jobs:
-  deploy:
-    name: Deploy Firebase function
+  lint:
+    name: Lint (node.js)
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        node-version: [16.x]       
+        node-version: [16.x]
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@main
-
+        uses: actions/checkout@master
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-
+      - name: Install dependencies
+        run: |
+          cd rc-csa
+          yarn install --no-audit
+      - name: Lint Node.js
+        run: |
+          cd rc-csa
+          yarn lint
+      - name: Lint Markdown
+        run: |
+          cd rc-csa
+          yarn lint-md    
+  test:        
+    name: Test
+    needs: lint
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
         run: |
           cd rc-csa
-          npm install --production
-          npm run build
-          npm run compile-html
-          firebase use ${{ PROJECT_ID }}
-
-      - name: Install Build
+          yarn install
+      - name: Unit Testing
         run: |
           cd rc-csa
-          npm run build
-          npm run compile-html
-          firebase use $PROJECT_ID
+          yarn test
+  
+  build_and_deploy:
+    name: Build and Deploy
+    needs: lint
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [16.x]    
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies
+        run: |
+          cd rc-csa
+          yarn install
+
+      - name: Generate ENV configuration file
+        run: |
+          cd rc-csa        
+          cat << EOF > env-generated.json
+          {
+            "applicationName": "csa-app",
+            "frontendHost": "mc.commercetools.co",
+            "mcApiUrl": "https://mc-api.commercetools.co",
+            "location": "us",
+            "env": "production",
+            "cdnUrl": "$CDN_URL",
+            "servedByProxy": true,
+          }
+          EOF
+
+      - name: Generate HEADERS configuration file
+        run: |
+          cd rc-csa        
+          cat << EOF > headers-generated.json
+          {
+            "csp": {
+              "script-src": ["$CDN_URL"],
+              "connect-src": ["$CDN_URL"],
+              "style-src": ["$CDN_URL"]
+            }
+          }
+          EOF    
           
+      - name: Build
+        run: |
+          cd rc-csa
+          yarn build
+          yarn run compile-html:firebase
+
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
