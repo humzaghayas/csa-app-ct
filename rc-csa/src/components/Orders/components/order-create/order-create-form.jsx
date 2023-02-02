@@ -77,6 +77,8 @@ const itemRenderer = (item, column) => {
 
 const OrderCreateForm = (props) => {
   const intl = useIntl();
+  const { push } = useHistory();
+  const match = useRouteMatch();
   const formik = useFormik({
     initialValues: props.initialValues,
     onSubmit: props.onSubmit,
@@ -142,6 +144,11 @@ const OrderCreateForm = (props) => {
         props.onChange(e);
         break;
     }
+  }
+
+  const onSubmit = (e) =>{
+    // console.log("In order create form");
+    props.onSubmit(e);
   }
 
 
@@ -238,6 +245,9 @@ const OrderCreateForm = (props) => {
              rows={formik.values.lineItems} 
              columns={columns} 
              itemRenderer={itemRenderer}
+             onRowClick={(row) =>{ push(`${match.url}/${row.id}/order-item`);
+              }
+            }
              />:null}
               </Spacings.Stack>
             {/* <Spacings.Stack scale="s">
