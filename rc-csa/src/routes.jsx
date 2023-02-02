@@ -21,6 +21,7 @@ import { PERMISSIONS } from './constants';
 import CustomerMessagesForm from './components/Customer/components/customer-messages/customer-messages-form';
 import CustomerMessages from './components/Customer/components/customer-messages/customer-messages';
 import CustomerReply from './components/Customer/components/customer-messages/customer-reply';
+import AtgAccount from './components/ATG - POC/components/atg-account/atg-account';
 
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
@@ -77,10 +78,13 @@ const ApplicationRoutes = () => {
          <Customers linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/Orders`}>
-      <Orders linkToWelcome={match.url} />
+          <Orders linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/Cart`}>
-      <Cart linkToWelcome={match.url} />
+          <Cart linkToWelcome={match.url} />
+        </Route>
+        <Route path={`${match.path}/ATG`}>
+          <AtgAccount linkToWelcome={match.url} />
         </Route>
         <Route  path={`${match.path}/order-edit/:id`}>
       <OrderAccount linkToWelcome={match.url} />
