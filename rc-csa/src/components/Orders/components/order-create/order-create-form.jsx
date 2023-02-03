@@ -236,6 +236,16 @@ const OrderCreateForm = (props) => {
             </CollapsiblePanel.Header>
           }
           scale="l">
+          <Spacings.Inline>
+            <SecondaryButton
+              label="Add Lineitem"
+              data-track-event="click"
+              onClick={() => push(`add-lineitem`)}
+              iconLeft={<PlusBoldIcon />}
+              size="medium"
+            />
+      </Spacings.Inline>
+
             <Constraints.Horizontal >
               <Spacings.Stack scale="m">
              <Spacings.Stack scale="s">
