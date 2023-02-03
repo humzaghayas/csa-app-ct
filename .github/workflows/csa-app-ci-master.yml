@@ -11,7 +11,7 @@ on:
       - master
     paths:
       - 'rc-csa/**'
-      - '.github/workflows/deploy-csa-ci-master.yml'
+      - '.github/workflows/csa-app-ci-master.yml'
       - '*.json'
       - '*.yml'
       - '*.yaml'
