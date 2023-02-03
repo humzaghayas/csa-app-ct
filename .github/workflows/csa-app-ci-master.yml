@@ -24,10 +24,10 @@ env:
 jobs:
   lint:
     name: Lint (node.js)
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [10.x]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
@@ -50,10 +50,10 @@ jobs:
   # test:        
   #   name: Test
   #   needs: lint
-  #   runs-on: ubuntu-22.04
+  #   runs-on: ubuntu-18.04
   #   strategy:
   #     matrix:
-  #       node-version: [16.x]
+  #       node-version: [10.x]
   #   steps:
   #     - name: Checkout Repo
   #       uses: actions/checkout@master
@@ -73,10 +73,10 @@ jobs:
   build_and_deploy:
     name: Build and Deploy
     needs: lint
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
-        node-version: [16.x]    
+        node-version: [10.x]    
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
