@@ -254,7 +254,7 @@ const OrderCreateForm = (props) => {
               <Spacings.Inline>
             <SecondaryButton
           label="Add Line Items"
-          isDisabled={true}
+         // isDisabled={true}
           data-track-event="click"
           onClick={() => push(`order-line-items`)}
           iconLeft={<PlusBoldIcon />}

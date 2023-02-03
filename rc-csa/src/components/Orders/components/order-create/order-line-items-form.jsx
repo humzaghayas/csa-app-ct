@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { useFormik } from 'formik';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import LocalizedTextField from '@commercetools-uikit/localized-text-field';
@@ -11,6 +11,11 @@ import SearchSelectInput from '@commercetools-uikit/search-select-input';
 import { renderToStringWithData } from '@apollo/client/react/ssr';
 import { PrimaryButton, SecondaryButton } from '@commercetools-uikit/buttons';
 import { useRouteMatch ,useHistory} from 'react-router-dom';
+import { Products } from './searchdata';
+import { getLineItemsRows } from './rows';
+import TextInput from '@commercetools-uikit/text-input';
+
+
 
 
 const rows = [
@@ -20,14 +25,8 @@ const rows = [
   ];
   
   const columns = [
-    { key: 'product', label: 'Product' },
-    // { key: 'unitPrice', label: 'Original Unit Price' },
-    { key: 'unitPrice', label: 'Unit Price' },
-    { key: 'quantity', label: 'Qty' },
-    // { key: 'lineItemState', label: 'LineItemState' },
-    { key: 'subTotalPrice', label: 'Sub Total' },
-    { key: 'tax', label: 'Tax' },
-    { key: 'totalPrice', label: 'Total' },
+    {key: 'itemName', label: 'item Name' },
+    { key:'unitPrice', label: 'unit Price' },
   ];
   
   
@@ -36,6 +35,8 @@ const rows = [
 const OrderLineItemsForm = (props) => {
   const match = useRouteMatch();
   const history = useHistory();
+  const[searchInputValue,setSearchInputValue] = useState('')
+  const noOptionsMessage ='No options message'
   const dataLocale = useApplicationContext((context) => context.dataLocale);
   const formik = useFormik({
     // Pass initial values from the parent component.
@@ -57,8 +58,24 @@ const OrderLineItemsForm = (props) => {
     props.onSubmit(e);
   }
 
-
-
+  // const colourOptions = [
+  //   {label:'Iphone' , value:'iphone' , key:'iphone' , id:'iphone'},
+  //   {label:'Android' , value:'android' , key:'android' , id:'android'}
+    
+  // ];
+  
+  const filterColors = (inputValue) =>
+    Products.filter(
+      (colourOption) =>
+        colourOption.label === inputValue || colourOption.id === inputValue
+    );
+  
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  
+  const loadOptions = (inputValue) =>
+    delay(500).then(() => filterColors(inputValue));
+  
+    
   
  //const formElements = (
    return(
@@ -66,11 +83,13 @@ const OrderLineItemsForm = (props) => {
       
          <Spacings.Stack scale="l">
            
-           <Constraints.Horizontal min={13}>
-         <SearchSelectInput
+           <Constraints.Horizontal min={13} max={13}>
+           <TextInput placeholder="Search By...." value={searchInputValue}  onChange={(e) => { setSearchInputValue(e.target.value) }} />
+         {/* <SearchSelectInput
       id="customers"
       name="customers"
       horizontalConstraint={13}
+      value={searchInputValue}
       optionType="single-lined"
       isAutofocussed={false}
       backspaceRemovesValue={true}
@@ -78,26 +97,29 @@ const OrderLineItemsForm = (props) => {
       isDisabled={false}
       isReadOnly={false}
       isMulti={true}
-      noOptionsMessage="No exact match found"
+      noOptionsMessage={() => noOptionsMessage}
       loadingMessage="loading exact matches"
       placeholder="Search By..."
      
-      loadOptions={() => {}}
+      loadOptions={loadOptions}
       cacheOptions={false}
       onChange={
-        () => {}
+        (e) => {setSearchInputValue(e.target.value)
+        console.log('searchvalueeeee',searchInputValue)}
+        
       
     }
     className="select-input-search"
-    />
+    /> */}
    </Constraints.Horizontal>
           </Spacings.Stack>
+          {Products?(
           <Spacings.Stack scale='l'>
        <DataTable
-       rows={rows}
+       rows={getLineItemsRows(Products,searchInputValue)}
        columns={columns}
        />
-          </Spacings.Stack> 
+          </Spacings.Stack>):null }
           <Spacings.Stack scale='l'>
             <Spacings.Inline>
           <SecondaryButton
