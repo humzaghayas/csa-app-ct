@@ -26,7 +26,7 @@ import {
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import DataTable from '@commercetools-uikit/data-table';
-import styles from './Ticket-details.module.css';
+import styles from './ticket-details.module.css';
 import FieldLabel from '@commercetools-uikit/field-label';
 import Constraints from '@commercetools-uikit/constraints';
 // import { PlusBoldIcon} from '@commercetools-uikit/icons';

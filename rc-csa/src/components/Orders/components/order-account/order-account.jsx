@@ -21,7 +21,7 @@ import SecondaryButton from '@commercetools-uikit/secondary-button';
 import { PlusBoldIcon, ExportIcon } from '@commercetools-uikit/icons';
 import Spacings from '@commercetools-uikit/spacings';
 
-import styles from './Order-account-module.css';
+import styles from './order-account-module.css';
 // import RequiredApproval from '../required-approval';
 // import AddBudget from '../add-budget';
 // import AddNewRule from '../add-new-rule';
