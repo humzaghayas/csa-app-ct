@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        node-version: [10.x]
+        node-version: [16.x]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
@@ -50,10 +50,10 @@ jobs:
   # test:        
   #   name: Test
   #   needs: lint
-  #   runs-on: ubuntu-18.04
+#   runs-on: ubuntu-18.04
   #   strategy:
   #     matrix:
-  #       node-version: [10.x]
+  #       node-version: [16.x]
   #   steps:
   #     - name: Checkout Repo
   #       uses: actions/checkout@master
@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        node-version: [10.x]    
+        node-version: [16.x]    
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
