@@ -6,7 +6,7 @@ on:
     branches:
       - master
     paths:
-      - 'packages/b2b-extension-custom-app/**'
+      - 'rc-csa/**'
       - '.github/workflows/custom-app-ci-master.yaml'
       - '*.json'
 env:
@@ -15,7 +15,7 @@ env:
   PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
   FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
   CDN_URL: https://${{ secrets.FIREBASE_PROJECT_ID }}.firebaseapp.com
-  PROJECT_PATH: packages/b2b-extension-custom-app      
+  PROJECT_PATH: rc-csa      
 jobs:
   lint:
     name: Lint (node.js)
@@ -32,15 +32,15 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          cd packages/b2b-extension-custom-app
+          cd rc-csa
           yarn install --no-audit
       - name: Lint Node.js
         run: |
-          cd packages/b2b-extension-custom-app
+          cd rc-csa
           yarn lint
       - name: Lint Markdown
         run: |
-          cd packages/b2b-extension-custom-app
+          cd rc-csa
           yarn lint-md    
   test:        
     name: Test
@@ -58,11 +58,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
         run: |
-          cd packages/b2b-extension-custom-app
+          cd rc-csa
           yarn install
       - name: Unit Testing
         run: |
-          cd packages/b2b-extension-custom-app
+          cd rc-csa
           yarn test
   
   build_and_deploy:
@@ -81,12 +81,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
         run: |
-          cd packages/b2b-extension-custom-app
+          cd rc-csa
           yarn install
 
       - name: Generate ENV configuration file
         run: |
-          cd packages/b2b-extension-custom-app        
+          cd rc-csa        
           cat << EOF > env-generated.json
           {
             "applicationName": "b2b-extension-custom-app",
@@ -102,7 +102,7 @@ jobs:
           EOF
       - name: Generate HEADERS configuration file
         run: |
-          cd packages/b2b-extension-custom-app        
+          cd rc-csa        
           cat << EOF > headers-generated.json
           {
             "csp": {
@@ -114,7 +114,7 @@ jobs:
           EOF
       - name: Build
         run: |
-          cd packages/b2b-extension-custom-app
+          cd rc-csa
           yarn build
           yarn run compile-html:firebase
 
