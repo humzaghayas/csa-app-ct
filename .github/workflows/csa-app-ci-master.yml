@@ -98,7 +98,7 @@ jobs:
             "frontendHost": "mc.commercetools.co",
             "mcApiUrl": "https://mc-api.commercetools.co",
             "location": "us",
-            "env": "production",
+            "env": "development",
             "cdnUrl": "$CDN_URL",
             "servedByProxy": true,
           }

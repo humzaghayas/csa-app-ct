@@ -8,7 +8,6 @@ const config = {
   entryPointUriPath,
   cloudIdentifier: 'gcp-us',
   env: {
-    MC_APP_ENV:'${env:ENV_VAL}',
     development: {
       initialProjectKey: '${env:CTP_INITIAL_PROJECT_KEY}',
     },
