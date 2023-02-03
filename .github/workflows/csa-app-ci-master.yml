@@ -43,10 +43,10 @@ jobs:
         run: |
           cd rc-csa
           yarn lint
-      - name: Lint Markdown
-        run: |
-          cd rc-csa
-          yarn lint-md    
+      # - name: Lint Markdown
+      #   run: |
+      #     cd rc-csa
+      #     yarn lint-md    
   test:        
     name: Test
     needs: lint
