@@ -41,24 +41,29 @@ const OrderShipping = (props) => {
     demandedPermissions: [PERMISSIONS.Manage],
   });
 
-  const {executeFetchOrder} = useFetchOrderById(match.params.id);
+  //const {executeFetchOrder} = useFetchOrderById(match.params.id);
   const {executeUpdateOrder} = useOrderUpdateById();
   const showNotification = useShowNotification();
   const showApiErrorNotification = useShowApiErrorNotification();
   
-  const [order,setOrder] = useState(async()=>{
-    return await executeFetchOrder(match.params.id);
-  });
+  // const [order,setOrder] = useState(async()=>{
+  //   return await executeFetchOrder(match.params.id);
+  // });
 
   const [reducerValue, forceUpdate] = useReducer(x => x+1,0);
 
-  useEffect(()=>{
-    const fetchData = async ()=>{
-      const result  = await executeFetchOrder(match.params.id);
-      setOrder(result);
-    }
-    fetchData();
-  },[reducerValue]);
+  // useEffect(async()=>{
+  //   if(order == null){
+  //     const result  = await executeFetchOrder(match.params.id);
+  //     setOrder(result);
+  //   }
+  // },[reducerValue]);
+
+  const {data} = useFetchOrderById(match.params.id);
+
+
+  let order = {data};
+
 
   // const showNotification = useShowNotification();
   // const showApiErrorNotification = useShowApiErrorNotification();

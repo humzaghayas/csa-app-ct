@@ -33,27 +33,26 @@ export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
     loading,
   };
 };
-export const useFetchOrderById = () =>{
-const [usefetchOrderByIdQuery,{loading}] =  useMcLazyQuery(gql`${FETCH_ORDER_BY_ID}`);
+export const useFetchOrderById =  (orderId) =>{
 
-const executeFetchOrder = async(orderId) =>{
-  return await usefetchOrderByIdQuery(
-    {
-      variables: {
-        id:orderId
-      },
-      context: {
-        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-      },
-      fetchPolicy:"network-only"
-    } 
-  )
-}
 
-return {
-  executeFetchOrder,
-  loading,
-};
+  const { data, error, loading } =  useMcQuery(gql`${FETCH_ORDER_BY_ID}`, {
+    variables: {
+      id:orderId
+    },
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    },
+    fetchPolicy:"network-only"
+  });
+
+  let order ={data};
+
+  return {
+    order,
+    loading,
+    error
+  };
 }
 export const useOrderUpdateById = () =>{
 

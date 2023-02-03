@@ -41,27 +41,22 @@ const OrderLineItems = (props) => {
     demandedPermissions: [PERMISSIONS.Manage],
   });
 
-  const {executeFetchOrder} = useFetchOrderById(match.params.id);
+  
   const {executeUpdateOrder} = useOrderUpdateById();
   const {executeCreateOrderEdit} = useCreateOrderEditById();
   const {executeOrderEditApply} = useOrderEditApply();
   const showNotification = useShowNotification();
   const showApiErrorNotification = useShowApiErrorNotification();
   
-  const [order,setOrder] = useState(async()=>{
-    return await executeFetchOrder(match.params.id);
-  });
+  // const [order,setOrder] = useState(null);
 
   const [reducerValue, forceUpdate] = useReducer(x => x+1,0);
 
-  useEffect(()=>{
-    const fetchData = async ()=>{
-      const result  = await executeFetchOrder(match.params.id);
-      setOrder(result);
-    }
-    fetchData();
-  },[reducerValue]);
+  const {data,loading,error} =  useFetchOrderById(match.params.id);
+
+  const order = {data};
   
+  // setOrder(data);
 
   const handleSubmit = useCallback(
     async(e) =>{
