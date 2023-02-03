@@ -15,17 +15,7 @@ on:
       - '*.json'
       - '*.yml'
       - '*.yaml'
-  pull_request:
-    branches: 
-      - master
-    types: 
-      - closed
-    paths:
-      - 'rc-csa/**'
-      - '.github/workflows/deploy-csa-ci-master.yml'
-      - '*.json'
-      - '*.yml'
-      - '*.yaml'    
+
 env:
   FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
   PROJECT_ID: ${{secrets.PROJECT_ID}}

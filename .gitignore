@@ -10,7 +10,7 @@ firebase-debug.*.log*
 # Firebase cache
 .firebase/
 
-lib/
+#lib/
 
 # Firebase config
 
