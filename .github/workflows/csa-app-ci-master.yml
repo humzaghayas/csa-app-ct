@@ -20,6 +20,7 @@ env:
   PROJECT_ID: ${{secrets.PROJECT_ID}}
   PROJECT_PATH: rc-csa
   CDN_URL: https://${{ secrets.PROJECT_ID }}.firebaseapp.com
+  NODE_ENV: production
   
 jobs:
   lint:
@@ -98,7 +99,7 @@ jobs:
             "frontendHost": "mc.commercetools.co",
             "mcApiUrl": "https://mc-api.commercetools.co",
             "location": "us",
-            "env": "development",
+            "env": "production",
             "cdnUrl": "$CDN_URL",
             "servedByProxy": true,
           }
