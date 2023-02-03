@@ -1,1 +1,1 @@
-export { default } from './Ticket-employees';
+export { default } from './ticket-employees';

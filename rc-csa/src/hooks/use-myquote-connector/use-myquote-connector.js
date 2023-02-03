@@ -5,7 +5,7 @@ import {
 } from '@commercetools-frontend/application-shell';
 
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
-import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
+import { GRAPHQL_TARGETS , MC_API_PROXY_TARGETS } from '@commercetools-frontend/constants';
 import { createSyncEmployee } from '@commercetools/sync-actions';
 import {
   createGraphQlUpdateActions,
@@ -17,7 +17,7 @@ import FetchMyquoteDetailsQuery from './fetch-myquote.ctp.graphql';
 import UpdateMyquoteDetailsMutation from './update-myquote-details.ctp.graphql';
 
 import { useAsyncDispatch, actions } from '@commercetools-frontend/sdk';
-import { MC_API_PROXY_TARGETS } from '@commercetools-frontend/constants';
+
 import { useState,useEffect } from 'react';
 
 
@@ -145,30 +145,30 @@ export const useMyquoteDetailsUpdater = () => {
     UpdateMyquoteDetailsMutation
   );
 
-  const syncStores = createSyncMyquote();
-  const execute = async ({ originalDraft, nextDraft }) => {
-    const actions = syncStores.buildActions(
-      nextDraft,
-      convertToActionData(originalDraft)
-    );
-    try {
-      return await updateMyquoteDetails({
-        context: {
-          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-        },
-        variables: {
-          myquoteId: originalDraft.id,
-          version: originalDraft.version,
-          actions: createGraphQlUpdateActions(actions),
-        },
-      });
-    } catch (graphQlResponse) {
-      throw extractErrorFromGraphQlResponse(graphQlResponse);
-    }
-  };
+  // const syncStores = createSyncMyquote();
+  // const execute = async ({ originalDraft, nextDraft }) => {
+  //   const actions = syncStores.buildActions(
+  //     nextDraft,
+  //     convertToActionData(originalDraft)
+  //   );
+  //   try {
+  //     return await updateMyquoteDetails({
+  //       context: {
+  //         target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+  //       },
+  //       variables: {
+  //         myquoteId: originalDraft.id,
+  //         version: originalDraft.version,
+  //         actions: createGraphQlUpdateActions(actions),
+  //       },
+  //     });
+  //   } catch (graphQlResponse) {
+  //     throw extractErrorFromGraphQlResponse(graphQlResponse);
+  //   }
+  // };
 
   return {
     loading,
-    execute,
+    // execute,
   };
 };

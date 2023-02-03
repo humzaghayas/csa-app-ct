@@ -4,9 +4,9 @@ import {
   useMcLazyQuery
 } from '@commercetools-frontend/application-shell';
 import { useAsyncDispatch, actions } from '@commercetools-frontend/sdk';
-import { MC_API_PROXY_TARGETS } from '@commercetools-frontend/constants';
+import { MC_API_PROXY_TARGETS , GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
 import { gql } from '@apollo/client';
-import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
+
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import {
   FETCH_ORDERS,
@@ -86,12 +86,12 @@ export const useOrderUpdateById = () =>{
 }
 export const useCreateOrderEditById = () =>{
 
-  const [useCreateOrderEditByIdV,{loading}] = useMcMutation(gql`${CREATE_EDIT_ORDER_BY_ID}`);
+  const [createOrderEdit,{loading}] = useMcMutation(gql`${CREATE_EDIT_ORDER_BY_ID}`);
   
    const executeCreateOrderEdit = async(draft) =>{
     // console.log("In use orders connectors")
     // console.log(draft);
-    return await useCreateOrderEditByIdV(
+    return await createOrderEdit(
       {
         variables: {
           draft

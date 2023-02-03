@@ -5,8 +5,8 @@ import {
   useMcLazyQuery,
 } from '@commercetools-frontend/application-shell';
 import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
-import{getForKey,CONSTANTS,FETCH_ORDER_INFO_BY_ORDERNUMBER} from 'ct-tickets-helper-api'
-import { getCreateTicketDraft, getTicketFromCustomObject } from 'ct-tickets-helper-api';
+import{getForKey,CONSTANTS,FETCH_ORDER_INFO_BY_ORDERNUMBER, getCreateTicketDraft, getTicketFromCustomObject } from 'ct-tickets-helper-api'
+
 import { extractErrorFromGraphQlResponse } from '../../helpers';
 
 export const useOrderService = ()=>{

@@ -54,29 +54,29 @@ import { convertToActionData, extractErrorFromGraphQlResponse } from '../../help
     };
 
     export const useAddLineItem = (cart)=>{
-      const { data, error, loading } =  useMcMutation(gql`${CREATE_ADD_LINEITEM}`, {
-        variables: {
-          version: cart.version,
-          actions:[
-            {
-              addLineItem:{
-                lineItem,
-              }
-            }
-          ]
-        },
-        context: {
-          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-        },
-        fetchPolicy:"network-only"
-      });
+      // const { data, error, loading } =  useMcMutation(gql`${CREATE_ADD_LINEITEM}`, {
+      //   variables: {
+      //     version: cart.version,
+      //     actions:[
+      //       {
+      //         addLineItem:{
+      //           lineItem,
+      //         }
+      //       }
+      //     ]
+      //   },
+      //   context: {
+      //     target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      //   },
+      //   fetchPolicy:"network-only"
+      // });
       
-      return {
-       // cart: data?.cart,
-        data, 
-        error,
-        loading,
-      };
+      // return {
+      //  // cart: data?.cart,
+      //   data, 
+      //   error,
+      //   loading,
+      // };
       };
 
     export const useShippingAddressCreator = () => {
