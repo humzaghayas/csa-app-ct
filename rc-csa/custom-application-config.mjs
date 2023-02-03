@@ -18,6 +18,8 @@ const config = {
   },
   additionalEnv: {
     atgPublicURL: '${env:atgPublicURL}',
+    MC_APP_ENV:'${env:ENV_VAL}',
+    NODE_ENV:'${env:ENV_VAL}',
   },
   oAuthScopes: {
     view: [
