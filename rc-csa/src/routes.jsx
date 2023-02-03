@@ -4,7 +4,8 @@ import Channels from './components/channels';
 import Tickets from './components/Ticket/components/Ticket-list/ticket-list';
 
 import Welcome from './components/welcome';
-
+import Products from './components/Products/components/product-list/product-list';
+import ProductAccount from './components/Products/components/product-account/product-account';
 // import TicketDetails from './components/Ticket/components/Ticket-history/ticket-details';
 import TicketAccount from './components/Ticket/components/ticket-account/ticket-account';
 import Customers from './components/Customer/components/customer-list/customer-list';
@@ -77,6 +78,12 @@ const ApplicationRoutes = () => {
         <Route path={`${match.path}/Customers`}>
          <Customers linkToWelcome={match.url} />
         </Route>
+        <Route path={`${match.path}/Products`}>
+      <Products  linkToWelcome={match.url} />
+        </Route>
+        <Route  path={`${match.path}/product-edit/:id`}>
+     <ProductAccount  linkToWelcome={match.url} />
+        </Route>
         <Route path={`${match.path}/Orders`}>
       <Orders linkToWelcome={match.url} />
         </Route>
@@ -86,6 +93,7 @@ const ApplicationRoutes = () => {
         <Route  path={`${match.path}/order-edit/:id`}>
       <OrderAccount linkToWelcome={match.url} />
         </Route>
+        
         <Route  path={`${match.path}/cart-edit/:id`}>
       <CartAccount linkToWelcome={match.url} />
         </Route>
