@@ -19,6 +19,10 @@ import { useHistory, useRouteMatch, Switch, Route,useParams } from 'react-router
 import OrderItemDetails from './order-items-details';
 import { SuspendedRoute } from '@commercetools-frontend/application-shell';
 import OrderLineItems from './order-line-items';
+import { NumberInput, SearchSelectInput } from '@commercetools-frontend/ui-kit';
+import { useProductSearchByText } from '../../../../hooks/use-product-search-connector/use-product-search-connector';
+import { useState } from 'react';
+import { getSearchProductRows } from './conversions';
 
 const getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
   label: key,
@@ -50,35 +54,24 @@ const columns = [
   { key: 'subTotalPrice', label: 'Sub Total' },
   { key: 'tax', label: 'Tax' },
   { key: 'totalPrice', label: 'Total' },
+  // { key: 'isEditQuantity', label:'Edit Qty'}
 ];
 
-const itemRenderer = (item, column) => {
-  switch (column.key) {
-    case 'product':
-      return <div>
-                <Spacings.Stack scale='s'>
-                  <Spacings.Inline>
-                    <img src={item.product.image} height={65} width={65}/>
-                    <Spacings.Stack scale='s'>
-                      <div>{item.product.name}</div>
-                      <div>SKU: {item.product.sku}</div>
-                      <div>Key: {item.product.key}</div>
-                    </Spacings.Stack>
-                  </Spacings.Inline>
-                </Spacings.Stack>
-              </div>;
-    default:
-      return item[column.key];
-  }
-}
-
-
-
+const searchColumns = [
+  { key: 'product', label: 'Product' },
+  { key: 'unitPrice', label: 'Unit Price' },
+  { key: 'quantity', label: 'Qty' },
+  { key: 'addButton', label: ''}
+]
 
 const OrderCreateForm = (props) => {
   const intl = useIntl();
   const { push } = useHistory();
   const match = useRouteMatch();
+  const {executeProductSearch} = useProductSearchByText();
+
+  const [searchProducts,setSearchProducts] = useState([]);
+
   const formik = useFormik({
     initialValues: props.initialValues,
     onSubmit: props.onSubmit,
@@ -88,6 +81,129 @@ const OrderCreateForm = (props) => {
   });
   const params = useParams();
    const lineItemId = params.id;
+
+   const itemRenderer = (item, column) => {
+    switch (column.key) {
+      case 'product':
+        return <div>
+                  <Spacings.Stack scale='s'>
+                    <Spacings.Inline>
+                      <img src={item.product.image} height={65} width={65}/>
+                      <Spacings.Stack scale='s'>
+                        <div>{item.product.name}</div>
+                        <div>SKU: {item.product.sku}</div>
+                        <div>Key: {item.product.key}</div>
+                      </Spacings.Stack>
+                    </Spacings.Inline>
+                  </Spacings.Stack>
+                </div>;
+      case 'quantity':
+        return <div>
+                  <Spacings.Stack scale='s'>
+                    <Spacings.Inline>
+                      <Spacings.Stack scale='s'>
+                        <NumberInput
+                          id='quantity'
+                          label='Quantity'
+                          value={item.quantity}
+                          isDisabled={item.isEditQuantity}
+                          onChange={(e)=>{
+                            e.stagedActions = [
+                              {
+                                 changeLineItemQuantity: {
+                                   lineItemId: item?.id,
+                                   quantity: Number(e.target.value)
+                                } 
+                              }
+                            ]
+                            props.onSubmit(e);
+                            console.log("type of",typeof(e.target.value))
+                          }}
+                        />
+                      </Spacings.Stack>
+                    </Spacings.Inline>
+                  </Spacings.Stack>
+                </div>;
+      case 'isEditQuantity':
+        return <div>
+                  <Spacings.Stack scale='s'>
+                    <Spacings.Inline>
+                      <Spacings.Stack scale='s'>
+                        <PrimaryButton
+                          label='Edit Quantity'
+                          onClick={()=>{
+                            item.isEditQuantity = true
+                          }}
+                        />
+                      </Spacings.Stack>
+                    </Spacings.Inline>
+                  </Spacings.Stack>
+                </div>;
+      default:
+        return item[column.key];
+    }
+  }
+  
+  const itemRendererSearch = (item, column) => {
+    switch (column.key) {
+      case 'product':
+        return <div>
+                  <Spacings.Stack scale='s'>
+                    <Spacings.Inline>
+                      <img src={item?.image?.url} height={65} width={65}/>
+                      <Spacings.Stack scale='s'>
+                        <div>{item?.product}</div>
+                        <div>SKU: {item?.sku}</div>
+                        <div>Key: {item?.key}</div>
+                      </Spacings.Stack>
+                    </Spacings.Inline>
+                  </Spacings.Stack>
+                </div>;
+      case 'quantity':
+        return <div>
+                  <Spacings.Stack scale='s'>
+                    <Spacings.Inline>
+                      <NumberInput
+                      value={item.quantity}
+                      isReadOnly={false}
+                      onChange={(e)=>{item.quantity=e.target.value}}
+                      horizontalConstraint={2}
+                      />
+                    </Spacings.Inline>
+                  </Spacings.Stack>
+                </div>;
+      case 'addButton':
+        return <div>
+                <Spacings.Stack scale='s'>
+                  <Spacings.Inline>
+                    <PrimaryButton
+                    title='Add'
+                    label='Add'
+                    type='button'
+                    onClick={(e) => {
+                      console.log("Add Order Item")
+                      console.log("item",item);
+
+                      e.stagedActions = [
+                        {
+                          addLineItem: {
+                            productId: item?.productId,
+                            variantId: item?.variantId,
+                            quantity:  item?.quantity
+                          } 
+                        }
+                      ]
+                      props.onSubmit(e);
+
+                      }}
+                    />
+                  </Spacings.Inline>
+                </Spacings.Stack>
+              </div>;
+      default:
+        return item[column.key];
+    }
+  }
 
   const onChange = (e)=>{
     console.log(e?.target);
@@ -172,6 +288,17 @@ const OrderCreateForm = (props) => {
             
      <Spacings.Stack scale="s">
       
+     <Spacings.Inline>
+        <TextField 
+          title="Order Number" 
+          value={formik?.values?.orderNumber} 
+          onChange={(event) => console.log(event)}
+          horizontalConstraint={13}
+          isReadOnly={true}
+          />
+      </Spacings.Inline>
+
+
         <SelectField
           id='orderState'
           name="orderState"
@@ -245,9 +372,9 @@ const OrderCreateForm = (props) => {
              rows={formik.values.lineItems} 
              columns={columns} 
              itemRenderer={itemRenderer}
-             onRowClick={(row) =>{ push(`${match.url}/${row.id}/order-item`);
-              }
-            }
+            //  onRowClick={(row) =>{ push(`${match.url}/${row.id}/order-item`);
+            //   }
+            // }
              />:null}
               </Spacings.Stack>
             {/* <Spacings.Stack scale="s">
@@ -280,6 +407,60 @@ const OrderCreateForm = (props) => {
         </Constraints.Horizontal>
        
       {/* </Spacings.Inline> */}
+     </CollapsiblePanel>
+     {/* Product search */}
+     <CollapsiblePanel
+       data-testid="quote-summary-panel"
+       header={
+         <CollapsiblePanel.Header>
+           {/* {formatMessage(messages.panelTitle)} */}
+           {'Add line items'}
+         </CollapsiblePanel.Header>
+       }
+       scale="l"
+     >
+      <Constraints.Horizontal>
+       <Spacings.Stack scale='m'>
+        <Spacings.Stack scale='s'>
+
+          <SearchSelectInput
+            id='searchProduct'
+            name='searchProduct'
+            horizontalConstraint={7}
+            optionType="single-lined"
+            isAutofocussed={false}
+            backspaceRemovesValue={true}
+            isClearable={true}
+            isDisabled={false}
+            isReadOnly={false}
+            isMulti={false}
+            onChange={()=>{}}
+            placeholder="Search products by name"
+            loadOptions={async (s)=>{
+              console.log(s)
+              const result = await executeProductSearch(s);
+              setSearchProducts(result?.data?.productProjectionSearch?.results)
+              console.log(result);
+              // return s;
+            }}
+            // noOptionsMessage="No exact match found"
+            // loadingMessage="loading exact matches"
+            // placeholder="Select customers"
+            // eslint-disable-next-line no-undef
+            // loadOptions={customLoadOptionsFunction}
+            // cacheOptions={false}
+          />
+
+          {searchProducts.length>0 ? <DataTable
+            rows={getSearchProductRows(searchProducts)}
+            columns={searchColumns}
+            itemRenderer={itemRendererSearch}
+          />: null}
+
+
+        </Spacings.Stack>
+       </Spacings.Stack>
+      </Constraints.Horizontal>
      </CollapsiblePanel>
      </Spacings.Stack>
     </Spacings.Stack>

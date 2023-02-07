@@ -59,21 +59,15 @@ const OrderShipping = (props) => {
   //   }
   // },[reducerValue]);
 
-  const {data} = useFetchOrderById(match.params.id);
-
-
-  let order = {data};
-
-
-  // const showNotification = useShowNotification();
-  // const showApiErrorNotification = useShowApiErrorNotification();
-  // const TicketDetailsCreator = useTicketDetailsCreator();
+  let {order} = useFetchOrderById(match.params.id);
   const handleSubmit = useCallback(
     async(payload) =>{
       console.log("In Handle Submit");
       console.log(payload);
       try{
         const result = await executeUpdateOrder(payload);
+        order.data.order.version = result?.data?.updateOrder?.version?result?.data?.updateOrder?.version:order.data.order.version;
+        console.log(result); 
         forceUpdate();
           showNotification({
           kind: 'success',
