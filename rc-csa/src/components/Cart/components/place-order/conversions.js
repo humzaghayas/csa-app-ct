@@ -1,17 +1,14 @@
 import LocalizedTextInput from '@commercetools-uikit/localized-text-input';
 import { transformLocalizedFieldToLocalizedString } from '@commercetools-frontend/l10n';
 import { TextInput } from '@commercetools-frontend/ui-kit';
+import CartAccount from '../cart-account/cart-account';
 
 export const docToFormValues = (carts, languages) => ({
   id: carts?.id,
   cartState: carts?.cartState,
-  cartNumber: carts?.cartNumber ?? '--',
   //orderNumber: order?.orderNumber,
   lineItems: getLineItems(carts?.lineItems),
-  totalPrice: amountCalculator(
-    carts?.totalPrice?.centAmount,
-    carts?.totalPrice?.fractionDigits
-  ),
+  //totalPrice:amountCalculator(carts?.totalPrice?.centAmount,carts?.totalPrice?.fractionDigits),
   taxedPrice: {
     totalGross: amountCalculator(
       carts?.taxedPrice?.totalGross?.centAmount,
@@ -91,31 +88,29 @@ function amountCalculator(centAmount, fractionDigits) {
 }
 
 export const formValuesToDoc = (formValues) => ({
-  salutation: !TextInput.isEmpty(formValues.salutation)
-    ? formValues.salutation
+  id: !TextInput.isEmpty(formValues.id) ? formValues.id : undefined,
+  version: !TextInput.isEmpty(formValues.version)
+    ? formValues.version
     : undefined,
-  title: !TextInput.isEmpty(formValues.title) ? formValues.title : undefined,
-  firstName: !TextInput.isEmpty(formValues.firstName)
-    ? formValues.firstName
+  customer: !TextInput.isEmpty(formValues.customer)
+    ? formValues.customer
     : undefined,
-  middleName: !TextInput.isEmpty(formValues.middleName)
-    ? formValues.middleName
+  // createdAt: !TextInput.isEmpty(formValues.createdAt)
+  //   ? formValues.createdAt
+  //   : undefined,
+  // lastModifiedAt: !TextInput.isEmpty(formValues.lastModifiedAt)
+  //   ? formValues.lastModifiedAt
+  //   : undefined,
+  cartState: !TextInput.isEmpty(formValues.cartState)
+    ? formValues.cartState
     : undefined,
-  lastName: !TextInput.isEmpty(formValues.lastName)
-    ? formValues.lastName
+  totalPrice: !TextInput.isEmpty(formValues.totalPrice)
+    ? formValues.totalPrice
     : undefined,
-  email: formValues.email,
-  dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
-    ? formValues.dateOfBirth
+  noOforderItems: !TextInput.isEmpty(formValues.noOforderItems)
+    ? formValues.noOforderItems
     : undefined,
-  employeeNumber: !TextInput.isEmpty(formValues.employeeNumber)
-    ? formValues.employeeNumber
+  totalItems: !TextInput.isEmpty(formValues.totalItems)
+    ? formValues.totalItems
     : undefined,
-  externalId: !TextInput.isEmpty(formValues.externalId)
-    ? formValues.externalId
-    : undefined,
-  customerGroup: { key: formValues.customerGroup },
-  roles: formValues.roles,
-  password: formValues.password,
-  confirmedPassword: undefined,
 });
