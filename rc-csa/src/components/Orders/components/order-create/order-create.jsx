@@ -52,7 +52,7 @@ const OrderCreate = (props) => {
 
   const [reducerValue, forceUpdate] = useReducer(x => x+1,0);
 
-  const {order,loading,error} =  useFetchOrderById(match.params.id);
+  let {order,loading,error} =  useFetchOrderById(match.params.id);
 
   console.log('order',order);
   // useEffect(async()=>{
@@ -66,23 +66,16 @@ const OrderCreate = (props) => {
   const handleSubmit = useCallback(
     async(e) =>{
       console.log("In Handle Submit");
-      const orderItem = e.orderItem;
-      if(!orderItem.isQuantityUpdated){
+      const stagedActions = e.stagedActions;
+      if(stagedActions.length!=0){
         try{
           const draft= {
             resource : {
              id: order?.data?.order?.id,
              typeId: "order"
            },
-           stagedActions: [
-             {
-                changeLineItemQuantity: {
-                  lineItemId: orderItem?.lineItemId,
-                  quantity: orderItem?.quantity
-               } 
-             }
-           ],
-           comment: orderItem?.comment?orderItem?.comment:"No Comment"
+           stagedActions,
+           comment: "No Comment"
          }
          console.log(draft);
           const result = await executeCreateOrderEdit(draft);
@@ -106,8 +99,8 @@ const OrderCreate = (props) => {
             const result2 = await executeOrderEditApply(payload,orderEditId)
             console.log(result2);
           }
-
           console.log(result.data.createOrderEdit);
+          window.location.reload(true)
           forceUpdate();
             showNotification({
             kind: 'success',

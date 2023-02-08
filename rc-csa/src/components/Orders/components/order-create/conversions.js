@@ -6,6 +6,7 @@ export const docToFormValues = (order, languages) => ({
   id:order?.id,
   version:order?.version,
   orderState:order?.orderState,
+  orderNumber:order?.orderNumber,
   paymentState:order?.paymentState,
   shipmentState:order?.shipmentState,
   lineItems:getLineItems(order?.lineItems),
@@ -27,6 +28,7 @@ export function getLineItems(lineItems){
               productId:lineItem?.productId,
               productKey:lineItem?.productKey,
               quantity:lineItem?.quantity,
+              isEditQuantity:false,
               product:{
                 name:lineItem?.name,
                 sku:lineItem?.variant?.sku,
@@ -65,6 +67,32 @@ function amountCalculator(centAmount,fractionDigits){
   centAmount = centAmount/100;
   centAmount = "$"+centAmount+".00";
   return centAmount;
+}
+
+export const getSearchProductRows = (productProjectionSearchResults) =>{
+  if(productProjectionSearchResults){
+    return productProjectionSearchResults?.map(product=>{
+      return{
+        productId: product.id,
+        product: product?.name,
+        unitPrice: amountCalculator(product?.masterVariant?.price?.value?.centAmount
+          ,product?.masterVariant?.price?.value?.fractionDigits),
+        quantity:1,
+        sku: product?.masterVariant?.sku,
+        key: product?.masterVariant?.key,
+        variantId: product?.masterVariant?.id,
+        slug: product?.slug,
+        image: {
+          url : product?.masterVariant?.images[0]?.url,
+          // dimensions:{
+          //   height : product?.masterVariant?.images[0]?dimensions?height,
+          //   width : product?.masterVariant?.images[0]?dimensions?width
+          // }
+        }
+
+      }
+    })
+  }
 }
 
 export const formValuesToDoc = (formValues) => ({

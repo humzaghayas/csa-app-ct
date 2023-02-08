@@ -38,7 +38,6 @@ export const FETCH_ORDERS = `query FetchAllOrders($limit: Int!, $offset: Int!, $
       }
     }
   }`
-
 export const FETCH_ORDER_BY_ID = `query($id:String!){
     order(id:$id){
         id
@@ -55,6 +54,7 @@ export const FETCH_ORDER_BY_ID = `query($id:String!){
         customerEmail
         country
         orderState
+        orderNumber
         paymentState
           shipmentState
         origin
@@ -350,6 +350,7 @@ export const UPDATE_ORDER_BY_ID = `mutation updateOrderById($version:Long!,
         orderNumber
         shipmentState
         paymentState
+        version
       }
   }`
 export const CREATE_EDIT_ORDER_BY_ID = `mutation createOrderEdit($draft:OrderEditDraft!){
@@ -361,3 +362,8 @@ export const CREATE_EDIT_ORDER_BY_ID = `mutation createOrderEdit($draft:OrderEdi
       }
     }
   }`
+export const REPLICATE_ORDER = `mutation orderReplicate($referenceInput:ReferenceInput!) {
+  replicateCart(reference:$referenceInput){
+    id
+  }
+}`

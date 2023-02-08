@@ -13,7 +13,7 @@ import {
   usePaginationState,
   useDataTableSortingState,
 } from '@commercetools-uikit/hooks';
-import { BackIcon } from '@commercetools-uikit/icons';
+import { BackIcon, CopyIcon } from '@commercetools-uikit/icons';
 import Constraints from '@commercetools-uikit/constraints';
 import FlatButton from '@commercetools-uikit/flat-button';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
@@ -31,7 +31,7 @@ import {
 import messages from './messages';
 // import toggleFeature from '@commercetools-frontend/application-shell/node_modules/@flopflip/react-broadcast/dist/declarations/src/components/toggle-feature';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
-import { useOrdersFetcher } from '../../../../hooks/use-orders-connector/use-orders-connector';
+import { useOrdersFetcher,useReplicateOrderById } from '../../../../hooks/use-orders-connector/use-orders-connector';
 import {
   // BinLinearIcon,
   // IconButton,
@@ -44,6 +44,8 @@ import './order-list-module.css';
 import OrderAccount from '../order-account/order-account';
 import { getOrderRows } from './rows';
 import MoneyField from '@commercetools-uikit/money-field';
+import { IconButton } from '@commercetools-frontend/ui-kit';
+import { useCallback } from 'react';
 // import { getCompanies } from '../../api';
 // import { useEffect } from 'react';
 
@@ -79,7 +81,7 @@ const columns = [
   { key: 'paymentStatus', label: 'Payment Status' },
   { key: 'createdAt', label: 'Created' },
   { key: 'lastModifiedAt', label: 'Modified' },
-  
+  { key: 'duplicate', label:'Duplicate'}
 
   // { key: 'orderNumber', label: 'Order Number' },
   // { key:'customer', label: 'Customer' },
@@ -99,18 +101,60 @@ const Orders =  (props) => {
   const match = useRouteMatch();
   const { push } = useHistory();
   // const [query] = useState(QUERY);
+  const { executeReplicateOrder } = useReplicateOrderById();
   const { page, perPage } = usePaginationState();
   const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
-
+  // const [isEditable, setIsEditable] = useState(true);
+  let isEditable = true;
   const { ordersPaginatedResult, error, loading } =  useOrdersFetcher({
     page,
     perPage,
     tableSorting,
   });
 
-  // console.log(ordersPaginatedResult);
-  // const orderRows = ;
-  // console.log(orderRows);
+  const onClickDuplicateButton = useCallback(  
+    async (e)=>{
+
+      console.log(e,"Duplicate")
+      const reference ={
+        typeId:"order",
+        id:e?.orderId
+      }
+      console.log(reference);
+      console.log("isEditable",isEditable);
+      isEditable=false;
+      console.log("isEditable",isEditable);
+      // push(`/csa-project-2/csa-customer-tickets/cart-edit/57e66be7-d796-430b-95ca-6070bd59ef30/cart-general`)
+      const result = await executeReplicateOrder(reference);
+      const cartId = await result?.data?.replicateCart?.id;
+      console.log(result);
+      if(cartId){
+        push(`cart-edit/${cartId}/cart-general`)
+      }
+    });
+
+  const itemRendererSearch = (item, column) => {
+    switch (column.key) {
+      case 'duplicate':
+        return <div>
+          <Spacings.Stack scale='s'>
+            <Spacings.Inline>
+              <IconButton
+                icon={<CopyIcon/>}
+                onClick={(e)=>{
+                  e.orderId = item.id 
+                  onClickDuplicateButton(e)
+                }
+                }
+                label='Copy Order'
+              />
+            </Spacings.Inline>
+          </Spacings.Stack>
+        </div>
+      default:
+        return item[column.key];
+    }
+  }
 
   return (
     <Spacings.Stack scale="xl">
@@ -122,45 +166,7 @@ const Orders =  (props) => {
           icon={<BackIcon />}
         />
         <Text.Headline as="h2" intlMessage={messages.title} />
-        
-        {/* <Spacings.Inline> */}
-      {/* <SecondaryButton
-        label="Add Order"
-         data-track-event="click" 
-         onClick={() => push(`ticket-create`)}
-        iconLeft={<PlusBoldIcon />}
-        size="medium"
-      /> */}
-      {/* </Spacings.Inline> */}
-  {/* <AccessibleButton label="Log in" onClick={() => {}}>
-    Log in
-  </AccessibleButton> */}
-      </Spacings.Stack>
-      {/* {loading && <LoadingSpinner />} */}
-      {/* <Spacings.Inline>
-      <SecondaryButton
-        label="Add Ticket"
-         data-track-event="click" 
-          onClick={() => push(`ticket-details`)}
-        iconLeft={<PlusBoldIcon />}
-        size="medium"
-      />
-      </Spacings.Inline> */}
-      <Spacings.Stack scale="l" className='css-294zjy-container' >
-       
-        <MoneyField
-    title="Price"
-    value={
-    // { amount: '30', currencyCode: 'CustomerEmailAddress' },
-    // { amount: '30', currencyCode: 'FirstName' },
-    // { amount: '30', currencyCode: 'LastName' },
-    { amount: '30', currencyCode: 'OrderNO' },
-    { amount: '30', currencyCode: 'SKU' },
-    { amount: '30', currencyCode: 'Store' }
-  }
-    onChange={(event) => alert(event.target.value)}
-    currencies={['OrderNO','SKU','Store']}
-  />
+
   </Spacings.Stack>
       {ordersPaginatedResult?(
         <Spacings.Stack scale="l">
@@ -169,13 +175,19 @@ const Orders =  (props) => {
             isCondensed
             columns={columns}
             rows={getOrderRows(ordersPaginatedResult)}
-            // itemRenderer={(item, column) => itemRenderer(item, column)}
+            itemRenderer={itemRendererSearch}
             maxHeight={600}
             // sortedBy={tableSorting.value.key}
             // sortDirection={tableSorting.value.order}
             // onSortChange={tableSorting.onChange}
-            onRowClick={(row) => push(`order-edit/${row.id}/orders-general`)}
-            // onRowClick={(row) => push(`Ticket-account/${row.id}/companies-general`)}
+            onRowClick={(row) => 
+            {
+              console.log("isEditable",isEditable);
+              if(isEditable){
+                push(`order-edit/${row.id}/orders-general`)
+              }
+            }
+            }
           />
           <Pagination
             page={page.value}
