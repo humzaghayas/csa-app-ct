@@ -12,7 +12,8 @@ import {
   FETCH_ORDERS,
   FETCH_ORDER_BY_ID,
   UPDATE_ORDER_BY_ID,
-  CREATE_EDIT_ORDER_BY_ID} from 'ct-tickets-helper-api';
+  CREATE_EDIT_ORDER_BY_ID,
+  REPLICATE_ORDER} from 'ct-tickets-helper-api';
 
 export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
 
@@ -129,4 +130,28 @@ export const useOrderEditApply = () =>{
   return {
     executeOrderEditApply,
   };
+}
+export const useReplicateOrderById = () =>{
+
+  const [replicateOrder,{loading}] = useMcMutation(gql`${REPLICATE_ORDER}`);
+  
+   const executeReplicateOrder = async(reference) =>{
+
+    return await replicateOrder(
+      {
+        variables: {
+          referenceInput:reference
+        },
+        context: {
+          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+        }
+      }
+    )
+  }
+  
+  return {
+    executeReplicateOrder,
+    loading
+  };
+
 }

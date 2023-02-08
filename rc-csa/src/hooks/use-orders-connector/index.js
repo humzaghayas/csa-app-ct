@@ -3,5 +3,6 @@ export {
     useFetchOrderById,
     useOrderUpdateById,
     useCreateOrderEditById,
-    useOrderEditApply
+    useOrderEditApply,
+    useReplicateOrderById
 } from './use-orders-connector';
