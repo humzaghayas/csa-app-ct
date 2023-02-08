@@ -23,6 +23,7 @@ import CustomerMessagesForm from './components/Customer/components/customer-mess
 import CustomerMessages from './components/Customer/components/customer-messages/customer-messages';
 import CustomerReply from './components/Customer/components/customer-messages/customer-reply';
 import AtgAccount from './components/ATG - POC/components/atg-account/atg-account';
+import ProductsList from './components/Products/components/product-list/products';
 
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
@@ -79,7 +80,8 @@ const ApplicationRoutes = () => {
          <Customers linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/Products`}>
-      <Products  linkToWelcome={match.url} />
+          <ProductsList linkToWelcome={match.url} />
+      {/* <Products  linkToWelcome={match.url} /> */}
         </Route>
         <Route  path={`${match.path}/product-edit/:id`}>
      <ProductAccount  linkToWelcome={match.url} />
