@@ -45,6 +45,7 @@ import OrderAccount from '../order-account/order-account';
 import { getOrderRows } from './rows';
 import MoneyField from '@commercetools-uikit/money-field';
 import { IconButton } from '@commercetools-frontend/ui-kit';
+import { useCallback } from 'react';
 // import { getCompanies } from '../../api';
 // import { useEffect } from 'react';
 
@@ -103,12 +104,34 @@ const Orders =  (props) => {
   const { executeReplicateOrder } = useReplicateOrderById();
   const { page, perPage } = usePaginationState();
   const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
-
+  // const [isEditable, setIsEditable] = useState(true);
+  let isEditable = true;
   const { ordersPaginatedResult, error, loading } =  useOrdersFetcher({
     page,
     perPage,
     tableSorting,
   });
+
+  const onClickDuplicateButton = useCallback(  
+    async (e)=>{
+
+      console.log(e,"Duplicate")
+      const reference ={
+        typeId:"order",
+        id:e?.orderId
+      }
+      console.log(reference);
+      console.log("isEditable",isEditable);
+      isEditable=false;
+      console.log("isEditable",isEditable);
+      // push(`/csa-project-2/csa-customer-tickets/cart-edit/57e66be7-d796-430b-95ca-6070bd59ef30/cart-general`)
+      const result = await executeReplicateOrder(reference);
+      const cartId = await result?.data?.replicateCart?.id;
+      console.log(result);
+      if(cartId){
+        push(`cart-edit/${cartId}/cart-general`)
+      }
+    });
 
   const itemRendererSearch = (item, column) => {
     switch (column.key) {
@@ -118,23 +141,10 @@ const Orders =  (props) => {
             <Spacings.Inline>
               <IconButton
                 icon={<CopyIcon/>}
-                onClick={ async (e)=>
-                  {
-                    console.log(e,"Duplicate")
-                    const reference ={
-                      typeId:"order",
-                      id:item.id
-                    }
-                    console.log(reference);
-                    const result = await executeReplicateOrder(reference);
-                    const cartId = await result?.data?.replicateCart?.id;
-                    console.log(result);
-                    if(cartId){
-                      // Redirect to cart view or cart general with this cartId
-                      // goBack();
-                      // push(`cart-edit/${cartId}/cart-general`)
-                    }
-                  }
+                onClick={(e)=>{
+                  e.orderId = item.id 
+                  onClickDuplicateButton(e)
+                }
                 }
                 label='Copy Order'
               />
@@ -170,8 +180,14 @@ const Orders =  (props) => {
             // sortedBy={tableSorting.value.key}
             // sortDirection={tableSorting.value.order}
             // onSortChange={tableSorting.onChange}
-            onRowClick={(row) => push(`order-edit/${row.id}/orders-general`)}
-            // onRowClick={(row) => push(`Ticket-account/${row.id}/companies-general`)}
+            onRowClick={(row) => 
+            {
+              console.log("isEditable",isEditable);
+              if(isEditable){
+                push(`order-edit/${row.id}/orders-general`)
+              }
+            }
+            }
           />
           <Pagination
             page={page.value}
