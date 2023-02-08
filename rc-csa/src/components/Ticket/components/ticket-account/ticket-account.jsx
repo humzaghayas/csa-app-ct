@@ -8,26 +8,13 @@ import {
   useParams
 } from 'react-router-dom';
 import {
-  TabularModalPage,
   useModalState,
   TabHeader,
-  TabularMainPage,
   TabularDetailPage,
 } from '@commercetools-frontend/application-components';
 import PropTypes from 'prop-types';
-// import TicketDetails from '../Ticket-details/Ticket-details';
-// import TicketRules from '../Ticket-rules/Ticket-rules';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import { PlusBoldIcon, ExportIcon } from '@commercetools-uikit/icons';
 import Spacings from '@commercetools-uikit/spacings';
 
-import styles from './Ticket-account-module.css';
-// import RequiredApproval from '../required-approval';
-// import AddBudget from '../add-budget';
-// import AddNewRule from '../add-new-rule';
-// import EmployeeCreate from '../../../employees/components/employee-create';
-// import TicketEmployees from '../Ticket-employees/Ticket-employees';
-import { getTicket } from '../../api';
 import { lazy, useState, useEffect } from 'react';
 // import TicketDetailsForm from '../Ticket-history/ticket-details-form';
 import TicketHistory from '../Ticket-history/ticket-history';

@@ -32,6 +32,7 @@ const client = new ApolloClient({
   ]),
 });
 
-export const ApolloClientProvider = ({ children, props }) => {
+export const ApolloClientProvider = ( children ) => {
+  console.log(children);
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };

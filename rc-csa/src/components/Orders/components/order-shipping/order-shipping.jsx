@@ -23,7 +23,11 @@ import OrderShippingForm from './order-shipping-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
 import { useRouteMatch } from 'react-router-dom';
-import { useFetchOrderById} from '../../../../hooks/use-orders-connector';
+import { useFetchOrderById, useOrderUpdateById} from '../../../../hooks/use-orders-connector';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { useReducer } from 'react';
+
 
 const OrderShipping = (props) => {
   const intl = useIntl();
@@ -37,46 +41,60 @@ const OrderShipping = (props) => {
     demandedPermissions: [PERMISSIONS.Manage],
   });
 
-  const {order} = useFetchOrderById(match.params.id);
+  //const {executeFetchOrder} = useFetchOrderById(match.params.id);
+  const {executeUpdateOrder} = useOrderUpdateById();
+  const showNotification = useShowNotification();
+  const showApiErrorNotification = useShowApiErrorNotification();
+  
+  // const [order,setOrder] = useState(async()=>{
+  //   return await executeFetchOrder(match.params.id);
+  // });
+
+  const [reducerValue, forceUpdate] = useReducer(x => x+1,0);
+
+  // useEffect(async()=>{
+  //   if(order == null){
+  //     const result  = await executeFetchOrder(match.params.id);
+  //     setOrder(result);
+  //   }
+  // },[reducerValue]);
+
+  const {data} = useFetchOrderById(match.params.id);
+
+
+  let order = {data};
+
+
   // const showNotification = useShowNotification();
   // const showApiErrorNotification = useShowApiErrorNotification();
   // const TicketDetailsCreator = useTicketDetailsCreator();
   const handleSubmit = useCallback(
-    // async (formikValues, formikHelpers) => {
-    //   const data = formValuesToDoc(formikValues);
-    //   try {
-    //     await TicketDetailsCreator.execute({
-    //       nextDraft: data,
-    //     });
-    //     showNotification({
-    //       kind: 'success',
-    //       domain: DOMAINS.SIDE,
-    //       text: intl.formatMessage(messages.OrderShippingd),
-    //     });
-    //   } catch (graphQLErrors) {
-    //     const transformedErrors = transformErrors(graphQLErrors);
-    //     if (transformedErrors.unmappedErrors.length > 0) {
-    //       showApiErrorNotification({
-    //         errors: transformedErrors.unmappedErrors,
-    //       });
-    //     }
-
-    //     formikHelpers.setErrors(transformedErrors.formErrors);
-    //   }
-    // },
-    // [
-    //   TicketDetailsCreator,
-    //   dataLocale,
-    //   intl,
-    //   projectLanguages,
-    //   showApiErrorNotification,
-    //   showNotification,
-    // ]
+    async(payload) =>{
+      console.log("In Handle Submit");
+      console.log(payload);
+      try{
+        const result = await executeUpdateOrder(payload);
+        forceUpdate();
+          showNotification({
+          kind: 'success',
+          domain: DOMAINS.SIDE,
+          text: intl.formatMessage(messages.OrderUpdated),
+        }); 
+      }catch (graphQLErrors) {
+              console.log(graphQLErrors.message)
+              const transformedErrors = transformErrors(graphQLErrors);
+              if (transformedErrors.unmappedErrors.length > 0) {
+                showApiErrorNotification({
+                  errors: graphQLErrors.message,
+                });
+              }
+      }
+    }
   );
 
   return (
     <OrderShippingForm
-    initialValues={docToFormValues(order, projectLanguages)}
+    initialValues={docToFormValues(order?.data?.order, projectLanguages)}
     onSubmit={handleSubmit}
     isReadOnly={!canManage}
     dataLocale={dataLocale}

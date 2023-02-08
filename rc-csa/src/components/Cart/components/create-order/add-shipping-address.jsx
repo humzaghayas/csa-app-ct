@@ -19,18 +19,17 @@ import ShippingAddressForm from './add-shipping-address-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
 import validate from './validate';
-import { useCartsFetcher ,
-         useShippingAddressCreator,
-         useAddLineItem,
-         useFetchCartById
+import {
+  useCartsFetcher,
+  useShippingAddressCreator,
+  useAddLineItem,
+  useFetchCartById,
 } from '../../../../hooks/use-cart-connector/use-cart-connector';
-
-
 
 const ShippingAddress = (props) => {
   const intl = useIntl();
   const params = useParams();
-  const { cart, error, loading } = useFetchCartById(params.id);
+  //const { cart, error, loading } = useFetchCartById(params.id);
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
@@ -40,7 +39,7 @@ const ShippingAddress = (props) => {
   });
   const showNotification = useShowNotification();
   const showApiErrorNotification = useShowApiErrorNotification();
-  const shippingAddressCreator = useShippingAddressCreator();
+  //const shippingAddressCreator = useShippingAddressCreator();
   const handleSubmit = useCallback(
     async (formikValues, formikHelpers) => {
       const data = formValuesToDoc(formikValues);
@@ -48,7 +47,6 @@ const ShippingAddress = (props) => {
         await shippingAddressCreator.execute({
           originalDraft: cart,
           nextDraft: data,
-          
         });
         showNotification({
           kind: 'success',
@@ -63,7 +61,7 @@ const ShippingAddress = (props) => {
           });
         }
 
-     //  formikHelpers.setErrors(transformedErrors.formErrors);
+        //  formikHelpers.setErrors(transformedErrors.formErrors);
       }
     },
     [
@@ -109,6 +107,5 @@ const ShippingAddress = (props) => {
   );
 };
 ShippingAddress.displayName = 'ShippingAddress';
-
 
 export default ShippingAddress;

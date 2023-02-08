@@ -4,6 +4,7 @@ import { TextInput } from '@commercetools-frontend/ui-kit';
 
 export const docToFormValues = (order, languages) => ({
   id:order?.id,
+  version:order?.version,
   orderState:order?.orderState,
   paymentState:order?.paymentState,
   shipmentState:order?.shipmentState,
@@ -66,49 +67,28 @@ function amountCalculator(centAmount,fractionDigits){
   return centAmount;
 }
 
-
-/*export const formValuesToDoc = (formValues) => ({
-  salutation: formValues.salutation,
-  title: formValues.title,
-  firstName: formValues.firstName,
-  middleName: formValues.middleName,
-  lastName: formValues.lastName,
-  email: formValues.email,
-  dateOfBirth: formValues.dateOfBirth,
-  employeeNumber: formValues.employeeNumber,
-  externalId: formValues.externalId,
-  customerGroup:{key:formValues.customerGroup} ,
-  roles: formValues.roles,
-  password: formValues.password,
-});*/
 export const formValuesToDoc = (formValues) => ({
-  salutation: !TextInput.isEmpty(formValues.salutation)
-  ? formValues.salutation
+  id: !TextInput.isEmpty(formValues.id)
+  ? formValues.id
   : undefined,
-  title: !TextInput.isEmpty(formValues.title)
-  ? formValues.title
+  version: !TextInput.isEmpty(formValues.version)
+  ? formValues.version
   : undefined,
-  firstName: !TextInput.isEmpty(formValues.firstName)
-  ? formValues.firstName
-  : undefined,
-  middleName: !TextInput.isEmpty(formValues.middleName)
-  ? formValues.middleName
-  : undefined,
-  lastName: !TextInput.isEmpty(formValues.lastName)
-  ? formValues.lastName
-  : undefined,
-  email: formValues.email,
-  dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
-  ? formValues.dateOfBirth
-  : undefined,
-  employeeNumber: !TextInput.isEmpty(formValues.employeeNumber)
-  ? formValues.employeeNumber
-  : undefined,
-  externalId: !TextInput.isEmpty(formValues.externalId)
-  ? formValues.externalId
-  : undefined,
-  customerGroup:{key:formValues.customerGroup} ,
-  roles: formValues.roles,
-  password: formValues.password,
-  confirmedPassword: undefined,
+  actions:[{
+    changeOrderState:{
+      orderState: !TextInput.isEmpty(formValues.orderState)
+      ? formValues.orderState
+      :undefined
+    }},
+    {changePaymentState: {
+      paymentState: !TextInput.isEmpty(formValues.paymentState)
+      ? formValues.paymentState
+      :undefined
+    }},
+    {changeShipmentState: {
+      shipmentState:!TextInput.isEmpty(formValues.shipmentState)
+      ? formValues.shipmentState
+      :undefined
+    }}
+  ]
   });

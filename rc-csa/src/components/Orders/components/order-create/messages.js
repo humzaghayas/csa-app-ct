@@ -42,6 +42,10 @@ export default defineMessages({
     defaultMessage:
       'This page demonstrates for instance how to use forms, notifications and how to update data using GraphQL, etc.',
   },
+  OrderUpdated: {
+    id: 'EmployeeDetails.EmployeeCreated',
+    defaultMessage: 'Order Updated',
+  },
   modalTitle: {
     id: 'EmployeeDetails.modalTitle',
     defaultMessage: 'Create Ticket',

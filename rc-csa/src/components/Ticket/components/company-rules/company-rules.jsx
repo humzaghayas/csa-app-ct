@@ -14,7 +14,6 @@ import { useApplicationContext } from '@commercetools-frontend/application-shell
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import DataTable from '@commercetools-uikit/data-table';
 // import img from '../../../../assets/images/TicketLogo.png';
-import styles from './Ticket-rules.module.css';
 import FieldLabel from '@commercetools-uikit/field-label';
 import Constraints from '@commercetools-uikit/constraints';
 import { PlusBoldIcon  ,  ExportIcon} from '@commercetools-uikit/icons';

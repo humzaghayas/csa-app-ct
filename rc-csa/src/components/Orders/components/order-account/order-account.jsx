@@ -21,7 +21,7 @@ import SecondaryButton from '@commercetools-uikit/secondary-button';
 import { PlusBoldIcon, ExportIcon } from '@commercetools-uikit/icons';
 import Spacings from '@commercetools-uikit/spacings';
 
-import styles from './Order-account-module.css';
+import styles from './order-account-module.css';
 // import RequiredApproval from '../required-approval';
 // import AddBudget from '../add-budget';
 // import AddNewRule from '../add-new-rule';
@@ -32,6 +32,7 @@ import { lazy, useState, useEffect } from 'react';
 
 import OrderCreate from '../order-create/order-create';
 import OrderShipping from '../order-shipping/order-shipping';
+import OrderLineItems from '../order-create/order-line-items';
 
 
 const OrderAccount = (props) => {
@@ -80,6 +81,9 @@ const OrderAccount = (props) => {
         <Route path={`${match.path}/orders-shipping`}>
         
       <OrderShipping />
+       </Route>
+       <Route path={`${match.path}/order-line-items`}>
+         <OrderLineItems />
        </Route>
         {/* <Route path={`${match.path}/employee-create`}>
            <EmployeeCreate />

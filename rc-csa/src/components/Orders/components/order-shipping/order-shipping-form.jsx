@@ -12,36 +12,22 @@ import { EMPLOYEE_ROLES,CUSTOMER_GROUPS,TICKET_PRIORITY} from './constants';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import { PrimaryButton, SecondaryButton } from '@commercetools-uikit/buttons';
-// const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
-//   label: EMPLOYEE_ROLES[key],
-//   value: EMPLOYEE_ROLES[key],
-// }));
-
-// const getCustomerGroupsOptions = Object.keys(CUSTOMER_GROUPS).map((key) => ({
-//   label: key,
-//   value: CUSTOMER_GROUPS[key],
-// }));
-const getTicketPriorityOptions = Object.keys(TICKET_PRIORITY).map((key) => ({
-  label: key,
-  value: TICKET_PRIORITY[key],
-}));
-
-
-
+import { formValuesToDoc } from './conversions';
 
 const OrderShippingForm = (props) => {
   const intl = useIntl();
   const formik = useFormik({
     initialValues: props.initialValues,
-    onSubmit: props.onSubmit,
     validate,
     enableReinitialize: true,
   });
 
-  // console.log("order shipping form");
-  // console.log(formik.values);
+  const onSubmit = (e) =>{
+    const updateData = formValuesToDoc(formik?.values);
+    props.onSubmit(updateData);
+  }
 
-  const formElements = (
+  return(  <form onSubmit={onSubmit}>
     <Spacings.Stack scale="l">
      
      <CollapsiblePanel
@@ -61,42 +47,40 @@ const OrderShippingForm = (props) => {
      <Spacings.Stack scale="s">
       
         <TextField
-          name="Shipped Quantity"
+          id='shippedQuantity'
+          name="shippedQuantity"
           title="Shipped Quantity"
           value={formik.values?.quantity}
-          errors={formik.errors.roles}
-          touched={formik.touched.roles}
+          errors={formik.errors.quantity}
+          touched={formik.touched.quantity}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          
-          // options={getTicketPriorityOptions}
-          // isReadOnly={props.isReadOnly}
-          // isRequired
           horizontalConstraint={13}
+          isReadOnly={true}
         />
+        </Spacings.Stack>
+        <Spacings.Stack scale="s">
+          <TextField
+            id='shippingTax'
+            name="shippingTax"
+            title="Shipping Tax"
+            value={formik.values?.tax}
+            errors={formik.errors.tax}
+            touched={formik.touched.tax}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            horizontalConstraint={13}
+          />
         </Spacings.Stack>
         <Spacings.Stack scale="s">
         
         <TextField
-          name="Shipping Tax"
-          title="Shipping Tax"
-          value={formik.values?.tax}
-          errors={formik.errors.firstName}
-          touched={formik.touched.firstName}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-      
-        </Spacings.Stack>
-        <Spacings.Stack scale="s">
-        
-        <TextField
-          name="Street Number"
+          id='streetNumber'
+          name="streetNumber"
           title="Street Number"
           value={formik.values?.streetNumber}
-          errors={formik.errors.firstName}
-          touched={formik.touched.firstName}
+          errors={formik.errors.streetNumber}
+          touched={formik.touched.streetNumber}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
@@ -105,11 +89,12 @@ const OrderShippingForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale="s">
         <TextField
-          name="Street Name"
+          id='streetName'
+          name="streetName"
           title="Street Name"
           value={formik.values?.streetName}
-          errors={formik.errors.firstName}
-          touched={formik.touched.firstName}
+          errors={formik.errors.streetName}
+          touched={formik.touched.streetName}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
@@ -117,11 +102,12 @@ const OrderShippingForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale="s">
         <TextField
-          name="Building"
+          id='building'
+          name="building"
           title="Building"
           value={formik.values?.building}
-          errors={formik.errors.title}
-          touched={formik.touched.title}
+          errors={formik.errors.building}
+          touched={formik.touched.building}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
@@ -129,11 +115,12 @@ const OrderShippingForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale="s">
         <TextField
-          name="City"
+          id='city'
+          name="city"
           title="City"
           value={formik.values?.city}
-          errors={formik.errors.title}
-          touched={formik.touched.title}
+          errors={formik.errors.city}
+          touched={formik.touched.city}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
@@ -141,11 +128,12 @@ const OrderShippingForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale="s">
         <TextField
-          name="Postal Code"
+          id='postalCode'
+          name="postalCode"
           title="Postal Code"
           value={formik.values?.postalCode}
-          errors={formik.errors.title}
-          touched={formik.touched.title}
+          errors={formik.errors.postalCode}
+          touched={formik.touched.postalCode}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
@@ -153,11 +141,12 @@ const OrderShippingForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale="s">
         <TextField
-          name="State"
+          id='state'
+          name="state"
           title="State"
           value={formik.values?.state}
-          errors={formik.errors.title}
-          touched={formik.touched.title}
+          errors={formik.errors.state}
+          touched={formik.touched.state}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
@@ -165,11 +154,12 @@ const OrderShippingForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale="s">
         <TextField
-          name="Country"
+          id='country'
+          name="country"
           title="Country"
           value={formik.values?.country}
-          errors={formik.errors.title}
-          touched={formik.touched.title}
+          errors={formik.errors.country}
+          touched={formik.touched.country}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
@@ -177,17 +167,12 @@ const OrderShippingForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale="s">
         <Spacings.Inline>
-                <SecondaryButton
-                  onClick={formik.handleReset}
-                  isDisabled={formik.isSubmitting}
-                  label="Edit"
-                />
                 <PrimaryButton
-  
-    label="Submit"
-    //onClick={() => alert('Button clicked')}
-    isDisabled={false}
-  />
+                  label="Submit"
+                  onClick={onSubmit}
+                  onSubmit={onSubmit}
+                  isDisabled={false}
+                />
               </Spacings.Inline>
               </Spacings.Stack>
               </Spacings.Stack>
@@ -196,25 +181,11 @@ const OrderShippingForm = (props) => {
       {/* </Spacings.Inline> */}
      </CollapsiblePanel>
     </Spacings.Stack>
-  );
-
-  return props.children({
-    formElements,
-    values: formik.values,
-    isDirty: formik.dirty,
-    isSubmitting: formik.isSubmitting,
-    submitForm: formik.handleSubmit,
-    handleReset: formik.handleReset,
-  });
+  </form>)
 };
 OrderShippingForm.displayName = 'OrderShippingForm';
-OrderShippingForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  initialValues: PropTypes.shape({
-    id: PropTypes.string,
-  }),
-  isReadOnly: PropTypes.bool.isRequired,
-  dataLocale: PropTypes.string.isRequired,
-};
+OrderShippingForm.prototype = {
+  initialValues: PropTypes.object.isRequired
+}
 
 export default OrderShippingForm;

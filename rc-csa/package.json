@@ -13,7 +13,9 @@
     "extract-intl": "formatjs extract --format=./intl-formatter.js --out-file=./src/i18n/data/core.json 'src/**/!(*.spec).js'",
     "test": "jest --config jest.test.config.js",
     "test:watch": "jest --config jest.test.config.js --watch",
-    "lint": "jest --config jest.eslint.config.js",
+    "lint": "eslint . ",
+    "lint-fix": "eslint --fix .",
+    "lint-md": "remark -f README.md",
     "format": "prettier --write '**/*.js'",
     "versions:appkit": "manypkg upgrade @commercetools-frontend",
     "versions:uikit": "manypkg upgrade @commercetools-uikit"

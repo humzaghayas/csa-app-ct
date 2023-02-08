@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.createTicketHistory = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getCartRows = exports.getOrderRows = exports.getTicketRows = void 0;
+exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.createTicketHistory = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getOrderRows = exports.getTicketRows = void 0;
 var constants_1 = require("../constants");
 var graphql_queries_1 = require("../graphql-queries");
 var uuid_1 = require("uuid");
@@ -45,7 +45,8 @@ function getTicketRows(customObjects) {
     console.log("customObjects :: " + JSON.stringify(customObjects));
     if (customObjects === null || customObjects === void 0 ? void 0 : customObjects.results) {
         return customObjects === null || customObjects === void 0 ? void 0 : customObjects.results.map(function (co) {
-            return { id: co.id,
+            return {
+                id: co.id,
                 Customer: co.value.email,
                 Created: co.createdAt,
                 Modified: co.lastModifiedAt,
@@ -55,7 +56,8 @@ function getTicketRows(customObjects) {
                 Category: co.value.category,
                 Subject: co.value.subject,
                 assignedTo: co.value.assignedTo,
-                createdBy: co.value.createdBy };
+                createdBy: co.value.createdBy,
+            };
         });
     }
     // return {};
@@ -78,31 +80,29 @@ function getOrderRows(orderPaginationResult) {
                 shippingMethodName: (_c = order === null || order === void 0 ? void 0 : order.shippingInfo) === null || _c === void 0 ? void 0 : _c.shippingMethodName,
                 orderTotal: order === null || order === void 0 ? void 0 : order.orderTotal,
                 noOforderItems: (_d = order === null || order === void 0 ? void 0 : order.lineitems) === null || _d === void 0 ? void 0 : _d.length,
-                totalItems: (_e = order === null || order === void 0 ? void 0 : order.lineitems) === null || _e === void 0 ? void 0 : _e.quantity
+                totalItems: (_e = order === null || order === void 0 ? void 0 : order.lineitems) === null || _e === void 0 ? void 0 : _e.quantity,
             };
         });
     }
 }
 exports.getOrderRows = getOrderRows;
-function getCartRows(cartPaginationResult) {
-    console.log(cartPaginationResult.results);
-    if (cartPaginationResult === null || cartPaginationResult === void 0 ? void 0 : cartPaginationResult.results) {
-        return cartPaginationResult === null || cartPaginationResult === void 0 ? void 0 : cartPaginationResult.results.map(function (carts) {
-            var _a, _b;
-            return {
-                id: carts.id,
-                customer: ((_a = carts.customer) === null || _a === void 0 ? void 0 : _a.firstName) + " " + ((_b = carts.customer) === null || _b === void 0 ? void 0 : _b.lastName),
-                createdAt: carts.createdAt,
-                lastModifiedAt: carts.lastModifiedAt,
-                cartState: carts.cartState,
-                // orderTotal:cart?.orderTotal,
-                // noOforderItems:cart?.lineitems?.length,
-                // totalItems:cart?.lineitems?.quantity
-            };
-        });
-    }
-}
-exports.getCartRows = getCartRows;
+// export function getCartRows(cartPaginationResult){
+//     console.log(cartPaginationResult.results);
+//     if(cartPaginationResult?.results){
+//         return cartPaginationResult?.results.map(carts =>{
+//             return {
+//                 id:carts.id,
+//                 customer: carts.customer?.firstName+" "+carts.customer?.lastName,
+//                 createdAt: carts.createdAt,
+//                 lastModifiedAt:carts.lastModifiedAt,
+//                 cartState:carts.cartState,
+//                 // orderTotal:cart?.orderTotal,
+//                 // noOforderItems:cart?.lineitems?.length,
+//                 // totalItems:cart?.lineitems?.quantity
+//             }
+//         });
+//     }
+// }
 function getTicketCategories() {
     return constants_1.TICKET_TYPE;
 }
@@ -115,7 +115,7 @@ function getTicketContactTypes() {
     return constants_1.TICKET_SOURCE;
 }
 exports.getTicketContactTypes = getTicketContactTypes;
-var ticketDraft = { "container": constants_1.CONSTANTS.containerKey };
+var ticketDraft = { container: constants_1.CONSTANTS.containerKey };
 function getCreateTicketMutaion() {
     return graphql_queries_1.CREATE_CUSTOMOBJECT_MUTATION;
 }
@@ -133,9 +133,11 @@ function getCreateTicketDraft(ticketInfo) {
             else {
                 ticketDraft.key = ticketInfo.key;
             }
-            filesStr = ticketInfo.files.map(function (f) {
+            filesStr = ticketInfo.files
+                .map(function (f) {
                 return "{\"name\":\"".concat(f.name, "\",\"url\":\"").concat(f.url, "\"}");
-            }).toString();
+            })
+                .toString();
             d = new Date().toISOString();
             commentsStr = (_a = ticketInfo === null || ticketInfo === void 0 ? void 0 : ticketInfo.comments) === null || _a === void 0 ? void 0 : _a.map(function (c) {
                 if (c.createdAt) {
@@ -145,10 +147,11 @@ function getCreateTicketDraft(ticketInfo) {
                     return "{\"comment\":\"".concat(c.comment, "\",\"createdAt\":\"").concat(d, "\"}");
                 }
             }).toString();
-            orderNumberStr = '';
-            if (ticketInfo.category && (ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
-                || ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
-                || ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_RETURNS)) {
+            orderNumberStr = "";
+            if (ticketInfo.category &&
+                (ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_ORDER_INQUIRY ||
+                    ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_PAYMENT_METHODS ||
+                    ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_RETURNS)) {
                 orderNumberStr = ",\"orderNumber\":\"".concat(ticketInfo.orderNumber, "\"");
             }
             value = "\"ticketData\":{\t\n        \"message\": \"".concat(ticketInfo.message, "\",\n        \"files\": [").concat(filesStr, "],\n        \"comments\":[").concat(commentsStr, "]\n        ").concat(orderNumberStr, "}");
@@ -171,7 +174,7 @@ function createTicketHistory(ticketInfo, ticketDraft) {
             h[constants_1.CONSTANTS.PRIORITY] = ticketInfo.priority;
             h[constants_1.CONSTANTS.STATUS] = ticketInfo.status;
             h[constants_1.CONSTANTS.ASSIGNED_TO] = ticketInfo.assignedTo;
-            h['operationDate'] = new Date().toUTCString();
+            h["operationDate"] = new Date().toUTCString();
             history.push(h);
             historyString = history === null || history === void 0 ? void 0 : history.map(function (h) {
                 return "{\"".concat(constants_1.CONSTANTS.PRIORITY, "\":\"").concat(h[constants_1.CONSTANTS.PRIORITY], "\",\n                \"").concat(constants_1.CONSTANTS.STATUS, "\":\"").concat(h[constants_1.CONSTANTS.STATUS], "\",\n                \"").concat(constants_1.CONSTANTS.ASSIGNED_TO, "\":\"").concat(h[constants_1.CONSTANTS.ASSIGNED_TO], "\",\n                \"user\":\"").concat(h.user, "\",\"operationDate\":\"").concat(h.operationDate, "\"}");
@@ -200,9 +203,9 @@ exports.getForKey = getForKey;
 function getTicketFromCustomObject(data) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
     var ticket = createTicketFromCustomObject(data);
-    ticket['message'] = (_d = (_c = (_b = (_a = data === null || data === void 0 ? void 0 : data.customObject) === null || _a === void 0 ? void 0 : _a.value) === null || _b === void 0 ? void 0 : _b.ticketData) === null || _c === void 0 ? void 0 : _c.message) !== null && _d !== void 0 ? _d : '';
-    ticket['files'] = (_h = (_g = (_f = (_e = data === null || data === void 0 ? void 0 : data.customObject) === null || _e === void 0 ? void 0 : _e.value) === null || _f === void 0 ? void 0 : _f.ticketData) === null || _g === void 0 ? void 0 : _g.files) !== null && _h !== void 0 ? _h : '';
-    ticket['comments'] = (_m = (_l = (_k = (_j = data === null || data === void 0 ? void 0 : data.customObject) === null || _j === void 0 ? void 0 : _j.value) === null || _k === void 0 ? void 0 : _k.ticketData) === null || _l === void 0 ? void 0 : _l.comments) !== null && _m !== void 0 ? _m : [];
+    ticket["message"] = (_d = (_c = (_b = (_a = data === null || data === void 0 ? void 0 : data.customObject) === null || _a === void 0 ? void 0 : _a.value) === null || _b === void 0 ? void 0 : _b.ticketData) === null || _c === void 0 ? void 0 : _c.message) !== null && _d !== void 0 ? _d : "";
+    ticket["files"] = (_h = (_g = (_f = (_e = data === null || data === void 0 ? void 0 : data.customObject) === null || _e === void 0 ? void 0 : _e.value) === null || _f === void 0 ? void 0 : _f.ticketData) === null || _g === void 0 ? void 0 : _g.files) !== null && _h !== void 0 ? _h : "";
+    ticket["comments"] = (_m = (_l = (_k = (_j = data === null || data === void 0 ? void 0 : data.customObject) === null || _j === void 0 ? void 0 : _j.value) === null || _k === void 0 ? void 0 : _k.ticketData) === null || _l === void 0 ? void 0 : _l.comments) !== null && _m !== void 0 ? _m : [];
     // if(data?.customObject?.value?.category === CONSTANTS.TICKET_TYPE_REQUEST){
     //     ticket['requestType'] = data?.customObject?.value?.ticketData?.requestType ?? '';
     //     if(data?.customObject?.value?.ticketData?.requestType == CONSTANTS.TICKET_TYPE_GENERAL_INFO_CHANGE){
@@ -224,33 +227,33 @@ exports.getTicketFromCustomObject = getTicketFromCustomObject;
 function createTicketFromCustomObject(data) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20;
     return {
-        id: (_b = (_a = data === null || data === void 0 ? void 0 : data.customObject) === null || _a === void 0 ? void 0 : _a.id) !== null && _b !== void 0 ? _b : '',
-        key: (_d = (_c = data === null || data === void 0 ? void 0 : data.customObject) === null || _c === void 0 ? void 0 : _c.key) !== null && _d !== void 0 ? _d : '',
-        container: (_f = (_e = data === null || data === void 0 ? void 0 : data.customObject) === null || _e === void 0 ? void 0 : _e.container) !== null && _f !== void 0 ? _f : '',
-        version: (_h = (_g = data === null || data === void 0 ? void 0 : data.customObject) === null || _g === void 0 ? void 0 : _g.version) !== null && _h !== void 0 ? _h : '',
-        category: (_l = (_k = (_j = data === null || data === void 0 ? void 0 : data.customObject) === null || _j === void 0 ? void 0 : _j.value) === null || _k === void 0 ? void 0 : _k.category) !== null && _l !== void 0 ? _l : '',
-        Customer: (_p = (_o = (_m = data === null || data === void 0 ? void 0 : data.customObject) === null || _m === void 0 ? void 0 : _m.value) === null || _o === void 0 ? void 0 : _o.email) !== null && _p !== void 0 ? _p : '',
-        contactType: (_s = (_r = (_q = data === null || data === void 0 ? void 0 : data.customObject) === null || _q === void 0 ? void 0 : _q.value) === null || _r === void 0 ? void 0 : _r.source) !== null && _s !== void 0 ? _s : '',
-        status: (_v = (_u = (_t = data === null || data === void 0 ? void 0 : data.customObject) === null || _t === void 0 ? void 0 : _t.value) === null || _u === void 0 ? void 0 : _u.status) !== null && _v !== void 0 ? _v : '',
-        priority: (_y = (_x = (_w = data === null || data === void 0 ? void 0 : data.customObject) === null || _w === void 0 ? void 0 : _w.value) === null || _x === void 0 ? void 0 : _x.priority) !== null && _y !== void 0 ? _y : '',
-        subject: (_1 = (_0 = (_z = data === null || data === void 0 ? void 0 : data.customObject) === null || _z === void 0 ? void 0 : _z.value) === null || _0 === void 0 ? void 0 : _0.subject) !== null && _1 !== void 0 ? _1 : '',
-        lastModifiedAt: (_3 = (_2 = data === null || data === void 0 ? void 0 : data.customObject) === null || _2 === void 0 ? void 0 : _2.lastModifiedAt) !== null && _3 !== void 0 ? _3 : '',
-        createdAt: (_5 = (_4 = data === null || data === void 0 ? void 0 : data.customObject) === null || _4 === void 0 ? void 0 : _4.createdAt) !== null && _5 !== void 0 ? _5 : '',
-        email: (_7 = (_6 = data === null || data === void 0 ? void 0 : data.customObject) === null || _6 === void 0 ? void 0 : _6.value.email) !== null && _7 !== void 0 ? _7 : '',
-        customerId: (_9 = (_8 = data === null || data === void 0 ? void 0 : data.customObject) === null || _8 === void 0 ? void 0 : _8.value.customerId) !== null && _9 !== void 0 ? _9 : '',
-        assignedTo: (_11 = (_10 = data === null || data === void 0 ? void 0 : data.customObject) === null || _10 === void 0 ? void 0 : _10.value.assignedTo) !== null && _11 !== void 0 ? _11 : '',
-        createdBy: (_13 = (_12 = data === null || data === void 0 ? void 0 : data.customObject) === null || _12 === void 0 ? void 0 : _12.value.createdBy) !== null && _13 !== void 0 ? _13 : '',
-        orderNumber: (_17 = (_16 = (_15 = (_14 = data === null || data === void 0 ? void 0 : data.customObject) === null || _14 === void 0 ? void 0 : _14.value) === null || _15 === void 0 ? void 0 : _15.ticketData) === null || _16 === void 0 ? void 0 : _16.orderNumber) !== null && _17 !== void 0 ? _17 : '',
-        history: (_20 = (_19 = (_18 = data === null || data === void 0 ? void 0 : data.customObject) === null || _18 === void 0 ? void 0 : _18.value) === null || _19 === void 0 ? void 0 : _19.history) !== null && _20 !== void 0 ? _20 : []
+        id: (_b = (_a = data === null || data === void 0 ? void 0 : data.customObject) === null || _a === void 0 ? void 0 : _a.id) !== null && _b !== void 0 ? _b : "",
+        key: (_d = (_c = data === null || data === void 0 ? void 0 : data.customObject) === null || _c === void 0 ? void 0 : _c.key) !== null && _d !== void 0 ? _d : "",
+        container: (_f = (_e = data === null || data === void 0 ? void 0 : data.customObject) === null || _e === void 0 ? void 0 : _e.container) !== null && _f !== void 0 ? _f : "",
+        version: (_h = (_g = data === null || data === void 0 ? void 0 : data.customObject) === null || _g === void 0 ? void 0 : _g.version) !== null && _h !== void 0 ? _h : "",
+        category: (_l = (_k = (_j = data === null || data === void 0 ? void 0 : data.customObject) === null || _j === void 0 ? void 0 : _j.value) === null || _k === void 0 ? void 0 : _k.category) !== null && _l !== void 0 ? _l : "",
+        Customer: (_p = (_o = (_m = data === null || data === void 0 ? void 0 : data.customObject) === null || _m === void 0 ? void 0 : _m.value) === null || _o === void 0 ? void 0 : _o.email) !== null && _p !== void 0 ? _p : "",
+        contactType: (_s = (_r = (_q = data === null || data === void 0 ? void 0 : data.customObject) === null || _q === void 0 ? void 0 : _q.value) === null || _r === void 0 ? void 0 : _r.source) !== null && _s !== void 0 ? _s : "",
+        status: (_v = (_u = (_t = data === null || data === void 0 ? void 0 : data.customObject) === null || _t === void 0 ? void 0 : _t.value) === null || _u === void 0 ? void 0 : _u.status) !== null && _v !== void 0 ? _v : "",
+        priority: (_y = (_x = (_w = data === null || data === void 0 ? void 0 : data.customObject) === null || _w === void 0 ? void 0 : _w.value) === null || _x === void 0 ? void 0 : _x.priority) !== null && _y !== void 0 ? _y : "",
+        subject: (_1 = (_0 = (_z = data === null || data === void 0 ? void 0 : data.customObject) === null || _z === void 0 ? void 0 : _z.value) === null || _0 === void 0 ? void 0 : _0.subject) !== null && _1 !== void 0 ? _1 : "",
+        lastModifiedAt: (_3 = (_2 = data === null || data === void 0 ? void 0 : data.customObject) === null || _2 === void 0 ? void 0 : _2.lastModifiedAt) !== null && _3 !== void 0 ? _3 : "",
+        createdAt: (_5 = (_4 = data === null || data === void 0 ? void 0 : data.customObject) === null || _4 === void 0 ? void 0 : _4.createdAt) !== null && _5 !== void 0 ? _5 : "",
+        email: (_7 = (_6 = data === null || data === void 0 ? void 0 : data.customObject) === null || _6 === void 0 ? void 0 : _6.value.email) !== null && _7 !== void 0 ? _7 : "",
+        customerId: (_9 = (_8 = data === null || data === void 0 ? void 0 : data.customObject) === null || _8 === void 0 ? void 0 : _8.value.customerId) !== null && _9 !== void 0 ? _9 : "",
+        assignedTo: (_11 = (_10 = data === null || data === void 0 ? void 0 : data.customObject) === null || _10 === void 0 ? void 0 : _10.value.assignedTo) !== null && _11 !== void 0 ? _11 : "",
+        createdBy: (_13 = (_12 = data === null || data === void 0 ? void 0 : data.customObject) === null || _12 === void 0 ? void 0 : _12.value.createdBy) !== null && _13 !== void 0 ? _13 : "",
+        orderNumber: (_17 = (_16 = (_15 = (_14 = data === null || data === void 0 ? void 0 : data.customObject) === null || _14 === void 0 ? void 0 : _14.value) === null || _15 === void 0 ? void 0 : _15.ticketData) === null || _16 === void 0 ? void 0 : _16.orderNumber) !== null && _17 !== void 0 ? _17 : "",
+        history: (_20 = (_19 = (_18 = data === null || data === void 0 ? void 0 : data.customObject) === null || _18 === void 0 ? void 0 : _18.value) === null || _19 === void 0 ? void 0 : _19.history) !== null && _20 !== void 0 ? _20 : [],
     };
 }
 function escapeQuotes(field) {
-    return field.replaceAll('\"', '\\\"').replaceAll('\n', '\\n');
+    return field.replaceAll('"', '\\"').replaceAll("\n", "\\n");
 }
 exports.escapeQuotes = escapeQuotes;
 function isEmailValid(email) {
     var emailFormat = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-    if (email !== '' && email.match(emailFormat)) {
+    if (email !== "" && email.match(emailFormat)) {
         return true;
     }
     return false;
