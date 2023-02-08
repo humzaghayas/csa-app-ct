@@ -18,10 +18,6 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from '@commercetools-frontend/ui-kit';
-//  import EmployeeAddressDetail from '../employee-address-details';
-//  import EmployeeAddAddress from '../employee-add-address';
-import ChannelDeletion from './place-order-popup';
-import CustomPopup from './CustomPopup';
 
 const columns = [
   { key: 'product', label: 'Product' },
@@ -106,9 +102,6 @@ const PlaceOrderForm = (props) => {
           </Spacings.Stack>
           {/* </Spacings.Inline> */}
         </CollapsiblePanel>
-      </Spacings.Stack>
-      <Spacings.Stack scale="s">
-        <CustomPopup />
       </Spacings.Stack>
     </Spacings.Stack>
   );

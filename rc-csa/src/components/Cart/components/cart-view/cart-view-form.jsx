@@ -21,10 +21,6 @@ import DataTable from '@commercetools-uikit/data-table';
 import { MoneyField } from '@commercetools-frontend/ui-kit';
 import { PlusBoldIcon } from '@commercetools-uikit/icons';
 import { Switch, useHistory, useRouteMatch } from 'react-router-dom';
-//import iphone from './iphone.jpg'
-import ChannelDeletion from '../place-order/place-order-popup';
-import { SuspendedRoute } from '@commercetools-frontend/application-shell';
-import CartItemDetails from './cart-items-details';
 
 const getCartStates = Object.keys(CART_STATE).map((key) => ({
   label: key,
@@ -159,20 +155,13 @@ const CartViewForm = (props) => {
                 value={formik.values.cartState}
                 // errors={formik.errors.roles}
                 // touched={formik.touched.roles}
-                onChange={onChange}
+                //onChange={onChange}
                 onBlur={formik.handleBlur}
                 options={getCartStates}
                 // isReadOnly={props.isReadOnly}
                 // isRequired
                 horizontalConstraint={13}
               />
-            </Spacings.Stack>
-
-            <Spacings.Stack scale="s">
-              {/* <Spacings.Inline>
-                <SecondaryButton onClick={formik.handleReset} label="Edit" />
-                <PrimaryButton onClick={formik.handleSubmit} label="Submit" />
-              </Spacings.Inline> */}
             </Spacings.Stack>
           </Spacings.Stack>
         </Constraints.Horizontal>
@@ -199,25 +188,9 @@ const CartViewForm = (props) => {
                   rows={formik.values.lineItems}
                   columns={columns}
                   itemRenderer={itemRenderer}
-                  onRowClick={(row) => {
-                    push(`${match.url}/${row.id}/cart-item`);
-                  }}
                 />
               ) : null}
             </Spacings.Stack>
-            <Switch>
-              <SuspendedRoute path={`${match.path}/:id/cart-item`}>
-                <CartItemDetails
-                  onClose={() => push(`${match.url}`)}
-                  cartId={formik?.values?.id}
-                  orderItems={formik?.values?.lineItems}
-                  onSubmit={onSubmit}
-                />
-              </SuspendedRoute>
-              {/* <Route path={`${match.path}/cart-line-items`}>
-                <OrderLineItems onClose={() => push(`${match.url}`)} />
-              </Route> */}
-            </Switch>
           </Constraints.Horizontal>
         </Spacings.Stack>
         {/* </Spacings.Inline> */}

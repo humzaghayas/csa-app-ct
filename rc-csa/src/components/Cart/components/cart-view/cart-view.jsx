@@ -25,9 +25,9 @@ import messages from './messages';
 import { useRouteMatch } from 'react-router-dom';
 import {
   useFetchCartById,
-  useCartUpdateById,
-  //useCreateCartEditById,
-  useCartEditApply,
+  // useCartUpdateById,
+  // //useCreateCartEditById,
+  // useCartEditApply,
 } from '../../../../hooks/use-cart-connector/use-cart-connector';
 import Spacings from '@commercetools-uikit/spacings';
 import { PlusBoldIcon, SecondaryButton } from '@commercetools-frontend/ui-kit';
@@ -45,9 +45,9 @@ const CartView = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
-  const { executeUpdateCart } = useCartUpdateById();
-  //const { executeCreateCartEdit } = useCreateCartEditById();
-  const { executeCartEditApply } = useCartEditApply();
+  // const { executeUpdateCart } = useCartUpdateById();
+  // //const { executeCreateCartEdit } = useCreateCartEditById();
+  // const { executeCartEditApply } = useCartEditApply();
   const showNotification = useShowNotification();
   const showApiErrorNotification = useShowApiErrorNotification();
 

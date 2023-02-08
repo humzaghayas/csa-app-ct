@@ -328,23 +328,3 @@ fragment state on Order{
       }
     }
   }`;
-
-export const UPDATE_CART_BY_ID = `mutation updateCartById($version:Long!,
-    $actions:[CartUpdateAction!]!,
-    $id:String!){
-      updateCart(version:$version,actions:$actions,id:$id){
-        id
-        cartState
-        key
-        
-      }
-  }`;
-export const CREATE_EDIT_CART_BY_ID = `mutation createCartEdit($draft:CartDraft!){
-    createCartEdit(draft:$draft){
-      id
-      version
-      result{
-        type
-      }
-    }
-  }`;

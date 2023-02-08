@@ -19,14 +19,9 @@ import { transformErrors } from './transform-errors';
 import messages from './messages';
 import validate from './validate';
 import {
-  useCartsFetcher,
-  useShippingAddressCreator,
   usePlaceOrderFromCart,
   useFetchCartById,
 } from '../../../../hooks/use-cart-connector/use-cart-connector';
-import ChannelDeletion from './place-order-popup';
-import CustomPopup from './CustomPopup';
-import './custom-popup.module.css';
 
 const PlaceOrder = (props) => {
   const intl = useIntl();
@@ -52,14 +47,12 @@ const PlaceOrder = (props) => {
           originalDraft: cart,
           nextDraft: data,
         });
-        //bool window.confirm([messages.OrderPlaced]);
-        setIsShown((current) => !current);
+
         showNotification({
           kind: 'success',
           domain: DOMAINS.SIDE,
           text: intl.formatMessage(messages.OrderPlaced),
         });
-        //<popup></popup>;
       } catch (graphQLErrors) {
         const transformedErrors = transformErrors(graphQLErrors);
         if (transformedErrors.unmappedErrors.length > 0) {
