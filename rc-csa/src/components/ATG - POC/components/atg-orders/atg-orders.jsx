@@ -50,6 +50,23 @@ const AtgOrders = (props) => {
   }, [apiUrl, query]);
 
   console.log('data', data);
+
+  //   const [sessionId, setSessionId] = useState('');
+
+  // useEffect(() => {
+  //     // fetch the JSESSIONID
+  //     const getSessionId = async () => {
+  //         const response = await fetch('/getSessionId');
+  //         const data = await response.json();
+  //         setSessionId(data.JSESSIONID);
+  //     };
+  //     getSessionId();
+  // }, []);
+
+  // <Link to={{ pathname: '${match.path}/:id/atg-orderLogin', state: { sessionId } }}>
+
+  // </Link>
+
   const rows = [
     {
       id: data?.atgResponse,

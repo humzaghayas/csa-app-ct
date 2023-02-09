@@ -60,9 +60,15 @@ const AtgOrderLogin = (props) => {
     }
   }, [apiUrl, QUERY]);
 
+  let i = data?.atgResponse[0].indexOf('id:') + 3;
+  let s = data?.atgResponse[0].indexOf(';', 0);
+  let orderid = data?.atgResponse[0].substr(i, s - i);
+  let i2 = data?.atgResponse[1].indexOf('id:') + 3;
+  let s2 = data?.atgResponse[1].indexOf(';', 0);
+  let orderid2 = data?.atgResponse[1].substr(i, s - i);
   // const orderSecond = JSON.parse(data?.atgResponse.replace('Order[', '['));
 
-  // console.log('orderSecond', orderSecond);
+  console.log('orderid', orderid);
   const rows = [
     // {
     //   id: orderFirst.id,
@@ -71,10 +77,10 @@ const AtgOrderLogin = (props) => {
     //   creationDate: orderFirst.creationDate,
     // },
     {
-      id: data?.atgResponse[0],
+      id: orderid,
     },
     {
-      id: data?.atgResponse[1],
+      id: orderid2,
     },
     // {
     //   id: data?.childCategories[2].id,
@@ -84,7 +90,7 @@ const AtgOrderLogin = (props) => {
   ];
 
   const columns = [
-    { key: 'id', label: 'Details' },
+    { key: 'id', label: 'Order ID' },
     // { key: 'state', label: 'State' },
     // { key: 'organizationId', label: 'Organization ID' },
     // { key: 'creationDate', label: 'Creation Date' },
