@@ -6,10 +6,17 @@ export const FETCH_CARTS = `query FetchAllCarts($limit: Int!, $offset: Int!, $so
       results{
         id
         cartState
+        key
+        
         customer{
             firstName
             lastName
         }
+        custom{
+      type{
+        id
+      }
+    }
         customerEmail
         createdAt
         createdBy{
@@ -39,6 +46,8 @@ export const FETCH_CARTS = `query FetchAllCarts($limit: Int!, $offset: Int!, $so
 export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
     cart(id:$id){
         id
+        version
+        key
         createdAt
         lastModifiedAt
           createdBy{
@@ -53,7 +62,10 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
         cartState
         origin
         ...lineItems
+        ...shippingAddress
+        ...billingAddress
         ...taxedPrice
+        ...custom
         customLineItems{
             __typename
         }
@@ -220,6 +232,38 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
                 fractionDigits
            }
         } 
+  }
+  
+  fragment shippingAddress on Cart{
+    shippingAddress{
+        id
+        streetName
+        streetNumber
+        postalCode
+          city
+          state
+          building
+        country
+    }
+  }
+  fragment billingAddress on Cart{
+    billingAddress{
+        id
+        streetName
+        streetNumber
+        postalCode
+          city
+          state
+          building
+        country
+    }
+  }
+  fragment custom on Cart{
+    custom{
+      type{
+        id
+      }
+    }
   }`;
 
 export const CREATE_SHIPPING_BILLING_ADDRESS = `mutation updateCart(
@@ -248,3 +292,39 @@ export const CREATE_SHIPPING_BILLING_ADDRESS = `mutation updateCart(
     }
   }
   `;
+
+export const CREATE_ORDER_FROMCART = `mutation createOrder(
+    $draft: OrderCartCommand!
+  ) {
+    createOrderFromCart(draft: $draft
+) {
+    id
+    ...cart
+    version
+    purchaseOrderNumber
+    paymentState
+    orderState
+    ...state
+    shipmentState
+    orderNumber
+    ...custom
+}
+    
+  }
+  fragment cart on Order{
+  cart{
+      id        
+  }
+}
+fragment state on Order{
+  state{
+     id      
+  }
+}
+  fragment custom on Order{
+    custom{
+      type{
+        id
+      }
+    }
+  }`;
