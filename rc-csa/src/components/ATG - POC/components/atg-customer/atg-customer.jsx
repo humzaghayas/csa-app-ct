@@ -9,9 +9,10 @@ import {
   useDataTableSortingState,
   usePaginationState,
 } from '@commercetools-uikit/hooks';
-import { getCustomer } from '../../api';
+import { getCustomer, login } from '../../api';
 import { useEffect, useState } from 'react';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { useAsyncDispatch } from '@commercetools-frontend/sdk';
 
 // import CustomerCreate from '../customer-create/customer-create';
 
@@ -28,6 +29,10 @@ import { useApplicationContext } from '@commercetools-frontend/application-shell
 //   sortDirection: 'desc',
 // };
 
+const LoginCred = {
+  login: 'mary',
+  password: 'test123',
+};
 const QUERY = {};
 
 const AtgCustomer = (props) => {
@@ -40,45 +45,60 @@ const AtgCustomer = (props) => {
   const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
   const tableSorting = useDataTableSortingState('login desc');
+  const [cookie, setLogin] = useState();
   const [data, setData] = useState();
 
-  //const apiUrl ="http://localhost:4456";
-  const apiUrl = `${atgPublicURL}/rest/model/atg/userprofiling/ProfileActor/detailed`;
-  // 'http://192.168.16.201:8080/rest/model/atg/userprofiling/ProfileActor/detailed';
-  useEffect(() => {
-    getCustomer({ url: apiUrl, query }).then((res) => setData(res));
-  }, [apiUrl, query]);
-  console.log('data', data);
+  const dispatch = useAsyncDispatch();
 
-  // const rows = [
-  //   {
-  //     fullName: data?.profile.firstName + ' ' + data?.profile.lastName,
-  //     login: data?.profile.login,
-  //     email: data?.profile.email,
-  //     address: data?.profile.homeAddress.address1 + ' ' + data?.profile.homeAddress.address2,
-  //     phone: data?.profile.homeAddress.phoneNumber,
-  //     country: data?.profile.homeAddress.country,
-  //   },
-  // ];
+  //const apiUrl ="http://localhost:4456";
+  const loginUrl = `${atgPublicURL}/rest/model/atg/userprofiling/ProfileActor/login`;
+  const customerUrl = `${atgPublicURL}/rest/model/atg/userprofiling/ProfileActor/detailed`;
+  // 'http://192.168.16.201:8080/rest/model/atg/userprofiling/ProfileActor/detailed';
+  useEffect(async () => {
+    login({ url: loginUrl, payload: LoginCred }).then((res) => setLogin(res));
+    await getCustomer({ url: customerUrl, query }, dispatch).then((res) =>
+      setData(res)
+    );
+  }, [customerUrl, query]);
+  // console.log('login', loginData);
+  console.log('data', data);
 
   const rows = [
     {
-      fullName: 'John Paul',
-      login: 'joesph834',
-      email: 'john@test.com',
-      address: '111 Main Street Suite 100',
-      phone: '9374854868',
-      country: 'USA',
+      fullName: data?.profile.firstName + ' ' + data?.profile.lastName,
+      login: data?.profile.login,
+      email: data?.profile.email,
+      address:
+        data?.profile.homeAddress.address1 +
+        ', ' +
+        data?.profile.homeAddress.address2 +
+        ', ' +
+        data?.profile.homeAddress.city +
+        ', ' +
+        data?.profile.homeAddress.state,
+      country: data?.profile.homeAddress.country,
+      // phone: data?.profile.homeAddress.phoneNumber,
     },
   ];
+
+  // const rows = [
+  //   {
+  //     fullName: 'John Paul',
+  //     login: 'joesph834',
+  //     email: 'john@test.com',
+  //     address: '111 Main Street Suite 100',
+  //     phone: '9374854868',
+  //     country: 'USA',
+  //   },
+  // ];
 
   const columns = [
     { key: 'fullName', label: 'Full Name' },
     { key: 'login', label: 'Login ID' },
     { key: 'email', label: 'Email Address' },
     { key: 'address', label: 'Address' },
-    { key: 'phone', label: 'Contact No' },
     { key: 'country', label: 'Country' },
+    // { key: 'phone', label: 'Contact No' },
     // { key: 'CustomerGroup', label: 'Customer Group' },
   ];
 

@@ -10,16 +10,14 @@ import {
 } from '@commercetools-uikit/hooks';
 import DataTable from '@commercetools-uikit/data-table';
 import Spacings from '@commercetools-uikit/spacings';
-import { getCategories } from '../../api';
+import { orderByLogin } from '../../api';
 import { useAsyncDispatch } from '@commercetools-frontend/sdk';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { getCategoriesRows } from './rows';
 
 const QUERY = {
-  perPage: 20,
-  page: 1,
-  sortBy: 'id',
-  sortDirection: 'desc',
+  arg1: 'mary',
+  arg2: 'test123',
 };
 
 const AtgOrders = (props) => {
@@ -38,58 +36,33 @@ const AtgOrders = (props) => {
   const tableSorting = useDataTableSortingState('id desc');
 
   const [data, setData] = useState();
+  const value = 'atg-rest-response';
 
   const dispatch = useAsyncDispatch();
 
   //const apiUrl ="http://localhost:4456";
-  const apiUrl = `${atgPublicURL}/rest/model/atg/commerce/catalog/ProductCatalogActor/getCurrentCatalogRootCategories`;
+  const apiUrl = `${atgPublicURL}/rest/bean/atg/userprofiling/ProfileServices/loginUser`;
   // 'https://192.168.16.201:8443/rest/model/atg/commerce/catalog/ProductCatalogActor/getCurrentCatalogRootCategories';
   useEffect(() => {
-    getCategories({ url: apiUrl, query }, dispatch).then((res) => setData(res));
+    orderByLogin({ url: apiUrl, payload: query }, dispatch).then((res) =>
+      setData(res)
+    );
   }, [apiUrl, query]);
 
   console.log('data', data);
   const rows = [
     {
-      id: 'data?.rootCategories[0].id',
-      displayName: 'data?.rootCategories[0].displayName',
+      id: data?.atgResponse,
+      // displayName: 'data?.rootCategories[2].displayName',
     },
-    {
-      id: 'data?.rootCategories[1].id',
-      displayName: 'data?.rootCategories[1].displayName',
-    },
-    // {
-    //   id: data?.rootCategories[2].id,
-    //   displayName: data?.rootCategories[2].displayName,
-    // },
     // {
     //   id: data?.rootCategories[3].id,
     //   displayName: data?.rootCategories[3].displayName,
     // },
-    // {
-    //   id: data?.rootCategories[4].id,
-    //   displayName: data?.rootCategories[4].displayName,
-    // },
-    // {
-    //   id: data?.rootCategories[5].id,
-    //   displayName: data?.rootCategories[5].displayName,
-    // },
-    // {
-    //   id: data?.rootCategories[6].id,
-    //   displayName: data?.rootCategories[6].displayName,
-    // },
-    // {
-    //   id: data?.rootCategories[7].id,
-    //   displayName: data?.rootCategories[7].displayName,
-    // },
-    // {
-    //   id: data?.rootCategories[8].id,
-    //   displayName: data?.rootCategories[8].displayName,
-    // },
   ];
   const columns = [
-    { key: 'id', label: 'ID' },
-    { key: 'displayName', label: 'Display Name' },
+    { key: 'id', label: 'Order ID' },
+    // { key: 'displayName', label: 'Display Name' },
   ];
 
   return (
@@ -101,7 +74,7 @@ const AtgOrders = (props) => {
           rows={rows}
           // rows={getCategoriesRows(data)}
           maxHeight={600}
-          // onRowClick={(row) => push(`${row.id}/atg-category`)}
+          onRowClick={(row) => push(`${row.id}/atg-orderLogin`)}
         />
 
         <Pagination

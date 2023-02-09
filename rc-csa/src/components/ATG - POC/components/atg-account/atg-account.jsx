@@ -23,6 +23,7 @@ import AtgProducts from '../atg-products/atg-products';
 import { useAsyncDispatch } from '@commercetools-frontend/sdk';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import AtgOrders from '../atg-orders/atg-orders';
+import AtgOrderLogin from '../atg-orderByLogin/atg-orderLogin';
 // import CustomerAddress from '../customer-address/customer-address';
 
 const LoginCred = {
@@ -121,6 +122,9 @@ const AtgAccount = (props) => {
         </Route>
         <Route path={`${match.path}/atg-orders`}>
           <AtgOrders />
+        </Route>
+        <Route path={`${match.path}/:id/atg-orderLogin`}>
+          <AtgOrderLogin />
         </Route>
         {/* <Route path={`${match.path}/Customers-password`}>
           <CustomerPassword />
