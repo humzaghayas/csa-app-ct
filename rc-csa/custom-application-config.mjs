@@ -41,30 +41,26 @@ const config = {
         'http://localhost:3001',
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
-        'https://firebasestorage.googleapis.com/',
-        'http://192.168.16.201:8080/',
+        'https://firebasestorage.googleapis.com/'
       ],
       'connect-src': [
         'http://localhost:3001',
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
         'https://firebasestorage.googleapis.com/',
-        'http://192.168.16.201:8080/',
-        'https://192.168.16.201:8443',
+        'f2b6-119-63-131-226.in.ngrok.io'
       ],
       'style-src': [
         'http://localhost:3001',
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
-        'https://firebasestorage.googleapis.com/',
-        'http://192.168.16.201',
+        'https://firebasestorage.googleapis.com/'
       ],
       'img-src': [
         'http://localhost:3001',
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
-        'https://firebasestorage.googleapis.com/',
-        'http://192.168.16.201:8080',
+        'https://firebasestorage.googleapis.com/'
       ],
     },
   },
