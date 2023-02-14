@@ -20,7 +20,7 @@ import { PERMISSIONS } from './constants';
 import CustomerMessagesForm from './components/Customer/components/customer-messages/customer-messages-form';
 import CustomerMessages from './components/Customer/components/customer-messages/customer-messages';
 import CustomerReply from './components/Customer/components/customer-messages/customer-reply';
-import AtgAccount from './components/ATG - POC/components/atg-account/atg-account';
+import AtgAccount from './components/ATG-Poc/components/atg-account/atg-account';
 import ProductsList from './components/Products/components/product-list/products';
 
 const ApplicationRoutes = () => {
@@ -116,7 +116,7 @@ const ApplicationRoutes = () => {
 	      <CustomerReply linkToWelcome={match.url} />
           </Route>
           <Route path={`${match.path}/ATG`}>
-        <AtgAccount linkToWelcome={match.url} />
+            <AtgAccount linkToWelcome={match.url} />
           </Route>
         <Route>
           <Welcome />

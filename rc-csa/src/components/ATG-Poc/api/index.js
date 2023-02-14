@@ -24,7 +24,7 @@ const fetchResource = async (
   }
 };
 
-const fetchLogin = async (
+export const fetchLogin = async (
   url,
   { method = 'GET', headers, body } = {},
   dispatch
@@ -35,10 +35,10 @@ const fetchLogin = async (
         uri: url,
         audiencePolicy: 'forward-url-origin',
         headers: {
-          'ngrok-skip-browser-warning': 'bar',
-          Cookie:
-            'JSESSIONID=HptlRuoZaUG0NEpNSp6GPCIE3KvekwPpewFrCBmj.win10-ranjit-or',
-        },
+        'ngrok-skip-browser-warning': 'bar',
+        //   Cookie:
+        //     'JSESSIONID=HptlRuoZaUG0NEpNSp6GPCIE3KvekwPpewFrCBmj.win10-ranjit-or',
+         },
       })
     );
 
@@ -92,49 +92,30 @@ const fetchOrderLoginId = async (url, { headers, body } = {}, dispatch) => {
   }
 };
 
-const fetchLoginPost = async (url, { body } = {}) => {
+const fetchPost = async (url ,header, body,dispatch) => {
   try {
-    const result = await actions.forwardTo.post({
-      uri: url,
-      payload: body,
-    });
+    const result = await dispatch(
+      actions.forwardTo.post({
+        uri: url,
+        payload: body,
+        audiencePolicy: 'forward-url-origin',
+        includeUserPermissions: true,
+        headers: {
+          'ngrok-skip-browser-warning': 'bar',
+          ...header
+        },
+      })
+    );
 
     console.log('Result FT', result);
 
     return result;
   } catch (error) {
+    console.log('Error', JSON.stringify (error));
     console.log('Error', error);
   }
 };
 
-const fetchCustomer = async (url, { method = 'GET', headers, body } = {}) => {
-  try {
-    const result = await fetch(url, {
-      method,
-      ...(headers && { headers }),
-      ...(body && { body: JSON.stringify(body) }),
-    });
-
-    console.log('Result FT', result);
-
-    return result;
-  } catch (error) {
-    console.log('Error', error);
-  }
-};
-
-// const fetch = async (url, { method = 'GET', headers, body } = {}) => {
-//   const response = await fetch(url, {
-//     method,
-//     ...(headers && { headers }),
-//     ...(body && { body: JSON.stringify(body) }),
-//   });
-//   const data = await response.json();
-//   if (response.ok) {
-//     return data;
-//   }
-//   throw data;
-// };
 
 export const getById = async ({ url, payload }, dispatch) => {
   return fetchResourcePost(
@@ -178,15 +159,8 @@ export const orderLoginId = async ({ url, payload }, dispatch) => {
   );
 };
 
-export const login = async ({ url, payload }) => {
-  return fetchLoginPost(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      // 'ngrok-skip-browser-warning': true,
-    },
-    body: payload,
-  });
+export const loginATG = async ( url,headers, payload ,dispatch) => {
+  return fetchPost(url,headers,payload,dispatch);
 };
 
 export const getCustomer = async ({ url, query }, dispatch) => {
@@ -213,46 +187,3 @@ export const getCategory = async ({ url, id }) => {
   return fetchResourcePost(`${url}/${id}`);
 };
 
-// export const deleteTicket = async ({ url, id }) => {
-//   return fetchResource(`${url}/${id}`, { method: 'DELETE' });
-// };
-
-// export const createTicket = async ({ url, payload }) => {
-//   return fetchResource(url, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: payload,
-//   });
-// };
-
-// export const updateTicket = async ({ url, payload }) => {
-//   return fetchResource(`${url}/${payload.id}`, {
-//     method: 'PUT',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: cleanDefaultShippingAndBilling(payload),
-//   });
-// };
-
-// export const setDefaultBillingAddress = async ({ url, id, addressId }) => {
-//   return fetchResource(`${url}/${id}/setDefaultBillingAddress`, {
-//     method: 'PATCH',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: { addressId },
-//   });
-// };
-
-// export const setDefaultShippingAddress = async ({ url, id, addressId }) => {
-//   return fetchResource(`${url}/${id}/setDefaultShippingAddress`, {
-//     method: 'PATCH',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: { addressId },
-//   });
-// };

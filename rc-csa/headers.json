@@ -5,9 +5,7 @@
       "mc-api.us-central1.gcp.commercetools.com",
       "commerce-tools-b2b-services.firebaseapp.com",
       "https://ms-company-f4b4o225iq-ue.a.run.app",
-      "https://ms-gateway-f4b4o225iq-ue.a.run.app",
-      "http://192.168.16.201:8080/",
-      "https://192.168.16.201:8443/"
+      "https://ms-gateway-f4b4o225iq-ue.a.run.app"
     ],
     "connect-src": [
       "commerce-tools-b2b-services.firebaseapp.com",
@@ -15,16 +13,14 @@
       "commerce-tools-b2b-services.firebaseapp.com",
       "https://ms-company-f4b4o225iq-ue.a.run.app",
       "https://ms-gateway-f4b4o225iq-ue.a.run.app",
-      "http://192.168.16.201:8080/",
-      "https://192.168.16.201:8443/"
+      "f2b6-119-63-131-226.in.ngrok.io"
     ],
     "style-src": [
       "commerce-tools-b2b-services.firebaseapp.com",
       "mc-api.us-central1.gcp.commercetools.com",
       "commerce-tools-b2b-services.firebaseapp.com",
       "https://ms-company-f4b4o225iq-ue.a.run.app",
-      "https://ms-gateway-f4b4o225iq-ue.a.run.app",
-      "http://192.168.16.201:8080/"
+      "https://ms-gateway-f4b4o225iq-ue.a.run.app"
     ]
   }
 }
