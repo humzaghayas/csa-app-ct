@@ -3,7 +3,7 @@ import { useAsyncDispatch } from '@commercetools-frontend/sdk';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { actions } from '@commercetools-frontend/sdk';
 
-export const useLoginAtg =() => {
+export const useGetAtgOrders =() => {
 
   const dispatch = useAsyncDispatch();
   const atgPublicURL = useApplicationContext(
@@ -11,29 +11,48 @@ export const useLoginAtg =() => {
   );
   
 
-  const apiUrl = `${atgPublicURL}/rest/repository/atg/userprofiling/ProfileAdapterRepository/user`;
-  const payload ={
-      "login":"mary",
-      "password":"test123"
-  };
-  const header= {
-    'Content-Type': 'application/json',
-  }
+  const apiUrl = `${atgPublicURL}/rest/bean/atg/commerce/order/OrderQueries/getOrdersForProfile`;
 
-  const execute = async () => {
+
+  const execute = async (userId) => {
     // const data= loginATG(apiUrl,headers, payload ,dispatch );
 
+    const payload ={
+      "arg1":userId
+    } ;
+    const header= {
+      'Content-Type': 'application/json',
+    }
+
     const data =await dispatch(
-      actions.forwardTo.get({
+      actions.forwardTo.post({
         uri: apiUrl,
+        payload,
         headers: {
           'ngrok-skip-browser-warning': 'bar',
           ...header
         },
       })
     );
-    console.log('Response ATG',data);
-    return data;
+
+    console.log('dataaaaa',data);
+    const idPlaceholder = "id:";
+    const semiColon = ";";
+    if(data.atgResponse && data.atgResponse.length > 0){
+
+      const orders = data.atgResponse.map(o =>{
+        const startIndex = o.indexOf(idPlaceholder)+idPlaceholder.length;
+        const numOfChars = o.indexOf(semiColon,startIndex) - startIndex;
+
+        return {orderId:o.substr(startIndex,numOfChars)};
+      })
+
+
+      console.log('Response Orders',orders);
+      return orders;
+    }
+
+    return [{orderId:"Not Found"}];
   }
 
   return {execute};

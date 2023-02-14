@@ -40,8 +40,6 @@ const AtgAccount = (props) => {
   const params = useParams();
   const [data, setData] = useState(null);
 
-  const {execute} = useLoginAtg();
-
 
   return (
     <TabularDetailPage

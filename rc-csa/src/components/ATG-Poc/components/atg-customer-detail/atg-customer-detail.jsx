@@ -13,7 +13,7 @@ import { getCustomer, loginATG } from '../../api';
 import { useEffect, useState } from 'react';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useAsyncDispatch } from '@commercetools-frontend/sdk';
-import { useGetATGCustomerDetail, useGetATGCustomers } from '../../../../hooks/use-atg-conector/use-atg-connector';
+import { useGetATGCustomerDetail, useGetAtgOrders } from '../../../../hooks/use-atg-conector';
 
 const LoginCred = {
   login: 'mary',
@@ -26,9 +26,11 @@ const AtgCustomerDetail = (props) => {
 
   const { page, perPage } = usePaginationState();
   const [rows, setRows] = useState([{userId:"Loading..."}]);
+  const [rowsOrders, setRowsOrders] = useState([{orderId:"Loading..."}]);
   const [isCustomerFetched, setIsCustomerFetched] = useState(false);
 
-  const {execute} = useGetATGCustomerDetail()
+  const {execute} = useGetATGCustomerDetail();
+  const {execute:execOrders} = useGetAtgOrders();
 
   const match = useRouteMatch();
 
@@ -41,7 +43,11 @@ const AtgCustomerDetail = (props) => {
         'Content-Type': 'application/json',
       }
       const customer = await execute(headers,match.params.id);
+      const orders = await execOrders(match.params.id);
       setRows([customer]);
+      setRowsOrders(orders);
+
+      console.log('order',orders);
       setIsCustomerFetched(true);
 
       console.log('humza');
@@ -57,6 +63,10 @@ const AtgCustomerDetail = (props) => {
     { key: 'middleName', label: 'Middle Name' },
     { key: 'lastName', label: 'Last Name' },
     { key: 'email', label: 'Email' }
+  ];
+
+  const columnsOrders = [
+    { key: 'orderId', label: 'Order Id' }
   ];
 
   return (
@@ -82,6 +92,23 @@ const AtgCustomerDetail = (props) => {
                 <CustomerAccount onClose={() => push(`${match.url}`)} />
               </SuspendedRoute>
             </Switch> */}
+        </Spacings.Stack>
+      </Spacings.Stack>
+
+      <Spacings.Stack scale="xs">
+      <Spacings.Stack scale="l">
+          <DataTable
+            isCondensed
+            columns={columnsOrders}
+            rows={rowsOrders}
+            maxHeight={600}
+          />
+          <Pagination
+            page={page.value}
+            onPageChange={page.onChange}
+            perPage={perPage.value}
+            onPerPageChange={perPage.onChange}
+          />
         </Spacings.Stack>
       </Spacings.Stack>
     </Spacings.Stack>
