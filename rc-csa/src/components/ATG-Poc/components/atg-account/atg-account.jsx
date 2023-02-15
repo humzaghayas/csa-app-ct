@@ -25,6 +25,7 @@ import AtgOrderLogin from '../atg-orderByLogin/atg-orderLogin';
 import { useLoginAtg } from '../../../../hooks/use-atg-conector';
 import { useEffect, useState } from 'react';
 import AtgCustomerDetail from '../atg-customer-detail/atg-customer-detail';
+import AtgOrderDetail from '../atg-order-detail/atg-order-detail';
 // import CustomerAddress from '../customer-address/customer-address';
 
 const LoginCred = {
@@ -102,6 +103,9 @@ const AtgAccount = (props) => {
         </Route>
         <Route path={`${match.path}/:id/atg-customer-detail`}>
           <AtgCustomerDetail />
+        </Route>
+        <Route path={`${match.path}/:customerId/:id/atg-order-detail`}>
+          <AtgOrderDetail />
         </Route>
         <Route path={`${match.path}/atg-categories`}>
           <AtgCategories />

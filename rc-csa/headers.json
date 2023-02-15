@@ -13,7 +13,7 @@
       "commerce-tools-b2b-services.firebaseapp.com",
       "https://ms-company-f4b4o225iq-ue.a.run.app",
       "https://ms-gateway-f4b4o225iq-ue.a.run.app",
-      "f2b6-119-63-131-226.in.ngrok.io"
+      "${env:atgPublicURL}"
     ],
     "style-src": [
       "commerce-tools-b2b-services.firebaseapp.com",

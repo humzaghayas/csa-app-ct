@@ -9,17 +9,9 @@ import {
   useDataTableSortingState,
   usePaginationState,
 } from '@commercetools-uikit/hooks';
-import { getCustomer, loginATG } from '../../api';
 import { useEffect, useState } from 'react';
-import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
-import { useAsyncDispatch } from '@commercetools-frontend/sdk';
+import Text from '@commercetools-uikit/text';
 import { useGetATGCustomerDetail, useGetAtgOrders } from '../../../../hooks/use-atg-conector';
-
-const LoginCred = {
-  login: 'mary',
-  password: 'test123',
-};
-const QUERY = {};
 
 const AtgCustomerDetail = (props) => {
 
@@ -28,6 +20,7 @@ const AtgCustomerDetail = (props) => {
   const [rows, setRows] = useState([{userId:"Loading..."}]);
   const [rowsOrders, setRowsOrders] = useState([{orderId:"Loading..."}]);
   const [isCustomerFetched, setIsCustomerFetched] = useState(false);
+  const { push } = useHistory();
 
   const {execute} = useGetATGCustomerDetail();
   const {execute:execOrders} = useGetAtgOrders();
@@ -52,7 +45,7 @@ const AtgCustomerDetail = (props) => {
 
       console.log('humza');
     }
-  });
+  },[]);
 
   //atgCustomers;
 
@@ -72,6 +65,7 @@ const AtgCustomerDetail = (props) => {
   return (
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="xs">
+      <Text.Headline as="h2">ATG Customer Info:</Text.Headline>
       <Spacings.Stack scale="l">
           <DataTable
             isCondensed
@@ -96,12 +90,14 @@ const AtgCustomerDetail = (props) => {
       </Spacings.Stack>
 
       <Spacings.Stack scale="xs">
+      <Text.Headline as="h2">ATG Orders For Customer:</Text.Headline>
       <Spacings.Stack scale="l">
           <DataTable
             isCondensed
             columns={columnsOrders}
             rows={rowsOrders}
             maxHeight={600}
+            onRowClick={(row) => push(`${row.orderId}/atg-order-detail`) }
           />
           <Pagination
             page={page.value}
