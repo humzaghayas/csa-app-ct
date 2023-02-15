@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useAsyncDispatch } from '@commercetools-frontend/sdk';
 import { useGetATGCustomers } from '../../../../hooks/use-atg-conector/use-atg-connector';
+import Text from '@commercetools-uikit/text';
 
 const LoginCred = {
   login: 'mary',
@@ -43,7 +44,7 @@ const AtgCustomer = (props) => {
 
       console.log('fetchihsidhisdhishdf');
     }
-  });
+  },[]);
 
   //atgCustomers;
 
@@ -54,13 +55,7 @@ const AtgCustomer = (props) => {
   return (
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="xs">
-        {/* <FlatButton
-          as={RouterLink}
-          to={props.linkToWelcome}
-          label={intl.formatMessage(messages.backToWelcome)}
-          icon={<BackIcon />}
-        /> */}
-        {/* <Text.Headline as="h2" intlMessage={messages.title} /> */}
+      <Text.Headline as="h2">ATG Customers:</Text.Headline>
       </Spacings.Stack>
       {/* {loading && <LoadingSpinner />} */}
       {/* <Spacings.Inline>

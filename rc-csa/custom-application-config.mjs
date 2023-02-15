@@ -17,7 +17,7 @@ const config = {
     },
   },
   additionalEnv: {
-    atgPublicURL: '${env:atgPublicURL}',
+    atgPublicURL: '${env:atgProtocol}'+'${env:atgPublicURL}',
     MC_APP_ENV:'${env:ENV_VAL}',
     NODE_ENV:'${env:ENV_VAL}',
   },
@@ -48,7 +48,7 @@ const config = {
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
         'https://firebasestorage.googleapis.com/',
-        'f2b6-119-63-131-226.in.ngrok.io'
+        '${env:atgPublicURL}'
       ],
       'style-src': [
         'http://localhost:3001',

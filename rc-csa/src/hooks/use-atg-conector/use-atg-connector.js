@@ -11,7 +11,7 @@ export const useGetAtgOrders =() => {
   );
   
 
-  const apiUrl = `${atgPublicURL}/rest/bean/atg/commerce/order/OrderQueries/getOrdersForProfile`;
+  const apiUrl = `${atgPublicURL}/rest/bean/atg/commerce/order/OrderQueries/getOrderIdsForProfile`;
 
 
   const execute = async (userId) => {
@@ -36,17 +36,11 @@ export const useGetAtgOrders =() => {
     );
 
     console.log('dataaaaa',data);
-    const idPlaceholder = "id:";
-    const semiColon = ";";
     if(data.atgResponse && data.atgResponse.length > 0){
 
-      const orders = data.atgResponse.map(o =>{
-        const startIndex = o.indexOf(idPlaceholder)+idPlaceholder.length;
-        const numOfChars = o.indexOf(semiColon,startIndex) - startIndex;
-
-        return {orderId:o.substr(startIndex,numOfChars)};
+      const orders = data.atgResponse.map(ordId =>{
+        return {orderId:ordId};
       })
-
 
       console.log('Response Orders',orders);
       return orders;
@@ -151,3 +145,92 @@ export const useGetATGCustomerDetail =() => {
 
 }
 
+
+
+
+///////////////////////
+
+export const useGetAtgOrdersDetails =() => {
+
+  const dispatch = useAsyncDispatch();
+  const atgPublicURL = useApplicationContext(
+    (context) => context.environment.atgPublicURL
+  );
+  
+
+  const apiUrl = `${atgPublicURL}/rest/bean/atg/commerce/order/OrderManager/loadOrder`;
+
+
+  const execute = async (orderId) => {
+    // const data= loginATG(apiUrl,headers, payload ,dispatch );
+
+    const payload ={
+      "arg1":orderId
+    } ;
+    const header= {
+      'Content-Type': 'application/json',
+    }
+
+    const data =await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          'ngrok-skip-browser-warning': 'bar',
+          ...header
+        },
+      })
+    );
+
+    console.log('order details',data);
+    const id = "id:";
+    const semiColon = ";";
+    const catalogRefId="catalogRefId:"
+    if(data){
+
+      const profileId = data.profileId;
+      const orderId = data.id;
+      const shippingGroups = data.shippingGroups;
+      const stateAsString = data.stateAsString;
+
+
+      const CurrencyCode="CurrencyCode:";
+      const Amount="Amount:";
+      const Discounted="Discounted:";
+      let currencyCode=extractInfo(data.priceInfo,CurrencyCode,semiColon);
+      let amount=extractInfo(data.priceInfo,Amount,semiColon);
+      let isDiscounted=extractInfo(data.priceInfo,Discounted,semiColon);
+
+      const priceInfo = {currencyCode,amount,isDiscounted};
+
+
+      currencyCode=extractInfo(data.taxPriceInfo,CurrencyCode,semiColon);
+      amount=extractInfo(data.taxPriceInfo,Amount,semiColon);
+      const taxPriceInfo = {currencyCode,amount};
+
+      const products = data.commerceItems.map(c => {
+        const ProductId="productId:";
+
+        let productId =extractInfo(c,ProductId,semiColon);
+
+        return {productId}
+      });
+
+            //   id:ci3000003; catalogRefId:mp600141; catalogKey:en_US; 
+      //quantity:5; quantityWithFraction:0.0; state:INITIAL;
+      // AuxiliaryData[productId:mpprod110101;
+
+      return {orderId,profileId,products,stateAsString,priceInfo,taxPriceInfo,shippingGroups};
+    }
+
+    return {profileId:"Not Found"};
+  }
+
+  return {execute};
+};
+
+const extractInfo = (sourceString,stringToSearch,endDelim) =>{
+  let startInd = sourceString.indexOf(stringToSearch)+ stringToSearch.length;
+  let numbOfChars = sourceString.indexOf(endDelim,startInd) -startInd;
+  return sourceString.substr(startInd,numbOfChars);
+}
