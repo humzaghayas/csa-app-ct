@@ -81,7 +81,7 @@ const AtgAccount = (props) => {
                 to={`${match.url}/atg-customer`}
                 label="Customer"
               />
-              <TabHeader to={`${match.url}/atg-orders`} label="Orders" />
+              {/* <TabHeader to={`${match.url}/atg-orders`} label="Orders" /> */}
 
               {/* <div className={styles.addEmployeeButton}>
               <SecondaryButton
