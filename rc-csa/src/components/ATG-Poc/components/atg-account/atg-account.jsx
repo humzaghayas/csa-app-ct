@@ -17,12 +17,15 @@ import Avatar from '@commercetools-uikit/avatar';
 import AtgCategories from '../atg-categories/atg-categories';
 import AtgCategory from '../atg-category/atg-category';
 import AtgCustomer from '../atg-customer/atg-customer';
-import { useEffect, useState } from 'react';
-import { login } from '../../api';
 import AtgProducts from '../atg-products/atg-products';
 import { useAsyncDispatch } from '@commercetools-frontend/sdk';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import AtgOrders from '../atg-orders/atg-orders';
+import AtgOrderLogin from '../atg-orderByLogin/atg-orderLogin';
+import { useLoginAtg } from '../../../../hooks/use-atg-conector';
+import { useEffect, useState } from 'react';
+import AtgCustomerDetail from '../atg-customer-detail/atg-customer-detail';
+import AtgOrderDetail from '../atg-order-detail/atg-order-detail';
 // import CustomerAddress from '../customer-address/customer-address';
 
 const LoginCred = {
@@ -31,25 +34,13 @@ const LoginCred = {
 };
 
 const AtgAccount = (props) => {
-  const atgPublicURL = useApplicationContext(
-    (context) => context.environment.atgPublicURL
-  );
+
   const match = useRouteMatch();
   const tabsModalState = useModalState(true);
   const history = useHistory();
   const params = useParams();
-  const [data, setData] = useState();
-  const dispatch = useAsyncDispatch();
+  const [data, setData] = useState(null);
 
-  // console.log("params.id",params.id);
-  const apiUrl = `${atgPublicURL}/rest/model/atg/userprofiling/ProfileActor/login`;
-  // 'http://192.168.16.201:8080/rest/model/atg/userprofiling/ProfileActor/login';
-  useEffect(() => {
-    login({ url: apiUrl, payload: LoginCred, dispatch }).then((res) =>
-      setData(res)
-    );
-  }, [apiUrl, LoginCred]);
-  // console.log('data', data);
 
   return (
     <TabularDetailPage
@@ -90,7 +81,7 @@ const AtgAccount = (props) => {
                 to={`${match.url}/atg-customer`}
                 label="Customer"
               />
-              <TabHeader to={`${match.url}/atg-orders`} label="Orders" />
+              {/* <TabHeader to={`${match.url}/atg-orders`} label="Orders" /> */}
 
               {/* <div className={styles.addEmployeeButton}>
               <SecondaryButton
@@ -110,6 +101,12 @@ const AtgAccount = (props) => {
         <Route path={`${match.path}/atg-customer`}>
           <AtgCustomer />
         </Route>
+        <Route path={`${match.path}/:id/atg-customer-detail`}>
+          <AtgCustomerDetail />
+        </Route>
+        <Route path={`${match.path}/:customerId/:id/atg-order-detail`}>
+          <AtgOrderDetail />
+        </Route>
         <Route path={`${match.path}/atg-categories`}>
           <AtgCategories />
         </Route>
@@ -121,6 +118,9 @@ const AtgAccount = (props) => {
         </Route>
         <Route path={`${match.path}/atg-orders`}>
           <AtgOrders />
+        </Route>
+        <Route path={`${match.path}/:id/atg-orderLogin`}>
+          <AtgOrderLogin />
         </Route>
         {/* <Route path={`${match.path}/Customers-password`}>
           <CustomerPassword />

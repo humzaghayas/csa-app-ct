@@ -5,7 +5,7 @@ import {
   useRouteMatch,
   Link,
   useHistory,
-  useParams
+  useParams,
 } from 'react-router-dom';
 import {
   TabularModalPage,
@@ -23,8 +23,7 @@ import Spacings from '@commercetools-uikit/spacings';
 import { lazy, useState, useEffect } from 'react';
 import CartView from '../cart-view/cart-view';
 import ShippingAddress from '../create-order/add-shipping-address';
-
-
+import PlaceOrder from '../place-order/place-order';
 
 const CartAccount = (props) => {
   const match = useRouteMatch();
@@ -46,17 +45,16 @@ const CartAccount = (props) => {
     <TabularDetailPage
       title=" "
       //  onPreviousPathClick={() => history.push(`Order-list`)}
-      onPreviousPathClick={() => history.push(`/csa-project-2/csa-customer-tickets/Cart`)}
+      onPreviousPathClick={() =>
+        history.push(`/csa-project-2/csa-customer-tickets/Cart`)
+      }
       previousPathLabel="Go to View cart"
       tabControls={
         <>
           <Spacings.Stack scale="xl">
             <Spacings.Inline>
-              <TabHeader
-                to={`${match.url}/cart-general`}
-                label="General"
-              />
-            {/* <TabHeader
+              <TabHeader to={`${match.url}/cart-general`} label="General" />
+              {/* <TabHeader
                 to={`${match.url}/orders-shipping`}
                 label="Shipping & Delivery"
               /> */}
@@ -67,14 +65,16 @@ const CartAccount = (props) => {
     >
       <Switch>
         <Route path={`${match.path}/cart-general`}>
-        <CartView />
+          <CartView />
         </Route>
-        <Route path={`${match.path}/add-shipping-address`}>
-        <ShippingAddress />
+        <Route path={`${match.path}/place-order`}>
+          <PlaceOrder />
         </Route>
+        {/* <Route path={`${match.path}/add-shipping-address`}>
+          <ShippingAddress />
+        </Route> */}
       </Switch>
     </TabularDetailPage>
-
   );
 };
 CartAccount.displayName = 'Companies';

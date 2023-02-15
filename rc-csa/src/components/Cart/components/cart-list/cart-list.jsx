@@ -49,6 +49,8 @@ const rows = [
 
 const columns = [
   { key: 'id', label: 'Cart Number' },
+  //{ key: 'key', label: 'Cart Key' },
+  { key: 'orderNumber', label: 'Order Number' },
   { key: 'customer', label: 'Customer' },
   { key: 'totalPrice', label: 'Cart Total' },
   { key: 'noOforderItems', label: 'No.of order Items' },

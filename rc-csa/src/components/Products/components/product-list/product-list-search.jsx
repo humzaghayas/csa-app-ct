@@ -36,6 +36,7 @@ import {
   SearchBox,
   Hits,
   Highlight,
+  Configure
 } from 'react-instantsearch-hooks-web';
 import { useHits } from 'react-instantsearch-hooks-web';
 import { getSearchItemsRows } from './productSearchRows';
@@ -80,6 +81,7 @@ const ProductListSearch = (props) => {
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="s">
         <InstantSearch indexName="bestbuy" searchClient={searchClient}>
+        <Configure hitsPerPage={5} />
           <SearchBox placeholder="Search for products..." />
 
           <Hits
@@ -90,14 +92,21 @@ const ProductListSearch = (props) => {
                     {hit ? (
                       <Spacings.Stack scale="l">
                         <div className="search-product-results">
-                          <div>{hit.name}</div>
-                          <img
+                          {/* <div>{JSON.stringify(hit)}</div> */}
+                          <div className="search-result-details-left">
+                        <img
                             src={hit.thumbnailImage}
                             alt=""
                             width="100%"
                             height="100%"
                             class="search-result-image"
                           />
+                          </div>
+                          <div class="search-result-details-right">
+                          <div class="search-result-category">{hit.category}</div>
+                          <div class="search-result-name">{hit.name}</div>
+                          <div class="search-result-price">${hit.salePrice}</div>
+                          </div>
                         </div>
                       </Spacings.Stack>
                     ) : null}
