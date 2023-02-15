@@ -451,7 +451,7 @@ const OrderCreateForm = (props) => {
             // cacheOptions={false}
           />
 
-          {searchProducts.length>0 ? <DataTable
+          {searchProducts?.length>0 ? <DataTable
             rows={getSearchProductRows(searchProducts)}
             columns={searchColumns}
             itemRenderer={itemRendererSearch}

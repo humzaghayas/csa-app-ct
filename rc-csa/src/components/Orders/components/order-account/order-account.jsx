@@ -33,6 +33,7 @@ import { lazy, useState, useEffect } from 'react';
 import OrderCreate from '../order-create/order-create';
 import OrderShipping from '../order-shipping/order-shipping';
 import OrderLineItems from '../order-create/order-line-items';
+import OrderReturns from '../order-returns/order-returns';
 
 
 const OrderAccount = (props) => {
@@ -68,6 +69,10 @@ const OrderAccount = (props) => {
                 to={`${match.url}/orders-shipping`}
                 label="Shipping & Delivery"
               />
+            <TabHeader
+                to={`${match.url}/orders-returns`}
+                label="Returns"
+              />
             </Spacings.Inline>
           </Spacings.Stack>
         </>
@@ -85,14 +90,9 @@ const OrderAccount = (props) => {
        <Route path={`${match.path}/order-line-items`}>
          <OrderLineItems />
        </Route>
-        {/* <Route path={`${match.path}/employee-create`}>
-           <EmployeeCreate />
-          </Route>
-        <Route path={`${match.path}/required-approval`}>
-           <RequiredApproval/>
-          </Route> */}
-          
-
+        <Route path={`${match.path}/orders-returns`}>
+          <OrderReturns/>
+        </Route>
       </Switch>
     </TabularDetailPage>
 
