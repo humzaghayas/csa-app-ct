@@ -56,6 +56,9 @@ display: flex;
     border: none;
     margin-top: 23px;
 }
+.ais-Hits{
+    margin-left: 200px;
+}
 .ais-Hits-list {
     margin-top: 34px;
     border: 2px solid;
@@ -63,7 +66,7 @@ display: flex;
     padding-top: 20px;
     padding-bottom: 20px;
     max-width: 952px;
-    margin-left: 324px;
+    /* margin-left: 524px; */
 }
 .search-results-name{
     color: rgb(12, 83, 131);
@@ -72,23 +75,28 @@ display: flex;
 .ais-SearchBox-input{
        
        height: 55px;
-       margin-left: 324px;
+       /* margin-left: 324px; */
        border: 1px solid black;
        border-radius: 4px;
-       min-width: 900px;
+       min-width: 950px;
        font-size: 20px;
        margin-top: 75px;
    
+}
+.ais-SearchBox-form{
+    margin-left: 200px;
 }
 .ais-SearchBox-reset{
     width: 52px;
     height: 55px;
     margin-left: 20px;
+    display: none;
    
 }
 .ais-SearchBox-submit{
     width: 52px;
-    height: 57px
+    height: 57px;
+    display: none;
    
 }
 .search-results-drop{
@@ -142,5 +150,60 @@ display: flex;
     margin-right: 30px;
 }
 .search-result-details-left{
-    width: 250px;
+    width: 300px;
 }
+.searchbox-items{
+    display: flex;
+    flex-direction: column;
+    min-width: 1200px;
+}
+.refinement-list-search{
+    display: flex;
+}
+.ais-RefinementList{
+    max-width: 400px;
+    margin-top: -10px;
+
+}
+.ais-RefinementList-list{
+    list-style-type: none;
+    font-size: medium;
+}
+.ais-RefinementList-item{
+    padding-top: 10px;
+    font-weight: 600;
+}
+.ais-Pagination-item{
+    font-size: medium;
+    font-weight: 600;
+    padding: 10px;
+   border: 1px solid black;
+   /* width: 20px; */
+}
+.ais-Pagination-list{
+    list-style-type: none;
+    display: flex;
+    margin-left: 789px;
+    margin-top: 20px;
+}
+.refinement-list-category{
+    margin-top: 171px;
+    font-size: 20px;
+    font-weight: 800;
+    margin-left: 40px;
+}
+.refinement-list-price{
+    font-size: 20px;
+    font-weight: 800;
+    margin-left: 40px;
+    margin-top: 40px;
+}
+.refinement-list-brand{
+    font-size: 20px;
+    font-weight: 800;
+    margin-left: 40px;
+    margin-top: 40px;
+}
+/* .search-results-list{
+margin-left: 300px;
+} */
