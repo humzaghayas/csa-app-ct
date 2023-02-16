@@ -76,7 +76,7 @@ const AtgCustomerDetail = (props) => {
   
     const data = await execUpdateCustomer({"Content-Type":"application/json"},{"middleName":formik.values.middleName})
 
-    if(data && data.atg-rest-response?.atgResponse){
+    if(data && data['atg-rest-response'] && data['atg-rest-response']?.atgResponse){
       alert('Updates Successfully!')
     }else{
       alert('Failed to Update!')
