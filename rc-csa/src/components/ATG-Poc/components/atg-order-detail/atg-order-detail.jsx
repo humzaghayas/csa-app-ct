@@ -56,7 +56,9 @@ const AtgOrderDetail = (props) => {
         <Spacings.Stack scale="s">
           <Text.Headline as="h2">Order ID</Text.Headline>
           <Text.Body>{order?.order?.id}</Text.Body>
-              <Spacings.Stack scale="xs">
+
+
+          <Spacings.Stack scale="xs">
  
               <div>
                 {order?.order?.commerceItems ?
@@ -75,6 +77,10 @@ const AtgOrderDetail = (props) => {
                 } 
               </div>
             </Spacings.Stack>
+          <Text.Headline as="h2"> Price</Text.Headline>
+            <div><b>Total Price : {order?.order?.priceInfo?.total} - {order?.order?.priceInfo?.currencyCode}</b></div>
+            <div><b>Tax : {order?.order?.priceInfo?.tax} - {order?.order?.priceInfo?.currencyCode}</b></div>
+            <div><b>Discount : {order?.order?.priceInfo?.discountAmount} - {order?.order?.priceInfo?.currencyCode}</b></div>
          </Spacings.Stack>
       </Spacings.Stack>) : "Loading ..."
     }
