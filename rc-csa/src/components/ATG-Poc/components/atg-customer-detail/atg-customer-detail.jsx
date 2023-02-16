@@ -11,7 +11,9 @@ import {
 } from '@commercetools-uikit/hooks';
 import { useEffect, useState } from 'react';
 import Text from '@commercetools-uikit/text';
-import { useGetATGCustomerDetail, useGetAtgOrders } from '../../../../hooks/use-atg-conector';
+import { useGetATGCustomerDetail, useGetAtgOrders,useUpdateCustomerInfo } from '../../../../hooks/use-atg-conector';
+import { PrimaryButton, TextField } from '@commercetools-frontend/ui-kit';
+import { useFormik } from 'formik';
 
 const AtgCustomerDetail = (props) => {
 
@@ -24,8 +26,9 @@ const AtgCustomerDetail = (props) => {
 
   const {execute} = useGetATGCustomerDetail();
   const {execute:execOrders} = useGetAtgOrders();
-
   const match = useRouteMatch();
+
+  const {execute:execUpdateCustomer} = useUpdateCustomerInfo(match.params.id);
 
   console.log('humza');
 
@@ -47,7 +50,38 @@ const AtgCustomerDetail = (props) => {
     }
   },[]);
 
+
+  const getInitialValues=(customerInfo)=>{
+    return {
+      userId: customerInfo?.userId ?? '',
+      login: customerInfo?.login ?? '',
+      firstName: customerInfo?.firstName ?? '',
+      middleName: customerInfo?.middleName ?? '',
+      lastName: customerInfo?.lastName ?? '',
+      email: customerInfo?.email ?? '',
+    }
+  }
+
+  const formik = useFormik({
+    // Pass initial values from the parent component.
+    initialValues: getInitialValues(rows[0]),
+    // Handle form submission in the parent component.
+    onSubmit: props.onSubmit,
+    enableReinitialize: true,
+  });
+
   //atgCustomers;
+
+  const updateUserInfo = async (e)=>{
+  
+    const data = await execUpdateCustomer({"Content-Type":"application/json"},{"middleName":formik.values.middleName})
+
+    if(data && data.atg-rest-response?.atgResponse){
+      alert('Updates Successfully!')
+    }else{
+      alert('Failed to Update!')
+    }
+  }
 
   const columns = [
     { key: 'userId', label: 'User Id' },
@@ -66,27 +100,74 @@ const AtgCustomerDetail = (props) => {
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="xs">
       <Text.Headline as="h2">ATG Customer Info:</Text.Headline>
-      <Spacings.Stack scale="l">
-          <DataTable
-            isCondensed
-            columns={columns}
-            rows={rows}
-            maxHeight={600}
-            // onRowClick={(row) => push(`customer-account/${row.id}/Customers-summary`) }
+
+      <Spacings.Inline alignItems="flex-end">
+      <TextField
+            name="login"
+            title="Login ID"
+            value={formik.values.login}
+            isReadOnly={true}
+            horizontalConstraint={13}
+            errors={formik.errors.login}
+            touched={formik.touched.login}
+            onBlur={formik.handleBlur}
           />
-          <Pagination
-            page={page.value}
-            onPageChange={page.onChange}
-            perPage={perPage.value}
-            onPerPageChange={perPage.onChange}
-            // totalItems={customersPaginatedResult.total}
+        <TextField
+            name="userId"
+            title="User Id"
+            value={formik.values.userId}
+            isReadOnly={true}
+            horizontalConstraint={13}
+            errors={formik.errors.userId}
+            touched={formik.touched.userId}
+            onBlur={formik.handleBlur}
           />
-          {/* <Switch>
-              <SuspendedRoute path={`${match.path}/:id`}>
-                <CustomerAccount onClose={() => push(`${match.url}`)} />
-              </SuspendedRoute>
-            </Switch> */}
-        </Spacings.Stack>
+        </Spacings.Inline>
+      
+      <Spacings.Inline alignItems="flex-end">
+      <TextField
+            name="firstName"
+            title="First Name"
+            value={formik.values.firstName}
+            horizontalConstraint={13}
+            isReadOnly={true}
+          />
+        <TextField
+            name="lastName"
+            title="Last Name"
+            value={formik.values.lastName}
+            horizontalConstraint={13}
+            isReadOnly={true}
+          />
+        </Spacings.Inline>
+      <Spacings.Inline alignItems="flex-end">
+        <TextField
+            name="middleName"
+            title="Middle Name"
+            value={formik.values.middleName}
+            horizontalConstraint={13}
+            onChange={formik.handleChange}
+            errors={formik.errors.middleName}
+            touched={formik.touched.middleName}
+            onBlur={formik.handleBlur}            
+          />
+        <TextField
+            name="email"
+            title="Email"
+            value={formik.values.email}
+            horizontalConstraint={13}
+            isReadOnly={true}
+          />
+        </Spacings.Inline>
+        <Spacings.Inline alignItems="flex-end">
+        <PrimaryButton
+                type="submit"
+                label="Submit"
+                onClick={updateUserInfo}
+                isDisabled={formik.isSubmitting}
+                // isDisabled={disableSubmitButton }
+              />        
+          </Spacings.Inline>
       </Spacings.Stack>
 
       <Spacings.Stack scale="xs">

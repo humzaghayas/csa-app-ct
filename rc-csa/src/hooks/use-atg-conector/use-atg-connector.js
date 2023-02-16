@@ -2,6 +2,12 @@ import { loginATG } from "../../components/ATG-Poc/api";
 import { useAsyncDispatch } from '@commercetools-frontend/sdk';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { actions } from '@commercetools-frontend/sdk';
+import axios from 'axios';
+import createHttpUserAgent from '@commercetools/http-user-agent';
+import {
+  buildApiUrl,
+  executeHttpClientRequest,
+} from '@commercetools-frontend/application-shell';
 
 export const useGetAtgOrders =() => {
 
@@ -196,8 +202,56 @@ export const useGetAtgOrdersDetails =() => {
   return {execute};
 };
 
-const extractInfo = (sourceString,stringToSearch,endDelim) =>{
-  let startInd = sourceString.indexOf(stringToSearch)+ stringToSearch.length;
-  let numbOfChars = sourceString.indexOf(endDelim,startInd) -startInd;
-  return sourceString.substr(startInd,numbOfChars);
-}
+
+///////////////////
+
+export const useUpdateCustomerInfo =(userId) => {
+
+  const atgPublicURL = useApplicationContext(
+    (context) => context.environment.atgPublicURL
+  );
+  
+
+  const userAgent = createHttpUserAgent({
+    name: 'axios-client',
+    version: '1.0.0',
+    libraryName: window.app.applicationName,
+    contactEmail: 'support@my-company.com',
+  });
+
+  const url = `${atgPublicURL}/rest/repository/atg/userprofiling/ProfileAdapterRepository/user/${userId}?atg-rest-user-input=MyMessageId`;
+
+
+  const execute = async ( config = {},payload) => {
+    const data = await executeHttpClientRequest(
+      async (options) => {
+        const res = await axios(buildApiUrl('/proxy/forward-to'), {
+          ...config,
+          headers: {
+            ...options.headers,
+            "Content-Type":"application/json"
+          },
+          withCredentials: options.credentials === 'include',
+          method:"PUT",
+          data:payload
+        });
+        const data = res;
+        return {
+          data: res.data,
+          statusCode: res.status,
+          getHeader: (key) => res.headers[key],
+        };
+      },
+      { 
+        userAgent, 
+        headers: config.headers,
+        forwardToConfig: {
+          uri: url
+        }
+       }
+    );
+    return data;
+  };
+
+  return {execute};
+};
