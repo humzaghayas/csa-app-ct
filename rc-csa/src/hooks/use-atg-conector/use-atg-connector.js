@@ -158,18 +158,18 @@ export const useGetAtgOrdersDetails =() => {
   );
   
 
-  const apiUrl = `${atgPublicURL}/rest/bean/atg/commerce/order/OrderManager/loadOrder`;
+  const apiUrl = `${atgPublicURL}/rest/model/atg/commerce/custom/order/MyOrderLookupActor/details`;
 
 
   const execute = async (orderId) => {
     // const data= loginATG(apiUrl,headers, payload ,dispatch );
 
     const payload ={
-      "arg1":orderId
-    } ;
+      orderId
+    };
     const header= {
       'Content-Type': 'application/json',
-    }
+    };
 
     const data =await dispatch(
       actions.forwardTo.post({
@@ -186,44 +186,11 @@ export const useGetAtgOrdersDetails =() => {
     const id = "id:";
     const semiColon = ";";
     const catalogRefId="catalogRefId:"
-    if(data){
-
-      const profileId = data.profileId;
-      const orderId = data.id;
-      const shippingGroups = data.shippingGroups;
-      const stateAsString = data.stateAsString;
-
-
-      const CurrencyCode="CurrencyCode:";
-      const Amount="Amount:";
-      const Discounted="Discounted:";
-      let currencyCode=extractInfo(data.priceInfo,CurrencyCode,semiColon);
-      let amount=extractInfo(data.priceInfo,Amount,semiColon);
-      let isDiscounted=extractInfo(data.priceInfo,Discounted,semiColon);
-
-      const priceInfo = {currencyCode,amount,isDiscounted};
-
-
-      currencyCode=extractInfo(data.taxPriceInfo,CurrencyCode,semiColon);
-      amount=extractInfo(data.taxPriceInfo,Amount,semiColon);
-      const taxPriceInfo = {currencyCode,amount};
-
-      const products = data.commerceItems.map(c => {
-        const ProductId="productId:";
-
-        let productId =extractInfo(c,ProductId,semiColon);
-
-        return {productId}
-      });
-
-            //   id:ci3000003; catalogRefId:mp600141; catalogKey:en_US; 
-      //quantity:5; quantityWithFraction:0.0; state:INITIAL;
-      // AuxiliaryData[productId:mpprod110101;
-
-      return {orderId,profileId,products,stateAsString,priceInfo,taxPriceInfo,shippingGroups};
+    if(data && data?.order){
+       return {isOrder:true,order:data.order};
     }
 
-    return {profileId:"Not Found"};
+    return {isOrder:false};
   }
 
   return {execute};
