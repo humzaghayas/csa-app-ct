@@ -1,5 +1,5 @@
 import { useIntl } from 'react-intl';
-import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -9,17 +9,34 @@ import { CollapsiblePanel, Constraints, DataTable, Spacings, Text } from '@comme
 import { useCallback } from 'react';
 import { columns, dummyrows } from './constants';
 import { itemRenderer } from './helper';
+import { useFetchOrderById } from '../../../../hooks/use-orders-connector';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { docToFormValues } from './conversions';
+import OrderReturnsNew from './order-returns-details';
 
 
 const OrderReturns = (props) =>{
 
     const { push } = useHistory();
     const match = useRouteMatch();
+    let {order,loading,error} =  useFetchOrderById(match.params.id);
+    const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
+        dataLocale: context.dataLocale ?? '',
+        projectLanguages: context.project?.languages ?? [],
+      }));
 
-
+    
+    const orderReturnInfo = docToFormValues(order?.data?.order,projectLanguages);
+    console.log("Order Return Info",orderReturnInfo);
+    
     const onClickCreateReturn = useCallback(()=>{
+        push(`${match.url}/new`);
         console.log("Clicked Create Returns");
-    }) 
+    });
+    const onSubmit = useCallback(()=>{
+        console.log("handleSubmit");
+        push(`${match.url}`);
+    })
 
     return(
         <Spacings.Stack scale='xl'>
@@ -30,50 +47,62 @@ const OrderReturns = (props) =>{
                 label='Create Order Returns'
                 onClick={onClickCreateReturn}
                 />
+                <Switch>
+                    <Route  path={`${match.path}/new`}>
+                        <OrderReturnsNew
+                            onClose={() => push(`${match.url}`)} 
+                            orderId = {match?.params?.id} 
+                            initialValues = {orderReturnInfo}
+                            onSubmit = {onSubmit}
+                        />
+                    </Route>
+                </Switch>
             </Constraints.Horizontal>
             <Spacings.Stack scale='xl'>
-            <CollapsiblePanel
-                        header={
-                            <CollapsiblePanel.Header>
-                                {'Return: 01'}
-                            </CollapsiblePanel.Header>
-                        }
-                        scale="l"
-                    >
+            {orderReturnInfo?.returnInfo?orderReturnInfo?.returnInfo.map((item,index)=>{
+                return <CollapsiblePanel
+                    header={
+                    <CollapsiblePanel.Header>
+                        {'Return:'+index}
+                    </CollapsiblePanel.Header>
+                }
+                scale="l"
+                >
                     <Constraints.Horizontal>
                     <Spacings.Stack scale='m'>
-                        <Spacings.Inline>
+                     <Spacings.Inline>
+                        <Text.Wrap>
+                            <Text.Subheadline as='h4' isBold={true} tone='positive'> 
+                                {"Return Tracking Id"} 
+                            </Text.Subheadline>
+                            <Text.Subheadline as='h5' isBold={false} tone='positive'> 
+                                {item?.returnTrackingId} 
+                            </Text.Subheadline>
+                        </Text.Wrap>
+                        <Spacings.Stack scale='m'>
                             <Text.Wrap>
-                                <Text.Subheadline as='h4' isBold={true} tone='positive'> 
-                                    {"Return Tracking Id"} 
-                                </Text.Subheadline>
-                                <Text.Subheadline as='h5' isBold={false} tone='positive'> 
-                                    {"Tracking Id comes here"} 
-                                </Text.Subheadline>
-                            </Text.Wrap>
-                            <Spacings.Stack scale='m'>
-                                <Text.Wrap>
                                     <Text.Subheadline as='h4' isBold={true} tone='positive'> 
-                                        {"Return Date"} 
+                                    {"Return Date"} 
                                     </Text.Subheadline>
                                     <Text.Subheadline as='h5' isBold={false} tone='positive'> 
-                                        {"Return Date comes here"} 
+                                        {item?.returnDate} 
                                     </Text.Subheadline>
                                 </Text.Wrap> 
                             </Spacings.Stack>
-                        </Spacings.Inline>
-                        <DataTable
-                        columns={columns}
-                        rows={dummyrows}
-                        itemRenderer={itemRenderer}
-                        ></DataTable>
-                     </Spacings.Stack>
+                    </Spacings.Inline>
+                    <DataTable
+                    columns={columns}
+                    rows={item?.items}
+                    itemRenderer={itemRenderer}
+                    ></DataTable>
+                    </Spacings.Stack>
                     </Constraints.Horizontal>
-                    </CollapsiblePanel>
+                </CollapsiblePanel>
+
+            }):null}
             </Spacings.Stack>
         </Spacings.Stack>
     )
-
 }
 
 OrderReturns.displayName = 'OrderReturns';

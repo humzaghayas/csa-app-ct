@@ -5,8 +5,32 @@ export const columns = [
     {key:'comment',label:'Comment'},
     {key:'shipmentState',label:'Shipment state'},
     {key:'paymentState',label:'Payment State'},
-    {key:'dateCreated',label:'Date Created'},
-    {key:'dateModified',label:'Date Modified'},
+    {key:'createdAt',label:'Date Created'},
+    {key:'lastModifiedAt',label:'Date Modified'},
+]
+
+export const columnsCreateOrderReturns = [
+    {key:'checkBox',label:''},
+    {key:'product',label:'Product'},
+    {key:'orderdQuantity',label:'Ordered quantity'},
+    {key:'quantityInPreviousReturns',label:'Quantity in previous returns'},
+    {key:'returnQuantity',label:'Return quantity'},
+    {key:'comment',label:'Comment'},
+]
+
+export const dummyCreateReturnOrderRows =[
+    {
+        product:{
+            name:"Iphone",
+            key:"Iphone",
+            sku:"Iphone",
+            image:"sfasfasas"
+        },
+        orderdQuantity:5,
+        quantityInPreviousReturns:0,
+        returnQuantity:0,
+        comment:"No Comment"
+    }
 ]
 
 export const dummyrows = [
@@ -17,3 +41,8 @@ export const dummyrows = [
         image:"sfasfasas"
     },quantity:1,comment:"No Comment",shipmentState:"State",paymentState:"State",dateCreated:"date",dateModified:"date"}
 ]
+
+export const SHIPMENT_STATUS = {
+    Returned:'Returned',
+    Advised:'Advised'
+}

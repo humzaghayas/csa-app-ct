@@ -66,6 +66,7 @@ export const FETCH_ORDER_BY_ID = `query($id:String!){
         ...paymentInfo
         ...totalPrice
         ...taxedPrice
+        ...returnInfo
         customLineItems{
             __typename
         }
@@ -340,6 +341,23 @@ export const FETCH_ORDER_BY_ID = `query($id:String!){
                 fractionDigits
            }
         } 
+  }
+  
+  fragment returnInfo on Order{
+    returnInfo{
+          returnTrackingId
+          returnDate
+          items{
+            type
+            id
+            quantity
+            comment
+            shipmentState
+            paymentState
+            lastModifiedAt
+            createdAt
+          }
+        }
   }`
 export const UPDATE_ORDER_BY_ID = `mutation updateOrderById($version:Long!,
     $actions:[OrderUpdateAction!]!,
