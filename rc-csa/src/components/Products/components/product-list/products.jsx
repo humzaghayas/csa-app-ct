@@ -46,12 +46,12 @@ const ProductsList = (props) => {
           <Spacings.Stack scale="xl">
             <Spacings.Inline>
               <TabHeader
-                to={`${match.url}/ProductsList-general`}
-                label="Product List"
-              />
-              <TabHeader
                 to={`${match.url}/ProductsList-search`}
                 label="Product Search"
+              />
+               <TabHeader
+                to={`${match.url}/ProductsList-general`}
+                label="Product List"
               />
             </Spacings.Inline>
           </Spacings.Stack>
