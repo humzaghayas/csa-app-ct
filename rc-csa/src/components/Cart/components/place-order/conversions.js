@@ -3,10 +3,11 @@ import { transformLocalizedFieldToLocalizedString } from '@commercetools-fronten
 import { TextInput } from '@commercetools-frontend/ui-kit';
 import CartAccount from '../cart-account/cart-account';
 
-export const docToFormValues = (carts, languages) => ({
+export const docToFormValues = (carts, order, languages) => ({
   id: carts?.id,
   cartState: carts?.cartState,
-  //orderNumber: order?.orderNumber,
+  orderNumber: order?.orderNumber,
+  orderId: carts?.orderId,
   lineItems: getLineItems(carts?.lineItems),
   //totalPrice:amountCalculator(carts?.totalPrice?.centAmount,carts?.totalPrice?.fractionDigits),
   taxedPrice: {
@@ -87,6 +88,11 @@ function amountCalculator(centAmount, fractionDigits) {
   return centAmount;
 }
 
+// export const docToFormValues = (carts, languages) => ({
+//   id: carts?.id,
+//   cartState: carts?.cartState,
+// })
+
 export const formValuesToDoc = (formValues) => ({
   id: !TextInput.isEmpty(formValues.id) ? formValues.id : undefined,
   version: !TextInput.isEmpty(formValues.version)
@@ -94,6 +100,9 @@ export const formValuesToDoc = (formValues) => ({
     : undefined,
   customer: !TextInput.isEmpty(formValues.customer)
     ? formValues.customer
+    : undefined,
+  orderId: !TextInput.isEmpty(formValues.orderId)
+    ? formValues.orderId
     : undefined,
   // createdAt: !TextInput.isEmpty(formValues.createdAt)
   //   ? formValues.createdAt

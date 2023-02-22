@@ -11,6 +11,7 @@ import {
   FETCH_CARTS,
   FETCH_CART_BY_CARTNUMBER,
   CREATE_ORDER_FROMCART,
+  UPDATE_CART_BY_ID,
 } from 'ct-tickets-helper-api';
 import {
   convertToActionData,
@@ -106,3 +107,79 @@ export const usePlaceOrderFromCart = () => {
     execute,
   };
 };
+export const useCartUpdateById = () => {
+  const [updateCartByID, { loading }] = useMcMutation(
+    gql`
+      ${UPDATE_CART_BY_ID}
+    `
+  );
+
+  const executeUpdateCart = async ({ version, actions, cartId }) => {
+    console.log('cart hooks');
+    console.log(version);
+    console.log(actions);
+    console.log(cartId);
+    return await updateCartByID({
+      variables: {
+        id: cartId,
+        version: version,
+        actions: actions,
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    });
+  };
+
+  return {
+    executeUpdateCart,
+    loading,
+  };
+};
+
+// export const useCartUpdateById = () => {
+//   const [updateCartByID, { loading }] = useMcMutation(
+//     gql`
+//       ${UPDATE_CART_BY_ID}
+//     `
+//   );
+
+//   const sync = createSyncChannels();
+//   const execute = async ({ originalDraft, nextDraft, cartId, lineItems }) => {
+//     const actions1 = sync.buildActions(
+//       nextDraft,
+//       convertToActionData(originalDraft)
+//     );
+
+//     try {
+//       return await updateCartByID({
+//         context: {
+//           target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+//         },
+//         variables: {
+//           id: originalDraft.id,
+//           version: originalDraft.version,
+//           actions: {
+//             // changeLineItemQuantity: {
+//             //   lineItemId: '7fec1491-2d46-4ac5-acb7-d4e8434d1fc3',
+//             //   //lineItemId: lineItems.id,
+//             //   quantity: 5,
+//             // },
+//             addLineItem: {
+//               productId: 'd2087232-7d2a-45bc-9b4a-9ce3fc870ba7',
+//               variantId: 1,
+//               quantity: 4,
+//             },
+//           },
+//         },
+//       });
+//     } catch (graphQlResponse) {
+//       throw extractErrorFromGraphQlResponse(graphQlResponse);
+//     }
+//   };
+
+//   return {
+//     loading,
+//     execute,
+//   };
+// };

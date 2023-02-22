@@ -4,9 +4,12 @@ import { TextInput } from '@commercetools-frontend/ui-kit';
 
 export const docToFormValues = (carts, languages) => ({
   id: carts?.id,
+  version: carts?.version,
   cartState: carts?.cartState,
   cartNumber: carts?.cartNumber ?? '--',
   //orderNumber: order?.orderNumber,
+  cart_ordernumber: carts?.custom?.type?.key ?? '--',
+  //cart_ordernumber: getValue(carts?.custom?.customFieldsRaw ?? '--'),
   lineItems: getLineItems(carts?.lineItems),
   totalPrice: amountCalculator(
     carts?.totalPrice?.centAmount,
@@ -90,32 +93,66 @@ function amountCalculator(centAmount, fractionDigits) {
   return centAmount;
 }
 
+export const getSearchProductRows = (productProjectionSearchResults) => {
+  if (productProjectionSearchResults) {
+    return productProjectionSearchResults?.map((product) => {
+      return {
+        productId: product.id,
+        product: product?.name,
+        unitPrice: amountCalculator(
+          product?.masterVariant?.price?.value?.centAmount,
+          product?.masterVariant?.price?.value?.fractionDigits
+        ),
+        quantity: 1,
+        sku: product?.masterVariant?.sku,
+        key: product?.masterVariant?.key,
+        variantId: product?.masterVariant?.id,
+        slug: product?.slug,
+        image: {
+          url: product?.masterVariant?.images[0]?.url,
+          // dimensions:{
+          //   height : product?.masterVariant?.images[0]?dimensions?height,
+          //   width : product?.masterVariant?.images[0]?dimensions?width
+          // }
+        },
+      };
+    });
+  }
+};
+// export function getValue(customFieldsRaw) {
+//   if (customFieldsRaw) {
+//     return customFieldsRaw.map((customFieldsRaw) => {
+//       return {
+//         value: customFieldsRaw?.value,
+//       };
+//     });
+//   }
+// }
+
 export const formValuesToDoc = (formValues) => ({
-  salutation: !TextInput.isEmpty(formValues.salutation)
-    ? formValues.salutation
+  id: !TextInput.isEmpty(formValues.id) ? formValues.id : undefined,
+  version: !TextInput.isEmpty(formValues.version)
+    ? formValues.version
     : undefined,
-  title: !TextInput.isEmpty(formValues.title) ? formValues.title : undefined,
-  firstName: !TextInput.isEmpty(formValues.firstName)
-    ? formValues.firstName
+  customer: !TextInput.isEmpty(formValues.customer)
+    ? formValues.customer
     : undefined,
-  middleName: !TextInput.isEmpty(formValues.middleName)
-    ? formValues.middleName
+  // createdAt: !TextInput.isEmpty(formValues.createdAt)
+  //   ? formValues.createdAt
+  //   : undefined,
+  // lastModifiedAt: !TextInput.isEmpty(formValues.lastModifiedAt)
+  //   ? formValues.lastModifiedAt
+  //   : undefined,
+  cartState: !TextInput.isEmpty(formValues.cartState)
+    ? formValues.cartState
     : undefined,
-  lastName: !TextInput.isEmpty(formValues.lastName)
-    ? formValues.lastName
+  totalPrice: !TextInput.isEmpty(formValues.totalPrice)
+    ? formValues.totalPrice
     : undefined,
-  email: formValues.email,
-  dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
-    ? formValues.dateOfBirth
+  noOforderItems: !TextInput.isEmpty(formValues.noOforderItems)
+    ? formValues.noOforderItems
     : undefined,
-  employeeNumber: !TextInput.isEmpty(formValues.employeeNumber)
-    ? formValues.employeeNumber
+  totalItems: !TextInput.isEmpty(formValues.totalItems)
+    ? formValues.totalItems
     : undefined,
-  externalId: !TextInput.isEmpty(formValues.externalId)
-    ? formValues.externalId
-    : undefined,
-  customerGroup: { key: formValues.customerGroup },
-  roles: formValues.roles,
-  password: formValues.password,
-  confirmedPassword: undefined,
 });
