@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useReducer } from 'react';
 
 import { SecondaryButton } from '@commercetools-uikit/buttons';
 import {BidirectionalArrowIcon} from '@commercetools-uikit/icons';
@@ -9,14 +9,21 @@ import { CollapsiblePanel, Constraints, DataTable, Spacings, Text } from '@comme
 import { useCallback } from 'react';
 import { columns, dummyrows } from './constants';
 import { itemRenderer } from './helper';
-import { useFetchOrderById } from '../../../../hooks/use-orders-connector';
+import { useFetchOrderById, useOrderUpdateById } from '../../../../hooks/use-orders-connector';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { docToFormValues } from './conversions';
 import OrderReturnsNew from './order-returns-details';
-
+import { transformErrors } from './transform-errors';
+import { useShowApiErrorNotification, useShowNotification } from '@commercetools-frontend/actions-global';
+import { DOMAINS } from '@commercetools-frontend/constants';
+import messages from './messages';
 
 const OrderReturns = (props) =>{
-
+    const intl = useIntl();
+    const {executeUpdateOrder} = useOrderUpdateById();
+    const showApiErrorNotification = useShowApiErrorNotification();
+    const showNotification = useShowNotification();
+    const [reducerValue, forceUpdate] = useReducer(x => x+1,0);
     const { push } = useHistory();
     const match = useRouteMatch();
     let {order,loading,error} =  useFetchOrderById(match.params.id);
@@ -33,8 +40,34 @@ const OrderReturns = (props) =>{
         push(`${match.url}/new`);
         console.log("Clicked Create Returns");
     });
-    const onSubmit = useCallback(()=>{
-        console.log("handleSubmit");
+    const onSubmit = useCallback(async (e)=>{
+        console.log("handleSubmit",e);
+        
+        const payload ={
+            orderId:orderReturnInfo?.id,
+            version:orderReturnInfo?.version,
+            actions : {addReturnInfo:e?.addReturnInfo}
+        }
+
+        console.log("payload",payload)
+
+        try{
+            const result = await executeUpdateOrder(payload);
+            forceUpdate();
+              showNotification({
+              kind: 'success',
+              domain: DOMAINS.SIDE,
+              text: intl.formatMessage(messages.OrderUpdated),
+            }); 
+          }catch (graphQLErrors) {
+                  console.log(graphQLErrors.message)
+                  const transformedErrors = transformErrors(graphQLErrors);
+                  if (transformedErrors.unmappedErrors.length > 0) {
+                    showApiErrorNotification({
+                      errors: transformedErrors.unmappedErrors,
+                    });
+                  }
+          }
         push(`${match.url}`);
     })
 

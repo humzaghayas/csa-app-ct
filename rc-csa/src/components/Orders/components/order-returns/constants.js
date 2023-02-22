@@ -46,3 +46,15 @@ export const SHIPMENT_STATUS = {
     Returned:'Returned',
     Advised:'Advised'
 }
+
+export const PAYMENT_STATUS = {
+    Initial:'Initial',
+    Refunded:'Refunded',
+    NotRefunded:'Not Refunded'
+}
+
+export const SHIPMENT_STATUS_RETURN = {
+    Returned:'Returned',
+    BackInStock:'Back In Stock',
+    Unusable:'Unusable'
+}
