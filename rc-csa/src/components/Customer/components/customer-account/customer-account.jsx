@@ -35,6 +35,7 @@ import { useCustomerDetailsFetcher } from '../../../../hooks/use-customers-conne
 
 import CustomerAddressCreate from '../customer-address/customer-address-create';
 import CustomerPayment from '../customer-payment/customer-payment';
+import CustomerReturn from '../customer-returns/customer-return';
 
 
 
@@ -97,6 +98,10 @@ const CustomerAccount = (props) => {
                 label="Orders"
               />
                <TabHeader
+                to={`${match.url}/Customers-returns`}
+                label="Returns"
+              />
+               <TabHeader
                 to={`${match.url}/Customers-payments`}
                 label="Payments"
               />
@@ -140,6 +145,9 @@ const CustomerAccount = (props) => {
         </Route>
         <Route path={`${match.path}/Customers-orders`}>
           <CustomerOrder customer={customer} />
+        </Route>
+        <Route path={`${match.path}/Customers-returns`}>
+          <CustomerReturn customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-password`}>
            <CustomerPassword />
