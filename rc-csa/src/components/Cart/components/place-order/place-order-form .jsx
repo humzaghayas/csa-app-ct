@@ -9,15 +9,27 @@ import validate from './validate';
 import messages from './messages';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 //import { useEmployeeDetailsFetcher } from '../../../../hooks/use-employee-connector/use-employeee-graphql-connector';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import {
   CheckboxInput,
   DataTable,
+  PlusBoldIcon,
   PrimaryButton,
   SecondaryButton,
+  SecondaryIconButton,
 } from '@commercetools-frontend/ui-kit';
+import { useState } from 'react';
+//  import EmployeeAddressDetail from '../employee-address-details';
+//  import EmployeeAddAddress from '../employee-add-address';
+//import ChannelDeletion from './place-order-popup';
+import CustomPopup from './CustomPopup';
+import { COUNTRY } from './constants';
+import {
+  useFetchCartById,
+  usePlaceOrderFromCart,
+} from '../../../../hooks/use-cart-connector/use-cart-connector';
 
 const columns = [
   { key: 'product', label: 'Product' },
@@ -53,55 +65,81 @@ const itemRenderer = (item, column) => {
 };
 
 const PlaceOrderForm = (props) => {
+  const popupCloseHandler = (e) => {
+    setVisibility(e);
+  };
   const intl = useIntl();
-  //const params = useParams();
+  const params = useParams();
   const match = useRouteMatch();
+  const history = useHistory();
+  const { push } = useHistory();
   const formik = useFormik({
     initialValues: props.initialValues,
     onSubmit: props.onSubmit,
+    //  isShown:props.isShown,
     validate,
     enableReinitialize: true,
   });
-
-  //const { employee } = useEmployeeDetailsFetcher(params.id);
+  const [visibility, setVisibility] = useState(props.isShown);
+  console.log('intialvaluessssssss', props.initialValues);
+  console.log(props.id);
 
   const formElements = (
     <Spacings.Stack scale="l">
       <Spacings.Stack scale="s">
-        <Spacings.Inline>
-          {/* <SecondaryButton onClick={formik.handleReset} label="Cancel" />
-          <PrimaryButton onClick={formik.handleSubmit} label="Confirm" /> */}
-        </Spacings.Inline>
+        <Spacings.Stack scale="m">
+          <CollapsiblePanel
+            data-testid="quote-summary-panel"
+            header={
+              <CollapsiblePanel.Header>
+                {/* {formatMessage(messages.panelTitle)} */}
+                {'Line Items'}
+              </CollapsiblePanel.Header>
+            }
+            scale="l"
+          >
+            <Spacings.Stack scale="s">
+              <Constraints.Horizontal min={13}>
+                <Spacings.Stack scale="m">
+                  {formik?.values?.lineItems ? (
+                    <DataTable
+                      rows={formik.values.lineItems}
+                      columns={columns}
+                      itemRenderer={itemRenderer}
+                    />
+                  ) : null}
+                </Spacings.Stack>
+              </Constraints.Horizontal>
+            </Spacings.Stack>
+          </CollapsiblePanel>
+        </Spacings.Stack>
       </Spacings.Stack>
-
-      <Spacings.Stack scale="m">
-        <CollapsiblePanel
-          data-testid="quote-summary-panel"
-          header={
-            <CollapsiblePanel.Header>
-              {/* {formatMessage(messages.panelTitle)} */}
-              {'Line Items'}
-            </CollapsiblePanel.Header>
-          }
-          scale="l"
+      <Spacings.Stack scale="s">
+        <CustomPopup
+          onClose={popupCloseHandler}
+          show={props.isShown}
+          title="Order Created"
         >
-          <Spacings.Stack scale="s">
-            <Constraints.Horizontal min={13}>
-              {/* <SecondaryButton iconLeft={<PlusBoldIcon />} label="Place Order" onClick={() => setValue(true)} /> */}
-
-              <Spacings.Stack scale="m">
-                {formik?.values?.lineItems ? (
-                  <DataTable
-                    rows={formik.values.lineItems}
-                    columns={columns}
-                    itemRenderer={itemRenderer}
-                  />
-                ) : null}
-              </Spacings.Stack>
-            </Constraints.Horizontal>
+          <br />
+          <h5>ID: {props.id}</h5>
+          <br />
+          <SecondaryIconButton onClick={formik.handleReset} label="Cancel" />
+          <Spacings.Stack>
+            <Spacings.Inline>
+              <PrimaryButton
+                label="View order"
+                onClick={() =>
+                  push(
+                    `/csa-project-2/csa-customer-tickets/order-edit/${props.id}/orders-general`
+                  )
+                }
+                size="medium"
+              />
+            </Spacings.Inline>
           </Spacings.Stack>
-          {/* </Spacings.Inline> */}
-        </CollapsiblePanel>
+
+          {/* <h2>This is my lorem ipsum text here!</h2> */}
+        </CustomPopup>
       </Spacings.Stack>
     </Spacings.Stack>
   );
@@ -121,6 +159,7 @@ PlaceOrderForm.propTypes = {
   initialValues: PropTypes.shape({
     id: PropTypes.string,
   }),
+  //isShown:PropTypes.string.isRequired,
   isReadOnly: PropTypes.bool.isRequired,
   dataLocale: PropTypes.string.isRequired,
 };

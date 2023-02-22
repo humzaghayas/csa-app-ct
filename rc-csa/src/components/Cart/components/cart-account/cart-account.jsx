@@ -23,7 +23,8 @@ import Spacings from '@commercetools-uikit/spacings';
 import { lazy, useState, useEffect } from 'react';
 import CartView from '../cart-view/cart-view';
 import ShippingAddress from '../create-order/add-shipping-address';
-import PlaceOrder from '../place-order/place-order';
+import PlaceOrder from '../place-order/place-order ';
+import OrderCreate from '../../../Orders/components/order-create/order-create';
 
 const CartAccount = (props) => {
   const match = useRouteMatch();
@@ -70,9 +71,15 @@ const CartAccount = (props) => {
         <Route path={`${match.path}/place-order`}>
           <PlaceOrder />
         </Route>
-        {/* <Route path={`${match.path}/add-shipping-address`}>
-          <ShippingAddress />
+        {/* <Route path={`${match.path}/cart-line-items`}>
+          <CartLineItems onClose={() => push(`${match.url}`)} />
         </Route> */}
+        <Route path={`${match.path}/shipping-address`}>
+          <ShippingAddress />
+        </Route>
+        <Route path={`${match.path}/orders-general`}>
+          <OrderCreate />
+        </Route>
       </Switch>
     </TabularDetailPage>
   );

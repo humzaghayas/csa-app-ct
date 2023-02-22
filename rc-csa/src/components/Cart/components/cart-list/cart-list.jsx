@@ -50,7 +50,7 @@ const rows = [
 const columns = [
   { key: 'id', label: 'Cart Number' },
   //{ key: 'key', label: 'Cart Key' },
-  { key: 'orderNumber', label: 'Order Number' },
+  { key: 'cart_ordernumber', label: 'Order Number' },
   { key: 'customer', label: 'Customer' },
   { key: 'totalPrice', label: 'Cart Total' },
   { key: 'noOforderItems', label: 'No.of order Items' },
@@ -64,9 +64,8 @@ const Cart = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
-  // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
-  const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
+  const tableSorting = useDataTableSortingState({ key: 'key', carts: 'asc' });
 
   const { cartPaginatedResult, data, error, loading } = useCartsFetcher({
     // data,
@@ -74,10 +73,6 @@ const Cart = (props) => {
     perPage,
     tableSorting,
   });
-
-  // console.log(ordersPaginatedResult);
-  // const orderRows = ;
-  // console.log(orderRows);
 
   return (
     <Spacings.Stack scale="xl">
@@ -89,45 +84,8 @@ const Cart = (props) => {
           icon={<BackIcon />}
         />
         <Text.Headline as="h2" intlMessage={messages.title} />
+      </Spacings.Stack>
 
-        {/* <Spacings.Inline> */}
-        {/* <SecondaryButton
-        label="Add Order"
-         data-track-event="click" 
-         onClick={() => push(`ticket-create`)}
-        iconLeft={<PlusBoldIcon />}
-        size="medium"
-      /> */}
-        {/* </Spacings.Inline> */}
-        {/* <AccessibleButton label="Log in" onClick={() => {}}>
-    Log in
-  </AccessibleButton> */}
-      </Spacings.Stack>
-      {/* {loading && <LoadingSpinner />} */}
-      {/* <Spacings.Inline>
-      <SecondaryButton
-        label="Add Ticket"
-         data-track-event="click" 
-          onClick={() => push(`ticket-details`)}
-        iconLeft={<PlusBoldIcon />}
-        size="medium"
-      />
-      </Spacings.Inline> */}
-      <Spacings.Stack scale="l" className="css-294zjy-container">
-        <MoneyField
-          title="Price"
-          value={
-            // { amount: '30', currencyCode: 'CustomerEmailAddress' },
-            // { amount: '30', currencyCode: 'FirstName' },
-            // { amount: '30', currencyCode: 'LastName' },
-            ({ amount: '30', currencyCode: 'OrderNO' },
-            { amount: '30', currencyCode: 'SKU' },
-            { amount: '30', currencyCode: 'Store' })
-          }
-          onChange={(event) => alert(event.target.value)}
-          currencies={['OrderNO', 'SKU', 'Store']}
-        />
-      </Spacings.Stack>
       {cartPaginatedResult ? (
         <Spacings.Stack scale="l">
           <DataTable

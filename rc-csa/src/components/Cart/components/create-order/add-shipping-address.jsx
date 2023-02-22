@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { useParams } from 'react-router-dom';
+import { useParams, useRouteMatch } from 'react-router-dom';
 import {
   PageNotFound,
   FormModalPage,
 } from '@commercetools-frontend/application-components';
-import { useCallback } from 'react';
+import React, { useCallback, useReducer } from 'react';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { DOMAINS, NO_VALUE_FALLBACK } from '@commercetools-frontend/constants';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
@@ -24,12 +24,13 @@ import {
   useShippingAddressCreator,
   useAddLineItem,
   useFetchCartById,
+  useCartUpdateById,
 } from '../../../../hooks/use-cart-connector/use-cart-connector';
 
 const ShippingAddress = (props) => {
   const intl = useIntl();
   const params = useParams();
-  //const { cart, error, loading } = useFetchCartById(params.id);
+  const match = useRouteMatch();
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
@@ -37,70 +38,77 @@ const ShippingAddress = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
+
+  //const {executeFetchOrder} = useFetchOrderById(match.params.id);
+  const { executeUpdateCart } = useCartUpdateById();
   const showNotification = useShowNotification();
   const showApiErrorNotification = useShowApiErrorNotification();
-  //const shippingAddressCreator = useShippingAddressCreator();
-  const handleSubmit = useCallback(
-    async (formikValues, formikHelpers) => {
-      const data = formValuesToDoc(formikValues);
-      try {
-        await shippingAddressCreator.execute({
-          originalDraft: cart,
-          nextDraft: data,
-        });
-        showNotification({
-          kind: 'success',
-          domain: DOMAINS.SIDE,
-          text: intl.formatMessage(messages.OrderPlaced),
-        });
-      } catch (graphQLErrors) {
-        const transformedErrors = transformErrors(graphQLErrors);
-        if (transformedErrors.unmappedErrors.length > 0) {
-          showApiErrorNotification({
-            errors: transformedErrors.unmappedErrors,
-          });
-        }
 
-        //  formikHelpers.setErrors(transformedErrors.formErrors);
+  // const [order,setOrder] = useState(async()=>{
+  //   return await executeFetchOrder(match.params.id);
+  // });
+
+  const [reducerValue, forceUpdate] = useReducer((x) => x + 1, 0);
+
+  // useEffect(async()=>{
+  //   if(order == null){
+  //     const result  = await executeFetchOrder(match.params.id);
+  //     setOrder(result);
+  //   }
+  // },[reducerValue]);
+
+  let { cart } = useFetchCartById(match.params.id);
+  const handleSubmit = useCallback(async (payload) => {
+    console.log('In Handle Submit');
+    console.log(payload);
+    try {
+      const result = await executeUpdateCart(payload);
+      cart = result?.data?.updateCart?.version
+        ? result?.data?.updateCart?.version
+        : cart;
+      console.log(result);
+      forceUpdate();
+      showNotification({
+        kind: 'success',
+        domain: DOMAINS.SIDE,
+        text: intl.formatMessage(messages.CartUpdated),
+      });
+    } catch (graphQLErrors) {
+      console.log(graphQLErrors.message);
+      const transformedErrors = transformErrors(graphQLErrors);
+      if (transformedErrors.unmappedErrors.length > 0) {
+        showApiErrorNotification({
+          errors: graphQLErrors.message,
+        });
       }
-    },
-    [
-      shippingAddressCreator,
-      dataLocale,
-      intl,
-      projectLanguages,
-      showApiErrorNotification,
-      showNotification,
-    ]
-  );
-  //const { employee } = useEmployeeDetailsFetcher(params.id);
+    }
+  });
 
   return (
     <ShippingAddressForm
-      initialValues={docToFormValues(null, projectLanguages)}
+      initialValues={docToFormValues(cart, projectLanguages)}
       onSubmit={handleSubmit}
       isReadOnly={!canManage}
       dataLocale={dataLocale}
     >
       {(formProps) => {
         return (
-          <FormModalPage
-            title={intl.formatMessage(messages.modalTitle)}
-            subtitle={intl.formatMessage(messages.subTitle)}
-            isOpen
-            onClose={props.onClose}
-            isPrimaryButtonDisabled={
-              formProps.isSubmitting || !formProps.isDirty || !canManage
-            }
-            isSecondaryButtonDisabled={!formProps.isDirty}
-            onSecondaryButtonClick={formProps.handleReset}
-            //onPrimaryButtonClick={formProps.submitForm}
-            onPrimaryButtonClick={handleSubmit}
-            labelPrimaryButton={FormModalPage.Intl.save}
-            labelSecondaryButton={FormModalPage.Intl.cancel}
-          >
-            {formProps.formElements}
-          </FormModalPage>
+          <React.Fragment>{formProps.formElements}</React.Fragment>
+          // <FormModalPage
+          //   title={intl.formatMessage(messages.modalTitle)}
+          //   isOpen
+          //   onClose={props.onClose}
+          //   isPrimaryButtonDisabled={
+          //     formProps.isSubmitting || !formProps.isDirty || !canManage
+          //   }
+          //   isSecondaryButtonDisabled={!formProps.isDirty}
+          //   onSecondaryButtonClick={formProps.handleReset}
+          //   onPrimaryButtonClick={formProps.submitForm}
+          //   labelPrimaryButton={FormModalPage.Intl.save}
+          //   labelSecondaryButton={FormModalPage.Intl.revert}
+          // >
+          //   {formProps.formElements}
+          // </FormModalPage>
         );
       }}
     </ShippingAddressForm>
