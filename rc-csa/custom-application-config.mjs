@@ -108,6 +108,12 @@ const config = {
       permissions: [PERMISSIONS.View],
     },
     {
+      uriPath: 'details',
+      defaultLabel: 'details',
+      labelAllLocales: [],
+      permissions: [PERMISSIONS.View],
+    },
+    {
       uriPath: 'Products',
       defaultLabel: 'Products',
       labelAllLocales: [],

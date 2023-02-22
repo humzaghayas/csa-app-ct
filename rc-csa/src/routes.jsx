@@ -22,6 +22,7 @@ import CustomerMessages from './components/Customer/components/customer-messages
 import CustomerReply from './components/Customer/components/customer-messages/customer-reply';
 import AtgAccount from './components/ATG-Poc/components/atg-account/atg-account';
 import ProductsList from './components/Products/components/product-list/products';
+import TicketDisplay from './components/WelcomePage/components/ticket-details/ticket-details';
 
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
@@ -118,6 +119,9 @@ const ApplicationRoutes = () => {
           <Route path={`${match.path}/ATG`}>
             <AtgAccount linkToWelcome={match.url} />
           </Route>
+          <Route path={`${match.path}/details`}>
+          <TicketDisplay linkToWelcome={match.url} />
+        </Route>
         <Route>
           <Welcome />
         </Route>
