@@ -39,7 +39,7 @@ import {
 import TicketHistory from '../Ticket-history/ticket-history';
 import TicketAccount from '../ticket-account/ticket-account';
 import { actions,useAsyncDispatch } from '@commercetools-frontend/sdk';
-import{FETCH_TICKETS,getTicketRows,CONSTANTS,FETCH_USERS_INFO} from 'ct-tickets-helper-api'
+import{FETCH_TICKETS,getTicketRows,CONSTANTS,getAutoIncrementId} from 'ct-tickets-helper-api'
 import {  gql } from '@apollo/client';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
@@ -86,6 +86,8 @@ const Tickets = (props) => {
   const {foundUser} = useUserFetcher(user.email);
   const {execute} = useCreateEntry(user.email);
 
+  const idAutoIncreament =getAutoIncrementId();
+
   useEffect(() => {
     if(canManage && foundUser == false){
       console.log('calling execute !');
@@ -128,6 +130,9 @@ const Tickets = (props) => {
           label={intl.formatMessage(messages.backToWelcome)}
           icon={<BackIcon />}
         />
+
+        {idAutoIncreament? 
+        idAutoIncreament:"nf"} asdasd
         <Text.Headline as="h2" intlMessage={messages.title} />
       </Spacings.Stack>
       {/* {loading && <LoadingSpinner />} */}

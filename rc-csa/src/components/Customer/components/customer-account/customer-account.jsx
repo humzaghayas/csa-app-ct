@@ -92,6 +92,10 @@ const CustomerAccount = (props) => {
                 to={`${match.url}/Customers-profile`}
                 label="Profile"
               />
+              <TabHeader
+                to={`${match.url}/Customers-Address`}
+                label="Addresses"
+              />
                <TabHeader
                 to={`${match.url}/Customers-orders`}
                 label="Orders"
@@ -100,10 +104,7 @@ const CustomerAccount = (props) => {
                 to={`${match.url}/Customers-payments`}
                 label="Payments"
               />
-              <TabHeader
-                to={`${match.url}/Customers-Address`}
-                label="Addresses"
-              />
+
               <TabHeader to={`${match.url}/Customers-tickets`} label="Tickets" />
               {/* <TabHeader to={`${match.url}/Customers-sumary`} label="Returns" /> */}
               <TabHeader to={`${match.url}/Customers-password`} label="Password" />
