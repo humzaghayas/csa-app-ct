@@ -14,20 +14,28 @@ import {
   useShowApiErrorNotification,
 } from '@commercetools-frontend/actions-global';
 import { docToFormValues, formValuesToDoc } from './conversions';
-import PlaceOrderForm from './place-order-form';
+import PlaceOrderForm from './place-order-form ';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
 import validate from './validate';
 import {
+  useCartsFetcher,
+  useShippingAddressCreator,
   usePlaceOrderFromCart,
   useFetchCartById,
 } from '../../../../hooks/use-cart-connector/use-cart-connector';
+//import ChannelDeletion from './place-order-popup';
+//import CustomPopup from './CustomPopup';
+import './custom-popup.module.css';
+import { useFetchOrderById } from '../../../../hooks/use-orders-connector/use-orders-connector';
 
 const PlaceOrder = (props) => {
   const intl = useIntl();
   const params = useParams();
   const { cart, error, loading } = useFetchCartById(params.id);
+  // const { order, data } = useFetchOrderById(params.id);
   const [isShown, setIsShown] = useState(false);
+  const [id, setId] = useState(null);
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
@@ -39,20 +47,20 @@ const PlaceOrder = (props) => {
 
   const showApiErrorNotification = useShowApiErrorNotification();
   const placeOrderFromCart = usePlaceOrderFromCart();
+
   const handleSubmit = useCallback(
     async (formikValues, formikHelpers) => {
       const data = formValuesToDoc(formikValues);
       try {
-        await placeOrderFromCart.execute({
+        const response = await placeOrderFromCart.execute({
           originalDraft: cart,
+          //draft: order,
           nextDraft: data,
         });
-
-        showNotification({
-          kind: 'success',
-          domain: DOMAINS.SIDE,
-          text: intl.formatMessage(messages.OrderPlaced),
-        });
+        //bool window.confirm([messages.OrderPlaced]);
+        setId(response.data.createOrderFromCart.id);
+        setIsShown((current) => !current);
+        console.log('response', response);
       } catch (graphQLErrors) {
         const transformedErrors = transformErrors(graphQLErrors);
         if (transformedErrors.unmappedErrors.length > 0) {
@@ -63,7 +71,9 @@ const PlaceOrder = (props) => {
 
         //  formikHelpers.setErrors(transformedErrors.formErrors);
       }
+      // console.log('response', response);
     },
+
     [
       placeOrderFromCart,
       dataLocale,
@@ -73,12 +83,15 @@ const PlaceOrder = (props) => {
       showNotification,
     ]
   );
+
   //const { employee } = useEmployeeDetailsFetcher(params.id);
 
   return (
     <PlaceOrderForm
       initialValues={docToFormValues(cart, projectLanguages)}
       onSubmit={handleSubmit}
+      isShown={isShown}
+      id={id}
       //isReadOnly={!canManage}
       dataLocale={dataLocale}
     >
@@ -91,14 +104,9 @@ const PlaceOrder = (props) => {
               subtitle={intl.formatMessage(messages.subTitle)}
               isOpen
               onClose={props.onClose}
-              // isPrimaryButtonDisabled={
-              //   formProps.isSubmitting || !formProps.isDirty || !canManage
-              // }
-              // isSecondaryButtonDisabled={!formProps.isDirty}
-              // onSecondaryButtonClick={formProps.handleReset}
-              // //onPrimaryButtonClick={formProps.submitForm}
               onPrimaryButtonClick={handleSubmit}
 
+              // labelPrimaryButton=" "
               // labelPrimaryButton={FormModalPage.Intl.save}
               // labelSecondaryButton={FormModalPage.Intl.cancel}
             >
@@ -107,7 +115,7 @@ const PlaceOrder = (props) => {
             {/* {isShown && <ChannelDeletion />} */}
             {/* <CustomPopup
               onClose={popupCloseHandler}
-              show={visibility}
+              show={isShown}
               title="Order Placed"
             >
               <h1>Hello This is Popup Content Area</h1>
