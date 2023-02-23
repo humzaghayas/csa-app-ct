@@ -41,12 +41,16 @@ const AtgAccount = (props) => {
   const params = useParams();
   const [data, setData] = useState(null);
 
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
+
 
   return (
     <TabularDetailPage
       title=" "
       onPreviousPathClick={() =>
-        history.push(`/csa_project/csa-customer-tickets`)
+        history.push(`/${projectKey}/csa-customer-tickets`)
       }
       previousPathLabel="Back to Welcome page"
       tabControls={

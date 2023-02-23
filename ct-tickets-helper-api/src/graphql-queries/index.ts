@@ -112,8 +112,11 @@ export const FETCH_TICKETS=`
         offset
         total
         results{
+          id
           key
           version
+          createdAt
+          lastModifiedAt
           value
         }
       }

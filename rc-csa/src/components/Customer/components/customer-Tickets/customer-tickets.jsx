@@ -59,13 +59,12 @@ let rows = null;
 const columns = [
   { key: 'id', label: 'id' },
   { key: 'Customer', label: 'Customer' },
-  { key: 'Created', label: 'Created' },
-  { key: 'Modified', label: 'Modified' },
-  { key: 'Website', label: 'Website' },
-  { key: 'Status', label: 'Status' },
+  { key: 'status', label: 'Status' },
   { key: 'Priority', label: 'Priority' },
   { key: 'Category', label: 'Category' },
   { key: 'Subject', label: 'Subject' },
+  { key: 'Created', label: 'Created' },
+  { key: 'Modified', label: 'Modified' },
 ];
 
 const CustomerTickets = (props) => {
@@ -79,6 +78,10 @@ const CustomerTickets = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
+
+  const email = props?.customer?.email;
+
+  console.log('customer',email);
 
   const canView = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.View],
@@ -106,7 +109,7 @@ const CustomerTickets = (props) => {
     {
       variables: {
         "container": "ticket-container",
-        "where": "value(email=\"humza@test.com\")"
+        "where": "value(email=\""+email+"\")"
         // container: CONSTANTS.containerKey,
         // limit: perPage.value,
         // offset: (page.value - 1) * perPage.value,
@@ -120,6 +123,8 @@ const CustomerTickets = (props) => {
   );
 
   rows = getTicketRows(data?.customObjects);
+
+  console.log('data?.customObjects',data?.customObjects);
 
   // if (error) {
   //   return (
