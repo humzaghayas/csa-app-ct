@@ -152,7 +152,7 @@ const CustomerAccount = (props) => {
           <CustomerPassword />
         </Route>
         <Route path={`${match.path}/Customers-tickets`}>
-          <CustomerTickets />
+          <CustomerTickets customer={customer}/>
         </Route>
         <Route  path={`${match.path}/customer-address-create`}>
            <CustomerAddressCreate customer={customer} />
