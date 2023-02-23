@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import { useIntl } from 'react-intl';
@@ -6,7 +6,7 @@ import Text from '@commercetools-uikit/text';
 import Spacings from '@commercetools-uikit/spacings';
 import validate from './validate';
 import Header from './Header';
-import { Card, Constraints } from '@commercetools-frontend/ui-kit';
+import { Card, Constraints, SelectField } from '@commercetools-frontend/ui-kit';
 import { Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import { usePaginationState } from '@commercetools-uikit/hooks';
 import DataTable from '@commercetools-uikit/data-table';
@@ -15,6 +15,16 @@ import TicketAccount from '../../../Ticket/components/ticket-account/ticket-acco
 import { SuspendedRoute } from '@commercetools-frontend/application-shell';
 import ExportExcel from './Excelexport';
 import ExcelData from './values';
+import TicketDisplay from './ticket-details';
+import {
+  highProirityTickets,
+  inProgressTickets,
+  newFunctionTickets,
+  resolvedTickets,
+} from './function';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { CART_STATE } from './constants';
 
 let rows = null;
 
@@ -26,6 +36,18 @@ const columns = [
   { key: 'Priority', label: 'Priority' },
   { key: 'Category', label: 'Category' },
   { key: 'Subject', label: 'Subject' },
+];
+
+// const getCartStates = Object.keys(CART_STATE).map((key) => ({
+//   label: key,
+//   value: CART_STATE[key],
+// }));
+
+const options = [
+  { value: 'Day', label: 'Day' },
+  { value: 'Week', label: 'Week' },
+  { value: 'Month', label: 'Month' },
+  { value: 'Year', label: 'Year' },
 ];
 
 const TicketDisplayForm = (props) => {
@@ -44,83 +66,24 @@ const TicketDisplayForm = (props) => {
   // console.log('data', props?.ticket);
 
   const ticketData = props?.ticket;
-
-  function newStatusTickets() {
-    const results = ticketData?.customObjects?.results; // get the results array
-
-    let countNew = 0; // initialize count of "new" status to 0
-
-    // loop through the results array and increment count if status is "new"
-    results?.forEach((result) => {
-      const status = result?.value?.status;
-      if (status === 'new') {
-        countNew++;
-      }
-    });
-
-    // countNew variable will have the count of "new" status
-
-    return countNew;
-  }
-
-  function highProirityTickets() {
-    const results = ticketData?.customObjects?.results; // get the results array
-
-    let countNew = 0; // initialize count of "new" status to 0
-
-    // loop through the results array and increment count if status is "new"
-    results?.forEach((result) => {
-      const priority = result?.value?.priority;
-      if (priority === 'high') {
-        countNew++;
-      }
-    });
-
-    // countNew variable will have the count of "new" status
-    console.log('highCount', countNew);
-    return countNew;
-  }
-
-  function inProgressTickets() {
-    const results = ticketData?.customObjects?.results; // get the results array
-
-    let countNew = 0; // initialize count of "new" status to 0
-
-    // loop through the results array and increment count if status is "new"
-    results?.forEach((result) => {
-      const status = result?.value?.status;
-      if (status === 'inprogress') {
-        countNew++;
-      }
-    });
-    return countNew;
-  }
-
-  function resolvedTickets() {
-    const results = ticketData?.customObjects?.results; // get the results array
-
-    let countNew = 0; // initialize count of "new" status to 0
-
-    // loop through the results array and increment count if status is "new"
-    results?.forEach((result) => {
-      const status = result?.value?.status;
-      if (status === 'done') {
-        countNew++;
-      }
-    });
-
-    // countNew variable will have the count of "new" status
-    // console.log('doneCount', countNew);
-    return countNew;
-  }
-
-  const newStatus = newStatusTickets();
-  const highTickets = highProirityTickets();
-  const resolvedstatusTickets = resolvedTickets();
-  const inprogTickets = inProgressTickets();
+  const newTickets = newFunctionTickets(ticketData);
+  const highTickets = highProirityTickets(ticketData);
+  const resolvedstatusTickets = resolvedTickets(ticketData);
+  const inprogTickets = inProgressTickets(ticketData);
   const dataExcel = ExcelData;
 
   rows = getTicketRows(ticketData?.customObjects);
+
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+  };
 
   const formElements = (
     <Spacings.Stack scale="xxl">
@@ -133,16 +96,9 @@ const TicketDisplayForm = (props) => {
           <DataTable
             isCondensed
             columns={columns}
-            // rows={rows}
             rows={rows.slice(0, 5)} // limit to first 5 rows
-            // itemRenderer={(item, column) => itemRenderer(item, column)}
             maxHeight={600}
-            // sortedBy={tableSorting.value.key}
-            // sortDirection={tableSorting.value.order}
-            // onSortChange={tableSorting.onChange}
-            // onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
             onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
-            // onRowClick={(row) => push(`Ticket-account/${row.id}/companies-general`)}
           />
           <Switch>
             <SuspendedRoute path={`${match.path}/:id`}>
@@ -185,6 +141,17 @@ const TicketDisplayForm = (props) => {
                     </Text.Subheadline>
                     {/* make changes here */}
                     <Text.Subheadline as="h3">{highTickets}</Text.Subheadline>
+                  </Card>
+                </Constraints.Horizontal>
+              </Spacings.Stack>
+              <Spacings.Stack scale="l">
+                <Constraints.Horizontal>
+                  <Card constraint="xl" theme="dark" insetScale="l">
+                    <Text.Subheadline as="h4" isBold={true} tone="information">
+                      {'New Tickets'}
+                    </Text.Subheadline>
+                    {/* make changes here */}
+                    <Text.Subheadline as="h3">{newTickets}</Text.Subheadline>
                   </Card>
                 </Constraints.Horizontal>
               </Spacings.Stack>
@@ -278,9 +245,76 @@ const TicketDisplayForm = (props) => {
       </Spacings.Stack>
       {/* break */}
       <br />
-      <div>
+      <br />
+      <Spacings.Stack scale="xl">
+        <Constraints.Horizontal constraint="l">
+          <Card constraint="xl" min={23} max={27}>
+            <Text.Subheadline as="h4" isBold={true} tone="positive">
+              {'Report'}
+            </Text.Subheadline>
+            <br />
+            <Spacings.Inline>
+              <Spacings.Stack scale="l">
+                <Constraints.Horizontal>
+                  <Card constraint="xl" theme="dark" insetScale="l">
+                    <div
+                      style={{ display: 'inline-block', marginRight: '20px' }}
+                    >
+                      <Text.Subheadline
+                        as="h5"
+                        isBold={true}
+                        tone="information"
+                      >
+                        {'From:'}
+                      </Text.Subheadline>
+                      <DatePicker
+                        selected={startDate}
+                        onChange={handleStartDateChange}
+                        selectsStart
+                        startDate={startDate}
+                        endDate={endDate}
+                      />
+                    </div>
+                    <div
+                      style={{ display: 'inline-block', marginRight: '20px' }}
+                    >
+                      {/* <label>To:</label> */}
+                      <Text.Subheadline
+                        as="h5"
+                        isBold={true}
+                        tone="information"
+                      >
+                        {'To:'}
+                      </Text.Subheadline>
+                      <DatePicker
+                        selected={endDate}
+                        onChange={handleEndDateChange}
+                        selectsEnd
+                        startDate={startDate}
+                        endDate={endDate}
+                        minDate={startDate}
+                      />
+                    </div>
+                    <div
+                      style={{ display: 'inline-block', marginRight: '0px' }}
+                    >
+                      <ExportExcel
+                        excelData={dataExcel}
+                        fileName={'Work Report'}
+                      />
+                    </div>
+                  </Card>
+                </Constraints.Horizontal>
+              </Spacings.Stack>
+            </Spacings.Inline>
+          </Card>
+        </Constraints.Horizontal>
+      </Spacings.Stack>
+      <br />
+      <br />
+      {/* <div>
         <ExportExcel excelData={dataExcel} fileName={'Work Report'} />
-      </div>
+      </div> */}
     </Spacings.Stack>
   );
 

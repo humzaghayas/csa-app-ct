@@ -3,7 +3,7 @@ import * as FileSaver from 'file-saver';
 import XLSX from 'sheetjs-style';
 import Button from '@mui/material/Button';
 
-const ExportExcel = ({ excelData, fileName }) => {
+export const ExportExcel = ({ excelData, fileName }) => {
   const fileType =
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
   const fileExtension = '.xlsx';
@@ -18,14 +18,14 @@ const ExportExcel = ({ excelData, fileName }) => {
 
   return (
     <>
-      <Tooltip title="Excel Export">
+      <Tooltip title="Download Excel">
         <Button
           variant="contained"
           onClick={(e) => exportToExcel(fileName)}
           color="primary"
           style={{ cursor: 'pointer', fontSize: 14 }}
         >
-          Weekly Report
+          Generate
         </Button>
       </Tooltip>
     </>

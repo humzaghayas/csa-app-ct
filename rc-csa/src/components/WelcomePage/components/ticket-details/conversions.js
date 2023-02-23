@@ -1,10 +1,14 @@
 import LocalizedTextInput from '@commercetools-uikit/localized-text-input';
 import { transformLocalizedFieldToLocalizedString } from '@commercetools-frontend/l10n';
 import { TextInput } from '@commercetools-frontend/ui-kit';
+import { CART_STATE } from './constants';
 
 export const docToFormValues = (employee, languages) => ({
   id: employee?.id ?? '',
   salutation: employee?.salutation ?? '',
+  // cartState: 'Day',
+  // cartState: CART_STATE,
+  // cartState: employee?.country ?? '',
   title: employee?.title ?? '',
   firstName: employee?.firstName ?? '',
   middleName: employee?.middleName ?? '',
@@ -41,6 +45,7 @@ export const formValuesToDoc = (formValues) => ({
   firstName: !TextInput.isEmpty(formValues.firstName)
     ? formValues.firstName
     : '--',
+  cartState: !TextInput.isEmpty(formValues.country) ? formValues.country : '--',
   middleName: !TextInput.isEmpty(formValues.middleName)
     ? formValues.middleName
     : '--',
