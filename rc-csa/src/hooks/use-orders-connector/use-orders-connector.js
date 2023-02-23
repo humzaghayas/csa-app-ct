@@ -13,7 +13,8 @@ import {
   FETCH_ORDER_BY_ID,
   UPDATE_ORDER_BY_ID,
   CREATE_EDIT_ORDER_BY_ID,
-  REPLICATE_ORDER} from 'ct-tickets-helper-api';
+  REPLICATE_ORDER,
+  FETCH_ORDER_PAYMENTS_BY_ID} from 'ct-tickets-helper-api';
 
 export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
 
@@ -154,4 +155,25 @@ export const useReplicateOrderById = () =>{
     loading
   };
 
+}
+export const useFetchOrderPaymentsById =  (orderId) =>{
+
+
+  const { data, error, loading } =  useMcQuery(gql`${FETCH_ORDER_PAYMENTS_BY_ID}`, {
+    variables: {
+      id:orderId
+    },
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    },
+    fetchPolicy:"network-only"
+  });
+
+  let order = data?.order ;
+
+  return {
+    order,
+    loading,
+    error
+  };
 }

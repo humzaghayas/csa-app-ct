@@ -35,6 +35,7 @@ import OrderShipping from '../order-shipping/order-shipping';
 import OrderLineItems from '../order-create/order-line-items';
 import OrderReturns from '../order-returns/order-returns';
 import OrderReturnsNew from '../order-returns/order-returns-details';
+import OrderPayments from '../order-payments/order-payments';
 
 
 const OrderAccount = (props) => {
@@ -74,6 +75,10 @@ const OrderAccount = (props) => {
                 to={`${match.url}/orders-returns`}
                 label="Returns"
               />
+              <TabHeader
+                to={`${match.url}/orders-payments`}
+                label="Payments"
+              />
             </Spacings.Inline>
           </Spacings.Stack>
         </>
@@ -96,6 +101,9 @@ const OrderAccount = (props) => {
         </Route>
         <Route path={`${match.path}/new`}>
           <OrderReturnsNew onClose={() => push(`${match.url}`)}/>
+        </Route>
+        <Route path={`${match.path}/orders-payments`}>
+          <OrderPayments onClose={() => push(`${match.url}`)}/>
         </Route>
       </Switch>
     </TabularDetailPage>

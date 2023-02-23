@@ -385,3 +385,58 @@ export const REPLICATE_ORDER = `mutation orderReplicate($referenceInput:Referenc
     id
   }
 }`
+export const FETCH_ORDER_PAYMENTS_BY_ID = `query FetchOrderPaymentsByOrderId($id:String!){
+  order(id:$id){
+      id
+      version
+      createdAt
+      lastModifiedAt
+      customerId
+      customerEmail
+      country
+      orderState
+      orderNumber
+      paymentInfo{
+        payments{
+          id
+      key
+      interfaceId
+      version
+      createdAt
+      lastModifiedAt
+      paymentStatus{
+        interfaceCode
+        interfaceText
+      }
+      customer{
+        id
+      }
+      amountPlanned{
+        type
+        currencyCode
+        centAmount
+        fractionDigits
+      }
+      paymentMethodInfo{
+        paymentInterface
+        method
+        name(locale:"en")
+      }
+      transactions{
+        id
+        type
+        interactionId
+        timestamp
+        type
+        state
+        amount{
+          type
+          currencyCode
+          fractionDigits
+          centAmount
+        }
+        }
+        }
+      }
+  }
+}`

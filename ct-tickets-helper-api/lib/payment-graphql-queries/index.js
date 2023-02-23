@@ -1,0 +1,4 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FETCH_PAYMENT_BY_ID = void 0;
+exports.FETCH_PAYMENT_BY_ID = "query FetchPaymentById($id:String!){\n    payment(id:$id){\n       id\n          key\n          interfaceId\n          version\n          createdAt\n          lastModifiedAt\n          paymentStatus{\n            interfaceCode\n            interfaceText\n          }\n          customer{\n            id\n          }\n          amountPlanned{\n            type\n            currencyCode\n            centAmount\n            fractionDigits\n          }\n          paymentMethodInfo{\n            paymentInterface\n            method\n            name(locale:\"en\")\n          }\n          transactions{\n            timestamp\n            type\n            state\n            amount{\n              type\n              currencyCode\n              fractionDigits\n              centAmount\n            }\n        }\n    }\n  }";
