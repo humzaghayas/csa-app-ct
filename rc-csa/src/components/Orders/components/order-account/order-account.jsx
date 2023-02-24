@@ -105,6 +105,9 @@ const OrderAccount = (props) => {
         <Route path={`${match.path}/orders-payments`}>
           <OrderPayments onClose={() => push(`${match.url}`)}/>
         </Route>
+        <Route path={`${match.path}/details`}>
+          <OrderPayments onClose={() => push(`${match.url}`)}/>
+        </Route>
       </Switch>
     </TabularDetailPage>
 

@@ -25,6 +25,8 @@ export const FETCH_PAYMENT_BY_ID = `query FetchPaymentById($id:String!){
             name(locale:"en")
           }
           transactions{
+            id
+            interactionId
             timestamp
             type
             state

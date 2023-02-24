@@ -7,9 +7,11 @@ import { CollapsiblePanel, Constraints, DataTable, ExternalLinkIcon, IconButton,
 import { useCallback } from 'react';
 import { useShowApiErrorNotification, useShowNotification } from '@commercetools-frontend/actions-global';
 import { useFetchPaymentById } from '../../../../hooks/use-payments-connector/use-payments-connector';
-import { columns, dummyRows } from './constants';
+import { columns, dummyRows, paymentColumns } from './constants';
 import { useFetchOrderPaymentsById } from '../../../../hooks/use-orders-connector/use-orders-connector';
-import { itemRenderer } from './helper';
+import { itemRenderer, itemRendererPayments } from './helper';
+import { SuspendedRoute } from '@commercetools-frontend/application-shell';
+import OrderPaymentsDetails from './order-payments-details';
 
 const OrderPayments = (props) =>{
     const intl = useIntl();
@@ -26,155 +28,21 @@ const OrderPayments = (props) =>{
 
     return(
     <>
-        {payments?.length>0?payments?.map((payment,index)=>{
-            const i = index+1;
-            return  <CollapsiblePanel
-            headerControls={
-                <Spacings.Inline scale='s' alignItems='flex-end'>
-                <IconButton
-                    icon={<UserLinearIcon/>}
-                    onClick={()=>{
-                        push('/csa-project-2/csa-customer-tickets/customer-account/'+payment?.customer?.id+'/Customers-summary')
-                    }}
-                    label='Customer'
-                />
-                <IconButton
-                    icon={<MailIcon/>}
-                    onClick={()=>{
-                        alert('Send Link')
-                        console.log("Send Payment Link");
-                    }}
-                />
-                </Spacings.Inline>
-            }
-
-            header={<CollapsiblePanel.Header>
-                <Spacings.Inline>
-                {"Payment #"+i+" "}
-                </Spacings.Inline>
-            </CollapsiblePanel.Header>}
-            secondaryHeader={payment?.id}
-            description={<Spacings.Inline>
-                <Constraints.Horizontal>
-                <Spacings.Stack scale='l'>
-                {"Date created: "+payment?.createdAt}
-                </Spacings.Stack>
-                <Spacings.Stack scale='l' alignItems='flex-end'>
-                {"Date Modified: "+payment?.lastModifiedAt}
-                </Spacings.Stack>
-                </Constraints.Horizontal>
-            </Spacings.Inline>}
-            >
-            <Constraints.Horizontal>
-        
-            <Spacings.Stack  scale='xl'>
-             <Spacings.Inline>
-                <Spacings.Stack scale='l'>
-                   <Label isBold={true}>
-                       Payment method name:   
-                   </Label>
-                </Spacings.Stack>
-                <Spacings.Stack scale='s' alignItems='center'>
-                   <Label>
-                   {payment?.paymentMethodInfo?.name}
-                   </Label>
-                </Spacings.Stack>
-             </Spacings.Inline>
-             <Spacings.Inline>
-                <Spacings.Stack scale='l'>
-                   <Label isBold={true}>
-                       Payment method:   
-                   </Label>
-                </Spacings.Stack>
-                <Spacings.Stack scale='s' alignItems='center'>
-                   <Label>
-                   {payment?.paymentMethodInfo?.method}
-                   </Label>
-                </Spacings.Stack>
-             </Spacings.Inline>
-             <Spacings.Inline>
-                <Spacings.Stack scale='l'>
-                   <Label isBold={true}>
-                   Payment service provider (PSP):   
-                   </Label>
-                </Spacings.Stack>
-                <Spacings.Stack scale='s' alignItems='center'>
-                   <Label>
-                   {payment?.paymentMethodInfo?.paymentInterface}
-                   </Label>
-                </Spacings.Stack>
-             </Spacings.Inline>
-             <Spacings.Inline>
-                <Spacings.Stack scale='l'>
-                   <Label isBold={true}>
-                   Payment provider ID:   
-                   </Label>
-                </Spacings.Stack>
-                <Spacings.Stack scale='s' alignItems='center'>
-                   <Label>
-                   {payment?.interfaceId}
-                   </Label>
-                </Spacings.Stack>
-             </Spacings.Inline>
-             <Spacings.Inline>
-                <Spacings.Stack scale='l'>
-                   <Label isBold={true}>
-                   Payment state:   
-                   </Label>
-                </Spacings.Stack>
-                <Spacings.Stack scale='s' alignItems='center'>
-                   <Label>
-                   {payment?.paymentStatus?.interfaceCode?payment?.paymentStatus?.interfaceCode:"-"}
-                   </Label>
-                </Spacings.Stack>
-             </Spacings.Inline>
-             <Spacings.Inline>
-                <Spacings.Stack scale='l'>
-                   <Label isBold={true}>
-                   Amount planned:   
-                   </Label>
-                </Spacings.Stack>
-                <Spacings.Stack scale='s' alignItems='center'>
-                   <Label>
-                   {"$"+payment?.amountPlanned?.centAmount/100+".00"}
-                   </Label>
-                </Spacings.Stack>
-             </Spacings.Inline>
-             <Spacings.Inline>
-                <Spacings.Stack scale='l'>
-                   <Label isBold={true}>
-                   PSP Status Code:   
-                   </Label>
-                </Spacings.Stack>
-                <Spacings.Stack scale='s' alignItems='center'>
-                   <Label>
-                   {"-"}
-                   </Label>
-                </Spacings.Stack>
-             </Spacings.Inline>
-             <Spacings.Inline>
-                <Spacings.Stack scale='l'>
-                   <Label isBold={true}>
-                   Description:   
-                   </Label>
-                </Spacings.Stack>
-                <Spacings.Stack scale='s' alignItems='center'>
-                   <Label>
-                   {"-"}
-                   </Label>
-                </Spacings.Stack>
-             </Spacings.Inline>
-
-             <DataTable
-             columns={columns}
-             rows={payment?.transactions}
-             itemRenderer={itemRenderer}
-            />
-
-             </Spacings.Stack>
-            </Constraints.Horizontal>
-        </CollapsiblePanel>              
-        }):"No payments found"}
+        {payments?.length>0?
+        <DataTable
+        rows={payments}
+        columns={paymentColumns}
+        itemRenderer={itemRendererPayments}
+        onRowClick={(row)=>{
+            push(`${match.url}/${row.id}/details`)
+        }}
+        />
+        :"There are no payments associated with this order."}
+        <Switch>
+            <SuspendedRoute path={`${match.path}/:id/details`}>
+              <OrderPaymentsDetails onClose={() => push(`${match.url}`)} />
+            </SuspendedRoute>
+        </Switch>
     </>
     )
 }

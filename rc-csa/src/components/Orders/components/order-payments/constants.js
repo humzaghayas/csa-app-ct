@@ -17,3 +17,14 @@ export const dummyRows = [
         transactionId:"1478522"
     }
 ]
+
+export const paymentColumns = [
+    
+    {key:'id',label:'Id'},
+    {key:'interfaceId',label:'Interface Id'},
+    {key:'amountPlanned',label:'Amount planned'},
+    {key:'paymentMethodInfo',label:'Payment method info'},
+    {key:'createdAt',label:'Date'},
+    {key:'lastModifiedAt',label:'Modified'},
+    
+]
