@@ -57,7 +57,7 @@ import { ContentNotification } from '@commercetools-uikit/notifications';
 let rows = null;
 
 const columns = [
-  { key: 'id', label: 'id' },
+  { key: 'ticketNumber', label: 'Ticket Number' },
   { key: 'Customer', label: 'Customer' },
   { key: 'status', label: 'Status' },
   { key: 'Priority', label: 'Priority' },

@@ -51,6 +51,7 @@ import Grid from '@commercetools-uikit/grid';
 let rows = null;
 
 const columns = [
+  { key:'ticketNumber', label: 'Ticket Number' },
   { key:'Customer', label: 'Customer' },
   { key: 'Created', label: 'Created' },
   { key: 'Modified', label: 'Modified' },

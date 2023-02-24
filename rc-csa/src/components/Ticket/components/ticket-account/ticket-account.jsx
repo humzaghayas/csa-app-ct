@@ -19,6 +19,7 @@ import { lazy, useState, useEffect } from 'react';
 // import TicketDetailsForm from '../Ticket-history/ticket-details-form';
 import TicketHistory from '../Ticket-history/ticket-history';
 import TicketDetailsP from '../ticket-create/tickets-details';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 
 const TicketAccount = (props) => {
@@ -28,6 +29,10 @@ const TicketAccount = (props) => {
   const params = useParams();
   const { push } = useHistory();
   const [Ticket, setData] = useState();
+
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
 
   //const apiUrl ="http://localhost:4456";
   // const apiUrl = 'https://ms-Ticket-f4b4o225iq-ue.a.run.app';
@@ -40,7 +45,7 @@ const TicketAccount = (props) => {
     <TabularDetailPage
       title="Ticket Details"
       //  onPreviousPathClick={() => history.push(`Ticket-list`)}
-      onPreviousPathClick={() => history.push(`/csa_project/csa-customer-tickets/Tickets`)}
+      onPreviousPathClick={() => history.push(`/${projectKey}/csa-customer-tickets/Tickets`)}
       previousPathLabel="Go to View Tickets"
       tabControls={
         <>

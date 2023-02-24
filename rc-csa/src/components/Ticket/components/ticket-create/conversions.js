@@ -25,6 +25,7 @@ export const docToFormValues = (ticket, languages,isEdit) => {
 const docToFormCommonValues=(ticket,isEdit)=>(
   {
     id: ticket?.id ?? '',
+    ticketNumber: ticket?.ticketNumber ?? '',
     key: ticket?.key ?? '',
     email : ticket?.email ?? '',
     customerId : ticket?.customerId ?? '',
@@ -44,6 +45,10 @@ const docToFormCommonValues=(ticket,isEdit)=>(
 export const formValuesToDoc = (formValues) => {
    
     let doc=formValuesToDocCommonValues(formValues);
+
+    doc.ticketNumber= !TextInput.isEmpty(formValues.ticketNumber) 
+    ? formValues?.ticketNumber
+    : undefined;
 
     if(doc.category && (doc.category == CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
       || doc.category == CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
