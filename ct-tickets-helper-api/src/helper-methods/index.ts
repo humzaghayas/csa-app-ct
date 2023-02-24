@@ -1,6 +1,7 @@
 import { TICKET_TYPE,TICKET_PRIORITIY_VALUES,TICKET_SOURCE, CONSTANTS, TICKET_STATUS } from "../constants";
 import { CREATE_CUSTOMOBJECT_MUTATION } from "../graphql-queries";
 import { v4 as uuidv4 } from 'uuid';
+import { InvoiceNumber } from 'invoice-number';
 
 export function getTicketRows(customObjects){
 
@@ -9,6 +10,7 @@ export function getTicketRows(customObjects){
     if(customObjects?.results){
         return customObjects?.results.map(co =>{
             return { id: co.id,
+                ticketNumber:co.value.ticketNumber,
                 Customer: co.value.email,
                 Created: co.createdAt,
                 Modified:co.lastModifiedAt,
@@ -159,9 +161,15 @@ function getTicketValueString( ticketInfo,uuid){
     const currentDate = new Date().toUTCString();
     const email = ticketInfo.email;
     const customerId = ticketInfo.customerId;
+    let tNumber = ticketInfo.ticketNumber;
+
+    if(!tNumber){
+        tNumber = getInvoiceNumber();
+    }
 
     return `{
         \"id\": \"${uuid}\",
+        \"ticketNumber\":\"${tNumber}\",
         \"customerId\": \"${customerId}\",
         \"email\":\"${email}\",
         \"source\": \"${ticketInfo.contactType}\",
@@ -223,6 +231,7 @@ function createTicketFromCustomObject(data){
 
     return {
         id: data?.customObject?.id ?? '',
+        ticketNumber: data?.customObject?.value?.ticketNumber ?? '',
         key: data?.customObject?.key ?? '',
         container: data?.customObject?.container ?? '',
         version: data?.customObject?.version ?? '',
@@ -255,4 +264,15 @@ export function isEmailValid(email) {
     }
 
     return false;
+}
+
+let invoiceNumber ;
+
+export function getInvoiceNumber(prefix="RC") {
+    const today = new Date();
+
+    invoiceNumber = invoiceNumber? InvoiceNumber.next(invoiceNumber) :
+    `${today.getFullYear()}${today.getMonth()+1}${today.getDate()}-${today.getHours()}${today.getMinutes()}` ;
+
+    return `${prefix}-${invoiceNumber}`
 }

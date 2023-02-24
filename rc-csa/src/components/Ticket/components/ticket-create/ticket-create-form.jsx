@@ -347,6 +347,18 @@ const addWorklog =(e) => {
                 <Constraints.Horizontal >
                 <Spacings.Stack scale="m">
 
+                  {  formik.values.isEdit ?   
+                    <Spacings.Inline alignItems="flex-end">
+                      
+                      <TextField
+                          name="ticketNumber"
+                          title="Ticket Number"
+                          value={formik.values.ticketNumber}
+                          isReadOnly={true}
+                          horizontalConstraint={13}
+                        />
+                    </Spacings.Inline>
+                  :""}
 
                 <Spacings.Inline alignItems="flex-end">
                    
