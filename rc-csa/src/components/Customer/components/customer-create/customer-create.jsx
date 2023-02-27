@@ -46,6 +46,7 @@ const CustomerCreate = (props) => {
     initialValues={docToFormValues(null, projectLanguages)}
     onSubmit={handleSubmit}
     customer={props.customer}
+    customerSummary={props.customerSummary}
     isReadOnly={!canManage}
     dataLocale={dataLocale}
     >
