@@ -31,6 +31,7 @@ import CustomerPayment from '../customer-payment/customer-payment';
 import { CONSTANTS } from 'ct-tickets-helper-api';
 import { useGetTicketByCustomerEmail } from '../../../../hooks/use-register-user-connector';
 import { useEffect, useState } from 'react';
+import { useGetActiveCartByCustomer ,useGetOrdersByCustomer} from '../../../../hooks/use-cart-connector';
 
 
 const CustomerAccount = (props) => {
@@ -40,17 +41,34 @@ const CustomerAccount = (props) => {
   const { customer, error, loading } = useCustomerDetailsFetcher(params.id);
   const [ticket, setTicket] = useState(null);
   const [customerSummary, setCustomerSummary] = useState({
-    ticketsCount:0
+    ticketsCount:0,
+    activeCartCount:0,
+    orderCount:0,
+    salesCount:0
   });
 
   const{execute} = useGetTicketByCustomerEmail();
+  const{execute:executeCartService} = useGetActiveCartByCustomer();
+  const{execute:executeOrderService} = useGetOrdersByCustomer();
 
   useEffect(async() => {
-      let d = await execute(customer?.email);
+    console.log('ticket 12121');
+      const d = await execute(customer?.email);
+      const c = await executeCartService(params.id);
+      const o = await executeOrderService(params.id
+            ,"\""+CONSTANTS.OPEN_STATUS+"\"");
+      const s = await executeOrderService(params.id
+              ,"\""+CONSTANTS.CONFIRMED_STATUS+"\"");
       setTicket(d?.data);
-      setCustomerSummary({ticketsCount :d?.data?.customObjects?.total} )
+      
+      setCustomerSummary({ticketsCount :d?.data?.customObjects?.total,
+          activeCartCount:c?.data?.carts?.total,
+          orderCount:o.data?.orders?.total,
+          salesCount:s.data?.orders?.total
+        } )
       console.log('ticket',d?.data);
-  }, [customer?.email]);
+      console.log('cart: ',c);
+  }, [customer?.email,customer?.id]);
 
 
   return (

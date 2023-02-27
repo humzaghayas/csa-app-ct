@@ -96,18 +96,16 @@ const CustomerCreateForm = (props) => {
                 <Spacings.Stack scale="l">
                   <Constraints.Horizontal >
                     <Card constraint="xl" theme="dark" insetScale="l">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">{'Order'}</Text.Subheadline>
-                <Text.Subheadline as="h3" >  5</Text.Subheadline>
-                     
+                      <Text.Subheadline as="h4" isBold={true} tone="information">{'Order'}</Text.Subheadline>
+                      <Text.Subheadline as="h3" >{props.customerSummary?.orderCount}</Text.Subheadline>
                     </Card>
                   </Constraints.Horizontal>
                 </Spacings.Stack>
                 <Spacings.Stack scale="l">
                 <Constraints.Horizontal >
                     <Card constraint="xl" theme="dark" insetScale="l">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">{'Sales'}</Text.Subheadline>
-                <Text.Subheadline as="h3" >125</Text.Subheadline>
-                     
+                      <Text.Subheadline as="h4" isBold={true} tone="information">{'Sales'}</Text.Subheadline>
+                      <Text.Subheadline as="h3" >{props.customerSummary?.salesCount}</Text.Subheadline>
                     </Card>
                   </Constraints.Horizontal>
                 </Spacings.Stack>
@@ -124,7 +122,7 @@ const CustomerCreateForm = (props) => {
                 <Constraints.Horizontal min={13}>
                 <Card constraint="xl" insetScale="l" theme="dark">
                     <Text.Subheadline as="h4" isBold={true} tone="information">{'Saved Cart'}</Text.Subheadline>
-                <Text.Subheadline as="h3" >1</Text.Subheadline>
+                    <Text.Subheadline as="h3" >{props.customerSummary?.activeCartCount}</Text.Subheadline>
                      
                     </Card>
                   </Constraints.Horizontal>
