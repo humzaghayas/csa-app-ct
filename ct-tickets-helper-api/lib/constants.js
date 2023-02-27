@@ -47,7 +47,10 @@ exports.CONSTANTS = {
     STATUS_OPERATION: 'UPDATED',
     PRIORITY: 'Priority',
     STATUS: 'Status',
-    ASSIGNED_TO: 'Assigned_To'
+    ASSIGNED_TO: 'Assigned_To',
+    ACTIVE_STATUS: "Active",
+    OPEN_STATUS: "Open",
+    CONFIRMED_STATUS: "Confirmed",
 };
 exports.TICKET_TYPE = (_b = {},
     _b[exports.CONSTANTS.TICKET_TYPE_REQUEST] = "Request",
