@@ -404,6 +404,12 @@ export const FETCH_ORDER_PAYMENTS_BY_ID = `query FetchOrderPaymentsByOrderId($id
       version
       createdAt
       lastModifiedAt
+      custom{
+        customFieldsRaw{
+          name
+          value
+        }
+      }
       paymentStatus{
         interfaceCode
         interfaceText

@@ -10,6 +10,12 @@ export const FETCH_PAYMENT_BY_ID = `query FetchPaymentById($id:String!){
             interfaceCode
             interfaceText
           }
+          custom{
+            customFieldsRaw{
+              name
+              value
+            }
+          }
           customer{
             id
           }
@@ -39,3 +45,8 @@ export const FETCH_PAYMENT_BY_ID = `query FetchPaymentById($id:String!){
         }
     }
   }`
+export const UPDATE_PAYMENT_BY_ID = `mutation updatePayment($id:String!,$version:Long!,$actions:[PaymentUpdateAction!]!){
+  updatePayment(id:$id,version:$version,actions:$actions){
+    id
+  }
+}`

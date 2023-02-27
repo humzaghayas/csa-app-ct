@@ -22,7 +22,7 @@ export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
     variables: {
       limit: perPage.value,
       offset: (page.value-1)*perPage.value,
-      sort: ["orderNumber asc","createdAt desc"],
+      sort: ["createdAt desc"],
     },
     context: {
       target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,

@@ -40,7 +40,7 @@ const OrderPayments = (props) =>{
         :"There are no payments associated with this order."}
         <Switch>
             <SuspendedRoute path={`${match.path}/:id/details`}>
-              <OrderPaymentsDetails onClose={() => push(`${match.url}`)} />
+              <OrderPaymentsDetails customerId = {order?.customerId} onClose={() => push(`${match.url}`)} />
             </SuspendedRoute>
         </Switch>
     </>

@@ -48,7 +48,8 @@ const config = {
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
         'https://firebasestorage.googleapis.com/',
-        '${env:atgPublicURL}'
+        '${env:atgPublicURL}',
+        'https://api.stripe.com/'
       ],
       'style-src': [
         'http://localhost:3001',
