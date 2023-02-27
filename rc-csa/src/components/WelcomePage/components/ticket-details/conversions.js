@@ -6,9 +6,7 @@ import { CART_STATE } from './constants';
 export const docToFormValues = (employee, languages) => ({
   id: employee?.id ?? '',
   salutation: employee?.salutation ?? '',
-  // cartState: 'Day',
-  // cartState: CART_STATE,
-  // cartState: employee?.country ?? '',
+  optionSelect: employee?.optionSelect ?? '',
   title: employee?.title ?? '',
   firstName: employee?.firstName ?? '',
   middleName: employee?.middleName ?? '',
@@ -66,4 +64,13 @@ export const formValuesToDoc = (formValues) => ({
   roles: formValues.roles,
   password: formValues.password,
   confirmedPassword: '--',
+  actions: [
+    {
+      changeOptionSelect: {
+        optionSelect: !TextInput.isEmpty(formValues.optionSelect)
+          ? formValues.optionSelect
+          : '--',
+      },
+    },
+  ],
 });

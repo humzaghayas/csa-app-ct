@@ -10,3 +10,13 @@ export const CART_STATE = {
   Month: 'Month',
   Year: 'Year',
 };
+
+export const REPORT_TYPE = {
+  Tickets: 'Tickets',
+  Agent: 'Agent',
+  Attendance: 'Attendance',
+  Orders: 'Orders',
+  Cart: 'Agent',
+  Product: 'Attendance',
+  Customer: 'Customer',
+};
