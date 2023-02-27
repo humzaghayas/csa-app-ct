@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   PageNotFound,
   FormModalPage,
@@ -52,7 +52,6 @@ import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
 import { FETCH_TICKETS, FETCH_CUSTOMER_TICKETS } from 'ct-tickets-helper-api/lib/graphql-queries';
 import { CONSTANTS } from 'ct-tickets-helper-api/lib/constants';
 import TicketAccount from '../../../Ticket/components/ticket-account/ticket-account';
-import { ContentNotification } from '@commercetools-uikit/notifications';
 
 let rows = null;
 
@@ -68,71 +67,17 @@ const columns = [
 ];
 
 const CustomerTickets = (props) => {
-  const intl = useIntl();
-  const params = useParams();
   const match = useRouteMatch();
   const { push } = useHistory();
-  // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
+  const [ticket, setTicket] = useState(props?.ticket);
 
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
 
-  const email = props?.customer?.email;
-
-  console.log('customer',email);
-
-  const canView = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.View],
-  });
-
-  const { user } = useApplicationContext((context) => ({
-    user: context.user ?? '',
-  }));
-
-  const { foundUser } = useUserFetcher(user.email);
-  const { execute } = useCreateEntry(user.email);
-
-  useEffect(() => {
-    if (canManage && foundUser == false) {
-      console.log('calling execute !');
-      execute();
-    }
-    console.log('inside hook !');
-  }, [foundUser]);
-   const id = params.id;
-  const { data, error, loading, refetch } = useMcQuery(
-    gql`
-      ${FETCH_CUSTOMER_TICKETS}
-    `,
-    {
-      variables: {
-        "container": "ticket-container",
-        "where": "value(email=\""+email+"\")"
-        // container: CONSTANTS.containerKey,
-        // limit: perPage.value,
-        // offset: (page.value - 1) * perPage.value,
-        // sort: ['lastModifiedAt desc'],
-      },
-      context: {
-        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-      },
-      fetchPolicy: 'network-only',
-    }
-  );
-
-  rows = getTicketRows(data?.customObjects);
-
-  console.log('data?.customObjects',data?.customObjects);
-
-  // if (error) {
-  //   return (
-  //     <ContentNotification type="error">
-  //       <Text.Body>{getErrorMessage(error)}</Text.Body>
-  //     </ContentNotification>
-  //   );
-  // }
+   rows = getTicketRows(props?.ticket?.customObjects);
+   
   return (
     <Spacings.Stack scale="xl">
       {/* {data ? ( */}
@@ -157,7 +102,7 @@ const CustomerTickets = (props) => {
               onPageChange={page.onChange}
               perPage={perPage.value}
               onPerPageChange={perPage.onChange}
-              totalItems={data?.customObjects?.total}
+              totalItems={ticket?.customObjects?.total}
             />
             <Switch>
               {/* <SuspendedRoute path={`${match.path}/:id`}>

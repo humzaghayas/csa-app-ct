@@ -3,5 +3,6 @@ export {
   useCreateEntry,
   useCreateOrUpdateTicket,
   useUserListFetcher,
-  useGetTicketById
+  useGetTicketById,
+  useGetTicketByCustomerEmail
 } from './use-service-connector';

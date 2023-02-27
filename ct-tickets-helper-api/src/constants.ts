@@ -30,6 +30,8 @@ export const TICKET_PRIORITIY_VALUES={
 
 export const CONSTANTS ={
     containerKey :"ticket-container",
+    CONTAINER:"container",
+    WHERE:"where",
     TICKET_TYPE_REQUEST :'request',
     USER_CONTRAINER_KEY:"mc-users",
     USER_CONTAINER:"mc-user-info",
