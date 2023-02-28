@@ -32,6 +32,8 @@ import { CONSTANTS } from 'ct-tickets-helper-api';
 import { useGetTicketByCustomerEmail } from '../../../../hooks/use-register-user-connector';
 import { useEffect, useState } from 'react';
 import { useGetActiveCartByCustomer ,useGetOrdersByCustomer} from '../../../../hooks/use-cart-connector';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { entryPointUriPath } from '../../../../constants';
 
 
 const CustomerAccount = (props) => {
@@ -40,6 +42,10 @@ const CustomerAccount = (props) => {
   const params = useParams();
   const { customer, error, loading } = useCustomerDetailsFetcher(params.id);
   const [ticket, setTicket] = useState(null);
+
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
   const [customerSummary, setCustomerSummary] = useState({
     ticketsCount:0,
     activeCartCount:0,
@@ -74,7 +80,7 @@ const CustomerAccount = (props) => {
   return (
     <TabularDetailPage
      title=" "
-         onPreviousPathClick={() => history.push(`/csa_project/csa-customer-tickets/Customers`)}
+         onPreviousPathClick={() => history.push(`/${projectKey}/${entryPointUriPath}/Customers`)}
       previousPathLabel="Go to View Customers"
       tabControls={
         <>

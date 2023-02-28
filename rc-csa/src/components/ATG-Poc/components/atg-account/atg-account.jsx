@@ -26,6 +26,7 @@ import { useLoginAtg } from '../../../../hooks/use-atg-conector';
 import { useEffect, useState } from 'react';
 import AtgCustomerDetail from '../atg-customer-detail/atg-customer-detail';
 import AtgOrderDetail from '../atg-order-detail/atg-order-detail';
+import { entryPointUriPath } from '../../../../constants';
 // import CustomerAddress from '../customer-address/customer-address';
 
 const LoginCred = {
@@ -50,7 +51,7 @@ const AtgAccount = (props) => {
     <TabularDetailPage
       title=" "
       onPreviousPathClick={() =>
-        history.push(`/${projectKey}/csa-customer-tickets`)
+        history.push(`/${projectKey}//${entryPointUriPath}`)
       }
       previousPathLabel="Back to Welcome page"
       tabControls={
