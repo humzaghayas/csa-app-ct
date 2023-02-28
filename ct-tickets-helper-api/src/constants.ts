@@ -51,6 +51,8 @@ export const CONSTANTS ={
     ACTIVE_STATUS:"Active",
     OPEN_STATUS:"Open",
     CONFIRMED_STATUS:"Confirmed",
+    OFFSET:"offset",
+    LIMIT:"limit"
 }
 
 export const TICKET_TYPE={

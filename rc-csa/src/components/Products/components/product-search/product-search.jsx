@@ -107,6 +107,6 @@ const ProductSearch = (props) => {
 };
 ProductSearch.displayName = 'OrderDetails';
 ProductSearch.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default ProductSearch;

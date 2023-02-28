@@ -14,7 +14,7 @@ import {
   useShowNotification,
   useShowApiErrorNotification,
 } from '@commercetools-frontend/actions-global';
-import { PERMISSIONS } from '../../../../constants';
+import { entryPointUriPath, PERMISSIONS } from '../../../../constants';
 import { Pagination } from '@commercetools-uikit/pagination';
 import {
   Link as RouterLink,
@@ -59,6 +59,10 @@ const CustomerOrder = (props) => {
 
   const OrderId = params.id;
 
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
+
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
   const tableSorting = useDataTableSortingState('createdAt desc');
@@ -71,33 +75,6 @@ console.log("props",props);
     tableSorting,
     customerId,
   });
-
-  console.log("customersOrderPaginatedResult",JSON.stringify(customersOrderPaginatedResult));
-
-  // const rows = [
-  //   { Ordernumber: '00000001',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status: 'Ordered'},
-  //   { Ordernumber: '00000002',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ordered'},
-  //   { Ordernumber: '00000003',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Ordered'},
-  //   { Ordernumber: '00000003',FirstName:'Lahari',DateCreated:'Apr 11, 2022,2:54:47...',DeliveryMode:'Standard Delivery',Status:'Cancelled'},
-  // ];
-  // const { push } = useHistory();
-  // const columns = [
-  
-  //   { key: 'Ordernumber', label: 'Order number'  },
-  //   { key: 'FirstName', label: 'Customer' },
-  //   { key: 'DateCreated', label: 'Date Created' },
-  //   { key: 'DeliveryMode', label: 'Delivery Mode',renderItem: (row) => (
-  //     <SecondaryButton label={row.DeliveryMode} onClick={() => alert('Button clicked')} />) },
-  //   { key: 'Status', label: 'Status',renderItem: (row) => (
-  //     <div>
-  //       <p>Ordered</p>
-  //     <IconButton
-  //     icon={<MailIcon />}
-  //     // label={row.Status}
-  //     onClick={() => push(`/csa_project/csa-customer-tickets/${OrderId}/customer-order-messages`)
-  //   />
-  //   </div>)},
-  // ];
 
   const columns = [
     { key: 'orderNumber', label: 'Order Number' },
@@ -136,22 +113,6 @@ console.log("props",props);
     size="medium"
   />
 
-          {/* <DataTable
-
-            isCondensed
-            columns={columns}
-            rows={rows}
-         
-            maxHeight={600}
-          
-          />
-          <Pagination
-            page={page.value}
-            onPageChange={page.onChange}
-            perPage={perPage.value}
-            onPerPageChange={perPage.onChange}
-            // totalItems={data.total}
-          /> */}
           
           <DataTable
               isCondensed
@@ -159,7 +120,7 @@ console.log("props",props);
               rows={customersOrderPaginatedResult.results}
               itemRenderer={(item, column) => itemRenderer(item, column)}
               maxHeight={600}
-              onRowClick={(row) => push(`orders/${row.id}/general`)}
+              onRowClick={(row) => push(`/${projectKey}/${entryPointUriPath}/order-edit/${row.id}/orders-general`)}
             />
             <Pagination
               page={page.value}
@@ -170,7 +131,7 @@ console.log("props",props);
             />
 
         </Spacings.Stack>
-      ) : null}
+      ) : "Loading..."}
     </Spacings.Stack>
   );
 };

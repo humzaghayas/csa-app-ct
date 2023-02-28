@@ -276,3 +276,51 @@ export function getInvoiceNumber(prefix="RC") {
 
     return `${prefix}-${invoiceNumber}`
 }
+
+export function getPaymentList(orders){
+    let paymentList = [];
+    orders?.results?.forEach(o => {
+        
+
+        o.paymentInfo.payments.forEach(p =>{
+          let payment ={};
+
+          payment['orderNumber'] = o.id;
+
+          if(p.transactions && p.transactions.length > 0){
+
+            const trans = p.transactions.find(t => t.state === 'Success');
+              if(trans){
+                payment['status']= 'Completed';
+                payment['paymentDate']=trans.timestamp;
+              }else{ 
+                const trans = p.transactions.find(t => t.state === 'Failure');
+                if(trans){
+                    payment['status']= 'Failure';
+                    payment['paymentDate']=trans.timestamp;
+                  }else {
+                    const trans = p.transactions.find(t => t.state === 'Pending');
+                    if(trans){
+                        payment['status']= 'Not Complete';
+                        payment['paymentDate']=trans.timestamp;
+                      }else{
+                        const trans = p.transactions.find(t => t.state === 'Initial');
+                        if(trans){
+                            payment['status']= 'Not Accepted';
+                            payment['paymentDate']=trans.timestamp;
+                          }else{
+                            payment['status']= 'Not Initiated Yet!';
+                          }
+                      }
+                  }
+                } 
+          }
+
+          payment['paymentMethod'] = p.paymentMethodInfo.method;
+
+          paymentList.push(payment);
+        });
+      });
+
+      return paymentList;
+    }
