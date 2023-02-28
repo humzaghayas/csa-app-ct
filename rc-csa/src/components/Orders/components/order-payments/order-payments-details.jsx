@@ -42,7 +42,8 @@ const OrderPaymentsDetails = (props) =>{
                     onClick={async()=>{
                         const session = await useFetchCheckoutSessionById(payment?.transactions[0]?.interactionId);
                         // const paymentStatus= await session?.session?.payment_status;
-                        if(session?.payment_status!=payment?.custom?.customFieldsRaw.filter(e=>e?.name=="pspPaymentStatus")[0]?.value){
+                        
+                        if(session?.session?.payment_status!=payment?.custom?.customFieldsRaw.filter(e=>e?.name=="pspPaymentStatus")[0]?.value){
                             const actions = {
                                 setCustomField:{
                                     name:"pspPaymentStatus",
