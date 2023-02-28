@@ -136,6 +136,6 @@ const AtgAccount = (props) => {
 AtgAccount.displayName = 'AtgAccount';
 AtgAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default AtgAccount;

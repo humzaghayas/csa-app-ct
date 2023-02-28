@@ -101,6 +101,6 @@ const OrderAccount = (props) => {
 OrderAccount.displayName = 'Companies';
 OrderAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default OrderAccount;

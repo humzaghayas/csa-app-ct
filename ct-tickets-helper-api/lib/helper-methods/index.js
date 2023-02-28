@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInvoiceNumber = exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.createTicketHistory = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getCartRows = exports.getOrderRows = exports.getTicketRows = void 0;
+exports.getPaymentList = exports.getInvoiceNumber = exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.createTicketHistory = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getCartRows = exports.getOrderRows = exports.getTicketRows = void 0;
 var constants_1 = require("../constants");
 var graphql_queries_1 = require("../graphql-queries");
 var uuid_1 = require("uuid");
@@ -272,3 +272,48 @@ function getInvoiceNumber(prefix) {
     return "".concat(prefix, "-").concat(invoiceNumber);
 }
 exports.getInvoiceNumber = getInvoiceNumber;
+function getPaymentList(orders) {
+    var _a;
+    var paymentList = [];
+    (_a = orders === null || orders === void 0 ? void 0 : orders.results) === null || _a === void 0 ? void 0 : _a.forEach(function (o) {
+        o.paymentInfo.payments.forEach(function (p) {
+            var payment = {};
+            payment['orderNumber'] = o.id;
+            if (p.transactions && p.transactions.length > 0) {
+                var trans = p.transactions.find(function (t) { return t.state === 'Success'; });
+                if (trans) {
+                    payment['status'] = 'Completed';
+                    payment['paymentDate'] = trans.timestamp;
+                }
+                else {
+                    var trans_1 = p.transactions.find(function (t) { return t.state === 'Failure'; });
+                    if (trans_1) {
+                        payment['status'] = 'Failure';
+                        payment['paymentDate'] = trans_1.timestamp;
+                    }
+                    else {
+                        var trans_2 = p.transactions.find(function (t) { return t.state === 'Pending'; });
+                        if (trans_2) {
+                            payment['status'] = 'Not Complete';
+                            payment['paymentDate'] = trans_2.timestamp;
+                        }
+                        else {
+                            var trans_3 = p.transactions.find(function (t) { return t.state === 'Initial'; });
+                            if (trans_3) {
+                                payment['status'] = 'Not Accepted';
+                                payment['paymentDate'] = trans_3.timestamp;
+                            }
+                            else {
+                                payment['status'] = 'Not Initiated Yet!';
+                            }
+                        }
+                    }
+                }
+            }
+            payment['paymentMethod'] = p.paymentMethodInfo.method;
+            paymentList.push(payment);
+        });
+    });
+    return paymentList;
+}
+exports.getPaymentList = getPaymentList;

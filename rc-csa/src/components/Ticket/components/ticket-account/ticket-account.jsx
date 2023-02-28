@@ -103,6 +103,6 @@ const TicketAccount = (props) => {
 TicketAccount.displayName = 'Tickets';
 TicketAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default TicketAccount;

@@ -138,6 +138,6 @@ const TicketHistory = (props) => {
 };
 TicketHistory.displayName = 'Ticket History';
 TicketHistory.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default TicketHistory;

@@ -87,6 +87,6 @@ const CartAccount = (props) => {
 CartAccount.displayName = 'Companies';
 CartAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default CartAccount;

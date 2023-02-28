@@ -72,6 +72,6 @@ const ProductsList = (props) => {
 ProductsList.displayName = 'Companies';
 ProductsList.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default ProductsList;

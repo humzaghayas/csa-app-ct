@@ -137,7 +137,7 @@ const ChannelDetails = (props) => {
 };
 ChannelDetails.displayName = 'ChannelDetails';
 ChannelDetails.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 
 export default ChannelDetails;

@@ -185,6 +185,6 @@ const OrderCreate = (props) => {
 };
 OrderCreate.displayName = 'OrderDetails';
 OrderCreate.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default OrderCreate;

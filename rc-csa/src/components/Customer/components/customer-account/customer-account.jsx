@@ -147,6 +147,6 @@ const CustomerAccount = (props) => {
 CustomerAccount.displayName = 'Companies';
 CustomerAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default CustomerAccount;
