@@ -8,6 +8,7 @@ export const docToFormValues = (carts, order, languages) => ({
   cartState: carts?.cartState,
   orderNumber: order?.orderNumber,
   orderId: carts?.orderId,
+  customerEmail:carts?.customerEmail,
   lineItems: getLineItems(carts?.lineItems),
   //totalPrice:amountCalculator(carts?.totalPrice?.centAmount,carts?.totalPrice?.fractionDigits),
   taxedPrice: {
@@ -104,9 +105,9 @@ export const formValuesToDoc = (formValues) => ({
   orderId: !TextInput.isEmpty(formValues.orderId)
     ? formValues.orderId
     : undefined,
-  // createdAt: !TextInput.isEmpty(formValues.createdAt)
-  //   ? formValues.createdAt
-  //   : undefined,
+  customerEmail: !TextInput.isEmpty(formValues.customerEmail)
+    ? formValues.customerEmail
+    : undefined,
   // lastModifiedAt: !TextInput.isEmpty(formValues.lastModifiedAt)
   //   ? formValues.lastModifiedAt
   //   : undefined,

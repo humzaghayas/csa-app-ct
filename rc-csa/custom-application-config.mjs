@@ -49,7 +49,7 @@ const config = {
         'csa-project-1d161.firebaseapp.com',
         'https://firebasestorage.googleapis.com/',
         '${env:atgPublicURL}',
-        'http://localhost:8080/sendgrid-order-confirmation'
+        'https://send-email-f4b4o225iq-ue.a.run.app'
       ],
       'style-src': [
         'http://localhost:3001',

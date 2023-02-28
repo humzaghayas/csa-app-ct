@@ -381,6 +381,7 @@ export const CREATE_ORDER_FROMCART = `mutation createOrder(
     id
     ...cart
     version
+    customerEmail
     purchaseOrderNumber
     paymentState
     orderState

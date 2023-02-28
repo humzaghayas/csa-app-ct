@@ -65,13 +65,14 @@ const Cart = (props) => {
   const match = useRouteMatch();
   const { push } = useHistory();
   const { page, perPage } = usePaginationState();
-  const tableSorting = useDataTableSortingState({ key: 'key', carts: 'asc' });
+  const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
 
   const { cartPaginatedResult, data, error, loading } = useCartsFetcher({
     // data,
     page,
     perPage,
     tableSorting,
+    
   });
 
   return (
