@@ -70,3 +70,34 @@ export const setDefaultShippingAddress = async ({ url, id, addressId }) => {
     body: { addressId },
   });
 };
+
+const fetchResourcePost = async (url, { headers, body } = {}, dispatch) => {
+  try {
+    const result = await dispatch(
+      actions.forwardTo.post({
+        uri: url,
+        payload: body,
+        headers: {
+          'ngrok-skip-browser-warning': 'bar',
+        },
+      })
+    );
+
+    console.log('Result FT', result);
+
+    return result;
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+// export const sendOrderMail = async ({ url, payload } ) => {
+//   return fetchResource(url, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: payload,
+
+//   }
+//   );
+// };

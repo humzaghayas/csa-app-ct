@@ -25,6 +25,7 @@ import CartView from '../cart-view/cart-view';
 import ShippingAddress from '../create-order/add-shipping-address';
 import PlaceOrder from '../place-order/place-order ';
 import OrderCreate from '../../../Orders/components/order-create/order-create';
+import OrderMail from '../place-order/order-mail';
 
 const CartAccount = (props) => {
   const match = useRouteMatch();
@@ -79,6 +80,9 @@ const CartAccount = (props) => {
         </Route>
         <Route path={`${match.path}/orders-general`}>
           <OrderCreate />
+        </Route>
+        <Route path={`${match.path}/send-mail`}>
+          <OrderMail />
         </Route>
       </Switch>
     </TabularDetailPage>

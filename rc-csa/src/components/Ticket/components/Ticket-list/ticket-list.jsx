@@ -39,7 +39,7 @@ import {
 import TicketHistory from '../Ticket-history/ticket-history';
 import TicketAccount from '../ticket-account/ticket-account';
 import { actions,useAsyncDispatch } from '@commercetools-frontend/sdk';
-import{FETCH_TICKETS,getTicketRows,CONSTANTS,FETCH_USERS_INFO} from 'ct-tickets-helper-api'
+import{FETCH_TICKETS,getTicketRows,CONSTANTS} from 'ct-tickets-helper-api'
 import {  gql } from '@apollo/client';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
@@ -128,6 +128,7 @@ const Tickets = (props) => {
           label={intl.formatMessage(messages.backToWelcome)}
           icon={<BackIcon />}
         />
+
         <Text.Headline as="h2" intlMessage={messages.title} />
       </Spacings.Stack>
       {/* {loading && <LoadingSpinner />} */}

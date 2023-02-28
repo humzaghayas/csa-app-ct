@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types';
-import { lazy, useState, useEffect } from 'react';
+import { lazy, useState, useEffect ,useCallback} from 'react';
 import { useIntl } from 'react-intl';
 import {
-  Link as RouterLink,
+  BrowserRouter as Router,
   Switch,
-  useHistory,
+  Route,
   useRouteMatch,
+  Link,
+  useHistory,
+  useParams
 } from 'react-router-dom';
 import { NO_VALUE_FALLBACK } from '@commercetools-frontend/constants';
 import {
@@ -18,7 +21,7 @@ import FlatButton from '@commercetools-uikit/flat-button';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import DataTable from '@commercetools-uikit/data-table';
 import { ContentNotification } from '@commercetools-uikit/notifications';
-import { Pagination } from '@commercetools-uikit/pagination';
+//import { Pagination } from '@commercetools-uikit/pagination';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import { SuspendedRoute } from '@commercetools-frontend/application-shell';
@@ -36,6 +39,9 @@ import {
   SearchBox,
   Hits,
   Highlight,
+  Configure,
+  RefinementList,
+  Pagination 
 } from 'react-instantsearch-hooks-web';
 import { useHits } from 'react-instantsearch-hooks-web';
 import { getSearchItemsRows } from './productSearchRows';
@@ -44,6 +50,7 @@ import CollapsibleMotion from '@commercetools-uikit/collapsible-motion';
 import { PlusBoldIcon } from '@commercetools-uikit/icons';
 import ProductAccount from '../product-account/product-account';
 import './product-list-module.css';
+
 
 const columns = [{ key: 'title', label: 'Title' }];
 
@@ -66,9 +73,25 @@ function Hit({ hit }) {
     </div>
   );
 }
+// function Search({ cartItems }) {
+//   const transformItems = useCallback(
+//     (items) =>
+//       items.map((item) => ({
+//         ...item,
+//         isInCart: Boolean(
+//           cartItems.find((cartItem) => cartItem.objectID === item.objectID)
+//         ),
+//       })),
+//     [cartItems]
+//   );
+//   const { hits } = useHits({ transformItems });
+
+//   return <>{/* Your JSX */}</>;
+// }
+
 
 const ProductListSearch = (props) => {
-  const [searchClose, setSearchClose] = useState(true);
+  const[searchData , setSearchData] = useState({})
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
@@ -80,25 +103,56 @@ const ProductListSearch = (props) => {
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="s">
         <InstantSearch indexName="bestbuy" searchClient={searchClient}>
+       
+        <Configure hitsPerPage={7} />
+        <div className="refinement-list-search">
+          <div>
+            <div>
+            <div className="refinement-list-category">Category</div>
+        <RefinementList attribute="category" />
+        </div>
+        <div>
+            <div className="refinement-list-brand">Brand</div>
+        <RefinementList attribute="manufacturer" />
+        </div>
+        <div>
+        <div className="refinement-list-price">Price</div>
+        <RefinementList attribute="salePrice_range" />
+        </div>
+        </div>
+        <div className="searchbox-items">
           <SearchBox placeholder="Search for products..." />
-
+          
+          {/* <button type="button" onClick={() => push(`products-search-items`)}>search</button> */}
           <Hits
             hitComponent={({ hit }) => {
+              setSearchData(hit)
               return (
                 <div className="search-results-list">
                   <div className="search-results">
                     {hit ? (
+                   
                       <Spacings.Stack scale="l">
+                        {/* <div>{JSON.stringify(hit)}</div>  */}
                         <div className="search-product-results">
-                          <div>{hit.name}</div>
-                          <img
+                        
+                          <div className="search-result-details-left">
+                        <img
                             src={hit.thumbnailImage}
                             alt=""
                             width="100%"
                             height="100%"
                             class="search-result-image"
                           />
+                          </div>
+                          <div class="search-result-details-right">
+                          <div class="search-result-category" id="category-value">{hit.category}</div>
+                          <div class="search-result-name">{hit.name}</div>
+                          <div class="search-result-price">${hit.salePrice}</div>
+                          </div>
                         </div>
+                       
+                       
                       </Spacings.Stack>
                     ) : null}
                   </div>
@@ -106,8 +160,12 @@ const ProductListSearch = (props) => {
               );
             }}
           />
+          </div>
+          </div>
+          <Pagination />
         </InstantSearch>
       </Spacings.Stack>
+   
     </Spacings.Stack>
   );
 };

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import popupStyles from './custom-popup.module.css';
 import PropTypes from 'prop-types';
+import { sendOrderMail } from '../../api';
+
 const CustomPopup = (props) => {
   const [show, setShow] = useState(false);
 
@@ -12,6 +14,8 @@ const CustomPopup = (props) => {
   useEffect(() => {
     setShow(props.show);
   }, [props.show]);
+
+  
 
   return (
     <div

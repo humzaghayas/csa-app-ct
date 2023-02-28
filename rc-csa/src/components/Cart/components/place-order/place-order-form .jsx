@@ -20,7 +20,7 @@ import {
   SecondaryButton,
   SecondaryIconButton,
 } from '@commercetools-frontend/ui-kit';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 //  import EmployeeAddressDetail from '../employee-address-details';
 //  import EmployeeAddAddress from '../employee-add-address';
 //import ChannelDeletion from './place-order-popup';
@@ -30,6 +30,7 @@ import {
   useFetchCartById,
   usePlaceOrderFromCart,
 } from '../../../../hooks/use-cart-connector/use-cart-connector';
+import { sendOrderMail } from '../../api';
 
 const columns = [
   { key: 'product', label: 'Product' },
@@ -81,8 +82,9 @@ const PlaceOrderForm = (props) => {
     enableReinitialize: true,
   });
   const [visibility, setVisibility] = useState(props.isShown);
-  console.log('intialvaluessssssss', props.initialValues);
+  console.log('intialvalues', props.initialValues);
   console.log(props.id);
+
 
   const formElements = (
     <Spacings.Stack scale="l">

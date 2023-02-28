@@ -245,6 +245,7 @@ const ShippingAddressForm = (props) => {
                 />
               </Spacings.Inline>
             </Constraints.Horizontal>
+            <br />
             <Spacings.Stack>
               <Spacings.Inline>
                 <SecondaryButton label="Cancel" onClick={formik.handleReset} />
