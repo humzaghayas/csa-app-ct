@@ -6,12 +6,18 @@ import Text from '@commercetools-uikit/text';
 import Spacings from '@commercetools-uikit/spacings';
 import validate from './validate';
 import Header from './Header';
-import { Card, Constraints, SelectField } from '@commercetools-frontend/ui-kit';
+import {
+  Card,
+  Constraints,
+  PrimaryButton,
+  SelectField,
+} from '@commercetools-frontend/ui-kit';
 import { Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import { usePaginationState } from '@commercetools-uikit/hooks';
 import DataTable from '@commercetools-uikit/data-table';
 import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
 import TicketAccount from '../../../Ticket/components/ticket-account/ticket-account';
+// import { Pie } from 'react-chartjs-2';
 import { SuspendedRoute } from '@commercetools-frontend/application-shell';
 // import SelectField from 'material-ui/SelectField';
 // import MenuItem from 'material-ui/MenuItem';
@@ -27,7 +33,7 @@ import {
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import * as moment from 'moment';
-
+import { PieChart, Pie, Cell, Label } from 'recharts';
 import { CART_STATE, REPORT_TYPE } from './constants';
 
 let rows = null;
@@ -64,6 +70,7 @@ const TicketDisplayForm = (props) => {
   // console.log('data', props?.ticket);
 
   const ticketData = props?.ticket;
+  const totalTicket = ticketData?.customObjects?.count;
   const newTickets = newFunctionTickets(ticketData);
   const highTickets = highProirityTickets(ticketData);
   const resolvedstatusTickets = resolvedTickets(ticketData);
@@ -89,6 +96,7 @@ const TicketDisplayForm = (props) => {
     return createdAt >= startDate && createdAt <= endDate;
   });
 
+  console.log(filteredData);
   const ticketExcel = filteredData?.map((obj) => {
     return {
       ID: obj?.id,
@@ -108,34 +116,196 @@ const TicketDisplayForm = (props) => {
     setSelectedOption(event.target.value);
   };
 
+  //PieChart
+  const data = [
+    { name: 'newTickets', students: newTickets, fill: 'teal' },
+    { name: 'highTickets', students: highTickets, fill: 'gray' },
+    {
+      name: 'resolvedstatusTickets',
+      students: resolvedstatusTickets,
+      fill: 'orangered',
+    },
+    { name: 'inprogTickets', students: inprogTickets, fill: 'royalblue' },
+  ];
+
+  // Login details
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginTime, setLoginTime] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [timerId, setTimerId] = useState(null);
+
+  function formatElapsedTime(elapsedTime) {
+    const hours = Math.floor(elapsedTime / 3600);
+    const minutes = Math.floor((elapsedTime % 3600) / 60);
+    const seconds = elapsedTime % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  const handleLoginClick = () => {
+    setIsLoggedIn(true);
+    setLoginTime(new Date());
+    setTimerId(
+      setInterval(() => {
+        setElapsedTime((prevElapsedTime) => prevElapsedTime + 1);
+      }, 1000)
+    );
+  };
+
+  const handleLogoutClick = () => {
+    setIsLoggedIn(false);
+    setLoginTime(null);
+    setElapsedTime(0);
+    clearInterval(timerId);
+    setTimerId(null);
+  };
+
   const formElements = (
     <Spacings.Stack scale="xxl">
-      <Header />
-      <br />
-      {/* last 5 tickets lookup ( */}
+      <div>
+        <div
+          style={{
+            display: 'inline-block',
+            marginRight: '10px',
+          }}
+        >
+          <Header />
+        </div>
+        <div style={{ float: 'right', textAlign: 'right' }}>
+          <Spacings.Stack scale="l">
+            <Constraints.Horizontal max={6}>
+              <Card theme="dark" insetScale="l">
+                <Text.Subheadline as="h4" isBold={true} tone="information">
+                  {'Time Tracker'}
+                </Text.Subheadline>
+                <div>
+                  {!isLoggedIn ? (
+                    <PrimaryButton
+                      label="Login"
+                      onClick={handleLoginClick}
+                      size="big"
+                      isToggled={true}
+                      // theme="info"
+                    />
+                  ) : (
+                    <>
+                      <Text.Subheadline as="h5" isBold={true} tone="primary">
+                        {'You logged in at: '}
+                        {loginTime.toLocaleTimeString()}
+                      </Text.Subheadline>
+                      <Text.Subheadline as="h5" isBold={true} tone="primary">
+                        {'You have been logged in for: '}
+                        {formatElapsedTime(elapsedTime)}
+                        {' Hours'}
+                      </Text.Subheadline>
 
-      {rows ? (
-        <Spacings.Stack scale="l">
-          <DataTable
-            isCondensed
-            columns={columns}
-            rows={rows.slice(0, 5)} // limit to first 5 rows
-            maxHeight={600}
-            onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
-          />
-          <Switch>
-            <SuspendedRoute path={`${match.path}/:id`}>
-              <TicketAccount onClose={() => push(`${match.url}`)} />
-            </SuspendedRoute>
-          </Switch>
+                      <PrimaryButton
+                        label="Logout"
+                        onClick={handleLogoutClick}
+                        size="big"
+                        isToggled={true}
+                        tone="urgent"
+                        // theme="info"
+                      />
+                    </>
+                  )}
+                </div>
+              </Card>
+            </Constraints.Horizontal>
+          </Spacings.Stack>
+        </div>
+      </div>
+      <br />
+      <Spacings.Inline>
+        <Spacings.Stack scale="xl">
+          <Constraints.Horizontal constraint="l">
+            <Card constraint="xl" min={23} max={27}>
+              <div>
+                <Text.Subheadline as="h4" isBold={true} tone="positive">
+                  {'Ticket details'}
+                </Text.Subheadline>
+                <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                  <PieChart width={200} height={200}>
+                    <Pie
+                      data={data}
+                      dataKey="students"
+                      nameKey="name"
+                      outerRadius={100}
+                    >
+                      {data.map((entry, index) => (
+                        <>
+                          <Cell key={`cell-${index}`} fill={entry.fill} />
+                          {/* <Label key={`label-${index}`} position="outside" offset={10}>
+                             {entry.name}
+                          </Label> */}
+                        </>
+                      ))}
+                    </Pie>
+                  </PieChart>
+                  <Text.Subheadline as="h5" isBold={true} tone="primary">
+                    {'Total tickets = '}
+                    {totalTicket}
+                  </Text.Subheadline>
+                </div>
+
+                <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                  <Text.Subheadline as="h5" isBold={true} tone="information">
+                    {'High Priority = '}
+                    {highTickets}
+                  </Text.Subheadline>
+                  <Text.Subheadline as="h5" isBold={true} tone="information">
+                    {'New Tickets = '}
+                    {newTickets}
+                  </Text.Subheadline>
+                  <Text.Subheadline as="h5" isBold={true} tone="information">
+                    {'In-progress = '}
+                    {inprogTickets}
+                  </Text.Subheadline>
+                  <Text.Subheadline as="h5" isBold={true} tone="information">
+                    {'Resloved = '}
+                    {resolvedstatusTickets}
+                  </Text.Subheadline>
+                </div>
+              </div>
+              {/* <Spacings.Stack scale="l">
+                <Constraints.Horizontal>
+                  <Card constraint="xl" theme="dark" insetScale="l"></Card>
+                </Constraints.Horizontal>
+              </Spacings.Stack> */}
+            </Card>
+          </Constraints.Horizontal>
         </Spacings.Stack>
-      ) : (
-        <p>Loading...</p>
-      )}
-
-      <br />
-      <br />
-      <Spacings.Stack scale="xl">
+        <Spacings.Stack scale="xl">
+          <Constraints.Horizontal>
+            <Card constraint="xl" theme="dark" insetScale="l">
+              {rows ? (
+                <Spacings.Stack scale="l">
+                  <DataTable
+                    isCondensed
+                    columns={columns}
+                    rows={rows.slice(0, 5)} // limit to first 5 rows
+                    maxHeight={600}
+                    onRowClick={(row) =>
+                      push(`ticket-edit/${row.id}/tickets-general`)
+                    }
+                  />
+                  <Switch>
+                    <SuspendedRoute path={`${match.path}/:id`}>
+                      <TicketAccount onClose={() => push(`${match.url}`)} />
+                    </SuspendedRoute>
+                  </Switch>
+                </Spacings.Stack>
+              ) : (
+                <p>Loading...</p>
+              )}
+            </Card>
+          </Constraints.Horizontal>
+        </Spacings.Stack>
+      </Spacings.Inline>
+      {/* <br />
+      <br /> */}
+      {/* <Spacings.Stack scale="xl">
         <Constraints.Horizontal constraint="l">
           <Card constraint="xl" min={23} max={27}>
             <Text.Subheadline as="h4" isBold={true} tone="positive">
@@ -149,10 +319,7 @@ const TicketDisplayForm = (props) => {
                     <Text.Subheadline as="h4" isBold={true} tone="information">
                       {'Total Tickets'}
                     </Text.Subheadline>
-                    <Text.Subheadline as="h3">
-                      {' '}
-                      {ticketData?.customObjects?.count}
-                    </Text.Subheadline>
+                    <Text.Subheadline as="h3"> {totalTicket}</Text.Subheadline>
                   </Card>
                 </Constraints.Horizontal>
               </Spacings.Stack>
@@ -161,9 +328,9 @@ const TicketDisplayForm = (props) => {
                   <Card constraint="xl" theme="dark" insetScale="l">
                     <Text.Subheadline as="h4" isBold={true} tone="information">
                       {'High Priority'}
-                    </Text.Subheadline>
-                    {/* make changes here */}
-                    <Text.Subheadline as="h3">{highTickets}</Text.Subheadline>
+                    </Text.Subheadline> */}
+      {/* make changes here */}
+      {/* <Text.Subheadline as="h3">{highTickets}</Text.Subheadline>
                   </Card>
                 </Constraints.Horizontal>
               </Spacings.Stack>
@@ -172,9 +339,9 @@ const TicketDisplayForm = (props) => {
                   <Card constraint="xl" theme="dark" insetScale="l">
                     <Text.Subheadline as="h4" isBold={true} tone="information">
                       {'New Tickets'}
-                    </Text.Subheadline>
-                    {/* make changes here */}
-                    <Text.Subheadline as="h3">{newTickets}</Text.Subheadline>
+                    </Text.Subheadline> */}
+      {/* make changes here */}
+      {/* <Text.Subheadline as="h3">{newTickets}</Text.Subheadline>
                   </Card>
                 </Constraints.Horizontal>
               </Spacings.Stack>
@@ -183,9 +350,9 @@ const TicketDisplayForm = (props) => {
                   <Card constraint="xl" theme="dark" insetScale="l">
                     <Text.Subheadline as="h4" isBold={true} tone="information">
                       {'In-progress'}
-                    </Text.Subheadline>
-                    {/* make changes here */}
-                    <Text.Subheadline as="h3">{inprogTickets}</Text.Subheadline>
+                    </Text.Subheadline> */}
+      {/* make changes here */}
+      {/* <Text.Subheadline as="h3">{inprogTickets}</Text.Subheadline>
                   </Card>
                 </Constraints.Horizontal>
               </Spacings.Stack>
@@ -195,9 +362,9 @@ const TicketDisplayForm = (props) => {
                   <Card constraint="xl" insetScale="l" theme="dark">
                     <Text.Subheadline as="h4" isBold={true} tone="information">
                       {'Resloved'}
-                    </Text.Subheadline>
-                    {/* make changes here */}
-                    <Text.Subheadline as="h3">
+                    </Text.Subheadline> */}
+      {/* make changes here */}
+      {/* <Text.Subheadline as="h3">
                       {resolvedstatusTickets}
                     </Text.Subheadline>
                   </Card>
@@ -206,7 +373,7 @@ const TicketDisplayForm = (props) => {
             </Spacings.Inline>
           </Card>
         </Constraints.Horizontal>
-      </Spacings.Stack>
+      </Spacings.Stack> */}
       {/* break */}
       <br />
       <br />
