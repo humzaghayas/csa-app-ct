@@ -1,108 +1,119 @@
-import { useIntl } from 'react-intl';
-import { useParams } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  PageNotFound,
-  FormModalPage,
-} from '@commercetools-frontend/application-components';
-import { useCallback } from 'react';
-import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
-import { DOMAINS, NO_VALUE_FALLBACK } from '@commercetools-frontend/constants';
-import { useIsAuthorized } from '@commercetools-frontend/permissions';
-import {
-  useShowNotification,
-  useShowApiErrorNotification,
-} from '@commercetools-frontend/actions-global';
-import { PERMISSIONS } from '../../../../constants';
-// import {
-//   useCustomerDetailsCreator,
-// } from '../../../../hooks/use-Customer-connector/use-Customere-graphql-connector';
-import { docToFormValues, formValuesToDoc } from './conversions';
-import CustomerPasswordForm from './customer-password-form';
-import { transformErrors } from './transform-errors';
-import messages from './messages';
+import PropTypes from 'prop-types';
+import { useFormik } from 'formik';
+import { useIntl } from 'react-intl';
+import { Pagination } from '@commercetools-uikit/pagination';
+import TextField from '@commercetools-uikit/text-field';
+import SelectField from '@commercetools-uikit/select-field';
+import DateInput from '@commercetools-uikit/date-input';
+import Spacings from '@commercetools-uikit/spacings';
+import validate from './validate';
+import {usePaginationState} from '@commercetools-uikit/hooks';
+import PrimaryButton from '@commercetools-uikit/primary-button';
+import { ContentNotification } from '@commercetools-uikit/notifications';
+import { useState } from 'react';
+import DataTable from '@commercetools-uikit/data-table';
+import { usePasswordGetToken,useResetPassword,useSendResetPasswordEmail } from '../../../../hooks/use-customer-password-connector';
+import { createPassword } from 'ct-tickets-helper-api';
 
 const CustomerPassword = (props) => {
   const intl = useIntl();
-  const params = useParams();
-  const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
-    dataLocale: context.dataLocale ?? '',
-    projectLanguages: context.project?.languages ?? [],
-  }));
-  const canManage = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.Manage],
-  });
-  // const showNotification = useShowNotification();
-  // const showApiErrorNotification = useShowApiErrorNotification();
-  // const CustomerDetailsCreator = useCustomerDetailsCreator();
-  const handleSubmit = useCallback(
-    // async (formikValues, formikHelpers) => {
-    //   const data = formValuesToDoc(formikValues);
-    //   try {
-    //     await CustomerDetailsCreator.execute({
-    //       nextDraft: data,
-    //     });
-    //     showNotification({
-    //       kind: 'success',
-    //       domain: DOMAINS.SIDE,
-    //       text: intl.formatMessage(messages.CustomerPasswordd),
-    //     });
-    //   } catch (graphQLErrors) {
-    //     const transformedErrors = transformErrors(graphQLErrors);
-    //     if (transformedErrors.unmappedErrors.length > 0) {
-    //       showApiErrorNotification({
-    //         errors: transformedErrors.unmappedErrors,
-    //       });
-    //     }
+  const[password , setPassword] = useState(false)
+  const { page, perPage } = usePaginationState();
 
-    //     formikHelpers.setErrors(transformedErrors.formErrors);
-    //   }
-    // },
-    // [
-    //   CustomerDetailsCreator,
-    //   dataLocale,
-    //   intl,
-    //   projectLanguages,
-    //   showApiErrorNotification,
-    //   showNotification,
-    // ]
-  );
+  const {execute} = usePasswordGetToken();
+  const {execute:execReserPassword} = useResetPassword();
+  const {execute:execSendEmail} = useSendResetPasswordEmail();
 
-  return (
-    <CustomerPasswordForm
-    initialValues={docToFormValues(null, projectLanguages)}
-    onSubmit={handleSubmit}
-    isReadOnly={!canManage}
-    dataLocale={dataLocale}
-    >
-      {(formProps) => {
-        return (
-          <React.Fragment>
-          {formProps.formElements}
-        </React.Fragment>
-          // <FormModalPage
-          //   title={intl.formatMessage(messages.modalTitle)}
-          //   isOpen
-          //   onClose={props.onClose}
-          //   isPrimaryButtonDisabled={
-          //     formProps.isSubmitting || !formProps.isDirty || !canManage
-          //   }
-          //   isSecondaryButtonDisabled={!formProps.isDirty}
-          //   onSecondaryButtonClick={formProps.handleReset}
-          //   onPrimaryButtonClick={formProps.submitForm}
-          //   labelPrimaryButton={FormModalPage.Intl.save}
-          //   labelSecondaryButton={FormModalPage.Intl.revert}
-          // >
-          //   {formProps.formElements}
-          // </FormModalPage>
-        );
-      }}
-    </CustomerPasswordForm>
-  );
-};
-CustomerPassword.displayName = 'CustomerDetails';
-CustomerPassword.propTypes = {
+  const rows = [
+    { externalId: props?.customer?.externalId,customerNumber:props?.customer?.customerNumber,
+      externalId: props?.customer?.externalId,Name:'' ,
+      firstName:props?.customer?.firstName, middleName:props?.customer?.middleName, 
+      lastName:props?.customer?.lastName,
+      PasswordRequest:''},
+
+  ];
+  // const { push } = useHistory();
+  const columns = [
   
+    { key: 'externalId', label: 'External ID'  },
+    { key: 'customerNumber', label: 'Customer Number' },
+    { key: 'Name', label: 'Name',renderItem: (row) => (
+      <div>
+        {row.firstName} {row.middleName} {row.lastName}   
+      </div>) }
+    ,
+    { key: 'PasswordRequest', label: 'PasswordRequest' ,renderItem: (row) => (
+      <div>
+         <PrimaryButton
+                 label="Change Password"
+                onClick={() => resetPassword()}
+              isDisabled={false}
+                size = "big"
+        />
+     </div>) }
+  ];
+
+  const resetPassword = async()=>{
+    const resetPasswordVal = await execute(props?.customer?.email);
+
+    console.log('resetPasswordVal',resetPasswordVal);
+
+
+    const password = createPassword(10,true,true);
+
+
+    const val =await execReserPassword(props?.customer?.version,
+      resetPasswordVal.data.customerCreatePasswordResetToken.value,
+      password);
+
+      console.log('execReserPassword',val);
+
+      alert('Password updated successfully!');
+      execSendEmail({},{
+        to:props?.customer?.email,
+        subject:"Password Regenerated.",
+        html:`<p>Your new password is Regenerated.</p><p>Your new password is: ${password}</p>`
+    })
+  }
+  return (
+    <Spacings.Stack scale="xl">
+    
+      {/* {data ? ( */}
+        <Spacings.Stack scale="l">
+      
+ 
+          <DataTable
+            isCondensed
+            columns={columns}
+            rows={rows}
+            verticalCellAlignment={'center'}
+            horizontalCellAlignment={'center'}
+                      maxHeight={600}
+          
+          />
+          <Pagination
+            page={page.value}
+            onPageChange={page.onChange}
+            perPage={perPage.value}
+            onPerPageChange={perPage.onChange}
+            // totalItems={data.total}
+          />
+          
+        </Spacings.Stack>
+      {/* ) : null} */}
+    </Spacings.Stack>
+  );
+
 };
+CustomerPassword.displayName = 'CustomerPassword';
+CustomerPassword.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  initialValues: PropTypes.shape({
+    id: PropTypes.string,
+  }),
+  isReadOnly: PropTypes.bool.isRequired,
+  dataLocale: PropTypes.string.isRequired,
+};
+
 export default CustomerPassword;

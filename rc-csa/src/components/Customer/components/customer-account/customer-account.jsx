@@ -126,13 +126,10 @@ const CustomerAccount = (props) => {
           <CustomerOrder customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-password`}>
-           <CustomerPassword />
+           <CustomerPassword customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-Address`}>
           <CustomerList customer={customer} />
-        </Route>
-        <Route path={`${match.path}/Customers-sumary`}>
-          <CustomerPassword />
         </Route>
         <Route path={`${match.path}/Customers-tickets`}>
           <CustomerTickets customer={customer} ticket={ticket}/>

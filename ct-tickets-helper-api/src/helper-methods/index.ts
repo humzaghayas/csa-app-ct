@@ -324,3 +324,27 @@ export function getPaymentList(orders){
 
       return paymentList;
     }
+
+
+const ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const INTEGERS = "0123456789";
+const EX_CHARACTERS = "!@#$%^&*_-=+";
+export const createPassword = (length, hasNumbers, hasSymbols) => {
+    let chars = ALPHA;
+    if (hasNumbers) {
+        chars += INTEGERS;
+    }
+    if (hasSymbols) {
+        chars += EX_CHARACTERS;
+    }
+    return generatePassword(length, chars);
+};
+
+// this function formats our password to however you need
+const generatePassword = (length, chars) => {
+    let password = "";
+    for (let i = 0; i < length; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+};

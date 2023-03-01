@@ -503,3 +503,26 @@ export const UPDATE_CUSTOMERS_DETAILS = `mutation UpdateCustomerDetails(
     }
   
   `
+
+
+  export const GET_PASSWORD_RESET_TOKEN=`
+  mutation GET_PASSWORD_RESET_TOKEN($email:String!){
+    customerCreatePasswordResetToken(email:$email){
+      customerId
+      value
+      id
+      version
+    }
+  }
+  `
+
+  export const RESET_PASSWORD_FOR_CUSTOMER = `
+  mutation RESET_PASSWORD_FOR_CUSTOMER($version:Long,$tokenValue:String!,$newPassword:String!){
+    customerResetPassword(version:$version,
+      tokenValue:$tokenValue,newPassword:$newPassword){
+      customerNumber
+      email
+      key
+    }
+  }
+  `
