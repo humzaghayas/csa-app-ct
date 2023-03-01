@@ -1,0 +1,18 @@
+{
+  "key": "line-item-type",
+  "name": { "en": "Line Item Type" },
+  "resourceTypeIds": ["line-item"],
+  "fieldDefinitions": [
+    {
+		"name" : "offer_id",
+		"label" : {
+		  "en" : "Offer ID from Mirakl"
+		},
+		"required" : false,
+		"type" : {
+		  "name" : "String"
+		},
+		"inputHint" : "SingleLine"
+	}
+  ]
+}

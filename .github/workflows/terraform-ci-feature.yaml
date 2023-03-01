@@ -1,0 +1,74 @@
+name: Terraform CI/CD feature (feature/**) flow
+on:
+  repository_dispatch:
+  push:
+    branches:
+      - feature/**
+    paths:
+      - 'packages/b2b-terraform/**'
+      - '.github/workflows/terraform-ci-feature.yaml'
+      - '*.json'
+env:
+  COMMERCETOOLS_URL: 'https://github.com/labd/terraform-provider-commercetools/releases/download/0.19.0/terraform-provider-commercetools-0.19.0-linux-amd64.tar.gz'
+  TERRAFORM_VERSION: '0.12.17'
+  CTP_PROJECT_KEY: ${{ secrets.CT_PROJECT_KEY }}
+  CTP_CLIENT_SECRET: ${{ secrets.CT_CLIENT_SECRET }}
+  CTP_CLIENT_ID: ${{ secrets.CT_CLIENT_ID }}
+  CTP_SCOPES: ${{ secrets.CT_SCOPE }}
+  CTP_AUTH_URL: ${{ secrets.CT_AUTH_URL }}
+  CTP_API_URL: ${{ secrets.CT_API_URL }}
+  TF_VAR_gcp_project_id: ${{ secrets.GC_PROJECT_ID }}
+  TF_VAR_ct_project_key: ${{ secrets.CT_PROJECT_KEY }}
+  TF_VAR_region: ${{ secrets.GC_PROJECT_REGION }}
+  TF_VAR_region_functions: ${{ secrets.FIREBASE_FUNCTIONS_REGION }}
+  TF_VAR_add_monthly_spent_topic: ${{ secrets.ADD_MONTHLY_SPENT_TOPIC }}
+jobs:
+  validate:
+    name: Terraform Validate
+    runs-on: ubuntu-18.04
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@master
+
+      - name: 'Install Terraform'
+        run: |
+          tf_version=$TERRAFORM_VERSION
+          wget https://releases.hashicorp.com/terraform/"$tf_version"/terraform_"$tf_version"_linux_amd64.zip
+          unzip terraform_"$tf_version"_linux_amd64.zip
+          sudo mv terraform /usr/local/bin/
+          mkdir -p ~/.terraform.d/plugins
+          wget -qO commercetools.tar.gz $COMMERCETOOLS_URL
+          tar xzf commercetools.tar.gz -C ~/.terraform.d/plugins      
+
+      - name: 'Terraform Lint'
+        run: |
+          cd packages/b2b-terraform/default
+          echo ${{ secrets.GOOGLE_CLIENT_SECRET_base64 }} | base64 -d > serviceaccount.json
+          terraform init -input=false
+          terraform fmt -check=true -diff=true || ( echo >&2 "Canonical format and style doesn't match convention. Please fix (try running 'terraform fmt' locally)."; exit 3; )
+          terraform validate
+
+  plan:
+    name: Terraform Plan
+    needs: validate
+    runs-on: ubuntu-18.04
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@master
+
+      - name: 'Install Terraform'
+        run: |
+          tf_version=$TERRAFORM_VERSION
+          wget https://releases.hashicorp.com/terraform/"$tf_version"/terraform_"$tf_version"_linux_amd64.zip
+          unzip terraform_"$tf_version"_linux_amd64.zip
+          sudo mv terraform /usr/local/bin/
+          mkdir -p ~/.terraform.d/plugins
+          wget -qO commercetools.tar.gz $COMMERCETOOLS_URL
+          tar xzf commercetools.tar.gz -C ~/.terraform.d/plugins      
+
+      - name: 'Terraform Plan'
+        run: |
+          cd packages/b2b-terraform/default
+          echo ${{ secrets.GOOGLE_CLIENT_SECRET_base64 }} | base64 -d > serviceaccount.json
+          terraform init -input=false
+          terraform plan -out=default_plan.tfplan -input=false

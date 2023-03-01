@@ -1,0 +1,171 @@
+name: B2B MS Employee CI/CD feature (feature/**) flow
+on:
+  push:
+    branches:
+      - feature/**
+    paths:
+      - 'packages/b2b-ms-employee/**'
+      - '.github/workflows/ms-employee-ci-feature.yaml'
+      - '*.json'
+
+env:
+    GCP_SDK_VERSION: '276.0.0'
+    GITHUB_SHA: ${{ github.sha }}
+    IMAGE: commercetools-ms-employee
+    IMAGE_GATEWAY: commercetools-ms-gateway
+
+jobs:
+  lint:
+    name: Lint (node.js, dockerfile, markdown)
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x]
+    env:
+      CT_AUTH_URL: ${{ secrets.CT_AUTH_URL }}
+      CT_API_URL: ${{ secrets.CT_API_URL }}
+      CT_PROJECT_KEY: ${{ secrets.CT_PROJECT_KEY }}
+      CT_CLIENT_ID: ${{ secrets.CT_CLIENT_ID }}
+      CT_CLIENT_SECRET: ${{ secrets.CT_CLIENT_SECRET }}
+      CT_SCOPE: ${{ secrets.CT_SCOPE }}
+      GC_PROJECT_ID: ${{ secrets.GC_PROJECT_ID }}
+      COMPANY_MS_URL: https://ms-company-${{ secrets.MS_DOMAIN }}
+      EMPLOYEE_MS_URL: https://ms-employee-${{ secrets.MS_DOMAIN }}/employees
+      QUOTE_MS_URL: https://ms-quote-${{ secrets.MS_DOMAIN }}/quotes
+    steps:
+
+    - uses: actions/checkout@v1
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies
+      run: |
+        cd packages/b2b-ms-employee
+        npm install --no-audit
+        cd ../b2b-ms-gateway
+        npm install --no-audit
+
+    - name: Lint Node.js
+      run: |
+        cd packages/b2b-ms-employee
+        npm run lint
+        cd ../b2b-ms-gateway
+        npm run lint
+
+    - name: Lint Markdown
+      run: |
+        cd packages/b2b-ms-employee
+        npm run lint-md
+        cd ../b2b-ms-gateway
+        npm run lint-md
+
+    - name: Lint Dockerfile
+      run: |
+        cd packages/b2b-ms-employee
+        docker run -i hadolint/hadolint:v1.17.3 < Dockerfile
+        cd ../b2b-ms-gateway
+        docker run -i hadolint/hadolint:v1.17.3 < Dockerfile
+
+  build:
+    name: Build (node.js)
+    needs: lint
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x]
+    env:
+      CT_AUTH_URL: ${{ secrets.CT_AUTH_URL }}
+      CT_API_URL: ${{ secrets.CT_API_URL }}
+      CT_PROJECT_KEY: ${{ secrets.CT_PROJECT_KEY }}
+      CT_CLIENT_ID: ${{ secrets.CT_CLIENT_ID }}
+      CT_CLIENT_SECRET: ${{ secrets.CT_CLIENT_SECRET }}
+      CT_SCOPE: ${{ secrets.CT_SCOPE }}
+      GC_PROJECT_ID: ${{ secrets.GC_PROJECT_ID }}
+      COMPANY_MS_URL: https://ms-company-${{ secrets.MS_DOMAIN }}
+      EMPLOYEE_MS_URL: https://ms-employee-${{ secrets.MS_DOMAIN }}/employees
+      QUOTE_MS_URL: https://ms-quote-${{ secrets.MS_DOMAIN }}/quotes
+    steps:
+
+      - uses: actions/checkout@v1
+
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@0.1.0
+        with:
+          version: $GCP_SDK_Version
+          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - run: |
+          # Set up docker to authenticate
+          # via gcloud command-line tool.
+          gcloud auth configure-docker
+
+      # Build the Docker image
+      - name: Build with Docker
+        run: |
+          cd packages/b2b-ms-employee
+          docker build -t gcr.io/"$GC_PROJECT_ID"/"$IMAGE":"$GITHUB_SHA" \
+            --build-arg PORT=8080 .
+            
+          cd ../b2b-ms-gateway
+          docker build -t gcr.io/"$GC_PROJECT_ID"/"$IMAGE_GATEWAY":"$GITHUB_SHA" \
+            --build-arg PORT=8080 .
+
+      # Push the Docker image to Google Container Registry
+      - name: Publish
+        run: |
+          docker push gcr.io/$GC_PROJECT_ID/$IMAGE:$GITHUB_SHA
+          docker push gcr.io/$GC_PROJECT_ID/$IMAGE_GATEWAY:$GITHUB_SHA
+
+  test:
+    name: Test
+    needs: build
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x]
+    env:
+      CT_AUTH_URL: ${{ secrets.CT_AUTH_URL }}
+      CT_API_URL: ${{ secrets.CT_API_URL }}
+      CT_PROJECT_KEY: ${{ secrets.CT_PROJECT_KEY }}
+      CT_CLIENT_ID: ${{ secrets.CT_CLIENT_ID }}
+      CT_CLIENT_SECRET: ${{ secrets.CT_CLIENT_SECRET }}
+      CT_SCOPE: ${{ secrets.CT_SCOPE }}
+      GC_PROJECT_ID: ${{ secrets.GC_PROJECT_ID }}
+      COMPANY_MS_URL: https://ms-company-${{ secrets.MS_DOMAIN }}
+      EMPLOYEE_MS_URL: https://ms-employee-${{ secrets.MS_DOMAIN }}/employees
+      QUOTE_MS_URL: https://ms-quote-${{ secrets.MS_DOMAIN }}/quotes
+    steps:
+
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@0.1.0
+        with:
+          version: $GCP_SDK_Version
+          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - run: |
+          # Set up docker to authenticate
+          # via gcloud command-line tool.
+          gcloud auth configure-docker
+
+      - name: Unit Testing
+        run: |
+          docker run --rm --user=root --entrypoint="/bin/bash"                  \
+          -t gcr.io/"$GC_PROJECT_ID"/"$IMAGE":"$GITHUB_SHA"                     \
+          -c "NODE_ENV=development; cd /opt/node_app/app; git config --global http.sslVerify false; npm install; npm test"
+
+          docker run --rm --user=root --entrypoint="/bin/bash"                  \
+          -t gcr.io/"$GC_PROJECT_ID"/"$IMAGE_GATEWAY":"$GITHUB_SHA"                     \
+          -c "NODE_ENV=development; cd /opt/node_app/app; git config --global http.sslVerify false; npm install; npm test"
+
+      - name: Audit for security vulnerabilities
+        run: |
+          docker run --rm --user=root --entrypoint="/bin/bash"                  \
+          -t gcr.io/"$GC_PROJECT_ID"/"$IMAGE":"$GITHUB_SHA"                     \
+          -c "NODE_ENV=development; cd /opt/node_app/app; git config --global http.sslVerify false; npm install; npm audit --production"
+
+          docker run --rm --user=root --entrypoint="/bin/bash"                  \
+          -t gcr.io/"$GC_PROJECT_ID"/"$IMAGE_GATEWAY":"$GITHUB_SHA"                     \
+          -c "NODE_ENV=development; cd /opt/node_app/app; git config --global http.sslVerify false; npm install; npm audit --production"

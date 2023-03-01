@@ -1,0 +1,61 @@
+name: B2B Subscription Add Monthly Spent Function CI/CD feature (feature/**) flow
+on:
+  push:
+    branches:
+      - feature/**
+    paths:
+      - 'packages/b2b-subscription-add-monthly-spent/**'
+      - '.github/workflows/subscription-add-monthly-spent-feature.yaml'
+      - '*.json'
+      - '*.yaml'
+jobs:
+  lint:
+    name: Lint (node.js)
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: |
+          cd packages/b2b-subscription-add-monthly-spent
+          npm install --no-audit
+      - name: Lint Node.js
+        run: |
+          cd packages/b2b-subscription-add-monthly-spent
+          npm run lint
+      - name: Lint Markdown
+        run: |
+          cd packages/b2b-subscription-add-monthly-spent
+          npm run lint-md
+  test:        
+    name: Test
+    needs: lint
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Dependencies
+        run: |
+          cd packages/b2b-subscription-add-monthly-spent
+          npm install
+          
+      - name: Unit Testing
+        run: |
+          cd packages/b2b-subscription-add-monthly-spent
+          npm test
