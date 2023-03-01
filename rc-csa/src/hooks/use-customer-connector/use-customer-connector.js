@@ -18,7 +18,8 @@ export const useFindCustomerService = () => {
               },
               context: {
                 target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-              }
+              },
+              fetchPolicy:"network-only"
             });
         }catch(graphQlResponse){
           throw extractErrorFromGraphQlResponse(graphQlResponse);

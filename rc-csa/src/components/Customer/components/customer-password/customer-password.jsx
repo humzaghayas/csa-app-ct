@@ -15,6 +15,7 @@ import { useState } from 'react';
 import DataTable from '@commercetools-uikit/data-table';
 import { usePasswordGetToken,useResetPassword,useSendResetPasswordEmail } from '../../../../hooks/use-customer-password-connector';
 import { createPassword } from 'ct-tickets-helper-api';
+import { useFindCustomerService } from '../../../../hooks/use-customer-connector/use-customer-connector';
 
 const CustomerPassword = (props) => {
   const intl = useIntl();
@@ -24,6 +25,7 @@ const CustomerPassword = (props) => {
   const {execute} = usePasswordGetToken();
   const {execute:execReserPassword} = useResetPassword();
   const {execute:execSendEmail} = useSendResetPasswordEmail();
+  const {getCustomerByEmail} = useFindCustomerService();
 
   const rows = [
     { externalId: props?.customer?.externalId,customerNumber:props?.customer?.customerNumber,
@@ -63,18 +65,22 @@ const CustomerPassword = (props) => {
     const password = createPassword(10,true,true);
 
 
-    const val =await execReserPassword(props?.customer?.version,
+    const c = await getCustomerByEmail(props?.customer?.email);
+    console.log('c',c);
+    const val =await execReserPassword(c?.data?.customers?.results[0].version,
       resetPasswordVal.data.customerCreatePasswordResetToken.value,
       password);
 
       console.log('execReserPassword',val);
 
-      alert('Password updated successfully!');
-      execSendEmail({},{
-        to:props?.customer?.email,
+     
+      const e = await execSendEmail({},{
+        to:c?.data?.customers?.results[0].email,
         subject:"Password Regenerated.",
         html:`<p>Your new password is Regenerated.</p><p>Your new password is: ${password}</p>`
-    })
+    });
+
+    alert('Password updated successfully!');
   }
   return (
     <Spacings.Stack scale="xl">
