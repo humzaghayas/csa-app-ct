@@ -19,13 +19,13 @@ app.get('/', async(req, res) => {
 
 app.post('/send-email', async(req, res) =>{
 
-    const {data} = req.body;
-    const result =await emailService.sendEmail();
+    const {to,subject,html} = req.body;
+    const result =await emailService.sendEmail({to,subject,html});
     
-    if(result.error){
-        res.status(400).json({result: result.errors});    
+    if(result.code === 'error'){
+        res.status(400).json({result: result.message});    
     }else{
-        res.status(200).json({result:result});
+        res.status(200).json(result);
     }
 
 });
@@ -35,12 +35,5 @@ app.get('/emails', async(req, res) =>{
     await emailService.readEmail();
 });
 
-//exports.emailer = functions.https.onRequest(app);
+exports.emailer = functions.https.onRequest(app);
 
-
-async() =>{
-    await emailService.readEmail();
-
-    console.log('Email Service!');
-
-}

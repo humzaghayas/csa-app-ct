@@ -7,19 +7,21 @@ module.exports = ()=>{
 
     const emailService = {};
 
-    emailService.sendEmail = async()=>{
+    emailService.sendEmail = async({to,subject,html})=>{
 
         try {
 
             await transporter.sendMail({
                 from: "rc.csa.help@gmail.com",//process.env.SMTP_USERNAME,
-                to: "rc.csa.help@gmail.com",//process.env.SMTP_USERNAME,
-                subject: 'Test Email Subject',
-                html: '<h1>Example HTML Message Body</h1>'
+                to,
+                subject,
+                html
             });
+
+            return {code:"Success",message:"Email Sent!"}
         }catch(error){
             console.log(`Error: ${error}`);
-            return {error:true,message:"Error Sending Email!"}
+            return {code:"error",message:"Error Sending Email!"}
         }
     };
 

@@ -11,18 +11,12 @@ const imapConfig = {
 
 
 let transporter = nodemailer.createTransport({
-    host:"smtp.gmail.com",// process.env.SMTP_MAIL_HOST,
-    secure: true,
-    secureConnection: false, // TLS requires secureConnection to be false
-    tls: {
-      ciphers: 'SSLv3',
-    },
-    requireTLS: true,
-    port: 465,
+    host:process.env.EMAIL_HOST,// process.env.SMTP_MAIL_HOST,
+    port: process.env.EMAIL_PORT,
     debug: true,
     auth: {
-        user:"rc.csa.help@gmail.com",// process.env.SMTP_USERNAME,
-        pass: "supp0rt1",//process.env.SMTP_PASSWORD
+        user:process.env.EMAIL_USERNAME,// process.env.SMTP_USERNAME,
+        pass:process.env.EMAIL_PASSWORD,//process.env.SMTP_PASSWORD
     }
 });
 
