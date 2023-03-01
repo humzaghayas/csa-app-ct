@@ -36,16 +36,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.createTicketHistory = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getCartRows = exports.getOrderRows = exports.getTicketRows = void 0;
+exports.getPaymentList = exports.getInvoiceNumber = exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.createTicketHistory = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getCartRows = exports.getOrderRows = exports.getTicketRows = void 0;
 var constants_1 = require("../constants");
 var graphql_queries_1 = require("../graphql-queries");
 var uuid_1 = require("uuid");
+var invoice_number_1 = require("invoice-number");
 function getTicketRows(customObjects) {
     //
     console.log("customObjects :: " + JSON.stringify(customObjects));
     if (customObjects === null || customObjects === void 0 ? void 0 : customObjects.results) {
         return customObjects === null || customObjects === void 0 ? void 0 : customObjects.results.map(function (co) {
             return { id: co.id,
+                ticketNumber: co.value.ticketNumber,
                 Customer: co.value.email,
                 Created: co.createdAt,
                 Modified: co.lastModifiedAt,
@@ -186,7 +188,11 @@ function getTicketValueString(ticketInfo, uuid) {
     var currentDate = new Date().toUTCString();
     var email = ticketInfo.email;
     var customerId = ticketInfo.customerId;
-    return "{\n        \"id\": \"".concat(uuid, "\",\n        \"customerId\": \"").concat(customerId, "\",\n        \"email\":\"").concat(email, "\",\n        \"source\": \"").concat(ticketInfo.contactType, "\",\n        \"status\": \"").concat(ticketInfo.status, "\",\n        \"priority\": \"").concat(ticketInfo.priority, "\",\n        \"category\": \"").concat(ticketInfo.category, "\",\n        \"subject\": \"").concat(ticketInfo.subject, "\",\n        \"type\":\"").concat(ticketInfo.category, "\",\n        \"createdAt\": \"").concat(currentDate, "\",\n        \"modifiedAt\": \"").concat(currentDate, "\",\n        \"createdBy\":\"").concat(ticketInfo.createdBy, "\",\n        \"assignedTo\":\"").concat(ticketInfo.assignedTo, "\",\n        ").concat(constants_1.CONSTANTS.TICKET_DATA, ",\n        ").concat(constants_1.CONSTANTS.TICKET_HISTORY, "\n    }");
+    var tNumber = ticketInfo.ticketNumber;
+    if (!tNumber) {
+        tNumber = getInvoiceNumber();
+    }
+    return "{\n        \"id\": \"".concat(uuid, "\",\n        \"ticketNumber\":\"").concat(tNumber, "\",\n        \"customerId\": \"").concat(customerId, "\",\n        \"email\":\"").concat(email, "\",\n        \"source\": \"").concat(ticketInfo.contactType, "\",\n        \"status\": \"").concat(ticketInfo.status, "\",\n        \"priority\": \"").concat(ticketInfo.priority, "\",\n        \"category\": \"").concat(ticketInfo.category, "\",\n        \"subject\": \"").concat(ticketInfo.subject, "\",\n        \"type\":\"").concat(ticketInfo.category, "\",\n        \"createdAt\": \"").concat(currentDate, "\",\n        \"modifiedAt\": \"").concat(currentDate, "\",\n        \"createdBy\":\"").concat(ticketInfo.createdBy, "\",\n        \"assignedTo\":\"").concat(ticketInfo.assignedTo, "\",\n        ").concat(constants_1.CONSTANTS.TICKET_DATA, ",\n        ").concat(constants_1.CONSTANTS.TICKET_HISTORY, "\n    }");
 }
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -222,26 +228,27 @@ function getTicketFromCustomObject(data) {
 }
 exports.getTicketFromCustomObject = getTicketFromCustomObject;
 function createTicketFromCustomObject(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23;
     return {
         id: (_b = (_a = data === null || data === void 0 ? void 0 : data.customObject) === null || _a === void 0 ? void 0 : _a.id) !== null && _b !== void 0 ? _b : '',
-        key: (_d = (_c = data === null || data === void 0 ? void 0 : data.customObject) === null || _c === void 0 ? void 0 : _c.key) !== null && _d !== void 0 ? _d : '',
-        container: (_f = (_e = data === null || data === void 0 ? void 0 : data.customObject) === null || _e === void 0 ? void 0 : _e.container) !== null && _f !== void 0 ? _f : '',
-        version: (_h = (_g = data === null || data === void 0 ? void 0 : data.customObject) === null || _g === void 0 ? void 0 : _g.version) !== null && _h !== void 0 ? _h : '',
-        category: (_l = (_k = (_j = data === null || data === void 0 ? void 0 : data.customObject) === null || _j === void 0 ? void 0 : _j.value) === null || _k === void 0 ? void 0 : _k.category) !== null && _l !== void 0 ? _l : '',
-        Customer: (_p = (_o = (_m = data === null || data === void 0 ? void 0 : data.customObject) === null || _m === void 0 ? void 0 : _m.value) === null || _o === void 0 ? void 0 : _o.email) !== null && _p !== void 0 ? _p : '',
-        contactType: (_s = (_r = (_q = data === null || data === void 0 ? void 0 : data.customObject) === null || _q === void 0 ? void 0 : _q.value) === null || _r === void 0 ? void 0 : _r.source) !== null && _s !== void 0 ? _s : '',
-        status: (_v = (_u = (_t = data === null || data === void 0 ? void 0 : data.customObject) === null || _t === void 0 ? void 0 : _t.value) === null || _u === void 0 ? void 0 : _u.status) !== null && _v !== void 0 ? _v : '',
-        priority: (_y = (_x = (_w = data === null || data === void 0 ? void 0 : data.customObject) === null || _w === void 0 ? void 0 : _w.value) === null || _x === void 0 ? void 0 : _x.priority) !== null && _y !== void 0 ? _y : '',
-        subject: (_1 = (_0 = (_z = data === null || data === void 0 ? void 0 : data.customObject) === null || _z === void 0 ? void 0 : _z.value) === null || _0 === void 0 ? void 0 : _0.subject) !== null && _1 !== void 0 ? _1 : '',
-        lastModifiedAt: (_3 = (_2 = data === null || data === void 0 ? void 0 : data.customObject) === null || _2 === void 0 ? void 0 : _2.lastModifiedAt) !== null && _3 !== void 0 ? _3 : '',
-        createdAt: (_5 = (_4 = data === null || data === void 0 ? void 0 : data.customObject) === null || _4 === void 0 ? void 0 : _4.createdAt) !== null && _5 !== void 0 ? _5 : '',
-        email: (_7 = (_6 = data === null || data === void 0 ? void 0 : data.customObject) === null || _6 === void 0 ? void 0 : _6.value.email) !== null && _7 !== void 0 ? _7 : '',
-        customerId: (_9 = (_8 = data === null || data === void 0 ? void 0 : data.customObject) === null || _8 === void 0 ? void 0 : _8.value.customerId) !== null && _9 !== void 0 ? _9 : '',
-        assignedTo: (_11 = (_10 = data === null || data === void 0 ? void 0 : data.customObject) === null || _10 === void 0 ? void 0 : _10.value.assignedTo) !== null && _11 !== void 0 ? _11 : '',
-        createdBy: (_13 = (_12 = data === null || data === void 0 ? void 0 : data.customObject) === null || _12 === void 0 ? void 0 : _12.value.createdBy) !== null && _13 !== void 0 ? _13 : '',
-        orderNumber: (_17 = (_16 = (_15 = (_14 = data === null || data === void 0 ? void 0 : data.customObject) === null || _14 === void 0 ? void 0 : _14.value) === null || _15 === void 0 ? void 0 : _15.ticketData) === null || _16 === void 0 ? void 0 : _16.orderNumber) !== null && _17 !== void 0 ? _17 : '',
-        history: (_20 = (_19 = (_18 = data === null || data === void 0 ? void 0 : data.customObject) === null || _18 === void 0 ? void 0 : _18.value) === null || _19 === void 0 ? void 0 : _19.history) !== null && _20 !== void 0 ? _20 : []
+        ticketNumber: (_e = (_d = (_c = data === null || data === void 0 ? void 0 : data.customObject) === null || _c === void 0 ? void 0 : _c.value) === null || _d === void 0 ? void 0 : _d.ticketNumber) !== null && _e !== void 0 ? _e : '',
+        key: (_g = (_f = data === null || data === void 0 ? void 0 : data.customObject) === null || _f === void 0 ? void 0 : _f.key) !== null && _g !== void 0 ? _g : '',
+        container: (_j = (_h = data === null || data === void 0 ? void 0 : data.customObject) === null || _h === void 0 ? void 0 : _h.container) !== null && _j !== void 0 ? _j : '',
+        version: (_l = (_k = data === null || data === void 0 ? void 0 : data.customObject) === null || _k === void 0 ? void 0 : _k.version) !== null && _l !== void 0 ? _l : '',
+        category: (_p = (_o = (_m = data === null || data === void 0 ? void 0 : data.customObject) === null || _m === void 0 ? void 0 : _m.value) === null || _o === void 0 ? void 0 : _o.category) !== null && _p !== void 0 ? _p : '',
+        Customer: (_s = (_r = (_q = data === null || data === void 0 ? void 0 : data.customObject) === null || _q === void 0 ? void 0 : _q.value) === null || _r === void 0 ? void 0 : _r.email) !== null && _s !== void 0 ? _s : '',
+        contactType: (_v = (_u = (_t = data === null || data === void 0 ? void 0 : data.customObject) === null || _t === void 0 ? void 0 : _t.value) === null || _u === void 0 ? void 0 : _u.source) !== null && _v !== void 0 ? _v : '',
+        status: (_y = (_x = (_w = data === null || data === void 0 ? void 0 : data.customObject) === null || _w === void 0 ? void 0 : _w.value) === null || _x === void 0 ? void 0 : _x.status) !== null && _y !== void 0 ? _y : '',
+        priority: (_1 = (_0 = (_z = data === null || data === void 0 ? void 0 : data.customObject) === null || _z === void 0 ? void 0 : _z.value) === null || _0 === void 0 ? void 0 : _0.priority) !== null && _1 !== void 0 ? _1 : '',
+        subject: (_4 = (_3 = (_2 = data === null || data === void 0 ? void 0 : data.customObject) === null || _2 === void 0 ? void 0 : _2.value) === null || _3 === void 0 ? void 0 : _3.subject) !== null && _4 !== void 0 ? _4 : '',
+        lastModifiedAt: (_6 = (_5 = data === null || data === void 0 ? void 0 : data.customObject) === null || _5 === void 0 ? void 0 : _5.lastModifiedAt) !== null && _6 !== void 0 ? _6 : '',
+        createdAt: (_8 = (_7 = data === null || data === void 0 ? void 0 : data.customObject) === null || _7 === void 0 ? void 0 : _7.createdAt) !== null && _8 !== void 0 ? _8 : '',
+        email: (_10 = (_9 = data === null || data === void 0 ? void 0 : data.customObject) === null || _9 === void 0 ? void 0 : _9.value.email) !== null && _10 !== void 0 ? _10 : '',
+        customerId: (_12 = (_11 = data === null || data === void 0 ? void 0 : data.customObject) === null || _11 === void 0 ? void 0 : _11.value.customerId) !== null && _12 !== void 0 ? _12 : '',
+        assignedTo: (_14 = (_13 = data === null || data === void 0 ? void 0 : data.customObject) === null || _13 === void 0 ? void 0 : _13.value.assignedTo) !== null && _14 !== void 0 ? _14 : '',
+        createdBy: (_16 = (_15 = data === null || data === void 0 ? void 0 : data.customObject) === null || _15 === void 0 ? void 0 : _15.value.createdBy) !== null && _16 !== void 0 ? _16 : '',
+        orderNumber: (_20 = (_19 = (_18 = (_17 = data === null || data === void 0 ? void 0 : data.customObject) === null || _17 === void 0 ? void 0 : _17.value) === null || _18 === void 0 ? void 0 : _18.ticketData) === null || _19 === void 0 ? void 0 : _19.orderNumber) !== null && _20 !== void 0 ? _20 : '',
+        history: (_23 = (_22 = (_21 = data === null || data === void 0 ? void 0 : data.customObject) === null || _21 === void 0 ? void 0 : _21.value) === null || _22 === void 0 ? void 0 : _22.history) !== null && _23 !== void 0 ? _23 : []
     };
 }
 function escapeQuotes(field) {
@@ -256,3 +263,57 @@ function isEmailValid(email) {
     return false;
 }
 exports.isEmailValid = isEmailValid;
+var invoiceNumber;
+function getInvoiceNumber(prefix) {
+    if (prefix === void 0) { prefix = "RC"; }
+    var today = new Date();
+    invoiceNumber = invoiceNumber ? invoice_number_1.InvoiceNumber.next(invoiceNumber) :
+        "".concat(today.getFullYear()).concat(today.getMonth() + 1).concat(today.getDate(), "-").concat(today.getHours()).concat(today.getMinutes());
+    return "".concat(prefix, "-").concat(invoiceNumber);
+}
+exports.getInvoiceNumber = getInvoiceNumber;
+function getPaymentList(orders) {
+    var _a;
+    var paymentList = [];
+    (_a = orders === null || orders === void 0 ? void 0 : orders.results) === null || _a === void 0 ? void 0 : _a.forEach(function (o) {
+        o.paymentInfo.payments.forEach(function (p) {
+            var payment = {};
+            payment['orderNumber'] = o.id;
+            if (p.transactions && p.transactions.length > 0) {
+                var trans = p.transactions.find(function (t) { return t.state === 'Success'; });
+                if (trans) {
+                    payment['status'] = 'Completed';
+                    payment['paymentDate'] = trans.timestamp;
+                }
+                else {
+                    var trans_1 = p.transactions.find(function (t) { return t.state === 'Failure'; });
+                    if (trans_1) {
+                        payment['status'] = 'Failure';
+                        payment['paymentDate'] = trans_1.timestamp;
+                    }
+                    else {
+                        var trans_2 = p.transactions.find(function (t) { return t.state === 'Pending'; });
+                        if (trans_2) {
+                            payment['status'] = 'Not Complete';
+                            payment['paymentDate'] = trans_2.timestamp;
+                        }
+                        else {
+                            var trans_3 = p.transactions.find(function (t) { return t.state === 'Initial'; });
+                            if (trans_3) {
+                                payment['status'] = 'Not Accepted';
+                                payment['paymentDate'] = trans_3.timestamp;
+                            }
+                            else {
+                                payment['status'] = 'Not Initiated Yet!';
+                            }
+                        }
+                    }
+                }
+            }
+            payment['paymentMethod'] = p.paymentMethodInfo.method;
+            paymentList.push(payment);
+        });
+    });
+    return paymentList;
+}
+exports.getPaymentList = getPaymentList;

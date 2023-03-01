@@ -103,6 +103,6 @@ const CustomerPassword = (props) => {
 };
 CustomerPassword.displayName = 'CustomerDetails';
 CustomerPassword.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default CustomerPassword;

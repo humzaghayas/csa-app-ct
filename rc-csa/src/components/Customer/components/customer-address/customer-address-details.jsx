@@ -139,7 +139,7 @@ console.log("item",item);
 };
 AddressDetails.displayName = 'AddressDetails';
 AddressDetails.propTypes = {
- // onClose: PropTypes.func.isRequired,
+ // 
 };
 
 export default AddressDetails;

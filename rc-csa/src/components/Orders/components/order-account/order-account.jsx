@@ -33,6 +33,8 @@ import { lazy, useState, useEffect } from 'react';
 import OrderCreate from '../order-create/order-create';
 import OrderShipping from '../order-shipping/order-shipping';
 import OrderLineItems from '../order-create/order-line-items';
+import { entryPointUriPath } from '../../../../constants';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 
 const OrderAccount = (props) => {
@@ -42,6 +44,10 @@ const OrderAccount = (props) => {
   const params = useParams();
   const { push } = useHistory();
   const [Order, setData] = useState();
+
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
 
   //const apiUrl ="http://localhost:4456";
   const apiUrl = 'https://ms-Order-f4b4o225iq-ue.a.run.app';
@@ -54,7 +60,7 @@ const OrderAccount = (props) => {
     <TabularDetailPage
       title=" "
       //  onPreviousPathClick={() => history.push(`Order-list`)}
-      onPreviousPathClick={() => history.push(`/csa-project-2/csa-customer-tickets/Orders`)}
+      onPreviousPathClick={() => history.push(`/${projectKey}/${entryPointUriPath}/Orders`)}
       previousPathLabel="Go to View orders"
       tabControls={
         <>
@@ -101,6 +107,6 @@ const OrderAccount = (props) => {
 OrderAccount.displayName = 'Companies';
 OrderAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default OrderAccount;

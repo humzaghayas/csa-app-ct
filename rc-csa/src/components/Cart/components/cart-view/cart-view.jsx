@@ -136,6 +136,6 @@ const CartView = (props) => {
 };
 CartView.displayName = 'CartDetails';
 CartView.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default CartView;

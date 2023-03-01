@@ -54,6 +54,6 @@ const AtgLogin = (props) => {
 };
 AtgLogin.displayName = 'AtgLogin';
 AtgLogin.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default AtgLogin;

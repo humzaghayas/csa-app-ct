@@ -39,7 +39,7 @@ import {
 import TicketHistory from '../Ticket-history/ticket-history';
 import TicketAccount from '../ticket-account/ticket-account';
 import { actions,useAsyncDispatch } from '@commercetools-frontend/sdk';
-import{FETCH_TICKETS,getTicketRows,CONSTANTS,FETCH_USERS_INFO} from 'ct-tickets-helper-api'
+import{FETCH_TICKETS,getTicketRows,CONSTANTS} from 'ct-tickets-helper-api'
 import {  gql } from '@apollo/client';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
@@ -51,6 +51,7 @@ import Grid from '@commercetools-uikit/grid';
 let rows = null;
 
 const columns = [
+  { key:'ticketNumber', label: 'Ticket Number' },
   { key:'Customer', label: 'Customer' },
   { key: 'Created', label: 'Created' },
   { key: 'Modified', label: 'Modified' },
@@ -128,6 +129,7 @@ const Tickets = (props) => {
           label={intl.formatMessage(messages.backToWelcome)}
           icon={<BackIcon />}
         />
+
         <Text.Headline as="h2" intlMessage={messages.title} />
       </Spacings.Stack>
       {/* {loading && <LoadingSpinner />} */}
@@ -172,17 +174,8 @@ const Tickets = (props) => {
             
           </Grid>
 
-
-
-
-        <Spacings.Inline  >
-          
-      
-        </Spacings.Inline>
       </Spacings.Stack>
       : null}
-
-      {/* {data ? ( */}
 
       {rows ? 
         <Spacings.Stack scale="l">
@@ -196,9 +189,7 @@ const Tickets = (props) => {
             // sortedBy={tableSorting.value.key}
             // sortDirection={tableSorting.value.order}
             // onSortChange={tableSorting.onChange}
-            // onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
             onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
-            // onRowClick={(row) => push(`Ticket-account/${row.id}/companies-general`)}
           />
           <Pagination
             page={page.value}
@@ -208,21 +199,13 @@ const Tickets = (props) => {
             totalItems={data?.customObjects?.total}
           />
            <Switch>
-            {/* <SuspendedRoute path={`${match.path}/:id`}>
-                <TicketAccount onClose={() => push(`${match.url}`)} />  
-            </SuspendedRoute> */}
-            
+                      
             <SuspendedRoute path={`${match.path}/:id`}>
               <TicketAccount onClose={() => push(`${match.url}`)} />
             </SuspendedRoute>
-          
-          {/* <SuspendedRoute path={`${match.path}/ticket-details`}>
-            <TicketDetails  onClose={() => push(`${match.url}`)} />
-            </SuspendedRoute> */}
           </Switch> 
         </Spacings.Stack>
       : <p>Loading...</p>}
-      {/* ) : null} */}
     </Spacings.Stack>
   );
 };

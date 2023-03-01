@@ -173,6 +173,6 @@ const OrderLineItems = (props) => {
 };
 OrderLineItems.displayName = 'OrderDetails';
 OrderLineItems.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default OrderLineItems;

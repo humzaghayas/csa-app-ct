@@ -85,6 +85,6 @@ const TicketCreate = (props) => {
 };
 TicketCreate.displayName = 'TicketCreate';
 // TicketCreate.propTypes = {
-//   onClose: PropTypes.func.isRequired,
+//   
 // };
 export default TicketCreate;

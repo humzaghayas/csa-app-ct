@@ -103,6 +103,6 @@ const CustomerReply = (props) => {
 };
 CustomerReply.displayName = 'CustomerReply';
 CustomerReply.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default CustomerReply;
