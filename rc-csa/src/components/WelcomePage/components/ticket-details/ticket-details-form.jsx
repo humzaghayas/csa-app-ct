@@ -118,14 +118,14 @@ const TicketDisplayForm = (props) => {
 
   //PieChart
   const data = [
-    { name: 'newTickets', students: newTickets, fill: 'teal' },
-    { name: 'highTickets', students: highTickets, fill: 'gray' },
+    { name: 'newTickets', tickets: newTickets, fill: 'teal' },
+    { name: 'highTickets', tickets: highTickets, fill: 'gray' },
     {
       name: 'resolvedstatusTickets',
-      students: resolvedstatusTickets,
+      tickets: resolvedstatusTickets,
       fill: 'orangered',
     },
-    { name: 'inprogTickets', students: inprogTickets, fill: 'royalblue' },
+    { name: 'inprogTickets', tickets: inprogTickets, fill: 'royalblue' },
   ];
 
   // Login details
@@ -163,64 +163,16 @@ const TicketDisplayForm = (props) => {
 
   const formElements = (
     <Spacings.Stack scale="xxl">
-      <div>
-        <div
-          style={{
-            display: 'inline-block',
-            marginRight: '10px',
-          }}
-        >
-          <Header />
-        </div>
-        <div style={{ float: 'right', textAlign: 'right' }}>
-          <Spacings.Stack scale="l">
-            <Constraints.Horizontal max={6}>
-              <Card theme="dark" insetScale="l">
-                <Text.Subheadline as="h4" isBold={true} tone="information">
-                  {'Time Tracker'}
-                </Text.Subheadline>
-                <div>
-                  {!isLoggedIn ? (
-                    <PrimaryButton
-                      label="Login"
-                      onClick={handleLoginClick}
-                      size="big"
-                      isToggled={true}
-                      // theme="info"
-                    />
-                  ) : (
-                    <>
-                      <Text.Subheadline as="h5" isBold={true} tone="primary">
-                        {'You logged in at: '}
-                        {loginTime.toLocaleTimeString()}
-                      </Text.Subheadline>
-                      <Text.Subheadline as="h5" isBold={true} tone="primary">
-                        {'You have been logged in for: '}
-                        {formatElapsedTime(elapsedTime)}
-                        {' Hours'}
-                      </Text.Subheadline>
+      <Spacings.Inline>
+        <Header />
+      </Spacings.Inline>
 
-                      <PrimaryButton
-                        label="Logout"
-                        onClick={handleLogoutClick}
-                        size="big"
-                        isToggled={true}
-                        tone="urgent"
-                        // theme="info"
-                      />
-                    </>
-                  )}
-                </div>
-              </Card>
-            </Constraints.Horizontal>
-          </Spacings.Stack>
-        </div>
-      </div>
       <br />
+      <Spacings.Inline></Spacings.Inline>
       <Spacings.Inline>
         <Spacings.Stack scale="xl">
-          <Constraints.Horizontal constraint="l">
-            <Card constraint="xl" min={23} max={27}>
+          <Constraints.Horizontal constraint="l" max={8}>
+            <Card constraint="xl">
               <div>
                 <Text.Subheadline as="h4" isBold={true} tone="positive">
                   {'Ticket details'}
@@ -229,7 +181,7 @@ const TicketDisplayForm = (props) => {
                   <PieChart width={200} height={200}>
                     <Pie
                       data={data}
-                      dataKey="students"
+                      dataKey="tickets"
                       nameKey="name"
                       outerRadius={100}
                     >
@@ -277,7 +229,7 @@ const TicketDisplayForm = (props) => {
           </Constraints.Horizontal>
         </Spacings.Stack>
         <Spacings.Stack scale="xl">
-          <Constraints.Horizontal>
+          <Constraints.Horizontal max={13}>
             <Card constraint="xl" theme="dark" insetScale="l">
               {rows ? (
                 <Spacings.Stack scale="l">
@@ -303,249 +255,223 @@ const TicketDisplayForm = (props) => {
           </Constraints.Horizontal>
         </Spacings.Stack>
       </Spacings.Inline>
-      {/* <br />
-      <br /> */}
-      {/* <Spacings.Stack scale="xl">
-        <Constraints.Horizontal constraint="l">
-          <Card constraint="xl" min={23} max={27}>
-            <Text.Subheadline as="h4" isBold={true} tone="positive">
-              {'Ticket details'}
-            </Text.Subheadline>
-            <br />
-            <Spacings.Inline>
-              <Spacings.Stack scale="l">
-                <Constraints.Horizontal>
-                  <Card constraint="xl" theme="dark" insetScale="l">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">
-                      {'Total Tickets'}
-                    </Text.Subheadline>
-                    <Text.Subheadline as="h3"> {totalTicket}</Text.Subheadline>
-                  </Card>
-                </Constraints.Horizontal>
-              </Spacings.Stack>
-              <Spacings.Stack scale="l">
-                <Constraints.Horizontal>
-                  <Card constraint="xl" theme="dark" insetScale="l">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">
-                      {'High Priority'}
-                    </Text.Subheadline> */}
-      {/* make changes here */}
-      {/* <Text.Subheadline as="h3">{highTickets}</Text.Subheadline>
-                  </Card>
-                </Constraints.Horizontal>
-              </Spacings.Stack>
-              <Spacings.Stack scale="l">
-                <Constraints.Horizontal>
-                  <Card constraint="xl" theme="dark" insetScale="l">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">
-                      {'New Tickets'}
-                    </Text.Subheadline> */}
-      {/* make changes here */}
-      {/* <Text.Subheadline as="h3">{newTickets}</Text.Subheadline>
-                  </Card>
-                </Constraints.Horizontal>
-              </Spacings.Stack>
-              <Spacings.Stack scale="l">
-                <Constraints.Horizontal>
-                  <Card constraint="xl" theme="dark" insetScale="l">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">
-                      {'In-progress'}
-                    </Text.Subheadline> */}
-      {/* make changes here */}
-      {/* <Text.Subheadline as="h3">{inprogTickets}</Text.Subheadline>
-                  </Card>
-                </Constraints.Horizontal>
-              </Spacings.Stack>
+      <br />
+
+      <Spacings.Inline alignItems="stretch" justifyContent="space-between">
+        <Spacings.Stack scale="xl" alignItems="flexEnd">
+          <Constraints.Horizontal min={14} max={15}>
+            <Card constraint="xl">
+              <Text.Subheadline as="h4" isBold={true} tone="positive">
+                {'Report'}
+              </Text.Subheadline>
               <br />
-              <Spacings.Stack scale="l">
-                <Constraints.Horizontal min={13}>
-                  <Card constraint="xl" insetScale="l" theme="dark">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">
-                      {'Resloved'}
-                    </Text.Subheadline> */}
-      {/* make changes here */}
-      {/* <Text.Subheadline as="h3">
-                      {resolvedstatusTickets}
-                    </Text.Subheadline>
-                  </Card>
-                </Constraints.Horizontal>
-              </Spacings.Stack>
-            </Spacings.Inline>
-          </Card>
-        </Constraints.Horizontal>
-      </Spacings.Stack> */}
-      {/* break */}
-      <br />
-      <br />
-      <Spacings.Stack scale="xl">
-        <Constraints.Horizontal constraint="l">
-          <Card constraint="xl" min={23} max={27}>
-            <Text.Subheadline as="h4" isBold={true} tone="positive">
-              {'Agent details'}
-            </Text.Subheadline>
-            <br />
-            <Spacings.Inline>
-              <Spacings.Stack scale="l">
-                <Constraints.Horizontal>
-                  <Card constraint="xl" theme="dark" insetScale="l">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">
-                      {'Total Agents'}
-                    </Text.Subheadline>
-                    <Text.Subheadline as="h3">50</Text.Subheadline>
-                  </Card>
-                </Constraints.Horizontal>
-              </Spacings.Stack>
-              <Spacings.Stack scale="l">
-                <Constraints.Horizontal>
-                  <Card constraint="xl" theme="dark" insetScale="l">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">
-                      {'Present'}
-                    </Text.Subheadline>
-                    {/* make changes here */}
-                    <Text.Subheadline as="h3">47</Text.Subheadline>
-                  </Card>
-                </Constraints.Horizontal>
-              </Spacings.Stack>
-              <Spacings.Stack scale="l">
-                <Constraints.Horizontal>
-                  <Card constraint="xl" theme="dark" insetScale="l">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">
-                      {'On Leave'}
-                    </Text.Subheadline>
-                    {/* make changes here */}
-                    <Text.Subheadline as="h3">3</Text.Subheadline>
-                  </Card>
-                </Constraints.Horizontal>
-              </Spacings.Stack>
+              <Spacings.Inline>
+                <Spacings.Stack scale="l">
+                  <Constraints.Horizontal>
+                    <Card
+                      constraint="xl"
+                      // min={22}
+                      // max={29}
+                      theme="dark"
+                      insetScale="l"
+                    >
+                      <div
+                        style={{
+                          display: 'inline-block',
+                          marginRight: '20px',
+                        }}
+                      >
+                        <Text.Subheadline
+                          as="h5"
+                          isBold={true}
+                          tone="information"
+                        >
+                          {'From:'}
+                        </Text.Subheadline>
+                        <DatePicker
+                          selected={startDate}
+                          onChange={handleStartDateChange}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                        />
+                      </div>
+                      <div>
+                        {/* <label>To:</label> */}
+                        <Text.Subheadline
+                          as="h5"
+                          isBold={true}
+                          tone="information"
+                        >
+                          {'To:'}
+                        </Text.Subheadline>
+                        <DatePicker
+                          selected={endDate}
+                          onChange={handleEndDateChange}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          minDate={startDate}
+                        />
+                      </div>
+                      <div style={{ marginRight: '20px', marginBottom: '5px' }}>
+                        <Text.Subheadline
+                          as="h5"
+                          isBold={true}
+                          tone="information"
+                        >
+                          {'Report type'}
+                        </Text.Subheadline>
+                        <select
+                          id="dropdown"
+                          value={selectedOption}
+                          onChange={handleSelectChange}
+                          style={{ width: '200px' }}
+                        >
+                          <option value="Tickets">Tickets</option>
+                          <option value="Agent">Agent</option>
+                          <option value="Order">Order</option>
+                          <option value="Cart">Cart</option>
+                          <option value="Customer">Customer</option>
+                          <option value="Product">Product</option>
+                        </select>
+                      </div>
+                      <div
+                        style={{
+                          display: 'inline-block',
+                          marginRight: '0px',
+                        }}
+                      >
+                        <ExportExcel
+                          excelData={ticketExcel}
+                          fileName={'Work Report'}
+                        />
+                      </div>
+                    </Card>
+                  </Constraints.Horizontal>
+                </Spacings.Stack>
+              </Spacings.Inline>
+            </Card>
+          </Constraints.Horizontal>
+        </Spacings.Stack>
+
+        <Spacings.Stack scale="xl">
+          <Constraints.Horizontal constraint="l">
+            <Card constraint="xl">
+              <Text.Subheadline as="h4" isBold={true} tone="positive">
+                {'Agent details'}
+              </Text.Subheadline>
               <br />
-              <Spacings.Stack scale="l">
-                <Constraints.Horizontal min={13}>
-                  <Card constraint="xl" insetScale="l" theme="dark">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">
-                      {'Break'}
-                    </Text.Subheadline>
-                    {/* make changes here */}
-                    <Text.Subheadline as="h3">2</Text.Subheadline>
-                  </Card>
-                </Constraints.Horizontal>
-              </Spacings.Stack>
-            </Spacings.Inline>
-          </Card>
-        </Constraints.Horizontal>
-      </Spacings.Stack>
-      {/* break */}
-      <br />
-      <br />
-      <Spacings.Stack scale="xl">
-        <Constraints.Horizontal constraint="l">
-          <Card constraint="xl" min={23} max={30}>
-            <Text.Subheadline as="h4" isBold={true} tone="positive">
-              {'Report'}
-            </Text.Subheadline>
-            <br />
-            <Spacings.Inline>
-              <Spacings.Stack scale="l">
-                <Constraints.Horizontal>
-                  <Card
-                    constraint="xl"
-                    min={22}
-                    max={29}
-                    theme="dark"
-                    insetScale="l"
-                  >
-                    <div
-                      style={{ display: 'inline-block', marginRight: '20px' }}
-                    >
+              <Spacings.Inline>
+                <Spacings.Stack scale="l">
+                  <Constraints.Horizontal>
+                    <Card constraint="xl" theme="dark" insetScale="l">
                       <Text.Subheadline
-                        as="h5"
+                        as="h4"
                         isBold={true}
                         tone="information"
                       >
-                        {'From:'}
+                        {'Total Agents'}
                       </Text.Subheadline>
-                      <DatePicker
-                        selected={startDate}
-                        onChange={handleStartDateChange}
-                        selectsStart
-                        startDate={startDate}
-                        endDate={endDate}
-                      />
-                    </div>
-                    <div
-                      style={{ display: 'inline-block', marginRight: '20px' }}
-                    >
-                      {/* <label>To:</label> */}
+                      <Text.Subheadline as="h3">50</Text.Subheadline>
+                    </Card>
+                  </Constraints.Horizontal>
+                </Spacings.Stack>
+                <Spacings.Stack scale="l">
+                  <Constraints.Horizontal>
+                    <Card constraint="xl" theme="dark" insetScale="l">
                       <Text.Subheadline
-                        as="h5"
+                        as="h4"
                         isBold={true}
                         tone="information"
                       >
-                        {'To:'}
+                        {'Present'}
                       </Text.Subheadline>
-                      <DatePicker
-                        selected={endDate}
-                        onChange={handleEndDateChange}
-                        selectsEnd
-                        startDate={startDate}
-                        endDate={endDate}
-                        minDate={startDate}
-                      />
-                    </div>
-                    <div style={{ marginRight: '20px', marginBottom: '5px' }}>
+                      {/* make changes here */}
+                      <Text.Subheadline as="h3">47</Text.Subheadline>
+                    </Card>
+                  </Constraints.Horizontal>
+                </Spacings.Stack>
+                <Spacings.Stack scale="l">
+                  <Constraints.Horizontal>
+                    <Card constraint="xl" theme="dark" insetScale="l">
                       <Text.Subheadline
-                        as="h5"
+                        as="h4"
                         isBold={true}
                         tone="information"
                       >
-                        {'Report type'}
+                        {'On Leave'}
                       </Text.Subheadline>
-                      {/* <SelectField
-                        id="optionSelect"
-                        name="optionSelect"
-                        title=""
-                        value={formik.values.optionSelect}
-                        // errors={formik.errors.optionSelect}
-                        // touched={formik.touched.optionSelect}
-                        // onChange={onChange}
-                        onBlur={formik.handleBlur}
-                        options={reportType}
-                        // isReadOnly={props.isReadOnly}
-                        horizontalConstraint={13}
-                      /> */}
-                      <select
-                        id="dropdown"
-                        value={selectedOption}
-                        onChange={handleSelectChange}
-                        style={{ width: '200px' }}
+                      {/* make changes here */}
+                      <Text.Subheadline as="h3">3</Text.Subheadline>
+                    </Card>
+                  </Constraints.Horizontal>
+                </Spacings.Stack>
+                <br />
+                <Spacings.Stack scale="l">
+                  <Constraints.Horizontal min={13}>
+                    <Card constraint="xl" insetScale="l" theme="dark">
+                      <Text.Subheadline
+                        as="h4"
+                        isBold={true}
+                        tone="information"
                       >
-                        <option value="Tickets">Tickets</option>
-                        <option value="Agent">Agent</option>
-                        <option value="Order">Order</option>
-                        <option value="Cart">Cart</option>
-                        <option value="Customer">Customer</option>
-                        <option value="Product">Product</option>
-                      </select>
-                    </div>
-                    <div
-                      style={{ display: 'inline-block', marginRight: '0px' }}
-                    >
-                      <ExportExcel
-                        excelData={ticketExcel}
-                        fileName={'Work Report'}
+                        {'Break'}
+                      </Text.Subheadline>
+                      {/* make changes here */}
+                      <Text.Subheadline as="h3">2</Text.Subheadline>
+                    </Card>
+                  </Constraints.Horizontal>
+                </Spacings.Stack>
+              </Spacings.Inline>
+            </Card>
+          </Constraints.Horizontal>
+        </Spacings.Stack>
+        <div style={{ float: 'right', textAlign: 'right' }}>
+          <Spacings.Stack scale="l" alignItems="flexEnd">
+            <Constraints.Horizontal max={6}>
+              <Card theme="dark" insetScale="l">
+                <Text.Subheadline as="h4" isBold={true} tone="information">
+                  {'Time Tracker'}
+                </Text.Subheadline>
+                <div>
+                  {!isLoggedIn ? (
+                    <PrimaryButton
+                      label="Login"
+                      onClick={handleLoginClick}
+                      size="big"
+                      isToggled={true}
+                      // theme="info"
+                    />
+                  ) : (
+                    <>
+                      <Text.Subheadline as="h5" isBold={true} tone="primary">
+                        {'logged in at: '}
+                        {loginTime.toLocaleTimeString()}
+                      </Text.Subheadline>
+                      <Text.Subheadline as="h5" isBold={true} tone="primary">
+                        {'logged in for: '}
+                        {formatElapsedTime(elapsedTime)}
+                      </Text.Subheadline>
+
+                      <PrimaryButton
+                        label="Logout"
+                        onClick={handleLogoutClick}
+                        size="big"
+                        isToggled={true}
+                        tone="urgent"
+                        // theme="info"
                       />
-                    </div>
-                  </Card>
-                </Constraints.Horizontal>
-              </Spacings.Stack>
-            </Spacings.Inline>
-          </Card>
-        </Constraints.Horizontal>
-      </Spacings.Stack>
+                    </>
+                  )}
+                </div>
+              </Card>
+            </Constraints.Horizontal>
+          </Spacings.Stack>
+        </div>
+      </Spacings.Inline>
       <br />
       <br />
-      {/* <div>
-        <ExportExcel excelData={dataExcel} fileName={'Work Report'} />
-      </div> */}
     </Spacings.Stack>
   );
 
