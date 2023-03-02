@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPaymentList = exports.getInvoiceNumber = exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.createTicketHistory = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getCartRows = exports.getOrderRows = exports.getTicketRows = void 0;
+exports.createPassword = exports.getPaymentList = exports.getInvoiceNumber = exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.createTicketHistory = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getCartRows = exports.getOrderRows = exports.getTicketRows = void 0;
 var constants_1 = require("../constants");
 var graphql_queries_1 = require("../graphql-queries");
 var uuid_1 = require("uuid");
@@ -317,3 +317,25 @@ function getPaymentList(orders) {
     return paymentList;
 }
 exports.getPaymentList = getPaymentList;
+var ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+var INTEGERS = "0123456789";
+var EX_CHARACTERS = "!@#$%^&*_-=+";
+var createPassword = function (length, hasNumbers, hasSymbols) {
+    var chars = ALPHA;
+    if (hasNumbers) {
+        chars += INTEGERS;
+    }
+    if (hasSymbols) {
+        chars += EX_CHARACTERS;
+    }
+    return generatePassword(length, chars);
+};
+exports.createPassword = createPassword;
+// this function formats our password to however you need
+var generatePassword = function (length, chars) {
+    var password = "";
+    for (var i = 0; i < length; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+};

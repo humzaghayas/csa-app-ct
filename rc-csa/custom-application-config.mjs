@@ -18,6 +18,7 @@ const config = {
   },
   additionalEnv: {
     atgPublicURL: '${env:atgProtocol}'+'${env:atgPublicURL}',
+    SEND_EMAIL_API:'${env:atgProtocol}'+'${env:SEND_EMAIL_API}',
     MC_APP_ENV:'${env:ENV_VAL}',
     NODE_ENV:'${env:ENV_VAL}',
   },
@@ -48,7 +49,8 @@ const config = {
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
         'https://firebasestorage.googleapis.com/',
-        '${env:atgPublicURL}'
+        '${env:atgPublicURL}',
+        '${env:SEND_EMAIL_API}'
       ],
       'style-src': [
         'http://localhost:3001',

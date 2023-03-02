@@ -13,7 +13,8 @@
       "commerce-tools-b2b-services.firebaseapp.com",
       "https://ms-company-f4b4o225iq-ue.a.run.app",
       "https://ms-gateway-f4b4o225iq-ue.a.run.app",
-      "${env:atgPublicURL}"
+      "${env:atgPublicURL}",
+      "${env:SEND_EMAIL_API}"
     ],
     "style-src": [
       "commerce-tools-b2b-services.firebaseapp.com",
