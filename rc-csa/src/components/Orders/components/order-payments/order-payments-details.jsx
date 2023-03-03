@@ -3,10 +3,10 @@ import { Route, Switch, useHistory, useParams, useRouteMatch } from 'react-route
 import PropTypes from 'prop-types';
 import React, { useReducer, useState } from 'react';
 
-import { CloseIcon, CollapsiblePanel, Constraints, DataTable, DragIcon, ExternalLinkIcon, IconButton, Label, LoadingSpinner, MailIcon, SecondaryButton, Spacings, Text, UserLinearIcon } from '@commercetools-frontend/ui-kit';
+import { CloseIcon, CollapsiblePanel, Constraints, DataTable, DragIcon, ExternalLinkIcon, IconButton, Label, LoadingSpinner, MailIcon, OperationsIcon, SecondaryButton, Spacings, Text, UserLinearIcon } from '@commercetools-frontend/ui-kit';
 import { useCallback } from 'react';
 import { useShowApiErrorNotification, useShowNotification } from '@commercetools-frontend/actions-global';
-import { useFetchPaymentById } from '../../../../hooks/use-payments-connector/use-payments-connector';
+import { useFetchPaymentById, usePaymenLinkEmail } from '../../../../hooks/use-payments-connector/use-payments-connector';
 import { columns, dummyRows } from './constants';
 import { itemRenderer } from './helper';
 import { useFetchCheckoutSessionById, usePaymentUpdater } from '../../../../hooks/use-payments-connector'; 
@@ -19,9 +19,20 @@ const OrderPaymentsDetails = (props) =>{
     const {execute} = usePaymentUpdater();
     const {payment,loading,error} = useFetchPaymentById(match?.params?.id);
     console.log("Payment"+payment);
+    const pspPaymentStatus = payment?.custom?.customFieldsRaw.filter(e=>e?.name=="pspPaymentStatus")[0]?.value;
+    const paymentLink = payment?.custom?.customFieldsRaw.filter(e=>e?.name=="paymentLink")[0]?.value;
+    const {execute:execSendEmail} = usePaymenLinkEmail();
 
     const onSubmit = useCallback(async (e)=>{
         console.log("handleSubmit",e);
+    })
+    const sendPaymentLinkEmail = useCallback( async ()=>{
+        const response = await execSendEmail({},{
+            to:props?.customerEmail,
+            subject:"Payment link",
+            html:`<a href="${paymentLink}"> Pay here </a>`
+        });
+        console.log(response);
     })
 
     return(
@@ -37,13 +48,13 @@ const OrderPaymentsDetails = (props) =>{
                     label='Close'
                 />
                 <IconButton
-                    icon={<DragIcon/>}
+                    icon={<OperationsIcon/>}
                     isDisabled={!payment?.transactions[0]?.interactionId}
                     onClick={async()=>{
                         const session = await useFetchCheckoutSessionById(payment?.transactions[0]?.interactionId);
                         // const paymentStatus= await session?.session?.payment_status;
                         
-                        if(session?.session?.payment_status!=payment?.custom?.customFieldsRaw.filter(e=>e?.name=="pspPaymentStatus")[0]?.value){
+                        if(session?.session?.payment_status!=pspPaymentStatus){
                             const actions = {
                                 setCustomField:{
                                     name:"pspPaymentStatus",
@@ -72,18 +83,9 @@ const OrderPaymentsDetails = (props) =>{
                 />
                 <IconButton
                     icon={<MailIcon/>}
-                    onClick={()=>{
-                        alert('Send Link')
-                        console.log("Send Payment Link");
-                    }}
+                    isDisabled={!paymentLink && !props?.customerEmail}
+                    onClick={sendPaymentLinkEmail}
                 />
-                {/* <IconButton
-                    icon={<MailIcon/>}
-                    onClick={()=>{
-                        alert('Send Link')
-                        console.log("Send Payment Link");
-                    }}
-                /> */}
                 </Spacings.Inline>
             }
 
