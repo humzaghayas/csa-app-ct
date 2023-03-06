@@ -77,6 +77,6 @@ const CustomerCreate = (props) => {
 };
 CustomerCreate.displayName = 'CustomerDetails';
 CustomerCreate.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default CustomerCreate;

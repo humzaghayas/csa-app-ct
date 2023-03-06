@@ -120,6 +120,6 @@ const OrderShipping = (props) => {
 };
 OrderShipping.displayName = 'OrderDetails';
 OrderShipping.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default OrderShipping;

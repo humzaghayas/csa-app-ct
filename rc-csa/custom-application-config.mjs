@@ -18,6 +18,7 @@ const config = {
   },
   additionalEnv: {
     atgPublicURL: '${env:atgProtocol}'+'${env:atgPublicURL}',
+    SEND_EMAIL_API:'${env:atgProtocol}'+'${env:SEND_EMAIL_API}',
     MC_APP_ENV:'${env:ENV_VAL}',
     NODE_ENV:'${env:ENV_VAL}',
     SEND_EMAIL_API:'${env:atgProtocol}'+'${env:SEND_EMAIL_API}',

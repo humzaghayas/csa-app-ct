@@ -174,17 +174,8 @@ const Tickets = (props) => {
             
           </Grid>
 
-
-
-
-        <Spacings.Inline  >
-          
-      
-        </Spacings.Inline>
       </Spacings.Stack>
       : null}
-
-      {/* {data ? ( */}
 
       {rows ? 
         <Spacings.Stack scale="l">
@@ -198,9 +189,7 @@ const Tickets = (props) => {
             // sortedBy={tableSorting.value.key}
             // sortDirection={tableSorting.value.order}
             // onSortChange={tableSorting.onChange}
-            // onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
             onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
-            // onRowClick={(row) => push(`Ticket-account/${row.id}/companies-general`)}
           />
           <Pagination
             page={page.value}
@@ -210,21 +199,13 @@ const Tickets = (props) => {
             totalItems={data?.customObjects?.total}
           />
            <Switch>
-            {/* <SuspendedRoute path={`${match.path}/:id`}>
-                <TicketAccount onClose={() => push(`${match.url}`)} />  
-            </SuspendedRoute> */}
-            
+                      
             <SuspendedRoute path={`${match.path}/:id`}>
               <TicketAccount onClose={() => push(`${match.url}`)} />
             </SuspendedRoute>
-          
-          {/* <SuspendedRoute path={`${match.path}/ticket-details`}>
-            <TicketDetails  onClose={() => push(`${match.url}`)} />
-            </SuspendedRoute> */}
           </Switch> 
         </Spacings.Stack>
       : <p>Loading...</p>}
-      {/* ) : null} */}
     </Spacings.Stack>
   );
 };

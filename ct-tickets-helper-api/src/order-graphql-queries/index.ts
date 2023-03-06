@@ -385,6 +385,38 @@ export const REPLICATE_ORDER = `mutation orderReplicate($referenceInput:Referenc
     id
   }
 }`
+
+
+
+export const FETCH_PAYMENTS_TO_DISPLAY = `query FETCH_PAYMENTS_TO_DISPLAY($where:String,$offset:Int,$limit:Int) {
+  orders(where:$where,offset:$offset,limit:$limit){
+  	count
+    total
+    results{
+      id
+      paymentInfo{
+        payments{
+          transactions{
+            timestamp
+            state
+          }
+          paymentStatus{
+            interfaceCode
+            interfaceText
+            state{
+              key
+            }
+          }
+          paymentMethodInfo{
+            method
+            name(locale:"en")
+          }
+        }
+      }
+    }
+  }
+}
+`
 export const FETCH_ORDER_PAYMENTS_BY_ID = `query FetchOrderPaymentsByOrderId($id:String!){
   order(id:$id){
       id

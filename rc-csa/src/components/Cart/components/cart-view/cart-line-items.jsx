@@ -209,6 +209,6 @@ const CartLineItems = (props) => {
 };
 CartLineItems.displayName = 'OrderDetails';
 CartLineItems.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default CartLineItems;

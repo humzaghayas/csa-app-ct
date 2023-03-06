@@ -34,92 +34,61 @@ import { docToFormValues, formValuesToDoc } from './conversions';
 
 import { transformErrors } from './transform-errors';
 import messages from './messages';
-
-
 import Spacings from '@commercetools-uikit/spacings';
-import { useCustomersPaymentsFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
-import { Text } from '@commercetools-frontend/ui-kit';
-const rows = [
-  { Ordernumber: '00000001',PaymentDate:'Apr 11, 2022,2:54:47...',PaymentMethod:'COD',Status:'Ready',CancelledDate:'--'},
-  { Ordernumber: '00000002',PaymentDate:'Apr 11, 2022,2:54:47...',PaymentMethod:'COD',Status:'Ready',CancelledDate:'--'},
-  { Ordernumber: '00000003',PaymentDate:'Apr 11, 2022,2:54:47...',PaymentMethod:'COD',Status:'Ready',CancelledDate:'--'},
-];
-
-
+import { useGetPaymentsByCustomer } from '../../../../hooks/use-paymment-connector';
 
 const columns = [
-  { key: 'id', label: 'Id' },
-  { key: 'key', label: 'Key' },
-  { key: 'interfaceId', label: 'InterfaceId' },
-  { key: 'createdAt', label: 'Created At' },
-  { key: 'paymentMethodInfo', label: 'Payment Method' },
+
+  { key: 'orderNumber', label: 'Order number' },
+ 
+  { key: 'paymentDate', label: 'Payment Date' },
+  { key: 'paymentMethod', label: 'Payment Method' },
+  { key: 'status', label: 'Status' },
+  {key: 'CancelledDate', label: 'Cancelled Date'}
 ];
 
-const itemRenderer = (item, column) => {
-  switch (column.key) {
-    case 'paymentMethodInfo':
-      return <div>
-                <Spacings.Stack scale='s'>
-                  <Spacings.Inline>
-                    <Spacings.Stack scale='s'>
-                      {item?.paymentMethodInfo?.method}
-                      {/* <div>{item?.paymentInterface}</div> */}
-                      {/* <div>PAYMENT INTERFACE: {item?.paymentMethodInfo?.paymentInterface}</div>
-                      <div>Method: {item?.paymentMethodInfo?.method}</div>
-                      <div>Name: {item?.paymentMethodInfo?.name}</div> */}
-                    </Spacings.Stack>
-                  </Spacings.Inline>
-                </Spacings.Stack>
-              </div>;
-    default:
-      return item[column.key];
-  }
-}
-
-
+let rows = null;
 
 const CustomerPayment = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
   // const [query] = useState(QUERY);
-  const customerId = match?.params?.id;
   const { page, perPage } = usePaginationState();
-  const tableSorting = useDataTableSortingState('createdAt desc');
-  const { customersPaymentsPaginatedResult, error, loading } = useCustomersPaymentsFetcher({
-    page,
-    perPage,
-    tableSorting,
-    customerId,
-  });
+  const params = useParams();
 
-  console.log(customersPaymentsPaginatedResult);
-  
+  const payments = useGetPaymentsByCustomer(params.id)
+
+  console.log('params.id',params.id);
+  console.log('payments',payments);
+
+  rows = payments?.paymentList;
+
   return (
     <Spacings.Stack scale="xl">
+    
+      {rows ?
         <Spacings.Stack scale="l">
-         {customersPaymentsPaginatedResult?.results?           
-         <>
-         <DataTable
+         
+          <DataTable
             isCondensed
             columns={columns}
-            rows={customersPaymentsPaginatedResult?.results}
-            itemRenderer={itemRenderer}
+            rows={rows}
+         
             maxHeight={600}
-            
+          
           />
           <Pagination
             page={page.value}
             onPageChange={page.onChange}
             perPage={perPage.value}
             onPerPageChange={perPage.onChange}
-            totalItems={customersPaymentsPaginatedResult?.total}
+            totalItems={payments?.total}
           />
-         </>
-         :null}
-      
           
         </Spacings.Stack>
+      :<p>Loading...</p>}
+      {/* ) : null} */}
     </Spacings.Stack>
   );
 };
