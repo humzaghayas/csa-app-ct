@@ -1,23 +1,25 @@
+import { func } from "prop-types";
+
 export const docToFormValues = (order, languages) => ({
     id:order?.id,
     version:order?.version,
     orderNumber:order?.orderNumber,
-    returnInfo:getOrderReturnInfo(order?.returnInfo),
+    returnInfo:getOrderReturnInfo(order?.returnInfo,order?.lineItems),
     lineItem:getLineItems(order?.lineItems,order?.returnInfo)
   });
 
-  const getOrderReturnInfo = (returnInfo) =>{
+  const getOrderReturnInfo = (returnInfo,lineItems) =>{
     return returnInfo?.map((returnItem=>{
         return{
             returnTrackingId:returnItem?.returnTrackingId,
             returnDate:returnItem?.returnDate,
-            items: getReturnLineItems(returnItem?.items)
+            items: getReturnLineItems(returnItem?.items,lineItems)
         }
     })
     )
   }
 
-  const getReturnLineItems = (lineItems)=>{
+  const getReturnLineItems = (lineItems,orderLineItems)=>{
     return lineItems?.map((lineItem=>{
         return{
             type:lineItem?.type,
@@ -27,9 +29,22 @@ export const docToFormValues = (order, languages) => ({
             shipmentState:lineItem?.shipmentState,
             paymentState:lineItem?.paymentState,
             lastModifiedAt:lineItem?.lastModifiedAt,
-            createdAt:lineItem?.createdAt
+            createdAt:lineItem?.createdAt,
+            lineItemId:lineItem?.lineItemId,
+            lineItemDetails: getActualLineItemsDetails(lineItem?.lineItemId,orderLineItems)
         }
     }))
+  }
+
+  function getActualLineItemsDetails(lineItemId,lineItems){
+    const lineItem = lineItems?.filter(item=>item.id==lineItemId)[0];
+    console.log(lineItem)
+    return {
+        name:lineItem?.name,
+        image:lineItem?.variant?.images[0],
+        sku:lineItem?.variant?.sku,
+        key:lineItem?.productKey
+    }
   }
 
   export function getLineItems(lineItems,returnInfoItems){
@@ -50,7 +65,7 @@ export const docToFormValues = (order, languages) => ({
                   image:lineItem?.variant?.images[0]?.url
                 },
                 orderdQuantity:lineItem?.quantity,
-                quantityInPreviousReturns:0,
+                quantityInPreviousReturns:getReturnItemsQuantity(lineItem?.id,returnInfoItems),
                 returnQuantity:0,
                 comment:" "
             }
@@ -59,15 +74,13 @@ export const docToFormValues = (order, languages) => ({
   }
 
 const getReturnItemsQuantity = (lineItemId,returnInfoItems) =>{
-  const l = returnInfoItems?.filter(i=>i.items?.filter(e=>e.id==lineItemId));
   let quantity = 0;
-
-  returnInfoItems?.forEach(element => {
-    element?.items?.forEach(e=>{
-      console.log("line Item Id",lineItemId+" item id",e.id);
-      console.log("Element items",lineItemId==e.id);
-    })
+  returnInfoItems?.forEach(e=>{
+    e?.items?.forEach(e2=>{
+      if(e2?.lineItemId == lineItemId){
+        quantity = quantity +e2?.quantity
+      }
+    });
   });
-  console.log(quantity);
   return quantity;
 }

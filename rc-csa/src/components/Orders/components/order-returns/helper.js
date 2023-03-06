@@ -6,11 +6,11 @@ export const itemRenderer = (item, column) => {
         return <div>
                   <Spacings.Stack scale='s'>
                     <Spacings.Inline>
-                      <img src={item?.item?.image} height={65} width={65}/>
+                      <img src={item?.lineItemDetails?.image?.url} height={65} width={65}/>
                       <Spacings.Stack scale='s'>
-                        <div>{item?.item?.name}</div>
-                        <div>SKU: {item?.item?.sku}</div>
-                        <div>Key: {item?.item?.key}</div>
+                        <div>{item?.lineItemDetails?.name}</div>
+                        <div>SKU: {item?.lineItemDetails?.sku}</div>
+                        <div>Key: {item?.lineItemDetails?.key}</div>
                       </Spacings.Stack>
                     </Spacings.Inline>
                   </Spacings.Stack>

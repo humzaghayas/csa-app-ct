@@ -1,8 +1,7 @@
 export const columns = [
-    {key:'no',label:''},
     {key:'item',label:'Item'},
     {key:'quantity',label:'Quantity'},
-    {key:'comment',label:'Comment'},
+    // {key:'comment',label:'Comment'},
     {key:'shipmentState',label:'Shipment state'},
     {key:'paymentState',label:'Payment State'},
     {key:'createdAt',label:'Date Created'},
