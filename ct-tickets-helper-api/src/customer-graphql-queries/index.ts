@@ -278,10 +278,27 @@ export const FETCH_CUSTOMERS_ORDERS = `query FectchCustomerOrdersListQuery(
         shipmentState
         customerEmail
         createdAt
+        ...returnInfo
         __typename
       }
       __typename
     }
+  }
+  fragment returnInfo on Order{
+    returnInfo{
+          returnTrackingId
+          returnDate
+          items{
+            type
+            id
+            quantity
+            comment
+            shipmentState
+            paymentState
+            lastModifiedAt
+            createdAt
+          }
+        }
   }
   `
 export const FETCH_CUSTOMERS_GRAPHQL = `query FetchCustomers($limit: Int!, $offset: Int!, $sort: [String!]) {

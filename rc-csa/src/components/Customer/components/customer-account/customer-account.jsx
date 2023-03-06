@@ -28,6 +28,7 @@ import { useCustomerDetailsFetcher } from '../../../../hooks/use-customers-conne
 
 import CustomerAddressCreate from '../customer-address/customer-address-create';
 import CustomerPayment from '../customer-payment/customer-payment';
+import CustomerReturn from '../customer-returns/customer-return';
 import { CONSTANTS } from 'ct-tickets-helper-api';
 import { useGetTicketByCustomerEmail } from '../../../../hooks/use-register-user-connector';
 import { useEffect, useState } from 'react';
@@ -103,6 +104,30 @@ const CustomerAccount = (props) => {
           </Spacings.Stack>
           <Spacings.Stack scale="xl">
             <Spacings.Inline>
+              <TabHeader
+                to={`${match.url}/Customers-summary`}
+                label="Summary"
+              />
+              <TabHeader
+                to={`${match.url}/Customers-profile`}
+                label="Profile"
+              />
+               <TabHeader
+                to={`${match.url}/Customers-orders`}
+                label="Orders"
+              />
+               <TabHeader
+                to={`${match.url}/Customers-returns`}
+                label="Returns"
+              />
+               <TabHeader
+                to={`${match.url}/Customers-payments`}
+                label="Payments"
+              />
+              <TabHeader
+                to={`${match.url}/Customers-Address`}
+                label="Addresses"
+              />
               <TabHeader to={`${match.url}/Customers-summary`} label="Summary"  />
               <TabHeader to={`${match.url}/Customers-profile`} label="Profile" />
               <TabHeader to={`${match.url}/Customers-Address`} label="Addresses" />
@@ -124,6 +149,9 @@ const CustomerAccount = (props) => {
         </Route>
         <Route path={`${match.path}/Customers-orders`}>
           <CustomerOrder customer={customer} />
+        </Route>
+        <Route path={`${match.path}/Customers-returns`}>
+          <CustomerReturn customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-password`}>
            <CustomerPassword customer={customer} />
