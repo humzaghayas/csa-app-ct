@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import TextField from '@commercetools-uikit/text-field';
@@ -26,8 +26,54 @@ const OrderReturnsForm = (props) => {
     enableReinitialize: true
   });
 
-  const [selectedRows,setSelectedRows] = useState([]);
+  const [selectedRows,setSelectedRows] = useState();
   const [shipmentState,setShipmentState] = useState("");
+  const[ch,setCh]=useState(false);
+
+  useEffect(()=>{
+
+    if(selectedRows == null){
+      const lineItems = formik?.values?.orderInfo?.lineItem;
+
+      const li = lineItems?.map(l => {
+        return {
+          lineItemId:l.id,
+          isChecked:false,
+          quantity:l.quantity
+        }
+      });
+      console.log('li',li);
+
+      setSelectedRows(li);
+    }
+
+  });
+
+  const updateRowItem = (field) =>{
+    const rows = selectedRows.filter(l => l.lineItemId !== field.id);
+    const r = selectedRows.find(sr => sr.lineItemId  === field.id);
+    const row  = {
+      lineItemId:r.lineItemId
+    };
+
+    switch (field.name) {
+      case 'isChecked':
+        row.isChecked = !r.isChecked;
+        row.quantity = r.quantity;
+        break;
+      
+      case 'quantity':
+        row.quantity = field.quantity;
+        row.isChecked =r.isChecked;
+        break;
+    
+      default:
+        break;
+    }
+
+    rows.push(row);
+    setSelectedRows(rows);
+  }
 
   const itemRendererNewOrderReturns = (item, column) => {
     switch (column.key) {
@@ -49,24 +95,18 @@ const OrderReturnsForm = (props) => {
                   <Spacings.Stack scale="s">
                     <NumberInput
                       id="returnQuantity"
-                      value={selectedRows.filter(row=>row?.lineItemId==item?.id)[0]?.quantity}
+                      value={selectedRows?.find(row=>row?.lineItemId==item?.id)?.quantity}
                       onChange={(e)=>{
-                        const rows = selectedRows;
-                        const index = rows.findIndex(i=>i.lineItemId==item.id); 
-                        console.log("index",index)
-                        rows.splice(index,1);
-                        console.log("Rows after splice",rows);
-                        const row = {
-                          lineItemId:item?.id,
-                          quantity:Number(e?.target?.value),
-                          shipmentState:formik?.values?.shipmentState
-                        }
-                        rows.push(row)
-                        setSelectedRows(rows);
+
+                        updateRowItem({
+                          id:item?.id,
+                          name:"quantity",
+                          quantity:e?.target?.value
+                        });
                       }}
                       horizontalConstraint={3}
                       isRequired
-                      isDisabled={!selectedRows.filter(row=>row?.lineItemId==item?.id)?.length==1}
+                      isDisabled={!selectedRows?.find(row=>row?.lineItemId==item?.id)?.isChecked}
                     />
                   </Spacings.Stack>
               </div>
@@ -79,7 +119,7 @@ const OrderReturnsForm = (props) => {
                       title=""
                       value=" "
                       onChange={(event) => {}}
-                      isDisabled={!selectedRows.filter(row=>row?.lineItemId==item?.id)?.length==1}
+                      isDisabled={!selectedRows?.find(row=>row?.lineItemId==item?.id)?.isChecked}
                       horizontalConstraint={13}
                     />
                   </Spacings.Stack>
@@ -87,28 +127,23 @@ const OrderReturnsForm = (props) => {
       case 'checkBox':
         return <div>
                   <Spacings.Stack scale="s">
-                    <CheckboxInput
-                      value="is-row-value-checked"
-                      onChange={(e)=>{
-                          const row = {
-                            lineItemId:item?.id,
-                            quantity:1,
-                            shipmentState:formik?.values?.shipmentState
+
+                  {selectedRows  &&
+                      
+                        <CheckboxInput
+                          value="is-row-value-checked"
+                          onChange={(e)=>{
+
+                              updateRowItem({
+                                id:item?.id,
+                                name:"isChecked"
+                              });
+                            }
                           }
-                          console.log("ischecked",e.target.ariaChecked);
-                          if(!selectedRows.filter(row=>row?.lineItemId==item?.id)?.length==1){
-                            setSelectedRows(selectedRows => [...selectedRows, row])
-                          }else{
-                            const rows = selectedRows;
-                            const index = rows.findIndex(i=>i.id==item.id); 
-                            console.log("index",index)
-                            rows.splice(index,1);
-                            setSelectedRows(rows);
-                          }
-                        }
-                      }
-                      isChecked={selectedRows.filter(row=>row?.lineItemId==item?.id)?.length==1}
-                    />
+                          isChecked={  selectedRows.find(sr => sr.lineItemId  == item.id).isChecked}
+                        /> 
+                    }
+                                    
                   </Spacings.Stack>
               </div>
       default:
