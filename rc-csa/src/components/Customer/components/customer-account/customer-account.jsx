@@ -133,6 +133,7 @@ const CustomerAccount = (props) => {
               <TabHeader to={`${match.url}/Customers-Address`} label="Addresses" />
                <TabHeader to={`${match.url}/Customers-orders`} label="Orders" />
                <TabHeader to={`${match.url}/Customers-payments`} label="Payments"/>
+               <TabHeader to={`${match.url}/Customers-returns`}label="Returns"/>
               <TabHeader to={`${match.url}/Customers-tickets`} label="Tickets" />
               <TabHeader to={`${match.url}/Customers-password`} label="Password" />
             </Spacings.Inline>

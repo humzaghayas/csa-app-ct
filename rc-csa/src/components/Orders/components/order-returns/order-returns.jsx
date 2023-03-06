@@ -9,7 +9,7 @@ import { CollapsiblePanel, Constraints, DataTable, Spacings, Text } from '@comme
 import { useCallback } from 'react';
 import { columns, dummyrows } from './constants';
 import { itemRenderer } from './helper';
-import { useFetchOrderById, useOrderUpdateById } from '../../../../hooks/use-orders-connector';
+import { useFetchOrderReturnInfoById, useOrderUpdateById } from '../../../../hooks/use-orders-connector';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { docToFormValues } from './conversions';
 import OrderReturnsNew from './order-returns-details';
@@ -26,7 +26,7 @@ const OrderReturns = (props) =>{
     const [reducerValue, forceUpdate] = useReducer(x => x+1,0);
     const { push } = useHistory();
     const match = useRouteMatch();
-    let {order,loading,error} =  useFetchOrderById(match.params.id);
+    let {order,loading,error} =  useFetchOrderReturnInfoById(match.params.id);
     const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
         dataLocale: context.dataLocale ?? '',
         projectLanguages: context.project?.languages ?? [],

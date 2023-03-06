@@ -543,3 +543,51 @@ export const UPDATE_CUSTOMERS_DETAILS = `mutation UpdateCustomerDetails(
     }
   }
   `
+export const FETCH_CUSTOMER_PAYMENTS = `query FectchCustomerPaymentsListQuery(
+  $limit: Int
+  $offset: Int
+  $sort: [String!]
+  $where: String
+) {
+  payments(limit: $limit, offset: $offset, sort: $sort, where: $where) {
+    total
+    count
+    results{
+      id
+      key
+      interfaceId
+      version
+      createdAt
+      lastModifiedAt
+      paymentStatus{
+        interfaceCode
+        interfaceText
+      }
+      customer{
+        id
+      }
+      amountPlanned{
+        type
+        currencyCode
+        centAmount
+        fractionDigits
+      }
+      paymentMethodInfo{
+        paymentInterface
+        method
+        name(locale:"en")
+      }
+      transactions{
+        timestamp
+        type
+        state
+        amount{
+          type
+          currencyCode
+          fractionDigits
+          centAmount
+        }
+      }
+    }
+}
+}`

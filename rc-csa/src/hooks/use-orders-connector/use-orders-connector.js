@@ -13,7 +13,9 @@ import {
   FETCH_ORDER_BY_ID,
   UPDATE_ORDER_BY_ID,
   CREATE_EDIT_ORDER_BY_ID,
-  REPLICATE_ORDER} from 'ct-tickets-helper-api';
+  REPLICATE_ORDER,
+  FETCH_ORDER_PAYMENTS_BY_ID,
+  FETCH_ORDER_RETURNINFO_BY_ID} from 'ct-tickets-helper-api';
 
 export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
 
@@ -21,7 +23,7 @@ export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
     variables: {
       limit: perPage.value,
       offset: (page.value-1)*perPage.value,
-      sort: ["orderNumber asc","createdAt desc"],
+      sort: ["createdAt desc"],
     },
     context: {
       target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
@@ -154,4 +156,45 @@ export const useReplicateOrderById = () =>{
     loading
   };
 
+}
+export const useFetchOrderPaymentsById =  (orderId) =>{
+
+
+  const { data, error, loading } =  useMcQuery(gql`${FETCH_ORDER_PAYMENTS_BY_ID}`, {
+    variables: {
+      id:orderId
+    },
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    },
+    fetchPolicy:"network-only"
+  });
+
+  let order = data?.order ;
+
+  return {
+    order,
+    loading,
+    error
+  };
+}
+export const useFetchOrderReturnInfoById =  (orderId) =>{
+
+  const { data, error, loading } =  useMcQuery(gql`${FETCH_ORDER_RETURNINFO_BY_ID}`, {
+    variables: {
+      id:orderId
+    },
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    },
+    fetchPolicy:"network-only"
+  });
+
+  let order ={data};
+
+  return {
+    order,
+    loading,
+    error
+  };
 }
