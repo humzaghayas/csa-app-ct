@@ -30,46 +30,6 @@ import {
   usePaginationState,
   useDataTableSortingState,
 } from '@commercetools-uikit/hooks';
-import DataTable from '@commercetools-uikit/data-table';
-
-const rows = [
-  {
-    TYPE: 'Cart',
-    ID: '00000001',
-    CREATED: 'Apr 11, 2022,2:54:47...',
-    STATUS: '--',
-    UPDATED: 'Apr 11, 2022,2:54:47...',
-  },
-  {
-    TYPE: 'Saved Cart',
-    ID: '00000001',
-    CREATED: 'Apr 11, 2022,2:54:47...',
-    STATUS: '--',
-    UPDATED: 'Apr 11, 2022,2:54:47...',
-  },
-  {
-    TYPE: 'Order',
-    ID: '00000001',
-    CREATED: 'Apr 11, 2022,2:54:47...',
-    STATUS: 'COMPLETED',
-    UPDATED: 'Apr 11, 2022,2:54:47...',
-  },
-  {
-    TYPE: 'Ticket',
-    ID: '00012875',
-    CREATED: 'jun 14, 2022,2:54:47...',
-    STATUS: 'COMPLETED',
-    UPDATED: 'Aug 14, 2022,2:54:47...',
-  },
-];
-
-const columns = [
-  { key: 'TYPE', label: 'TYPE' },
-  { key: 'ID', label: 'ID' },
-  { key: 'STATUS', label: 'STATUS' },
-  { key: 'CREATED', label: 'CREATED' },
-  { key: 'UPDATED', label: 'UPDATED' },
-];
 
 const CustomerCreateForm = (props) => {
   const intl = useIntl();
@@ -136,27 +96,24 @@ const CustomerCreateForm = (props) => {
                 <Spacings.Stack scale="l">
                   <Constraints.Horizontal >
                     <Card constraint="xl" theme="dark" insetScale="l">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">{'Order'}</Text.Subheadline>
-                <Text.Subheadline as="h3" >  5</Text.Subheadline>
-                     
+                      <Text.Subheadline as="h4" isBold={true} tone="information">{'Order'}</Text.Subheadline>
+                      <Text.Subheadline as="h3" >{props.customerSummary?.orderCount}</Text.Subheadline>
                     </Card>
                   </Constraints.Horizontal>
                 </Spacings.Stack>
                 <Spacings.Stack scale="l">
                 <Constraints.Horizontal >
                     <Card constraint="xl" theme="dark" insetScale="l">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">{'Sales'}</Text.Subheadline>
-                <Text.Subheadline as="h3" >125</Text.Subheadline>
-                     
+                      <Text.Subheadline as="h4" isBold={true} tone="information">{'Sales'}</Text.Subheadline>
+                      <Text.Subheadline as="h3" >{props.customerSummary?.salesCount}</Text.Subheadline>
                     </Card>
                   </Constraints.Horizontal>
                 </Spacings.Stack>
                 <Spacings.Stack scale="l">
                 <Constraints.Horizontal >
                     <Card constraint="xl" theme="dark" insetScale="l">
-                    <Text.Subheadline as="h4" isBold={true} tone="information">{'Tickets'}</Text.Subheadline>
-                <Text.Subheadline as="h3" >10</Text.Subheadline>
-                      
+                     <Text.Subheadline as="h4" isBold={true} tone="information">{'Tickets'}</Text.Subheadline>
+                      <Text.Subheadline as="h3" >{props.customerSummary?.ticketsCount}</Text.Subheadline>
                     </Card>
                   </Constraints.Horizontal>
                 </Spacings.Stack>
@@ -165,7 +122,7 @@ const CustomerCreateForm = (props) => {
                 <Constraints.Horizontal min={13}>
                 <Card constraint="xl" insetScale="l" theme="dark">
                     <Text.Subheadline as="h4" isBold={true} tone="information">{'Saved Cart'}</Text.Subheadline>
-                <Text.Subheadline as="h3" >1</Text.Subheadline>
+                    <Text.Subheadline as="h3" >{props.customerSummary?.activeCartCount}</Text.Subheadline>
                      
                     </Card>
                   </Constraints.Horizontal>

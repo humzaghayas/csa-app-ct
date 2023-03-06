@@ -2,6 +2,12 @@ import { loginATG } from "../../components/ATG-Poc/api";
 import { useAsyncDispatch } from '@commercetools-frontend/sdk';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { actions } from '@commercetools-frontend/sdk';
+import axios from 'axios';
+import createHttpUserAgent from '@commercetools/http-user-agent';
+import {
+  buildApiUrl,
+  executeHttpClientRequest,
+} from '@commercetools-frontend/application-shell';
 
 export const useGetAtgOrders =() => {
 
@@ -158,18 +164,18 @@ export const useGetAtgOrdersDetails =() => {
   );
   
 
-  const apiUrl = `${atgPublicURL}/rest/bean/atg/commerce/order/OrderManager/loadOrder`;
+  const apiUrl = `${atgPublicURL}/rest/model/atg/commerce/custom/order/MyOrderLookupActor/details`;
 
 
   const execute = async (orderId) => {
     // const data= loginATG(apiUrl,headers, payload ,dispatch );
 
     const payload ={
-      "arg1":orderId
-    } ;
+      orderId
+    };
     const header= {
       'Content-Type': 'application/json',
-    }
+    };
 
     const data =await dispatch(
       actions.forwardTo.post({
@@ -186,51 +192,66 @@ export const useGetAtgOrdersDetails =() => {
     const id = "id:";
     const semiColon = ";";
     const catalogRefId="catalogRefId:"
-    if(data){
-
-      const profileId = data.profileId;
-      const orderId = data.id;
-      const shippingGroups = data.shippingGroups;
-      const stateAsString = data.stateAsString;
-
-
-      const CurrencyCode="CurrencyCode:";
-      const Amount="Amount:";
-      const Discounted="Discounted:";
-      let currencyCode=extractInfo(data.priceInfo,CurrencyCode,semiColon);
-      let amount=extractInfo(data.priceInfo,Amount,semiColon);
-      let isDiscounted=extractInfo(data.priceInfo,Discounted,semiColon);
-
-      const priceInfo = {currencyCode,amount,isDiscounted};
-
-
-      currencyCode=extractInfo(data.taxPriceInfo,CurrencyCode,semiColon);
-      amount=extractInfo(data.taxPriceInfo,Amount,semiColon);
-      const taxPriceInfo = {currencyCode,amount};
-
-      const products = data.commerceItems.map(c => {
-        const ProductId="productId:";
-
-        let productId =extractInfo(c,ProductId,semiColon);
-
-        return {productId}
-      });
-
-            //   id:ci3000003; catalogRefId:mp600141; catalogKey:en_US; 
-      //quantity:5; quantityWithFraction:0.0; state:INITIAL;
-      // AuxiliaryData[productId:mpprod110101;
-
-      return {orderId,profileId,products,stateAsString,priceInfo,taxPriceInfo,shippingGroups};
+    if(data && data?.order){
+       return {isOrder:true,order:data.order};
     }
 
-    return {profileId:"Not Found"};
+    return {isOrder:false};
   }
 
   return {execute};
 };
 
-const extractInfo = (sourceString,stringToSearch,endDelim) =>{
-  let startInd = sourceString.indexOf(stringToSearch)+ stringToSearch.length;
-  let numbOfChars = sourceString.indexOf(endDelim,startInd) -startInd;
-  return sourceString.substr(startInd,numbOfChars);
-}
+
+///////////////////
+
+export const useUpdateCustomerInfo =(userId) => {
+
+  const atgPublicURL = useApplicationContext(
+    (context) => context.environment.atgPublicURL
+  );
+  
+
+  const userAgent = createHttpUserAgent({
+    name: 'axios-client',
+    version: '1.0.0',
+    libraryName: window.app.applicationName,
+    contactEmail: 'support@my-company.com',
+  });
+
+  const url = `${atgPublicURL}/rest/repository/atg/userprofiling/ProfileAdapterRepository/user/${userId}?atg-rest-user-input=MyMessageId`;
+
+
+  const execute = async ( config = {},payload) => {
+    const data = await executeHttpClientRequest(
+      async (options) => {
+        const res = await axios(buildApiUrl('/proxy/forward-to'), {
+          ...config,
+          headers: {
+            ...options.headers,
+            "Content-Type":"application/json"
+          },
+          withCredentials: options.credentials === 'include',
+          method:"PUT",
+          data:payload
+        });
+        const data = res;
+        return {
+          data: res.data,
+          statusCode: res.status,
+          getHeader: (key) => res.headers[key],
+        };
+      },
+      { 
+        userAgent, 
+        headers: config.headers,
+        forwardToConfig: {
+          uri: url
+        }
+       }
+    );
+    return data;
+  };
+
+  return {execute};
+};

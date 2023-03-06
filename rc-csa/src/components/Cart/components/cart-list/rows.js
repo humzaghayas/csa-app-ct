@@ -7,7 +7,8 @@ export function getCartRows(cartPaginationResult) {
       return {
         id: carts?.id ?? '',
         key: carts?.key ?? '--',
-        orderNumber: carts?.custom?.type?.id ?? '--',
+        //cart_ordernumber: carts?.custom?.customFieldsRaw?.value ?? '--',
+        cart_ordernumber: carts?.custom?.type?.key ?? '--',
         customer: fullName(
           carts?.customer?.firstName ?? '--',
           carts?.customer?.lastName

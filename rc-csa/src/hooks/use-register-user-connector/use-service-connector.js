@@ -5,8 +5,10 @@ import {
   useMcLazyQuery,
 } from '@commercetools-frontend/application-shell';
 import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
-import{getForKey,CONSTANTS,FETCH_USERS_INFO,CREATE_CUSTOMOBJECT_MUTATION,FETCH_USERS_LIST,FETCH_TICKETS_BY_ID, getCreateTicketDraft, getTicketFromCustomObject ,createTicketHistory} from 'ct-tickets-helper-api'
-
+import{getForKey,CONSTANTS,FETCH_USERS_INFO,FETCH_CUSTOMER_TICKETS,
+  CREATE_CUSTOMOBJECT_MUTATION,
+  FETCH_USERS_LIST,FETCH_TICKETS_BY_ID, getCreateTicketDraft, 
+  getTicketFromCustomObject ,createTicketHistory} from 'ct-tickets-helper-api'
 import { extractErrorFromGraphQlResponse } from '../../helpers';
 
 export const useUserFetcher = (email) => {
@@ -126,4 +128,29 @@ export const useGetTicketById = (id) => {
   return{
     ticket
   }
+}
+
+
+export const useGetTicketByCustomerEmail= () => {
+
+  const [customObjects, {  loading }] = useMcLazyQuery(gql`${FETCH_CUSTOMER_TICKETS}`);
+  
+  const execute = async (email) => {
+    try {
+      return await customObjects({ 
+        variables:  {
+          [CONSTANTS.CONTAINER]: CONSTANTS.containerKey,
+          [CONSTANTS.WHERE]: "value(email=\""+email+"\")"
+        },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      } });
+    }catch (graphQlResponse) {
+      throw extractErrorFromGraphQlResponse(graphQlResponse);
+    }
+  }
+  return {
+    execute
+  };
+
 }

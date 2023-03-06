@@ -11,12 +11,14 @@ import {
   FETCH_CARTS,
   FETCH_CART_BY_CARTNUMBER,
   CREATE_ORDER_FROMCART,
+  UPDATE_CART_BY_ID,
+  CONSTANTS,FETCH_ACTIVE_CART_COUNT,
+  FETCH_ORDER_COUNT
 } from 'ct-tickets-helper-api';
 import {
   convertToActionData,
   extractErrorFromGraphQlResponse,
 } from '../../helpers';
-import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 export const useCartsFetcher = ({ page, perPage, tableSorting }) => {
   const { data, error, loading } = useMcQuery(
@@ -106,3 +108,83 @@ export const usePlaceOrderFromCart = () => {
     execute,
   };
 };
+export const useCartUpdateById = () => {
+  const [updateCartByID, { loading }] = useMcMutation(
+    gql`
+      ${UPDATE_CART_BY_ID}
+    `
+  );
+
+  const executeUpdateCart = async ({ version, actions, cartId }) => {
+    console.log('cart hooks');
+    console.log(version);
+    console.log(actions);
+    console.log(cartId);
+    return await updateCartByID({
+      variables: {
+        id: cartId,
+        version: version,
+        actions: actions,
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    });
+  };
+
+  return {
+    executeUpdateCart,
+    loading,
+  };
+};
+
+export const useGetActiveCartByCustomer= () => {
+
+  const [carts, {  loading }] = useMcLazyQuery(gql`${FETCH_ACTIVE_CART_COUNT}`);
+  
+  const execute = async (id) => {
+
+    console.log('testetetetette');
+    try {
+      return await carts({ 
+        variables:  {
+          [CONSTANTS.WHERE]: "cartState=\""+CONSTANTS.ACTIVE_STATUS+"\" and customerId=\""+id+"\""
+        },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      } });
+    }catch (graphQlResponse) {
+      throw extractErrorFromGraphQlResponse(graphQlResponse);
+    }
+  }
+  return {
+    execute
+  };
+
+}
+
+
+export const useGetOrdersByCustomer= () => {
+
+  const [carts, {  loading }] = useMcLazyQuery(gql`${FETCH_ORDER_COUNT}`);
+  
+  const execute = async (id,statuses) => {
+
+    console.log('testetetetette');
+    try {
+      return await carts({ 
+        variables:  {
+          [CONSTANTS.WHERE]: "orderState in ("+statuses+") and customerId=\""+id+"\""
+        },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      } });
+    }catch (graphQlResponse) {
+      throw extractErrorFromGraphQlResponse(graphQlResponse);
+    }
+  }
+  return {
+    execute
+  };
+
+}

@@ -1,47 +1,54 @@
-export const FETCH_CARTS = `query FetchAllCarts($limit: Int!, $offset: Int!, $sort: [String!]){
-    carts(limit: $limit, offset: $offset, sort: $sort){
-      total
-      count
-      offset
-      results{
-        id
-        cartState
-        key
-        
-        customer{
-            firstName
-            lastName
-        }
-        custom{
-      type{
-        id
-      }
-    }
-        customerEmail
-        createdAt
-        createdBy{
-          customerRef{
-            typeId
+export const FETCH_CARTS = `query FetchAllCarts($limit: Int!, $offset: Int!, $sort: [String!]) {
+    carts(limit: $limit, offset: $offset, sort: $sort) {
+        total
+        count
+        offset
+        results {
             id
-          }
+            cartState
+            key
+
+            customer {
+                firstName
+                lastName
+            }
+            custom {
+                type {
+                    id
+                    key
+                }
+                customFieldsRaw{
+                value
+              }
+                
+            }
+            customerEmail
+            createdAt
+            createdBy {
+                customerRef {
+                    typeId
+                    id
+                }
+            }
+            lastModifiedAt
+            shippingInfo {
+                shippingMethodName
+                shippingMethodState
+            }
+            lineItems {
+                quantity
+            }
+            totalPrice {
+                type
+                centAmount
+                currencyCode
+                fractionDigits
+            }
+            
         }
-        lastModifiedAt
-        shippingInfo{
-            shippingMethodName
-            shippingMethodState
-        }
-        lineItems{
-          quantity
-        }
-        totalPrice{
-          type
-          centAmount
-          currencyCode
-          fractionDigits
-        }
-      }
     }
-  }`;
+}
+`;
 
 export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
     cart(id:$id){
@@ -63,6 +70,7 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
         origin
         ...lineItems
         ...shippingAddress
+        ...shippingInfo
         ...billingAddress
         ...taxedPrice
         ...custom
@@ -233,6 +241,74 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
            }
         } 
   }
+   fragment shippingInfo on Cart{
+    shippingInfo{
+        shippingMethodName
+        shippingMethodState
+        price{
+            type
+            currencyCode
+            centAmount
+            fractionDigits
+        }
+        shippingRate{
+            price{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+            freeAbove{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+            tiers{
+                type
+                __typename
+            }
+        }
+        taxRate{
+            name
+            amount
+            country
+            includedInPrice
+            id
+            subRates{
+                __typename
+            }
+        }
+        taxCategory{
+            id
+            name
+        }
+        shippingMethod{
+            id
+            name
+        }
+        taxedPrice{
+            totalNet{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+            totalGross{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+            totalTax{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+        }
+    }
+  }
   
   fragment shippingAddress on Cart{
     shippingAddress{
@@ -259,11 +335,15 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
     }
   }
   fragment custom on Cart{
-    custom{
-      type{
-        id
-      }
-    }
+    custom {
+                type {
+                    id
+                    key
+                }
+               customFieldsRaw{
+                value
+              } 
+            }
   }`;
 
 export const CREATE_SHIPPING_BILLING_ADDRESS = `mutation updateCart(
@@ -325,6 +405,49 @@ fragment state on Order{
     custom{
       type{
         id
+        key
       }
     }
   }`;
+export const UPDATE_CART_BY_ID = `mutation updateCartById($version:Long!,
+    $actions:[CartUpdateAction!]!,
+    $id:String!){
+      updateCart(version:$version,actions:$actions,id:$id){
+        id
+        cartState
+        version
+        lineItems{
+          productId
+
+        }
+        shippingAddress{
+      id
+      streetName
+      streetNumber
+      postalCode
+      city
+      state
+      building
+      country
+    }
+      }
+    }`;
+
+
+export const FETCH_ACTIVE_CART_COUNT = `query FetchActiveCarts ($where:String){
+  carts(where:$where){
+      total
+      count
+      offset
+  }
+}
+  `;
+
+  export const FETCH_ORDER_COUNT = `query FETCH_ORDER_COUNT ($where:String){
+    orders(where:$where){
+        total
+        count
+        offset
+        }
+    }
+    `;

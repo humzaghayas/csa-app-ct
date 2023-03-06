@@ -5,11 +5,13 @@ import Spacings from '@commercetools-uikit/spacings';
 import { useEffect, useState } from 'react';
 import Text from '@commercetools-uikit/text';
 import { useGetAtgOrdersDetails } from '../../../../hooks/use-atg-conector';
+import { DataTable } from '@commercetools-frontend/ui-kit';
 
 const AtgOrderDetail = (props) => {
 
   const [isCustomerFetched, setIsCustomerFetched] = useState(false);
   const [order, setOrder] = useState(null);
+  const [rows, setRows] = useState([{productId:"Loading..."}]);
   const {execute} = useGetAtgOrdersDetails();
 
   const match = useRouteMatch();
@@ -22,6 +24,17 @@ const AtgOrderDetail = (props) => {
       }
       const order = await execute(match.params.id);
       setOrder(order);
+
+
+      const r = order?.order?.commerceItems?.map(c =>{
+        return {
+          productId:c.id,
+          productDisplayName:c.productDisplayName,
+          quantity:c.quantity,
+          price:`${c.priceInfo.amount} - ${c.priceInfo.currencyCode}`
+        }
+      });
+      setRows(r);
       console.log('order',order);
       setIsCustomerFetched(true);
 
@@ -29,56 +42,46 @@ const AtgOrderDetail = (props) => {
     }
   },[]);
 
+  const columns = [
+    { key: 'productId', label: 'Product Id' },
+    { key: 'productDisplayName', label: 'Product Name' },
+    { key: 'quantity', label: 'Quantity' },
+    { key: 'price', label: 'Price' }
+  ];
+
   return (
     <div>
-      {order?      (
+      {order?.isOrder ?(
         <Spacings.Stack scale="l">
         <Spacings.Stack scale="s">
           <Text.Headline as="h2">Order ID</Text.Headline>
-          <Text.Body>{order?.orderId}</Text.Body>
-          <Text.Headline as="h2">Profile ID</Text.Headline>
-          <Text.Body>{order?.profileId}</Text.Body>
-          <Text.Headline as="h2">State</Text.Headline>
-          <Text.Body>{order?.stateAsString}</Text.Body>
-            <Spacings.Stack scale="xs">
-              <Text.Headline as="h2">Products</Text.Headline>
-              <div>
-                {order?.products ?
-                  <>
-                    <Text.Headline as="h3">Products</Text.Headline>
+          <Text.Body>{order?.order?.id}</Text.Body>
 
-                    {order.products.map((value, index) => {
-                      return <div key={index}>{value.productId}</div>
-                      })
-                    }
-                    </>:"No Products"
+
+          <Spacings.Stack scale="xs">
+ 
+              <div>
+                {order?.order?.commerceItems ?
+                  <>
+                  <Text.Headline as="h2">Products</Text.Headline>
+                    <Spacings.Stack scale="l">
+                      <DataTable
+                        isCondensed
+                        columns={columns}
+                        rows={rows}
+                        maxHeight={600}
+                      />
+                    </Spacings.Stack>
+   
+                  </>:"No Products"
                 } 
               </div>
             </Spacings.Stack>
-            <Spacings.Stack scale="xs">
-                <Text.Headline as="h2">Price Info</Text.Headline>
-                <Spacings.Inline alignItems="flex-end">
-                  <div>
-                  <Text.Headline as="h4">Amount:</Text.Headline>
-                    <Text.Body>
-                      {order?.priceInfo?.amount}&nbsp;
-                      {order?.priceInfo?.currencyCode}
-                    </Text.Body>
-                  </div>
-                </Spacings.Inline>
-            </Spacings.Stack>
-            <Spacings.Stack scale="xs">
-                <Text.Headline as="h2">Tax Price Info</Text.Headline>
-                <Spacings.Inline alignItems="flex-end">
-                  
-                  <Text.Headline as="h4">Amount:</Text.Headline> 
-                  <Text.Body>
-                    {order?.taxPriceInfo?.amount}&nbsp;
-                    {order?.taxPriceInfo?.currencyCode}
-                  </Text.Body>
-                </Spacings.Inline>
-            </Spacings.Stack>               
-        </Spacings.Stack>
+          <Text.Headline as="h2"> Price</Text.Headline>
+            <div><b>Total Price : {order?.order?.priceInfo?.total} - {order?.order?.priceInfo?.currencyCode}</b></div>
+            <div><b>Tax : {order?.order?.priceInfo?.tax} - {order?.order?.priceInfo?.currencyCode}</b></div>
+            <div><b>Discount : {order?.order?.priceInfo?.discountAmount} - {order?.order?.priceInfo?.currencyCode}</b></div>
+         </Spacings.Stack>
       </Spacings.Stack>) : "Loading ..."
     }
     </div>

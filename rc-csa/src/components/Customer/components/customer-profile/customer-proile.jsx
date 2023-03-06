@@ -118,6 +118,6 @@ const customeCustomerFields=transformCustomFieldsRawToCustomFields(customFieldsR
 };
 CustomerProfile.displayName = 'CustomerDetails';
 CustomerProfile.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default CustomerProfile;

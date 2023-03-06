@@ -25,9 +25,9 @@ import messages from './messages';
 import { useRouteMatch } from 'react-router-dom';
 import {
   useFetchCartById,
-  // useCartUpdateById,
-  // //useCreateCartEditById,
-  // useCartEditApply,
+  useCartUpdateById,
+  useCreateOrderEditById,
+  useCartEditApply,
 } from '../../../../hooks/use-cart-connector/use-cart-connector';
 import Spacings from '@commercetools-uikit/spacings';
 import { PlusBoldIcon, SecondaryButton } from '@commercetools-frontend/ui-kit';
@@ -45,9 +45,8 @@ const CartView = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
-  // const { executeUpdateCart } = useCartUpdateById();
-  // //const { executeCreateCartEdit } = useCreateCartEditById();
-  // const { executeCartEditApply } = useCartEditApply();
+  const { executeUpdateCart } = useCartUpdateById();
+
   const showNotification = useShowNotification();
   const showApiErrorNotification = useShowApiErrorNotification();
 
@@ -55,52 +54,24 @@ const CartView = (props) => {
 
   const [reducerValue, forceUpdate] = useReducer((x) => x + 1, 0);
 
-  const { cart } = useFetchCartById(match.params.id);
-  //console.log('cart', cart);
+  let { cart } = useFetchCartById(match.params.id);
+
   const handleSubmit = useCallback(async (e) => {
     console.log('In Handle Submit');
-    const cartItem = e.cartItem;
-    if (!cartItem.isQuantityUpdated) {
+    const actions = e.actions;
+    if (actions.length != 0) {
       try {
         const draft = {
-          resource: {
-            id: cart?.id,
-            typeId: 'cart',
-          },
-          stagedActions: [
-            {
-              changeLineItemQuantity: {
-                lineItemId: cartItem?.lineItemId,
-                quantity: cartItem?.quantity,
-              },
-            },
-          ],
-          comment: cartItem?.comment ? cartItem?.comment : 'No Comment',
+          cartId: cart.id,
+          version: cart.version,
+
+          actions,
         };
         console.log(draft);
-        const result = await executeCreateCartEdit(draft);
-        const data = await result.data.createCartEdit;
-        const cartEditId = data?.id;
-        const editVersion = data?.version;
-        const cartVersion = cart?.data?.cart?.version;
-        const resulType = data?.result?.type;
+        const result = await executeUpdateCart(draft);
 
-        const payload = {
-          resourceVersion: cartVersion,
-          editVersion: editVersion,
-        };
+        console.log(result);
 
-        console.log(payload);
-        console.log(resulType);
-        console.log(resulType == 'PreviewSuccess');
-
-        if (resulType == 'PreviewSuccess') {
-          console.log('Apply edit');
-          const result2 = await executeCartEditApply(payload, cartEditId);
-          console.log(result2);
-        }
-
-        console.log(result.data.createCartEdit);
         forceUpdate();
         showNotification({
           kind: 'success',
@@ -148,12 +119,12 @@ const CartView = (props) => {
   return (
     <CartViewForm
       initialValues={docToFormValues(
-        //cart?.data?.cart
+        //cart?.data?.cart,
         cart,
         projectLanguages
       )}
-      //onSubmit={handleSubmit}
-      //onChange={handleChange}
+      onSubmit={handleSubmit}
+      onChange={handleChange}
       isReadOnly={!canManage}
       dataLocale={dataLocale}
     >
@@ -165,6 +136,6 @@ const CartView = (props) => {
 };
 CartView.displayName = 'CartDetails';
 CartView.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default CartView;

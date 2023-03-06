@@ -103,6 +103,6 @@ const CustomerMessages = (props) => {
 };
 CustomerMessages.displayName = 'CustomerMessages';
 CustomerMessages.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default CustomerMessages;

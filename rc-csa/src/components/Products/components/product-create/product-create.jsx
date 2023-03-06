@@ -107,6 +107,6 @@ const ProductCreate = (props) => {
 };
 ProductCreate.displayName = 'OrderDetails';
 ProductCreate.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default ProductCreate;

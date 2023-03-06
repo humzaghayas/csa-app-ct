@@ -18,9 +18,23 @@ import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import { PrimaryButton, SecondaryButton } from '@commercetools-uikit/buttons';
 import DataTable from '@commercetools-uikit/data-table';
-import { MoneyField } from '@commercetools-frontend/ui-kit';
+import {
+  MoneyField,
+  //SearchSelectInput
+} from '@commercetools-frontend/ui-kit';
 import { PlusBoldIcon } from '@commercetools-uikit/icons';
-import { Switch, useHistory, useRouteMatch } from 'react-router-dom';
+import {
+  Route,
+  Switch,
+  useHistory,
+  useParams,
+  useRouteMatch,
+} from 'react-router-dom';
+import { getSearchProductRows } from './conversions';
+import { useProductSearchByText } from '../../../../hooks/use-product-search-connector/use-product-search-connector';
+import { NumberInput, SearchSelectInput } from '@commercetools-frontend/ui-kit';
+
+import { SuspendedRoute } from '@commercetools-frontend/application-shell';
 
 const getCartStates = Object.keys(CART_STATE).map((key) => ({
   label: key,
@@ -39,34 +53,23 @@ const columns = [
   { key: 'totalPrice', label: 'Total' },
 ];
 
-const itemRenderer = (item, column) => {
-  switch (column.key) {
-    case 'product':
-      return (
-        <div>
-          <Spacings.Stack scale="s">
-            <Spacings.Inline>
-              <img src={item.product.image} height={65} width={65} />
-              <Spacings.Stack scale="s">
-                <div>{item.product.name}</div>
-                <div>SKU: {item.product.sku}</div>
-                <div>Key: {item.product.key}</div>
-              </Spacings.Stack>
-            </Spacings.Inline>
-          </Spacings.Stack>
-        </div>
-      );
-    default:
-      return item[column.key];
-  }
-};
+const searchColumns = [
+  { key: 'product', label: 'Product' },
+  { key: 'unitPrice', label: 'Unit Price' },
+  { key: 'quantity', label: 'Qty' },
+  { key: 'addButton', label: '' },
+];
 
 const CartViewForm = (props) => {
   const intl = useIntl();
   const { push } = useHistory();
   const match = useRouteMatch();
   const [active, setActive] = useState(false);
-  const placeOrder = () => {};
+  const { executeProductSearch } = useProductSearchByText();
+
+  const [searchProducts, setSearchProducts] = useState([]);
+
+  //const placeOrder = () => {};
   const formik = useFormik({
     initialValues: props.initialValues,
     onSubmit: props.onSubmit,
@@ -75,34 +78,145 @@ const CartViewForm = (props) => {
     enableReinitialize: true,
   });
 
-  const onChange = (e) => {
-    console.log(e?.target);
-    const id = e?.target?.id;
-    const value = e?.target?.value;
-    const cartId = formik?.values?.id;
-    const version = formik?.values?.version;
-    const actions = [];
-    // eslint-disable-next-line default-case
-    switch (id) {
-      case 'cartState':
-        console.log('Cart State');
-        console.log(value);
-        actions.push({
-          changeCartState: {
-            cartState: value,
-          },
-        });
-        e.payload = {
-          actions,
-          version: version,
-          cartId,
-        };
-        props.onChange(e);
-        break;
+  const params = useParams();
+  const lineItemId = params.id;
+
+  const itemRenderer = (item, column) => {
+    switch (column.key) {
+      case 'product':
+        return (
+          <div>
+            <Spacings.Stack scale="s">
+              <Spacings.Inline>
+                <img src={item.product.image} height={65} width={65} />
+                <Spacings.Stack scale="s">
+                  <div>{item.product.name}</div>
+                  <div>SKU: {item.product.sku}</div>
+                  <div>Key: {item.product.key}</div>
+                </Spacings.Stack>
+              </Spacings.Inline>
+            </Spacings.Stack>
+          </div>
+        );
+      case 'quantity':
+        return (
+          <div>
+            <Spacings.Stack scale="s">
+              <Spacings.Inline>
+                <Spacings.Stack scale="s">
+                  <NumberInput
+                    id="quantity"
+                    label="Quantity"
+                    value={item.quantity}
+                    isDisabled={item.isEditQuantity}
+                    onChange={(e) => {
+                      e.actions = [
+                        {
+                          changeLineItemQuantity: {
+                            lineItemId: item?.id,
+                            quantity: Number(e.target.value),
+                          },
+                        },
+                      ];
+                      props.onSubmit(e);
+                      console.log('type of', typeof e.target.value);
+                    }}
+                  />
+                </Spacings.Stack>
+              </Spacings.Inline>
+            </Spacings.Stack>
+          </div>
+        );
+      case 'isEditQuantity':
+        return (
+          <div>
+            <Spacings.Stack scale="s">
+              <Spacings.Inline>
+                <Spacings.Stack scale="s">
+                  <PrimaryButton
+                    label="Edit Quantity"
+                    onClick={() => {
+                      item.isEditQuantity = true;
+                    }}
+                  />
+                </Spacings.Stack>
+              </Spacings.Inline>
+            </Spacings.Stack>
+          </div>
+        );
+      default:
+        return item[column.key];
     }
   };
-  // console.log('Cart details LineItems');
-  // console.log(formik?.values);
+
+  const itemRendererSearch = (item, column) => {
+    switch (column.key) {
+      case 'product':
+        return (
+          <div>
+            <Spacings.Stack scale="s">
+              <Spacings.Inline>
+                <img src={item?.image?.url} height={65} width={65} />
+                <Spacings.Stack scale="s">
+                  <div>{item?.product}</div>
+                  <div>SKU: {item?.sku}</div>
+                  <div>Key: {item?.key}</div>
+                </Spacings.Stack>
+              </Spacings.Inline>
+            </Spacings.Stack>
+          </div>
+        );
+      case 'quantity':
+        return (
+          <div>
+            <Spacings.Stack scale="s">
+              <Spacings.Inline>
+                <NumberInput
+                  value={item.quantity}
+                  isReadOnly={false}
+                  onChange={(e) => {
+                    item.quantity = e.target.value;
+                  }}
+                  horizontalConstraint={2}
+                />
+              </Spacings.Inline>
+            </Spacings.Stack>
+          </div>
+        );
+      case 'addButton':
+        return (
+          <div>
+            <Spacings.Stack scale="s">
+              <Spacings.Inline>
+                <PrimaryButton
+                  title="Add"
+                  label="Add"
+                  type="button"
+                  onClick={(e) => {
+                    console.log('Add Cart Item');
+                    console.log('item', item);
+
+                    e.actions = [
+                      {
+                        addLineItem: {
+                          productId: item?.productId,
+                          variantId: item?.variantId,
+                          quantity: item?.quantity,
+                        },
+                      },
+                    ];
+                    props.onSubmit(e);
+                  }}
+                />
+              </Spacings.Inline>
+            </Spacings.Stack>
+          </div>
+        );
+
+      default:
+        return item[column.key];
+    }
+  };
 
   const onSubmit = (e) => {
     // console.log("In order create form");
@@ -115,8 +229,8 @@ const CartViewForm = (props) => {
           <SecondaryButton
             label="Place Order"
             data-track-event="click"
-            onClick={() => push(`place-order`)}
-            //onClick={placeOrder()}
+            //onClick={() => push(`place-order`)}
+            onClick={() => push(`shipping-address`)}
             iconLeft={<PlusBoldIcon />}
             size="medium"
           />
@@ -137,14 +251,15 @@ const CartViewForm = (props) => {
           <Spacings.Stack scale="m">
             <Spacings.Stack scale="n">
               <TextField
-                name="cartNumber"
+                name="cart_ordernumber"
                 title="Order Number"
-                value={formik.values.cartNumber}
-                errors={formik.errors.cartNumber}
-                touched={formik.touched.cartNumber}
-                onChange={onChange}
-                onBlur={formik.handleBlur}
-                //isReadOnly={props.isReadOnly}
+                value={formik.values.cart_ordernumber}
+                //errors={formik.errors.cart_ordernumber}
+                //touched={formik.touched.cart_ordernumber}
+                //onChange={formik.handleChange}
+                onChange={(event) => console.log(event)}
+                //onBlur={formik.handleBlur}
+                isReadOnly={props.isReadOnly}
                 horizontalConstraint={13}
               />
             </Spacings.Stack>
@@ -178,8 +293,8 @@ const CartViewForm = (props) => {
         }
         scale="l"
       >
-        <Spacings.Stack scale="s">
-          <Constraints.Horizontal min={13}>
+        <Constraints.Horizontal min={13}>
+          <Spacings.Stack scale="s">
             {/* <SecondaryButton iconLeft={<PlusBoldIcon />} label="Place Order" onClick={() => setValue(true)} /> */}
 
             <Spacings.Stack scale="m">
@@ -191,9 +306,64 @@ const CartViewForm = (props) => {
                 />
               ) : null}
             </Spacings.Stack>
-          </Constraints.Horizontal>
-        </Spacings.Stack>
+          </Spacings.Stack>
+        </Constraints.Horizontal>
+
         {/* </Spacings.Inline> */}
+      </CollapsiblePanel>
+      <CollapsiblePanel
+        data-testid="quote-summary-panel"
+        header={
+          <CollapsiblePanel.Header>
+            {/* {formatMessage(messages.panelTitle)} */}
+            {'Add line items'}
+          </CollapsiblePanel.Header>
+        }
+        scale="l"
+      >
+        <Constraints.Horizontal>
+          <Spacings.Stack scale="m">
+            <Spacings.Stack scale="s">
+              <SearchSelectInput
+                id="searchProduct"
+                name="searchProduct"
+                horizontalConstraint={7}
+                optionType="single-lined"
+                isAutofocussed={false}
+                backspaceRemovesValue={true}
+                isClearable={true}
+                isDisabled={false}
+                isReadOnly={false}
+                isMulti={false}
+                onChange={() => {}}
+                placeholder="Search products by name"
+                loadOptions={async (s) => {
+                  console.log(s);
+                  const result = await executeProductSearch(s);
+                  setSearchProducts(
+                    result?.data?.productProjectionSearch?.results
+                  );
+                  console.log(result);
+                  // return s;
+                }}
+                // noOptionsMessage="No exact match found"
+                // loadingMessage="loading exact matches"
+                // placeholder="Select customers"
+                // eslint-disable-next-line no-undef
+                // loadOptions={customLoadOptionsFunction}
+                // cacheOptions={false}
+              />
+
+              {searchProducts.length > 0 ? (
+                <DataTable
+                  rows={getSearchProductRows(searchProducts)}
+                  columns={searchColumns}
+                  itemRenderer={itemRendererSearch}
+                />
+              ) : null}
+            </Spacings.Stack>
+          </Spacings.Stack>
+        </Constraints.Horizontal>
       </CollapsiblePanel>
     </Spacings.Stack>
   );

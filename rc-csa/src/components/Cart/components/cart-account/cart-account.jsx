@@ -23,7 +23,10 @@ import Spacings from '@commercetools-uikit/spacings';
 import { lazy, useState, useEffect } from 'react';
 import CartView from '../cart-view/cart-view';
 import ShippingAddress from '../create-order/add-shipping-address';
-import PlaceOrder from '../place-order/place-order';
+import PlaceOrder from '../place-order/place-order ';
+import OrderCreate from '../../../Orders/components/order-create/order-create';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { entryPointUriPath } from '../../../../constants';
 
 const CartAccount = (props) => {
   const match = useRouteMatch();
@@ -33,9 +36,14 @@ const CartAccount = (props) => {
   const { push } = useHistory();
   const [carts, setData] = useState();
 
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
+
   //const apiUrl ="http://localhost:4456";
   const apiUrl = 'https://ms-Order-f4b4o225iq-ue.a.run.app';
   const OrderId = params.id;
+  
   // const cartNumber = params.id;
   // useEffect(() => {
   //   getOrder({ url: apiUrl, id: OrderId }).then((res) => setData(res));
@@ -46,7 +54,7 @@ const CartAccount = (props) => {
       title=" "
       //  onPreviousPathClick={() => history.push(`Order-list`)}
       onPreviousPathClick={() =>
-        history.push(`/csa-project-2/csa-customer-tickets/Cart`)
+        history.push(`/${projectKey}/${entryPointUriPath}/Cart`)
       }
       previousPathLabel="Go to View cart"
       tabControls={
@@ -70,9 +78,15 @@ const CartAccount = (props) => {
         <Route path={`${match.path}/place-order`}>
           <PlaceOrder />
         </Route>
-        {/* <Route path={`${match.path}/add-shipping-address`}>
-          <ShippingAddress />
+        {/* <Route path={`${match.path}/cart-line-items`}>
+          <CartLineItems onClose={() => push(`${match.url}`)} />
         </Route> */}
+        <Route path={`${match.path}/shipping-address`}>
+          <ShippingAddress />
+        </Route>
+        <Route path={`${match.path}/orders-general`}>
+          <OrderCreate />
+        </Route>
       </Switch>
     </TabularDetailPage>
   );
@@ -80,6 +94,6 @@ const CartAccount = (props) => {
 CartAccount.displayName = 'Companies';
 CartAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default CartAccount;

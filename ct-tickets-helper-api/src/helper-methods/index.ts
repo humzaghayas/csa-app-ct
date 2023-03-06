@@ -1,6 +1,7 @@
 import { TICKET_TYPE,TICKET_PRIORITIY_VALUES,TICKET_SOURCE, CONSTANTS, TICKET_STATUS } from "../constants";
 import { CREATE_CUSTOMOBJECT_MUTATION } from "../graphql-queries";
 import { v4 as uuidv4 } from 'uuid';
+import { InvoiceNumber } from 'invoice-number';
 
 export function getTicketRows(customObjects){
 
@@ -9,6 +10,7 @@ export function getTicketRows(customObjects){
     if(customObjects?.results){
         return customObjects?.results.map(co =>{
             return { id: co.id,
+                ticketNumber:co.value.ticketNumber,
                 Customer: co.value.email,
                 Created: co.createdAt,
                 Modified:co.lastModifiedAt,
@@ -159,9 +161,15 @@ function getTicketValueString( ticketInfo,uuid){
     const currentDate = new Date().toUTCString();
     const email = ticketInfo.email;
     const customerId = ticketInfo.customerId;
+    let tNumber = ticketInfo.ticketNumber;
+
+    if(!tNumber){
+        tNumber = getInvoiceNumber();
+    }
 
     return `{
         \"id\": \"${uuid}\",
+        \"ticketNumber\":\"${tNumber}\",
         \"customerId\": \"${customerId}\",
         \"email\":\"${email}\",
         \"source\": \"${ticketInfo.contactType}\",
@@ -223,6 +231,7 @@ function createTicketFromCustomObject(data){
 
     return {
         id: data?.customObject?.id ?? '',
+        ticketNumber: data?.customObject?.value?.ticketNumber ?? '',
         key: data?.customObject?.key ?? '',
         container: data?.customObject?.container ?? '',
         version: data?.customObject?.version ?? '',
@@ -256,3 +265,86 @@ export function isEmailValid(email) {
 
     return false;
 }
+
+let invoiceNumber ;
+
+export function getInvoiceNumber(prefix="RC") {
+    const today = new Date();
+
+    invoiceNumber = invoiceNumber? InvoiceNumber.next(invoiceNumber) :
+    `${today.getFullYear()}${today.getMonth()+1}${today.getDate()}-${today.getHours()}${today.getMinutes()}` ;
+
+    return `${prefix}-${invoiceNumber}`
+}
+
+export function getPaymentList(orders){
+    let paymentList = [];
+    orders?.results?.forEach(o => {
+        
+
+        o.paymentInfo.payments.forEach(p =>{
+          let payment ={};
+
+          payment['orderNumber'] = o.id;
+
+          if(p.transactions && p.transactions.length > 0){
+
+            const trans = p.transactions.find(t => t.state === 'Success');
+              if(trans){
+                payment['status']= 'Completed';
+                payment['paymentDate']=trans.timestamp;
+              }else{ 
+                const trans = p.transactions.find(t => t.state === 'Failure');
+                if(trans){
+                    payment['status']= 'Failure';
+                    payment['paymentDate']=trans.timestamp;
+                  }else {
+                    const trans = p.transactions.find(t => t.state === 'Pending');
+                    if(trans){
+                        payment['status']= 'Not Complete';
+                        payment['paymentDate']=trans.timestamp;
+                      }else{
+                        const trans = p.transactions.find(t => t.state === 'Initial');
+                        if(trans){
+                            payment['status']= 'Not Accepted';
+                            payment['paymentDate']=trans.timestamp;
+                          }else{
+                            payment['status']= 'Not Initiated Yet!';
+                          }
+                      }
+                  }
+                } 
+          }
+
+          payment['paymentMethod'] = p.paymentMethodInfo.method;
+
+          paymentList.push(payment);
+        });
+      });
+
+      return paymentList;
+    }
+
+
+const ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const INTEGERS = "0123456789";
+const EX_CHARACTERS = "!@#$%^&*_-=+";
+export const createPassword = (length, hasNumbers, hasSymbols) => {
+    let chars = ALPHA;
+    if (hasNumbers) {
+        chars += INTEGERS;
+    }
+    if (hasSymbols) {
+        chars += EX_CHARACTERS;
+    }
+    return generatePassword(length, chars);
+};
+
+// this function formats our password to however you need
+const generatePassword = (length, chars) => {
+    let password = "";
+    for (let i = 0; i < length; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+};

@@ -17,18 +17,11 @@ import {
 import PropTypes from 'prop-types';
 
 import Spacings from '@commercetools-uikit/spacings';
-import { Fragment } from 'react';
-import styles from './customer-account-module.css';
 import Avatar from '@commercetools-uikit/avatar';
-import { lazy, useState, useEffect } from 'react';
-import CustomerCreateForm from '../customer-create/customer-create-form';
 import CustomerCreate from '../customer-create/customer-create';
 import CustomerPassword from '../customer-password/customer-password';
 import CustomerProfile from '../customer-profile';
 import CustomerOrder from '../customer-orders/customer-order';
-// import CustomerAddress from '../customer-address/customer-address';
-import Text from '@commercetools-uikit/text';
-import NoImageIcon from '@commercetools-frontend/assets/images/camera.svg';
 import CustomerTickets from '../customer-Tickets/customer-tickets';
 import CustomerList from '../customer-address/customer-address-list';
 import { useCustomerDetailsFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
@@ -36,26 +29,59 @@ import { useCustomerDetailsFetcher } from '../../../../hooks/use-customers-conne
 import CustomerAddressCreate from '../customer-address/customer-address-create';
 import CustomerPayment from '../customer-payment/customer-payment';
 import CustomerReturn from '../customer-returns/customer-return';
-
+import { CONSTANTS } from 'ct-tickets-helper-api';
+import { useGetTicketByCustomerEmail } from '../../../../hooks/use-register-user-connector';
+import { useEffect, useState } from 'react';
+import { useGetActiveCartByCustomer ,useGetOrdersByCustomer} from '../../../../hooks/use-cart-connector';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { entryPointUriPath } from '../../../../constants';
 
 
 const CustomerAccount = (props) => {
   const match = useRouteMatch();
-  const tabsModalState = useModalState(true);
   const history = useHistory();
   const params = useParams();
-  const { push } = useHistory();
-  // const [Customer, setData] = useState();
-
   const { customer, error, loading } = useCustomerDetailsFetcher(params.id);
+  const [ticket, setTicket] = useState(null);
 
-  console.log('customer', JSON.stringify(customer));
-  // console.log("params.id",params.id);
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
+  const [customerSummary, setCustomerSummary] = useState({
+    ticketsCount:0,
+    activeCartCount:0,
+    orderCount:0,
+    salesCount:0
+  });
+
+  const{execute} = useGetTicketByCustomerEmail();
+  const{execute:executeCartService} = useGetActiveCartByCustomer();
+  const{execute:executeOrderService} = useGetOrdersByCustomer();
+
+  useEffect(async() => {
+    console.log('ticket 12121');
+      const d = await execute(customer?.email);
+      const c = await executeCartService(params.id);
+      const o = await executeOrderService(params.id
+            ,"\""+CONSTANTS.OPEN_STATUS+"\"");
+      const s = await executeOrderService(params.id
+              ,"\""+CONSTANTS.CONFIRMED_STATUS+"\"");
+      setTicket(d?.data);
+      
+      setCustomerSummary({ticketsCount :d?.data?.customObjects?.total,
+          activeCartCount:c?.data?.carts?.total,
+          orderCount:o.data?.orders?.total,
+          salesCount:s.data?.orders?.total
+        } )
+      console.log('ticket',d?.data);
+      console.log('cart: ',c);
+  }, [customer?.email,customer?.id]);
+
+
   return (
     <TabularDetailPage
      title=" "
-         onPreviousPathClick={() => history.push(`/csa_project/csa-customer-tickets/Customers`)}
-      //  onPreviousPathClick={() => history.push(`${match.url}`)}
+         onPreviousPathClick={() => history.push(`/${projectKey}/${entryPointUriPath}/Customers`)}
       previousPathLabel="Go to View Customers"
       tabControls={
         <>
@@ -63,26 +89,19 @@ const CustomerAccount = (props) => {
           <Spacings.Inline>
         
           <Avatar
-    gravatarHash="20c9c1b252b46ab49d6f7a4cee9c3e68"
-    firstName={customer?.firstName}
-    lastName={customer?.lastName}
-    size="l"
-  />
- 
-        
+            gravatarHash="20c9c1b252b46ab49d6f7a4cee9c3e68"
+            firstName={customer?.firstName}
+            lastName={customer?.lastName}
+            size="l"
+          />
          <Spacings.Stack scale="xs">
-         <Spacings.Stack scale="xl">
-        </Spacings.Stack>
+              <Spacings.Stack scale="xl">
+                  </Spacings.Stack>
                     <h1>{customer?.firstName} 360° view</h1>
-           <h4>{customer?.email}</h4>
-       
-         </Spacings.Stack>
-
-
-         {/* </div> */}
-     
-         </Spacings.Inline>
-         </Spacings.Stack>
+                    <h4>{customer?.email}</h4>
+                  </Spacings.Stack>
+              </Spacings.Inline>
+          </Spacings.Stack>
           <Spacings.Stack scale="xl">
             <Spacings.Inline>
               <TabHeader
@@ -109,26 +128,13 @@ const CustomerAccount = (props) => {
                 to={`${match.url}/Customers-Address`}
                 label="Addresses"
               />
+              <TabHeader to={`${match.url}/Customers-summary`} label="Summary"  />
+              <TabHeader to={`${match.url}/Customers-profile`} label="Profile" />
+              <TabHeader to={`${match.url}/Customers-Address`} label="Addresses" />
+               <TabHeader to={`${match.url}/Customers-orders`} label="Orders" />
+               <TabHeader to={`${match.url}/Customers-payments`} label="Payments"/>
               <TabHeader to={`${match.url}/Customers-tickets`} label="Tickets" />
-              {/* <TabHeader to={`${match.url}/Customers-sumary`} label="Returns" /> */}
               <TabHeader to={`${match.url}/Customers-password`} label="Password" />
-              {/* <div style="margin-left :500px"> */}
-           
-              {/* </div> */}
-              {/* <TabHeader
-                to={`${match.url}/Customer-administration`}
-                label="Administration"
-              /> */}
-               {/* <div className={styles.addEmployeeButton}>
-       <SecondaryButton
-            label="Add Employee"
-            data-track-event="click"
-            iconLeft={<PlusBoldIcon />}
-            // onClick={() => push(`employee-create`)}
-            size="medium"
-          
-          />
-          </div> */}
             </Spacings.Inline>
           </Spacings.Stack>
         </>
@@ -136,11 +142,9 @@ const CustomerAccount = (props) => {
     >
       <Switch>
         <Route path={`${match.path}/Customers-summary`}>
-          {/* <CustomerDetails /> */}
-          <CustomerCreate customer={customer} />
+          <CustomerCreate customer={customer} customerSummary={customerSummary} />
         </Route>
         <Route path={`${match.path}/Customers-profile`}>
-          {/* <CustomerDetails /> */}
           <CustomerProfile customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-orders`}>
@@ -150,16 +154,13 @@ const CustomerAccount = (props) => {
           <CustomerReturn customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-password`}>
-           <CustomerPassword />
+           <CustomerPassword customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-Address`}>
           <CustomerList customer={customer} />
         </Route>
-        <Route path={`${match.path}/Customers-sumary`}>
-          <CustomerPassword />
-        </Route>
         <Route path={`${match.path}/Customers-tickets`}>
-          <CustomerTickets />
+          <CustomerTickets customer={customer} ticket={ticket}/>
         </Route>
         <Route  path={`${match.path}/customer-address-create`}>
            <CustomerAddressCreate customer={customer} />
@@ -177,6 +178,6 @@ const CustomerAccount = (props) => {
 CustomerAccount.displayName = 'Companies';
 CustomerAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default CustomerAccount;

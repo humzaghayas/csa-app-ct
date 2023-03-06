@@ -2,5 +2,6 @@ export {
   useGetATGCustomers,
   useGetAtgOrders,
   useGetATGCustomerDetail,
-  useGetAtgOrdersDetails
+  useGetAtgOrdersDetails,
+  useUpdateCustomerInfo
   } from './use-atg-connector';

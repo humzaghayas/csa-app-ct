@@ -19,6 +19,8 @@ import { lazy, useState, useEffect } from 'react';
 // import TicketDetailsForm from '../Ticket-history/ticket-details-form';
 import TicketHistory from '../Ticket-history/ticket-history';
 import TicketDetailsP from '../ticket-create/tickets-details';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { entryPointUriPath } from '../../../../constants';
 
 
 const TicketAccount = (props) => {
@@ -29,18 +31,15 @@ const TicketAccount = (props) => {
   const { push } = useHistory();
   const [Ticket, setData] = useState();
 
-  //const apiUrl ="http://localhost:4456";
-  // const apiUrl = 'https://ms-Ticket-f4b4o225iq-ue.a.run.app';
-  // const TicketId = params.id;
-  // useEffect(() => {
-  //   getTicket({ url: apiUrl, id: TicketId }).then((res) => setData(res));
-  // }, [apiUrl, TicketId]);
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
 
   return (
     <TabularDetailPage
       title="Ticket Details"
       //  onPreviousPathClick={() => history.push(`Ticket-list`)}
-      onPreviousPathClick={() => history.push(`/csa_project/csa-customer-tickets/Tickets`)}
+      onPreviousPathClick={() => history.push(`/${projectKey}/${entryPointUriPath}/Tickets`)}
       previousPathLabel="Go to View Tickets"
       tabControls={
         <>
@@ -98,6 +97,6 @@ const TicketAccount = (props) => {
 TicketAccount.displayName = 'Tickets';
 TicketAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default TicketAccount;

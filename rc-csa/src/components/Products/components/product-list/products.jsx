@@ -23,6 +23,7 @@ import { lazy, useState, useEffect } from 'react';
 
 import Products from './product-list';
 import ProductListSearch from './product-list-search';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 const ProductsList = (props) => {
   const match = useRouteMatch();
@@ -34,11 +35,15 @@ const ProductsList = (props) => {
   const apiUrl = 'https://ms-Order-f4b4o225iq-ue.a.run.app';
   const OrderId = params.id;
 
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
+
   return (
     <TabularDetailPage
       title=" "
       onPreviousPathClick={() =>
-        history.push(`/csa-project-2/csa-customer-tickets/Products`)
+        history.push(`/${projectKey}/${entryPointUriPath}/Products`)
       }
       previousPathLabel="Go to View ProductsList"
       tabControls={
@@ -46,12 +51,12 @@ const ProductsList = (props) => {
           <Spacings.Stack scale="xl">
             <Spacings.Inline>
               <TabHeader
-                to={`${match.url}/ProductsList-general`}
-                label="Product List"
-              />
-              <TabHeader
                 to={`${match.url}/ProductsList-search`}
                 label="Product Search"
+              />
+               <TabHeader
+                to={`${match.url}/ProductsList-general`}
+                label="Product List"
               />
             </Spacings.Inline>
           </Spacings.Stack>
@@ -72,6 +77,6 @@ const ProductsList = (props) => {
 ProductsList.displayName = 'Companies';
 ProductsList.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default ProductsList;
