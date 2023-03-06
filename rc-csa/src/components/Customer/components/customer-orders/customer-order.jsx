@@ -120,11 +120,8 @@ console.log("props",props);
               rows={customersOrderPaginatedResult.results}
               itemRenderer={(item, column) => itemRenderer(item, column)}
               maxHeight={600}
-<<<<<<< HEAD
-              onRowClick={(row) => push(`/csa-project-2/csa-customer-tickets/order-edit/${row.id}/orders-general`)}
-=======
+
               onRowClick={(row) => push(`/${projectKey}/${entryPointUriPath}/order-edit/${row.id}/orders-general`)}
->>>>>>> 1d9a5205de4fa143a5df53c739843039e58a6a45
             />
             <Pagination
               page={page.value}
