@@ -52,7 +52,9 @@ exports.CONSTANTS = {
     OPEN_STATUS: "Open",
     CONFIRMED_STATUS: "Confirmed",
     OFFSET: "offset",
-    LIMIT: "limit"
+    LIMIT: "limit",
+    QUANTITY: "quantity",
+    IS_CHECKED: "isChecked"
 };
 exports.TICKET_TYPE = (_b = {},
     _b[exports.CONSTANTS.TICKET_TYPE_REQUEST] = "Request",
