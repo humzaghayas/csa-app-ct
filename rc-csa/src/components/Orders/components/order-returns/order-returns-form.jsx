@@ -6,7 +6,7 @@ import Spacings from '@commercetools-uikit/spacings';
 // import validate from './validate';
 import {  CheckboxInput, DataTable, DataTableManager, DateField, FieldLabel, MultilineTextField, NumberInput, SelectField, useRowSelection, useSorting } from '@commercetools-frontend/ui-kit';
 import { SHIPMENT_STATUS, columnsCreateOrderReturns, dummyCreateReturnOrderRows } from './constants';
-// import {itemRendererNewOrderReturns} from './helper';
+import{CONSTANTS} from 'ct-tickets-helper-api'
 
 const getShipmentStates = Object.keys(SHIPMENT_STATUS).map(
   (key) => ({
@@ -39,7 +39,8 @@ const OrderReturnsForm = (props) => {
         return {
           lineItemId:l.id,
           isChecked:false,
-          quantity:l.quantity
+          quantity:l.quantity,
+          maxAllowed:l.quantity
         }
       });
       console.log('li',li);
@@ -53,17 +54,27 @@ const OrderReturnsForm = (props) => {
     const rows = selectedRows.filter(l => l.lineItemId !== field.id);
     const r = selectedRows.find(sr => sr.lineItemId  === field.id);
     const row  = {
-      lineItemId:r.lineItemId
+      lineItemId:r.lineItemId,
+      maxAllowed : r.maxAllowed
     };
 
+    console.log('r',r);
+
     switch (field.name) {
-      case 'isChecked':
+      case CONSTANTS.IS_CHECKED:
         row.isChecked = !r.isChecked;
         row.quantity = r.quantity;
+
         break;
       
-      case 'quantity':
-        row.quantity = field.quantity;
+      case CONSTANTS.QUANTITY:
+
+
+        if(field.value <= r.maxAllowed){
+          row.quantity = field.value;
+        }else{
+          row.quantity = r.quantity;
+        }
         row.isChecked =r.isChecked;
         break;
     
@@ -71,6 +82,7 @@ const OrderReturnsForm = (props) => {
         break;
     }
 
+    console.log('row',row);
     rows.push(row);
     setSelectedRows(rows);
   }
@@ -96,12 +108,13 @@ const OrderReturnsForm = (props) => {
                     <NumberInput
                       id="returnQuantity"
                       value={selectedRows?.find(row=>row?.lineItemId==item?.id)?.quantity}
+                      min="1"
                       onChange={(e)=>{
 
                         updateRowItem({
                           id:item?.id,
-                          name:"quantity",
-                          quantity:e?.target?.value
+                          name:CONSTANTS.QUANTITY,
+                          value:e?.target?.value
                         });
                       }}
                       horizontalConstraint={3}
@@ -136,7 +149,7 @@ const OrderReturnsForm = (props) => {
 
                               updateRowItem({
                                 id:item?.id,
-                                name:"isChecked"
+                                name:CONSTANTS.IS_CHECKED
                               });
                             }
                           }
@@ -156,11 +169,18 @@ const OrderReturnsForm = (props) => {
 
   const onSubmit = (e) =>{
 
+    const selectedValues = selectedRows.filter(s => s.isChecked);
+
+    if(selectedValues.length == 0){
+      alert('No Items selected!');
+      return;
+    }
+
     const addReturnInfo ={
       returnDate: formik?.values?.returnDate,
       returnTrackingId:formik?.values?.returnTrackingid,
       items: [
-       ...selectedRows
+       ...selectedValues
       ]
     }
 

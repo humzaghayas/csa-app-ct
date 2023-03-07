@@ -52,7 +52,9 @@ export const CONSTANTS ={
     OPEN_STATUS:"Open",
     CONFIRMED_STATUS:"Confirmed",
     OFFSET:"offset",
-    LIMIT:"limit"
+    LIMIT:"limit",
+    QUANTITY:"quantity",
+    IS_CHECKED:"isChecked"
 }
 
 export const TICKET_TYPE={
