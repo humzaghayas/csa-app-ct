@@ -99,13 +99,21 @@ const TicketDisplayForm = (props) => {
   // console.log(filteredData);
   const ticketExcel = filteredData?.map((obj) => {
     return {
-      ID: obj?.id,
+      'Ticket Number': obj?.value?.ticketNumber,
+      Customer: obj?.value?.email,
       // CreatedAt: obj?.createdAt,
-      CreatedAt: moment(obj?.createdAt).format('YYYY-MM-DD HH:mm:ss'),
-      // LastModifiedAt: obj?.lastModifiedAt,
-      LastModifiedAt: moment(obj?.lastModifiedAt).format('YYYY-MM-DD HH:mm:ss'),
-      Container: obj?.container,
-      Email: obj?.value?.email,
+      Created: moment(obj?.value?.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+      // LastModifiedAt: obj?.lastModifiedAt
+      Modified: moment(obj?.value?.lastModifiedAt).format(
+        'YYYY-MM-DD HH:mm:ss'
+      ),
+      Source: obj?.value?.source,
+      Status: obj?.value?.status,
+      Priority: obj?.value?.priority,
+      Category: obj?.value?.category,
+      Subject: obj?.value?.subject,
+      Assignee: obj?.value?.assignedTo,
+      'Created by': obj?.value?.createdBy,
     };
   });
 
