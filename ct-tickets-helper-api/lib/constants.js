@@ -54,7 +54,8 @@ exports.CONSTANTS = {
     OFFSET: "offset",
     LIMIT: "limit",
     QUANTITY: "quantity",
-    IS_CHECKED: "isChecked"
+    IS_CHECKED: "isChecked",
+    COMMENT: "comment"
 };
 exports.TICKET_TYPE = (_b = {},
     _b[exports.CONSTANTS.TICKET_TYPE_REQUEST] = "Request",

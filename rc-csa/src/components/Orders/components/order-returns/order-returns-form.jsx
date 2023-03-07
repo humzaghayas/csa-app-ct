@@ -40,7 +40,8 @@ const OrderReturnsForm = (props) => {
           lineItemId:l.id,
           isChecked:false,
           quantity:l.quantity,
-          maxAllowed:l.quantity
+          maxAllowed:l.quantity,
+          comment:l?.comment
         }
       });
       console.log('li',li);
@@ -68,16 +69,21 @@ const OrderReturnsForm = (props) => {
         break;
       
       case CONSTANTS.QUANTITY:
-
-
         if(field.value <= r.maxAllowed){
-          row.quantity = field.value;
+          row.quantity = parseInt(field.value);
         }else{
-          row.quantity = r.quantity;
+          row.quantity = parseInt(r.quantity);
         }
         row.isChecked =r.isChecked;
+        row.comment=r?.comment;
         break;
-    
+
+      case CONSTANTS.COMMENT:
+        row.comment=field.value;
+        row.isChecked =r?.isChecked;
+        row.quantity = parseInt(r?.quantity);
+        break;
+
       default:
         break;
     }
@@ -130,8 +136,13 @@ const OrderReturnsForm = (props) => {
                       name="comment"
                       id="comment"
                       title=""
-                      value=" "
-                      onChange={(event) => {}}
+                      onChange={(e)=>{
+                        updateRowItem({
+                          id:item?.id,
+                          name:CONSTANTS.COMMENT,
+                          value:e?.target?.value
+                        });
+                      }}
                       isDisabled={!selectedRows?.find(row=>row?.lineItemId==item?.id)?.isChecked}
                       horizontalConstraint={13}
                     />
@@ -180,13 +191,18 @@ const OrderReturnsForm = (props) => {
       returnDate: formik?.values?.returnDate,
       returnTrackingId:formik?.values?.returnTrackingid,
       items: [
-       ...selectedValues
+       ...selectedValues.map((item)=>{
+        return {
+          lineItemId:item?.lineItemId,
+          quantity:item?.quantity,
+          shipmentState:formik?.values?.shipmentState,
+          comment:item?.comment
+        }
+       })
       ]
     }
-
+    console.log(addReturnInfo);
     e.addReturnInfo= addReturnInfo;
-
-
     props.onSubmit(e);
   }
 
