@@ -1,11 +1,11 @@
 export const columns = [
     {key:'item',label:'Item'},
     {key:'quantity',label:'Quantity'},
-    // {key:'comment',label:'Comment'},
     {key:'shipmentState',label:'Shipment state'},
     {key:'paymentState',label:'Payment State'},
     {key:'createdAt',label:'Date Created'},
     {key:'lastModifiedAt',label:'Date Modified'},
+    {key:'comment',label:'Comment'},
 ]
 
 export const columnsCreateOrderReturns = [

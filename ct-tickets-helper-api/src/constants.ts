@@ -54,7 +54,8 @@ export const CONSTANTS ={
     OFFSET:"offset",
     LIMIT:"limit",
     QUANTITY:"quantity",
-    IS_CHECKED:"isChecked"
+    IS_CHECKED:"isChecked",
+    COMMENT:"comment"
 }
 
 export const TICKET_TYPE={
