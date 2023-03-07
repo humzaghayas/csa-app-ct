@@ -22,6 +22,7 @@ import CustomerMessages from './components/Customer/components/customer-messages
 import CustomerReply from './components/Customer/components/customer-messages/customer-reply';
 import AtgAccount from './components/ATG-Poc/components/atg-account/atg-account';
 import ProductsList from './components/Products/components/product-list/products';
+import TicketDisplay from './components/WelcomePage/components/ticket-details/ticket-details';
 
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
@@ -79,29 +80,29 @@ const ApplicationRoutes = () => {
         </Route>
         <Route path={`${match.path}/Products`}>
           <ProductsList linkToWelcome={match.url} />
-      {/* <Products  linkToWelcome={match.url} /> */}
+          {/* <Products  linkToWelcome={match.url} /> */}
         </Route>
         <Route  path={`${match.path}/product-edit/:id`}>
-     <ProductAccount  linkToWelcome={match.url} />
+           <ProductAccount  linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/Orders`}>
-      <Orders linkToWelcome={match.url} />
+          <Orders linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/Cart`}>
-      <Cart linkToWelcome={match.url} />
+          <Cart linkToWelcome={match.url} />
         </Route>
         <Route  path={`${match.path}/order-edit/:id`}>
-      <OrderAccount linkToWelcome={match.url} />
+          <OrderAccount linkToWelcome={match.url} />
         </Route>
         
         <Route  path={`${match.path}/cart-edit/:id`}>
-      <CartAccount linkToWelcome={match.url} />
+          <CartAccount linkToWelcome={match.url} />
         </Route>
         <Route  path={`${match.path}/customer-edit/:lahari`}>
-        <CustomerAccount  linkToWelcome={match.url} />
+         <CustomerAccount  linkToWelcome={match.url} />
         </Route>
         <Route  path={`${match.path}/ticket-edit/:id`}>
-        <TicketAccount linkToWelcome={match.url} />
+          <TicketAccount linkToWelcome={match.url} />
         </Route>
         <Route  path={`${match.path}/customer-create`}>
            <CustomerCreate linkToWelcome={match.url} />
@@ -111,13 +112,16 @@ const ApplicationRoutes = () => {
         </Route>
         <Route path={`${match.path}/:id/customer-order-messages`}>
 	        <CustomerMessages linkToWelcome={match.url} />
-          </Route>
-          <Route path={`${match.path}/:id/customer-message-reply`}>
-	      <CustomerReply linkToWelcome={match.url} />
-          </Route>
-          <Route path={`${match.path}/ATG`}>
+        </Route>
+        <Route path={`${match.path}/:id/customer-message-reply`}>
+	          <CustomerReply linkToWelcome={match.url} />
+        </Route>
+        <Route path={`${match.path}/ATG`}>
             <AtgAccount linkToWelcome={match.url} />
-          </Route>
+        </Route>
+        <Route path={`${match.path}/dashboard`}>
+            <TicketDisplay linkToWelcome={match.url} />
+        </Route>
         <Route>
           <Welcome />
         </Route>

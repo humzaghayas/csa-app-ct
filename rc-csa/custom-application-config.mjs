@@ -83,6 +83,12 @@ const config = {
       permissions: [PERMISSIONS.View],
     },
     {
+      uriPath: 'dashboard',
+      defaultLabel: 'Dashboard',
+      labelAllLocales: [],
+      permissions: [PERMISSIONS.View],
+    },
+    {
       uriPath: 'Tickets',
       defaultLabel: 'Tickets',
       labelAllLocales: [],

@@ -58,8 +58,6 @@ const OrderReturnsForm = (props) => {
       maxAllowed : r.maxAllowed
     };
 
-    console.log('r',r);
-
     switch (field.name) {
       case CONSTANTS.IS_CHECKED:
         row.isChecked = !r.isChecked;
@@ -82,7 +80,6 @@ const OrderReturnsForm = (props) => {
         break;
     }
 
-    console.log('row',row);
     rows.push(row);
     setSelectedRows(rows);
   }
@@ -175,7 +172,6 @@ const OrderReturnsForm = (props) => {
       alert('No Items selected!');
       return;
     }
-
     const addReturnInfo ={
       returnDate: formik?.values?.returnDate,
       returnTrackingId:formik?.values?.returnTrackingid,
