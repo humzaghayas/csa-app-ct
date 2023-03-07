@@ -33,6 +33,11 @@ import { lazy, useState, useEffect } from 'react';
 import OrderCreate from '../order-create/order-create';
 import OrderShipping from '../order-shipping/order-shipping';
 import OrderLineItems from '../order-create/order-line-items';
+import OrderReturns from '../order-returns/order-returns';
+import OrderReturnsNew from '../order-returns/order-returns-details';
+import { entryPointUriPath } from '../../../../constants';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import OrderPayments from '../order-payments/order-payments';
 
 
 const OrderAccount = (props) => {
@@ -42,6 +47,10 @@ const OrderAccount = (props) => {
   const params = useParams();
   const { push } = useHistory();
   const [Order, setData] = useState();
+
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
 
   //const apiUrl ="http://localhost:4456";
   const apiUrl = 'https://ms-Order-f4b4o225iq-ue.a.run.app';
@@ -54,7 +63,7 @@ const OrderAccount = (props) => {
     <TabularDetailPage
       title=" "
       //  onPreviousPathClick={() => history.push(`Order-list`)}
-      onPreviousPathClick={() => history.push(`/csa-project-2/csa-customer-tickets/Orders`)}
+      onPreviousPathClick={() => history.push(`/${projectKey}/${entryPointUriPath}/Orders`)}
       previousPathLabel="Go to View orders"
       tabControls={
         <>
@@ -67,6 +76,14 @@ const OrderAccount = (props) => {
             <TabHeader
                 to={`${match.url}/orders-shipping`}
                 label="Shipping & Delivery"
+              />
+            <TabHeader
+                to={`${match.url}/orders-returns`}
+                label="Returns"
+              />
+              <TabHeader
+                to={`${match.url}/orders-payments`}
+                label="Payments"
               />
             </Spacings.Inline>
           </Spacings.Stack>
@@ -85,14 +102,18 @@ const OrderAccount = (props) => {
        <Route path={`${match.path}/order-line-items`}>
          <OrderLineItems />
        </Route>
-        {/* <Route path={`${match.path}/employee-create`}>
-           <EmployeeCreate />
-          </Route>
-        <Route path={`${match.path}/required-approval`}>
-           <RequiredApproval/>
-          </Route> */}
-          
-
+        <Route path={`${match.path}/orders-returns`}>
+          <OrderReturns/>
+        </Route>
+        <Route path={`${match.path}/new`}>
+          <OrderReturnsNew onClose={() => push(`${match.url}`)}/>
+        </Route>
+        <Route path={`${match.path}/orders-payments`}>
+          <OrderPayments onClose={() => push(`${match.url}`)}/>
+        </Route>
+        <Route path={`${match.path}/details`}>
+          <OrderPayments onClose={() => push(`${match.url}`)}/>
+        </Route>
       </Switch>
     </TabularDetailPage>
 
@@ -101,6 +122,6 @@ const OrderAccount = (props) => {
 OrderAccount.displayName = 'Companies';
 OrderAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default OrderAccount;

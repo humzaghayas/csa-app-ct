@@ -93,6 +93,7 @@
     "react-router-dom": "^5.3.3",
     "recharts": "^2.4.3",
     "redux": "4.2.0",
-    "sheetjs-style": "^0.15.8"
+    "sheetjs-style": "^0.15.8",
+    "stripe": "^11.12.0"
   }
 }

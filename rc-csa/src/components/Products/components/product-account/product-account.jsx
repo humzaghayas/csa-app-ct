@@ -32,6 +32,8 @@ import { lazy, useState, useEffect } from 'react';
 
 import ProductCreate from '../product-create/product-create';
 import ProductSearch from '../product-search/product-search';
+import { entryPointUriPath } from '../../../../constants';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 //import OrderShipping from '../order-shipping/order-shipping';
 
 
@@ -41,7 +43,9 @@ const ProductAccount = (props) => {
   const history = useHistory();
   const params = useParams();
   const { push } = useHistory();
-  const [Order, setData] = useState();
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
 
   //const apiUrl ="http://localhost:4456";
   const apiUrl = 'https://ms-Order-f4b4o225iq-ue.a.run.app';
@@ -54,7 +58,7 @@ const ProductAccount = (props) => {
     <TabularDetailPage
       title=" "
       //  onPreviousPathClick={() => history.push(`Order-list`)}
-      onPreviousPathClick={() => history.push(`/csa-project-2/csa-customer-tickets/Products`)}
+      onPreviousPathClick={() => history.push(`/${projectKey}/${entryPointUriPath}/Products`)}
       previousPathLabel="Go to View Products"
       tabControls={
         <>
@@ -92,6 +96,6 @@ const ProductAccount = (props) => {
 ProductAccount.displayName = 'Companies';
 ProductAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default ProductAccount;

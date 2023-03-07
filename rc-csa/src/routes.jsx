@@ -51,15 +51,16 @@ const ApplicationRoutes = () => {
         <Route path={`${match.path}/channels`}>
           <Channels linkToWelcome={match.url} />
         </Route>
-
+       
         <Route path={`${match.path}/Tickets`}>
           {canViewTickets ? (
             <Tickets linkToWelcome={match.url} />
-          ) : (
+          ):(
             <PageUnauthorized />
           )}
+         
         </Route>
-
+        
         {/* <Route  path={`${match.path}/ticket-details`}>
             {canManageTickets ? (
               <TicketDetails linkToWelcome={match.url} />
@@ -67,22 +68,22 @@ const ApplicationRoutes = () => {
               <PageUnauthorized />
             )}
         </Route> */}
-        <Route path={`${match.path}/ticket-create`}>
-          {canManageTickets ? (
-            <TicketCreate linkToWelcome={match.url} />
-          ) : (
-            <PageUnauthorized />
-          )}
+        <Route  path={`${match.path}/ticket-create`}>
+           {canManageTickets ? (
+              <TicketCreate linkToWelcome={match.url} />
+            ):(
+              <PageUnauthorized />
+            )}
         </Route>
         <Route path={`${match.path}/Customers`}>
-          <Customers linkToWelcome={match.url} />
+         <Customers linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/Products`}>
           <ProductsList linkToWelcome={match.url} />
           {/* <Products  linkToWelcome={match.url} /> */}
         </Route>
-        <Route path={`${match.path}/product-edit/:id`}>
-          <ProductAccount linkToWelcome={match.url} />
+        <Route  path={`${match.path}/product-edit/:id`}>
+           <ProductAccount  linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/Orders`}>
           <Orders linkToWelcome={match.url} />
@@ -90,36 +91,36 @@ const ApplicationRoutes = () => {
         <Route path={`${match.path}/Cart`}>
           <Cart linkToWelcome={match.url} />
         </Route>
-        <Route path={`${match.path}/order-edit/:id`}>
+        <Route  path={`${match.path}/order-edit/:id`}>
           <OrderAccount linkToWelcome={match.url} />
         </Route>
-
-        <Route path={`${match.path}/cart-edit/:id`}>
+        
+        <Route  path={`${match.path}/cart-edit/:id`}>
           <CartAccount linkToWelcome={match.url} />
         </Route>
-        <Route path={`${match.path}/customer-edit/:lahari`}>
-          <CustomerAccount linkToWelcome={match.url} />
+        <Route  path={`${match.path}/customer-edit/:lahari`}>
+         <CustomerAccount  linkToWelcome={match.url} />
         </Route>
-        <Route path={`${match.path}/ticket-edit/:id`}>
+        <Route  path={`${match.path}/ticket-edit/:id`}>
           <TicketAccount linkToWelcome={match.url} />
         </Route>
-        <Route path={`${match.path}/customer-create`}>
-          <CustomerCreate linkToWelcome={match.url} />
+        <Route  path={`${match.path}/customer-create`}>
+           <CustomerCreate linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/customer-account/:id`}>
-          <CustomerAccount linkToWelcome={match.url} />
+	        <CustomerAccount linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/:id/customer-order-messages`}>
-          <CustomerMessages linkToWelcome={match.url} />
+	        <CustomerMessages linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/:id/customer-message-reply`}>
-          <CustomerReply linkToWelcome={match.url} />
+	          <CustomerReply linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/ATG`}>
-          <AtgAccount linkToWelcome={match.url} />
+            <AtgAccount linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/dashboard`}>
-          <TicketDisplay linkToWelcome={match.url} />
+            <TicketDisplay linkToWelcome={match.url} />
         </Route>
         <Route>
           <Welcome />

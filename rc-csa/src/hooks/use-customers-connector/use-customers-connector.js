@@ -13,7 +13,7 @@ import {
 
 import {FETCH_CUSTOMERS_GRAPHQL, FETCH_CUSTOMERS_ADDRESS_DETAILS,
   FETCH_CUSTOMERS_DETAILS, FETCH_CUSTOMERS_ORDERS, UPDATE_CUSTOMERS_ADDRESS_DETAILS,
-  UPDATE_CUSTOMERS_DETAILS} from 'ct-tickets-helper-api';
+  UPDATE_CUSTOMERS_DETAILS, FETCH_CUSTOMER_PAYMENTS} from 'ct-tickets-helper-api';
   
 import { gql } from '@apollo/client';
 
@@ -204,6 +204,26 @@ export const useCustomersOrdersFetcher = ({ page, perPage, tableSorting, custome
 
   return {
     customersOrderPaginatedResult: data?.orders,
+    error,
+    loading,
+  };
+};
+
+export const useCustomersPaymentsFetcher = ({ page, perPage, tableSorting, customerId}) => {
+  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMER_PAYMENTS}`, {
+    variables: {
+      limit: perPage.value,
+      offset: (page.value - 1) * perPage.value,
+      sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
+      where:"customer(id=\""+customerId+"\")",
+    },
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    },
+  });
+
+  return {
+    customersPaymentsPaginatedResult: data?.payments,
     error,
     loading,
   };

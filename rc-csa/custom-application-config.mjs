@@ -17,9 +17,12 @@ const config = {
     },
   },
   additionalEnv: {
-    atgPublicURL: '${env:atgProtocol}' + '${env:atgPublicURL}',
-    MC_APP_ENV: '${env:ENV_VAL}',
-    NODE_ENV: '${env:ENV_VAL}',
+    atgPublicURL: '${env:atgProtocol}'+'${env:atgPublicURL}',
+    SEND_EMAIL_API:'${env:atgProtocol}'+'${env:SEND_EMAIL_API}',
+    MC_APP_ENV:'${env:ENV_VAL}',
+    NODE_ENV:'${env:ENV_VAL}',
+    SEND_EMAIL_API:'${env:atgProtocol}'+'${env:SEND_EMAIL_API}',
+    STRIPE_SECRET_KEY:'${env:STRIPE_SECRET_KEY}'
   },
   oAuthScopes: {
     view: [
@@ -41,7 +44,7 @@ const config = {
         'http://localhost:3001',
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
-        'https://firebasestorage.googleapis.com/',
+        'https://firebasestorage.googleapis.com/'
       ],
       'connect-src': [
         'http://localhost:3001',
@@ -49,18 +52,20 @@ const config = {
         'csa-project-1d161.firebaseapp.com',
         'https://firebasestorage.googleapis.com/',
         '${env:atgPublicURL}',
+        'https://api.stripe.com/',
+        '${env:SEND_EMAIL_API}'
       ],
       'style-src': [
         'http://localhost:3001',
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
-        'https://firebasestorage.googleapis.com/',
+        'https://firebasestorage.googleapis.com/'
       ],
       'img-src': [
         'http://localhost:3001',
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
-        'https://firebasestorage.googleapis.com/',
+        'https://firebasestorage.googleapis.com/'
       ],
     },
   },
@@ -74,6 +79,12 @@ const config = {
     {
       uriPath: 'channels',
       defaultLabel: 'Channels',
+      labelAllLocales: [],
+      permissions: [PERMISSIONS.View],
+    },
+    {
+      uriPath: 'dashboard',
+      defaultLabel: 'Dashboard',
       labelAllLocales: [],
       permissions: [PERMISSIONS.View],
     },
@@ -104,12 +115,6 @@ const config = {
     {
       uriPath: 'ATG',
       defaultLabel: 'ATG',
-      labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
-    },
-    {
-      uriPath: 'dashboard',
-      defaultLabel: 'Dashboard',
       labelAllLocales: [],
       permissions: [PERMISSIONS.View],
     },

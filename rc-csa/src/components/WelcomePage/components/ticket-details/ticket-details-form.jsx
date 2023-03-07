@@ -96,7 +96,7 @@ const TicketDisplayForm = (props) => {
     return createdAt >= startDate && createdAt <= endDate;
   });
 
-  console.log(filteredData);
+  // console.log(filteredData);
   const ticketExcel = filteredData?.map((obj) => {
     return {
       ID: obj?.id,

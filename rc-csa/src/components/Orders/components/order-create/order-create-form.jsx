@@ -8,25 +8,14 @@ import DateInput from '@commercetools-uikit/date-input';
 import Spacings from '@commercetools-uikit/spacings';
 import validate from './validate';
 import messages from './messages';
-import {
-  SHIPMENT_STATUS,
-  PAYMENT_STATUS,
-  ORDER_STATE,
-  ORDER_UPDATE_ACTIONS_LIST,
-} from './constants';
+import { SHIPMENT_STATUS,PAYMENT_STATUS,ORDER_STATE, ORDER_UPDATE_ACTIONS_LIST} from './constants';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import { PrimaryButton, SecondaryButton } from '@commercetools-uikit/buttons';
-import { PlusBoldIcon } from '@commercetools-uikit/icons';
+import {PlusBoldIcon} from '@commercetools-uikit/icons';
 import DataTable from '@commercetools-uikit/data-table';
 import OrderItemsForm from './order-items-form';
-import {
-  useHistory,
-  useRouteMatch,
-  Switch,
-  Route,
-  useParams,
-} from 'react-router-dom';
+import { useHistory, useRouteMatch, Switch, Route,useParams } from 'react-router-dom';
 import OrderItemDetails from './order-items-details';
 import { SuspendedRoute } from '@commercetools-frontend/application-shell';
 import OrderLineItems from './order-line-items';
@@ -51,36 +40,9 @@ const getShipmentStates = Object.keys(SHIPMENT_STATUS).map((key) => ({
 }));
 
 const rows = [
-  {
-    product: '',
-    originalUnitPrice: '$350.00',
-    UnitPrice: '$350.00',
-    Qty: '3',
-    LineItemState: '',
-    subTotal: '$1150.00',
-    Tax: '0',
-    Total: '$1150.00',
-  },
-  {
-    product: '',
-    originalUnitPrice: '$350.00',
-    UnitPrice: '$350.00',
-    Qty: '3',
-    LineItemState: '',
-    subTotal: '$1150.00',
-    Tax: '0',
-    Total: '$1150.00',
-  },
-  {
-    product: '',
-    originalUnitPrice: '$350.00',
-    UnitPrice: '$350.00',
-    Qty: '3',
-    LineItemState: '',
-    subTotal: '$1150.00',
-    Tax: '0',
-    Total: '$1150.00',
-  },
+  {product: '', originalUnitPrice: '$350.00' ,UnitPrice:'$350.00',Qty:'3',LineItemState:'',subTotal:'$1150.00',Tax:"0",Total:'$1150.00'},
+  {product: '', originalUnitPrice: '$350.00' ,UnitPrice:'$350.00',Qty:'3',LineItemState:'',subTotal:'$1150.00',Tax:"0",Total:'$1150.00'},
+  {product: '', originalUnitPrice: '$350.00' ,UnitPrice:'$350.00',Qty:'3',LineItemState:'',subTotal:'$1150.00',Tax:"0",Total:'$1150.00'},
 ];
 
 const columns = [
@@ -99,16 +61,16 @@ const searchColumns = [
   { key: 'product', label: 'Product' },
   { key: 'unitPrice', label: 'Unit Price' },
   { key: 'quantity', label: 'Qty' },
-  { key: 'addButton', label: '' },
-];
+  { key: 'addButton', label: ''}
+]
 
 const OrderCreateForm = (props) => {
   const intl = useIntl();
   const { push } = useHistory();
   const match = useRouteMatch();
-  const { executeProductSearch } = useProductSearchByText();
+  const {executeProductSearch} = useProductSearchByText();
 
-  const [searchProducts, setSearchProducts] = useState([]);
+  const [searchProducts,setSearchProducts] = useState([]);
 
   const formik = useFormik({
     initialValues: props.initialValues,
@@ -118,145 +80,132 @@ const OrderCreateForm = (props) => {
     enableReinitialize: true,
   });
   const params = useParams();
-  const lineItemId = params.id;
+   const lineItemId = params.id;
 
-  const itemRenderer = (item, column) => {
+   const itemRenderer = (item, column) => {
     switch (column.key) {
       case 'product':
-        return (
-          <div>
-            <Spacings.Stack scale="s">
-              <Spacings.Inline>
-                <img src={item.product.image} height={65} width={65} />
-                <Spacings.Stack scale="s">
-                  <div>{item.product.name}</div>
-                  <div>SKU: {item.product.sku}</div>
-                  <div>Key: {item.product.key}</div>
-                </Spacings.Stack>
-              </Spacings.Inline>
-            </Spacings.Stack>
-          </div>
-        );
+        return <div>
+                  <Spacings.Stack scale='s'>
+                    <Spacings.Inline>
+                      <img src={item.product.image} height={65} width={65}/>
+                      <Spacings.Stack scale='s'>
+                        <div>{item.product.name}</div>
+                        <div>SKU: {item.product.sku}</div>
+                        <div>Key: {item.product.key}</div>
+                      </Spacings.Stack>
+                    </Spacings.Inline>
+                  </Spacings.Stack>
+                </div>;
       case 'quantity':
-        return (
-          <div>
-            <Spacings.Stack scale="s">
-              <Spacings.Inline>
-                <Spacings.Stack scale="s">
-                  <NumberInput
-                    id="quantity"
-                    label="Quantity"
-                    value={item.quantity}
-                    isDisabled={item.isEditQuantity}
-                    onChange={(e) => {
-                      e.stagedActions = [
-                        {
-                          changeLineItemQuantity: {
-                            lineItemId: item?.id,
-                            quantity: Number(e.target.value),
-                          },
-                        },
-                      ];
-                      props.onSubmit(e);
-                      console.log('type of', typeof e.target.value);
-                    }}
-                  />
-                </Spacings.Stack>
-              </Spacings.Inline>
-            </Spacings.Stack>
-          </div>
-        );
+        return <div>
+                  <Spacings.Stack scale='s'>
+                    <Spacings.Inline>
+                      <Spacings.Stack scale='s'>
+                        <NumberInput
+                          id='quantity'
+                          label='Quantity'
+                          value={item.quantity}
+                          isDisabled={item.isEditQuantity}
+                          onChange={(e)=>{
+                            e.stagedActions = [
+                              {
+                                 changeLineItemQuantity: {
+                                   lineItemId: item?.id,
+                                   quantity: Number(e.target.value)
+                                } 
+                              }
+                            ]
+                            props.onSubmit(e);
+                            console.log("type of",typeof(e.target.value))
+                          }}
+                        />
+                      </Spacings.Stack>
+                    </Spacings.Inline>
+                  </Spacings.Stack>
+                </div>;
       case 'isEditQuantity':
-        return (
-          <div>
-            <Spacings.Stack scale="s">
-              <Spacings.Inline>
-                <Spacings.Stack scale="s">
-                  <PrimaryButton
-                    label="Edit Quantity"
-                    onClick={() => {
-                      item.isEditQuantity = true;
-                    }}
-                  />
-                </Spacings.Stack>
-              </Spacings.Inline>
-            </Spacings.Stack>
-          </div>
-        );
+        return <div>
+                  <Spacings.Stack scale='s'>
+                    <Spacings.Inline>
+                      <Spacings.Stack scale='s'>
+                        <PrimaryButton
+                          label='Edit Quantity'
+                          onClick={()=>{
+                            item.isEditQuantity = true
+                          }}
+                        />
+                      </Spacings.Stack>
+                    </Spacings.Inline>
+                  </Spacings.Stack>
+                </div>;
       default:
         return item[column.key];
     }
-  };
-
+  }
+  
   const itemRendererSearch = (item, column) => {
     switch (column.key) {
       case 'product':
-        return (
-          <div>
-            <Spacings.Stack scale="s">
-              <Spacings.Inline>
-                <img src={item?.image?.url} height={65} width={65} />
-                <Spacings.Stack scale="s">
-                  <div>{item?.product}</div>
-                  <div>SKU: {item?.sku}</div>
-                  <div>Key: {item?.key}</div>
-                </Spacings.Stack>
-              </Spacings.Inline>
-            </Spacings.Stack>
-          </div>
-        );
+        return <div>
+                  <Spacings.Stack scale='s'>
+                    <Spacings.Inline>
+                      <img src={item?.image?.url} height={65} width={65}/>
+                      <Spacings.Stack scale='s'>
+                        <div>{item?.product}</div>
+                        <div>SKU: {item?.sku}</div>
+                        <div>Key: {item?.key}</div>
+                      </Spacings.Stack>
+                    </Spacings.Inline>
+                  </Spacings.Stack>
+                </div>;
       case 'quantity':
-        return (
-          <div>
-            <Spacings.Stack scale="s">
-              <Spacings.Inline>
-                <NumberInput
-                  value={item.quantity}
-                  isReadOnly={false}
-                  onChange={(e) => {
-                    item.quantity = e.target.value;
-                  }}
-                  horizontalConstraint={2}
-                />
-              </Spacings.Inline>
-            </Spacings.Stack>
-          </div>
-        );
+        return <div>
+                  <Spacings.Stack scale='s'>
+                    <Spacings.Inline>
+                      <NumberInput
+                      value={item.quantity}
+                      isReadOnly={false}
+                      onChange={(e)=>{item.quantity=e.target.value}}
+                      horizontalConstraint={2}
+                      />
+                    </Spacings.Inline>
+                  </Spacings.Stack>
+                </div>;
       case 'addButton':
-        return (
-          <div>
-            <Spacings.Stack scale="s">
-              <Spacings.Inline>
-                <PrimaryButton
-                  title="Add"
-                  label="Add"
-                  type="button"
-                  onClick={(e) => {
-                    console.log('Add Order Item');
-                    console.log('item', item);
+        return <div>
+                <Spacings.Stack scale='s'>
+                  <Spacings.Inline>
+                    <PrimaryButton
+                    title='Add'
+                    label='Add'
+                    type='button'
+                    onClick={(e) => {
+                      console.log("Add Order Item")
+                      console.log("item",item);
 
-                    e.stagedActions = [
-                      {
-                        addLineItem: {
-                          productId: item?.productId,
-                          variantId: item?.variantId,
-                          quantity: item?.quantity,
-                        },
-                      },
-                    ];
-                    props.onSubmit(e);
-                  }}
-                />
-              </Spacings.Inline>
-            </Spacings.Stack>
-          </div>
-        );
+                      e.stagedActions = [
+                        {
+                          addLineItem: {
+                            productId: item?.productId,
+                            variantId: item?.variantId,
+                            quantity:  item?.quantity
+                          } 
+                        }
+                      ]
+                      props.onSubmit(e);
+
+                      }}
+                    />
+                  </Spacings.Inline>
+                </Spacings.Stack>
+              </div>;
       default:
         return item[column.key];
     }
-  };
+  }
 
-  const onChange = (e) => {
+  const onChange = (e)=>{
     console.log(e?.target);
     const id = e?.target?.id;
     const value = e?.target?.value;
@@ -264,67 +213,68 @@ const OrderCreateForm = (props) => {
     const version = formik?.values?.version;
     const actions = [];
     // eslint-disable-next-line default-case
-    switch (id) {
+    switch(id){
       case 'orderState':
-        console.log('Order State');
+        console.log("Order State")
         console.log(value);
         actions.push({
-          changeOrderState: {
-            orderState: value,
-          },
-        });
-        e.payload = {
+          "changeOrderState":{
+           "orderState":value 
+          }
+        })
+        e.payload={
           actions,
-          version: version,
-          orderId,
+          version:version,
+          orderId
         };
         props.onChange(e);
         break;
       case 'paymentState':
-        console.log('Payment State');
+        console.log("Payment State");
         console.log(value);
         actions.push({
-          changePaymentState: {
-            paymentState: value,
-          },
-        });
-        e.payload = {
+          "changePaymentState":{
+           "paymentState":value 
+          }
+        })
+        e.payload={
           actions,
-          version: version,
-          orderId,
-        };
+          version:version,
+          orderId
+        }
         props.onChange(e);
         break;
       case 'shipmentState':
-        console.log('Shipment State');
-        console.log(value);
+        console.log("Shipment State")
+        console.log(value)
         actions.push({
-          changeShipmentState: {
-            shipmentState: value,
-          },
-        });
-        e.payload = {
+          "changeShipmentState":{
+           "shipmentState":value 
+          }
+        })
+        e.payload={
           actions,
-          version: version,
-          orderId,
-        };
+          version:version,
+          orderId
+        }
         props.onChange(e);
         break;
     }
-  };
+  }
 
-  const onSubmit = (e) => {
+  const onSubmit = (e) =>{
     // console.log("In order create form");
     props.onSubmit(e);
-  };
+  }
+
 
   // console.log("Order details LineItems");
   // console.log(props.onSubmit);
   // console.log(props);
   const formElements = (
     <Spacings.Stack scale="xl">
-      <Spacings.Stack scale="l">
-        <CollapsiblePanel
+     <Spacings.Stack scale="l">
+     <CollapsiblePanel
           data-testid="quote-summary-panel"
           header={
             <CollapsiblePanel.Header>
@@ -332,73 +282,79 @@ const OrderCreateForm = (props) => {
               {'Order Summary'}
             </CollapsiblePanel.Header>
           }
-          scale="l"
-        >
-          <Constraints.Horizontal min={13}>
-            <Spacings.Stack scale="m">
-              <Spacings.Stack scale="s">
-                <Spacings.Inline>
-                  <TextField
-                    title="Order Number"
-                    value={formik?.values?.orderNumber}
-                    onChange={(event) => console.log(event)}
-                    horizontalConstraint={13}
-                    isReadOnly={true}
-                  />
-                </Spacings.Inline>
+          scale="l">
+            <Constraints.Horizontal min={13}>
+             <Spacings.Stack scale="m">
+            
+     <Spacings.Stack scale="s">
+      
+     <Spacings.Inline>
+        <TextField 
+          title="Order Number" 
+          value={formik?.values?.orderNumber} 
+          onChange={(event) => console.log(event)}
+          horizontalConstraint={13}
+          isReadOnly={true}
+          />
+      </Spacings.Inline>
 
-                <SelectField
-                  id="orderState"
-                  name="orderState"
-                  title="Order status"
-                  value={formik.values.orderState}
-                  // errors={formik.errors.orderState}
-                  // touched={formik.touched.orderState}
-                  onChange={onChange}
-                  onBlur={formik.handleBlur}
-                  options={getOrderStates}
-                  // isReadOnly={props.isReadOnly}
-                  horizontalConstraint={13}
-                />
-              </Spacings.Stack>
-              <Spacings.Stack scale="s">
-                <SelectField
-                  id="paymentState"
-                  name="Payment status"
-                  title="Payment status"
-                  value={formik.values.paymentState}
-                  errors={formik.errors.roles}
-                  touched={formik.touched.roles}
-                  onChange={onChange}
-                  onBlur={formik.handleBlur}
-                  options={getPaymentStates}
-                  isReadOnly={props.isReadOnly}
-                  // isRequired
-                  horizontalConstraint={13}
-                />
-              </Spacings.Stack>
-              <Spacings.Stack scale="s">
-                <SelectField
-                  id="shipmentState"
-                  name="Shipment status"
-                  title="Shipment status"
-                  value={formik.values.shipmentState}
-                  errors={formik.errors.roles}
-                  touched={formik.touched.roles}
-                  onChange={onChange}
-                  onBlur={formik.handleBlur}
-                  options={getShipmentStates}
-                  isReadOnly={props.isReadOnly}
-                  horizontalConstraint={13}
-                />
-              </Spacings.Stack>
-            </Spacings.Stack>
-          </Constraints.Horizontal>
-          {/* </Spacings.Inline> */}
-        </CollapsiblePanel>
+
+        <SelectField
+          id='orderState'
+          name="orderState"
+          title="Order status"
+          value={formik.values.orderState}
+          // errors={formik.errors.orderState}
+          // touched={formik.touched.orderState}
+          onChange={onChange}
+          onBlur={formik.handleBlur}
+          options={getOrderStates}
+          // isReadOnly={props.isReadOnly}
+          horizontalConstraint={13}
+        />
+        </Spacings.Stack>
+        <Spacings.Stack scale="s">
+      
+      <SelectField
+        id='paymentState'
+        name="Payment status"
+        title="Payment status"
+        value={formik.values.paymentState}
+        errors={formik.errors.roles}
+        touched={formik.touched.roles}
+        onChange={onChange}
+        onBlur={formik.handleBlur}
+        
+        options={getPaymentStates}
+        isReadOnly={props.isReadOnly}
+        // isRequired
+        horizontalConstraint={13}
+      />
       </Spacings.Stack>
-      <Spacings.Stack scale="l">
-        <CollapsiblePanel
+      <Spacings.Stack scale="s">
+      
+        <SelectField
+          id='shipmentState'
+          name="Shipment status"
+          title="Shipment status"
+          value={formik.values.shipmentState}
+          errors={formik.errors.roles}
+          touched={formik.touched.roles}
+          onChange={onChange}
+          onBlur={formik.handleBlur}
+          options={getShipmentStates}
+          isReadOnly={props.isReadOnly}
+          horizontalConstraint={13}
+        />
+        </Spacings.Stack>
+        </Spacings.Stack>
+     
+        </Constraints.Horizontal>
+      {/* </Spacings.Inline> */}
+     </CollapsiblePanel>
+     </Spacings.Stack>
+     <Spacings.Stack scale='l'>
+     <CollapsiblePanel
           data-testid="quote-summary-panel"
           header={
             <CollapsiblePanel.Header>
@@ -406,23 +362,22 @@ const OrderCreateForm = (props) => {
               {'Order Items'}
             </CollapsiblePanel.Header>
           }
-          scale="l"
-        >
-          <Constraints.Horizontal>
-            <Spacings.Stack scale="m">
-              <Spacings.Stack scale="s">
-                {formik?.values?.lineItems ? (
-                  <DataTable
-                    rows={formik.values.lineItems}
-                    columns={columns}
-                    itemRenderer={itemRenderer}
-                    //  onRowClick={(row) =>{ push(`${match.url}/${row.id}/order-item`);
-                    //   }
-                    // }
-                  />
-                ) : null}
+          scale="l">
+            <Constraints.Horizontal >
+              <Spacings.Stack scale="m">
+             <Spacings.Stack scale="s">
+            
+             {formik?.values?.lineItems? 
+             <DataTable 
+             rows={formik.values.lineItems} 
+             columns={columns} 
+             itemRenderer={itemRenderer}
+            //  onRowClick={(row) =>{ push(`${match.url}/${row.id}/order-item`);
+            //   }
+            // }
+             />:null}
               </Spacings.Stack>
-              {/* <Spacings.Stack scale="s">
+            {/* <Spacings.Stack scale="s">
               <Spacings.Inline>
             <SecondaryButton
           label="Add Line Items"
@@ -435,79 +390,79 @@ const OrderCreateForm = (props) => {
         </Spacings.Inline>
             </Spacings.Stack> */}
             </Spacings.Stack>
-            <Switch>
+              <Switch>
               <SuspendedRoute path={`${match.path}/:id/order-item`}>
-                <OrderItemDetails
-                  onClose={() => push(`${match.url}`)}
-                  orderId={formik?.values?.id}
+                <OrderItemDetails 
+                  onClose={() => push(`${match.url}`)} 
+                  orderId = {formik?.values?.id} 
                   orderItems={formik?.values?.lineItems}
-                  onSubmit={onSubmit}
+                  onSubmit = {onSubmit}
                 />
               </SuspendedRoute>
-              <Route path={`${match.path}/order-line-items`}>
-                <OrderLineItems onClose={() => push(`${match.url}`)} />
+              <Route  path={`${match.path}/order-line-items`}>
+                 <OrderLineItems  onClose={() => push(`${match.url}`)} />
               </Route>
-            </Switch>
-          </Constraints.Horizontal>
+              </Switch>
 
-          {/* </Spacings.Inline> */}
-        </CollapsiblePanel>
-        {/* Product search */}
-        <CollapsiblePanel
-          data-testid="quote-summary-panel"
-          header={
-            <CollapsiblePanel.Header>
-              {/* {formatMessage(messages.panelTitle)} */}
-              {'Add line items'}
-            </CollapsiblePanel.Header>
-          }
-          scale="l"
-        >
-          <Constraints.Horizontal>
-            <Spacings.Stack scale="m">
-              <Spacings.Stack scale="s">
-                <SearchSelectInput
-                  id="searchProduct"
-                  name="searchProduct"
-                  horizontalConstraint={7}
-                  optionType="single-lined"
-                  isAutofocussed={false}
-                  backspaceRemovesValue={true}
-                  isClearable={true}
-                  isDisabled={false}
-                  isReadOnly={false}
-                  isMulti={false}
-                  onChange={() => {}}
-                  placeholder="Search products by name"
-                  loadOptions={async (s) => {
-                    console.log(s);
-                    const result = await executeProductSearch(s);
-                    setSearchProducts(
-                      result?.data?.productProjectionSearch?.results
-                    );
-                    console.log(result);
-                    // return s;
-                  }}
-                  // noOptionsMessage="No exact match found"
-                  // loadingMessage="loading exact matches"
-                  // placeholder="Select customers"
-                  // eslint-disable-next-line no-undef
-                  // loadOptions={customLoadOptionsFunction}
-                  // cacheOptions={false}
-                />
+        </Constraints.Horizontal>
+       
+      {/* </Spacings.Inline> */}
+     </CollapsiblePanel>
+     {/* Product search */}
+     <CollapsiblePanel
+       data-testid="quote-summary-panel"
+       header={
+         <CollapsiblePanel.Header>
+           {/* {formatMessage(messages.panelTitle)} */}
+           {'Add line items'}
+         </CollapsiblePanel.Header>
+       }
+       scale="l"
+     >
+      <Constraints.Horizontal>
+       <Spacings.Stack scale='m'>
+        <Spacings.Stack scale='s'>
 
-                {searchProducts.length > 0 ? (
-                  <DataTable
-                    rows={getSearchProductRows(searchProducts)}
-                    columns={searchColumns}
-                    itemRenderer={itemRendererSearch}
-                  />
-                ) : null}
-              </Spacings.Stack>
-            </Spacings.Stack>
-          </Constraints.Horizontal>
-        </CollapsiblePanel>
-      </Spacings.Stack>
+          <SearchSelectInput
+            id='searchProduct'
+            name='searchProduct'
+            horizontalConstraint={7}
+            optionType="single-lined"
+            isAutofocussed={false}
+            backspaceRemovesValue={true}
+            isClearable={true}
+            isDisabled={false}
+            isReadOnly={false}
+            isMulti={false}
+            onChange={()=>{}}
+            placeholder="Search products by name"
+            loadOptions={async (s)=>{
+              console.log(s)
+              const result = await executeProductSearch(s);
+              setSearchProducts(result?.data?.productProjectionSearch?.results)
+              console.log(result);
+              // return s;
+            }}
+            // noOptionsMessage="No exact match found"
+            // loadingMessage="loading exact matches"
+            // placeholder="Select customers"
+            // eslint-disable-next-line no-undef
+            // loadOptions={customLoadOptionsFunction}
+            // cacheOptions={false}
+          />
+
+          {searchProducts?.length>0 ? <DataTable
+            rows={getSearchProductRows(searchProducts)}
+            columns={searchColumns}
+            itemRenderer={itemRendererSearch}
+          />: null}
+
+
+        </Spacings.Stack>
+       </Spacings.Stack>
+      </Constraints.Horizontal>
+     </CollapsiblePanel>
+     </Spacings.Stack>
     </Spacings.Stack>
   );
 
