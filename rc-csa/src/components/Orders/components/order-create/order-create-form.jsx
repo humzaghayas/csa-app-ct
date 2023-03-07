@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import { useIntl } from 'react-intl';
@@ -50,6 +50,7 @@ const columns = [
   // { key: 'unitPrice', label: 'Original Unit Price' },
   { key: 'unitPrice', label: 'Unit Price' },
   { key: 'quantity', label: 'Qty' },
+  { key: 'update', labl: ''},
   // { key: 'lineItemState', label: 'LineItemState' },
   { key: 'subTotalPrice', label: 'Sub Total' },
   { key: 'tax', label: 'Tax' },
@@ -69,9 +70,10 @@ const OrderCreateForm = (props) => {
   const { push } = useHistory();
   const match = useRouteMatch();
   const {executeProductSearch} = useProductSearchByText();
+  const [lineItems,setLineItems] = useState(null)
 
-  const [searchProducts,setSearchProducts] = useState([]);
-
+  // const [searchProducts,setSearchProducts] = useState([]);
+  const [searchProductRows,setSearchProductRows] = useState([]);
   const formik = useFormik({
     initialValues: props.initialValues,
     onSubmit: props.onSubmit,
@@ -82,17 +84,36 @@ const OrderCreateForm = (props) => {
   const params = useParams();
    const lineItemId = params.id;
 
+   useEffect(() => {
+    if(lineItems == null){
+      const lItems = formik?.values?.lineItems?.map((li)=> {
+        return {
+          lineItemId:li.id,
+          name:li.product.name,
+          sku:li.product.sku,
+          key:li.product.key,
+          image:li.product.image,
+          quantity:li.quantity,
+          startValue:li.quantity,
+          isEditQuantity:li.isEditQuantity
+        }
+      });
+
+      setLineItems(lItems);
+    }
+   })
+
    const itemRenderer = (item, column) => {
     switch (column.key) {
       case 'product':
         return <div>
                   <Spacings.Stack scale='s'>
                     <Spacings.Inline>
-                      <img src={item.product.image} height={65} width={65}/>
+                      <img src={item.image} height={65} width={65}/>
                       <Spacings.Stack scale='s'>
-                        <div>{item.product.name}</div>
-                        <div>SKU: {item.product.sku}</div>
-                        <div>Key: {item.product.key}</div>
+                        <div>{item.name}</div>
+                        <div>SKU: {item.sku}</div>
+                        <div>Key: {item.key}</div>
                       </Spacings.Stack>
                     </Spacings.Inline>
                   </Spacings.Stack>
@@ -108,15 +129,32 @@ const OrderCreateForm = (props) => {
                           value={item.quantity}
                           isDisabled={item.isEditQuantity}
                           onChange={(e)=>{
-                            e.stagedActions = [
-                              {
-                                 changeLineItemQuantity: {
-                                   lineItemId: item?.id,
-                                   quantity: Number(e.target.value)
-                                } 
-                              }
-                            ]
-                            props.onSubmit(e);
+
+                            const newVal =Number(e.target.value);
+
+                            if(newVal <= item.startValue){
+                              return;
+                            }
+
+                            const rows = lineItems.filter(l => l.lineItemId !== item.lineItemId);
+                            const r = lineItems.find(sr => sr.lineItemId  === item.lineItemId);
+
+                            const row  = {
+                              lineItemId:r.lineItemId,
+                              name:r.name,
+                              sku:r.sku,
+                              key:r.key,
+                              startValue:r.quantity,
+                              isEditQuantity:r.isEditQuantity,
+                              image:r.image
+                            };
+
+                            // rows.push(row);
+                            row.quantity = newVal;
+                            const index = lineItems.findIndex(sr => sr.lineItemId  === item.lineItemId);
+                            rows.splice(index, 0, row);
+
+                            setLineItems(rows);
                             console.log("type of",typeof(e.target.value))
                           }}
                         />
@@ -126,7 +164,7 @@ const OrderCreateForm = (props) => {
                 </div>;
       case 'isEditQuantity':
         return <div>
-                  <Spacings.Stack scale='s'>
+                  <Spacings.Stack scale='s'> 
                     <Spacings.Inline>
                       <Spacings.Stack scale='s'>
                         <PrimaryButton
@@ -139,6 +177,30 @@ const OrderCreateForm = (props) => {
                     </Spacings.Inline>
                   </Spacings.Stack>
                 </div>;
+      case 'update':
+        return <div>
+          <Spacings.Stack scale='s'>
+            <Spacings.Inline>
+              <Spacings.Stack scale='s'>
+                <PrimaryButton
+                  label='Update'
+                  onClick={(e)=>{
+                    
+                      const r = lineItems.find(sr => sr.lineItemId  === item.lineItemId);
+                      e.stagedActions = [{
+                          changeLineItemQuantity: {
+                            lineItemId: r?.lineItemId,
+                            quantity: r?.quantity
+                            } 
+                          }];
+
+                      props.onSubmit(e);
+                  }}
+                />
+              </Spacings.Stack>
+            </Spacings.Inline>
+          </Spacings.Stack>
+        </div>
       default:
         return item[column.key];
     }
@@ -164,10 +226,33 @@ const OrderCreateForm = (props) => {
                   <Spacings.Stack scale='s'>
                     <Spacings.Inline>
                       <NumberInput
-                      value={item.quantity}
-                      isReadOnly={false}
-                      onChange={(e)=>{item.quantity=e.target.value}}
-                      horizontalConstraint={2}
+                          value={item.quantity}
+                          min="1"
+                          isReadOnly={false}
+                          onChange={(e)=>{
+                                const rows = searchProductRows.filter(l => l.productId !== item.productId);
+                                const r = searchProductRows.find(sr => sr.productId  === item.productId);
+
+                                const row  = {
+                                      productId: r.productId,
+                                      product: r.product,
+                                      unitPrice: r.unitPrice,
+                                      sku: r.sku,
+                                      key: r.key,
+                                      variantId: r.variantId,
+                                      slug: r?.slug,
+                                      image: {
+                                        url : r.image?.url,
+                                      }
+                                };
+
+                                r.quantity = Number(e.target.value);
+                                const index = searchProductRows.findIndex(sr => sr.lineItemId  === item.lineItemId);
+                                rows.splice(index, 0, row);
+
+                                setSearchProductRows(rows);
+                            }}
+                          horizontalConstraint={2}
                       />
                     </Spacings.Inline>
                   </Spacings.Stack>
@@ -367,15 +452,15 @@ const OrderCreateForm = (props) => {
               <Spacings.Stack scale="m">
              <Spacings.Stack scale="s">
             
-             {formik?.values?.lineItems? 
-             <DataTable 
-             rows={formik.values.lineItems} 
-             columns={columns} 
-             itemRenderer={itemRenderer}
-            //  onRowClick={(row) =>{ push(`${match.url}/${row.id}/order-item`);
-            //   }
-            // }
-             />:null}
+             {lineItems? 
+                <DataTable 
+                rows={lineItems} 
+                columns={columns} 
+                itemRenderer={itemRenderer}
+                //  onRowClick={(row) =>{ push(`${match.url}/${row.id}/order-item`);
+                //   }
+                // }
+                />:null}
               </Spacings.Stack>
             {/* <Spacings.Stack scale="s">
               <Spacings.Inline>
@@ -439,8 +524,13 @@ const OrderCreateForm = (props) => {
             loadOptions={async (s)=>{
               console.log(s)
               const result = await executeProductSearch(s);
-              setSearchProducts(result?.data?.productProjectionSearch?.results)
-              console.log(result);
+              // setSearchProducts(result?.data?.productProjectionSearch?.results);
+
+              const searchProdRows= getSearchProductRows(result?.data?.productProjectionSearch?.results);
+              setSearchProductRows(searchProdRows);
+              
+              console.log('searchProdRows',SearchProducts);
+              console.log('setSearchProductRows',searchProductRows);
               // return s;
             }}
             // noOptionsMessage="No exact match found"
@@ -451,8 +541,8 @@ const OrderCreateForm = (props) => {
             // cacheOptions={false}
           />
 
-          {searchProducts?.length>0 ? <DataTable
-            rows={getSearchProductRows(searchProducts)}
+          {searchProductRows?.length>0 ? <DataTable
+            rows={searchProductRows}
             columns={searchColumns}
             itemRenderer={itemRendererSearch}
           />: null}
