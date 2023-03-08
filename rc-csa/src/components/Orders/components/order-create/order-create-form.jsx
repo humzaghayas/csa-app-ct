@@ -132,7 +132,7 @@ const OrderCreateForm = (props) => {
 
                             const newVal =Number(e.target.value);
 
-                            if(newVal <= item.startValue){
+                            if(newVal < item.startValue){
                               return;
                             }
 
@@ -144,7 +144,7 @@ const OrderCreateForm = (props) => {
                               name:r.name,
                               sku:r.sku,
                               key:r.key,
-                              startValue:r.quantity,
+                              startValue:r.startValue,
                               isEditQuantity:r.isEditQuantity,
                               image:r.image
                             };
@@ -196,6 +196,7 @@ const OrderCreateForm = (props) => {
 
                       props.onSubmit(e);
                   }}
+                  isDisabled={lineItems.find(sr => sr.lineItemId  === item.lineItemId).quantity <= item.startValue}
                 />
               </Spacings.Stack>
             </Spacings.Inline>

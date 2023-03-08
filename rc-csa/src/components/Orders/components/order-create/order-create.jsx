@@ -77,7 +77,6 @@ const OrderCreate = (props) => {
            stagedActions,
            comment: "No Comment"
          }
-         console.log(draft);
           const result = await executeCreateOrderEdit(draft);
           const data = await result.data.createOrderEdit;
           const orderEditId  = data?.id;

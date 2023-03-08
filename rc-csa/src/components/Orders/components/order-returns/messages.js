@@ -55,4 +55,8 @@ export default defineMessages({
     defaultMessage:
       'We were unable to fetch the Employee details. Please check your connection, the provided Employee ID and try again.',
   },
+  NoOrderReturnItemsSelected: {
+    id: 'Order.NoOrderReturnItemsSelected',
+    defaultMessage: 'No Order return items selected.',
+  },
 });

@@ -49,8 +49,6 @@ const OrderReturns = (props) =>{
             actions : {addReturnInfo:e?.addReturnInfo}
         }
 
-        console.log("payload",payload)
-
         try{
             const result = await executeUpdateOrder(payload);
             forceUpdate();
