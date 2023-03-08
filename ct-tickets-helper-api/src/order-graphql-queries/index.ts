@@ -369,6 +369,24 @@ export const UPDATE_ORDER_BY_ID = `mutation updateOrderById($version:Long!,
         shipmentState
         paymentState
         version
+        shippingAddress{
+            id
+            streetName
+            streetNumber
+            postalCode
+              city
+              state
+              building
+            country
+        }
+
+          lineItems{
+              id
+              productId
+              productKey
+              name(locale:"en-US")
+              quantity
+          }
       }
   }`
 export const CREATE_EDIT_ORDER_BY_ID = `mutation createOrderEdit($draft:OrderEditDraft!){
