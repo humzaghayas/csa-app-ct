@@ -96,8 +96,7 @@ const OrderAccount = (props) => {
          <OrderCreate />
         </Route>
         <Route path={`${match.path}/orders-shipping`}>
-        
-      <OrderShipping />
+          <OrderShipping />
        </Route>
        <Route path={`${match.path}/order-line-items`}>
          <OrderLineItems />

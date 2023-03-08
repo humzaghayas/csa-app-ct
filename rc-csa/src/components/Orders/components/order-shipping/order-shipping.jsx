@@ -1,5 +1,5 @@
 import { useIntl } from 'react-intl';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {
@@ -40,11 +40,13 @@ const OrderShipping = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
+  const { push } = useHistory();
 
   //const {executeFetchOrder} = useFetchOrderById(match.params.id);
   const {executeUpdateOrder} = useOrderUpdateById();
   const showNotification = useShowNotification();
   const showApiErrorNotification = useShowApiErrorNotification();
+  const [formOrder,setFormOrder] = useState(null);
   
   // const [order,setOrder] = useState(async()=>{
   //   return await executeFetchOrder(match.params.id);
@@ -52,28 +54,33 @@ const OrderShipping = (props) => {
 
   const [reducerValue, forceUpdate] = useReducer(x => x+1,0);
 
-  // useEffect(async()=>{
-  //   if(order == null){
-  //     const result  = await executeFetchOrder(match.params.id);
-  //     setOrder(result);
-  //   }
-  // },[reducerValue]);
+
 
   let {order} = useFetchOrderById(match.params.id);
+
+  
+
+
+  useEffect(async()=>{
+    if(formOrder == null){
+      setFormOrder (order?.data?.order);
+    }
+  },[order]);
   const handleSubmit = useCallback(
     async(payload) =>{
-      console.log("In Handle Submit");
-      console.log(payload);
       try{
         const result = await executeUpdateOrder(payload);
-        order.data.order.version = result?.data?.updateOrder?.version?result?.data?.updateOrder?.version:order.data.order.version;
-        console.log(result); 
+
+        console.log('shipping',result);
         forceUpdate();
-          showNotification({
+        showNotification({
           kind: 'success',
           domain: DOMAINS.SIDE,
           text: intl.formatMessage(messages.OrderUpdated),
         }); 
+
+        setFormOrder(result?.data?.updateOrder);
+
       }catch (graphQLErrors) {
               console.log(graphQLErrors.message)
               const transformedErrors = transformErrors(graphQLErrors);
@@ -83,12 +90,11 @@ const OrderShipping = (props) => {
                 });
               }
       }
-    }
-  );
+    },[executeUpdateOrder]);
 
   return (
     <OrderShippingForm
-    initialValues={docToFormValues(order?.data?.order, projectLanguages)}
+    initialValues={docToFormValues(formOrder, projectLanguages)}
     onSubmit={handleSubmit}
     isReadOnly={!canManage}
     dataLocale={dataLocale}

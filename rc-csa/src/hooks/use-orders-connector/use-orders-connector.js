@@ -62,10 +62,6 @@ export const useOrderUpdateById = () =>{
   const [updateOrderByID,{loading}] = useMcMutation(gql`${UPDATE_ORDER_BY_ID}`);
   
    const executeUpdateOrder = async({version,actions,orderId}) =>{
-    console.log("order hooks")
-    console.log(version)
-    console.log(actions)
-    console.log(orderId);
     return await updateOrderByID(
       {
         variables: {

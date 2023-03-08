@@ -7,6 +7,11 @@ import Spacings from '@commercetools-uikit/spacings';
 import {  CheckboxInput, DataTable, DataTableManager, DateField, FieldLabel, MultilineTextField, NumberInput, SelectField, useRowSelection, useSorting } from '@commercetools-frontend/ui-kit';
 import { SHIPMENT_STATUS, columnsCreateOrderReturns, dummyCreateReturnOrderRows } from './constants';
 import{CONSTANTS} from 'ct-tickets-helper-api'
+import messages from './messages';
+import {  useShowNotification } from '@commercetools-frontend/actions-global';
+import { DOMAINS, 
+  NOTIFICATION_KINDS_PAGE } from '@commercetools-frontend/constants';
+import { useIntl } from 'react-intl';
 
 const getShipmentStates = Object.keys(SHIPMENT_STATUS).map(
   (key) => ({
@@ -25,10 +30,12 @@ const OrderReturnsForm = (props) => {
     // validate,
     enableReinitialize: true
   });
+  const intl = useIntl();
 
   const [selectedRows,setSelectedRows] = useState();
   const [shipmentState,setShipmentState] = useState("");
   const[ch,setCh]=useState(false);
+  const showNotification = useShowNotification();
 
   useEffect(()=>{
 
@@ -172,15 +179,16 @@ const OrderReturnsForm = (props) => {
     }
 }
 
-  console.log("selectedRows",selectedRows);
-  console.log("Order returns Modal form",formik?.values)
-
   const onSubmit = (e) =>{
 
     const selectedValues = selectedRows.filter(s => s.isChecked);
 
     if(selectedValues.length == 0){
-      alert('No Items selected!');
+      showNotification({
+        kind: NOTIFICATION_KINDS_PAGE.warning,
+        domain: DOMAINS.PAGE,
+        text: intl.formatMessage(messages.NoOrderReturnItemsSelected),
+      });
       return;
     }
     const addReturnInfo ={
