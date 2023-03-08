@@ -53,7 +53,8 @@ const config = {
         'https://firebasestorage.googleapis.com/',
         '${env:atgPublicURL}',
         'https://api.stripe.com/',
-        '${env:SEND_EMAIL_API}'
+        '${env:SEND_EMAIL_API}',
+        '${env:ALGOLIA_SEARCH}'
       ],
       'style-src': [
         'http://localhost:3001',
