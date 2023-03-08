@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import { useIntl } from 'react-intl';
@@ -47,6 +47,7 @@ const columns = [
   { key: 'unitPrice', label: 'Original Unit Price' },
   { key: 'unitPrice', label: 'Unit Price' },
   { key: 'quantity', label: 'Qty' },
+  { key: 'update', labl: ''},
   // { key: 'lineItemState', label: 'LineItemState' },
   { key: 'subTotalPrice', label: 'Sub Total' },
   { key: 'tax', label: 'Tax' },
@@ -67,7 +68,9 @@ const CartViewForm = (props) => {
   const [active, setActive] = useState(false);
   const { executeProductSearch } = useProductSearchByText();
 
-  const [searchProducts, setSearchProducts] = useState([]);
+  // const [searchProducts, setSearchProducts] = useState([]);
+  const [searchProductRows,setSearchProductRows] = useState([]);
+  const [lineItems,setLineItems] = useState(null)
 
   //const placeOrder = () => {};
   const formik = useFormik({
@@ -81,6 +84,25 @@ const CartViewForm = (props) => {
   const params = useParams();
   const lineItemId = params.id;
 
+  useEffect(() => {
+    if(lineItems == null){
+      const lItems = formik?.values?.lineItems?.map((li)=> {
+        return {
+          lineItemId:li.id,
+          name:li.product.name,
+          sku:li.product.sku,
+          key:li.product.key,
+          image:li.product.image,
+          quantity:li.quantity,
+          startValue:li.quantity,
+          isEditQuantity:li.isEditQuantity
+        }
+      });
+
+      setLineItems(lItems);
+    }
+   })
+
   const itemRenderer = (item, column) => {
     switch (column.key) {
       case 'product':
@@ -88,11 +110,11 @@ const CartViewForm = (props) => {
           <div>
             <Spacings.Stack scale="s">
               <Spacings.Inline>
-                <img src={item.product.image} height={65} width={65} />
+                <img src={item.image} height={65} width={65} />
                 <Spacings.Stack scale="s">
-                  <div>{item.product.name}</div>
-                  <div>SKU: {item.product.sku}</div>
-                  <div>Key: {item.product.key}</div>
+                  <div>{item.name}</div>
+                  <div>SKU: {item.sku}</div>
+                  <div>Key: {item.key}</div>
                 </Spacings.Stack>
               </Spacings.Inline>
             </Spacings.Stack>
@@ -110,16 +132,32 @@ const CartViewForm = (props) => {
                     value={item.quantity}
                     isDisabled={item.isEditQuantity}
                     onChange={(e) => {
-                      e.actions = [
-                        {
-                          changeLineItemQuantity: {
-                            lineItemId: item?.id,
-                            quantity: Number(e.target.value),
-                          },
-                        },
-                      ];
-                      props.onSubmit(e);
-                      console.log('type of', typeof e.target.value);
+                      const newVal =Number(e.target.value);
+
+                      // if(newVal < item.startValue){
+                      //   return;
+                      // }
+
+                      const rows = lineItems.filter(l => l.lineItemId !== item.lineItemId);
+                      const r = lineItems.find(sr => sr.lineItemId  === item.lineItemId);
+
+                      const row  = {
+                        lineItemId:r.lineItemId,
+                        name:r.name,
+                        sku:r.sku,
+                        key:r.key,
+                        startValue:r.startValue,
+                        isEditQuantity:r.isEditQuantity,
+                        image:r.image
+                      };
+
+                      // rows.push(row);
+                      row.quantity = newVal;
+                      const index = lineItems.findIndex(sr => sr.lineItemId  === item.lineItemId);
+                      rows.splice(index, 0, row);
+
+                      setLineItems(rows);
+                      console.log("type of",typeof(e.target.value))
                     }}
                   />
                 </Spacings.Stack>
@@ -144,6 +182,33 @@ const CartViewForm = (props) => {
             </Spacings.Stack>
           </div>
         );
+
+        case 'update':
+          return <div>
+            <Spacings.Stack scale='s'>
+              <Spacings.Inline>
+                <Spacings.Stack scale='s'>
+                  <PrimaryButton
+                    label='Update'
+                    onClick={(e)=>{
+                      
+                        const r = lineItems.find(sr => sr.lineItemId  === item.lineItemId);
+                         e.actions = [
+                              {
+                                changeLineItemQuantity: {
+                                  lineItemId: r?.lineItemId,
+                                  quantity: r?.quantity
+                                },
+                              },];
+  
+                        props.onSubmit(e);
+                    }}
+                    isDisabled={lineItems.find(sr => sr.lineItemId  === item.lineItemId).quantity === item.startValue}
+                  />
+                </Spacings.Stack>
+              </Spacings.Inline>
+            </Spacings.Stack>
+          </div>
       default:
         return item[column.key];
     }
@@ -173,9 +238,30 @@ const CartViewForm = (props) => {
               <Spacings.Inline>
                 <NumberInput
                   value={item.quantity}
+                  min="1"
                   isReadOnly={false}
                   onChange={(e) => {
-                    item.quantity = e.target.value;
+                          const rows = searchProductRows.filter(l => l.productId !== item.productId);
+                                const r = searchProductRows.find(sr => sr.productId  === item.productId);
+
+                                const row  = {
+                                      productId: r.productId,
+                                      product: r.product,
+                                      unitPrice: r.unitPrice,
+                                      sku: r.sku,
+                                      key: r.key,
+                                      variantId: r.variantId,
+                                      slug: r?.slug,
+                                      image: {
+                                        url : r.image?.url,
+                                      }
+                                };
+
+                                row.quantity = Number(e.target.value);
+                                const index = searchProductRows.findIndex(sr => sr.productId  === item.productId);
+                                rows.splice(index, 0, row);
+
+                                setSearchProductRows(rows);
                   }}
                   horizontalConstraint={2}
                 />
@@ -201,7 +287,7 @@ const CartViewForm = (props) => {
                         addLineItem: {
                           productId: item?.productId,
                           variantId: item?.variantId,
-                          quantity: item?.quantity,
+                          quantity: searchProductRows.find(sr => sr.productId  === item.productId).quantity,
                         },
                       },
                     ];
@@ -298,9 +384,9 @@ const CartViewForm = (props) => {
             {/* <SecondaryButton iconLeft={<PlusBoldIcon />} label="Place Order" onClick={() => setValue(true)} /> */}
 
             <Spacings.Stack scale="m">
-              {formik?.values?.lineItems ? (
+              {lineItems ? (
                 <DataTable
-                  rows={formik.values.lineItems}
+                  rows={lineItems}
                   columns={columns}
                   itemRenderer={itemRenderer}
                 />
@@ -338,12 +424,14 @@ const CartViewForm = (props) => {
                 onChange={() => {}}
                 placeholder="Search products by name"
                 loadOptions={async (s) => {
-                  console.log(s);
+                  console.log(s)
                   const result = await executeProductSearch(s);
-                  setSearchProducts(
-                    result?.data?.productProjectionSearch?.results
-                  );
-                  console.log(result);
+                  // setSearchProducts(result?.data?.productProjectionSearch?.results);
+    
+                  const searchProdRows= getSearchProductRows(result?.data?.productProjectionSearch?.results);
+                  setSearchProductRows(searchProdRows);
+                  
+                  console.log('setSearchProductRows',searchProductRows);
                   // return s;
                 }}
                 // noOptionsMessage="No exact match found"
@@ -354,9 +442,9 @@ const CartViewForm = (props) => {
                 // cacheOptions={false}
               />
 
-              {searchProducts.length > 0 ? (
+              {searchProductRows.length > 0 ? (
                 <DataTable
-                  rows={getSearchProductRows(searchProducts)}
+                  rows={searchProductRows}
                   columns={searchColumns}
                   itemRenderer={itemRendererSearch}
                 />
