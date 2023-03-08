@@ -247,8 +247,8 @@ const OrderCreateForm = (props) => {
                                       }
                                 };
 
-                                r.quantity = Number(e.target.value);
-                                const index = searchProductRows.findIndex(sr => sr.lineItemId  === item.lineItemId);
+                                row.quantity = Number(e.target.value);
+                                const index = searchProductRows.findIndex(sr => sr.productId  === item.productId);
                                 rows.splice(index, 0, row);
 
                                 setSearchProductRows(rows);
@@ -275,7 +275,7 @@ const OrderCreateForm = (props) => {
                           addLineItem: {
                             productId: item?.productId,
                             variantId: item?.variantId,
-                            quantity:  item?.quantity
+                            quantity:  searchProductRows.find(sr => sr.productId  === item.productId).quantity
                           } 
                         }
                       ]
@@ -530,9 +530,6 @@ const OrderCreateForm = (props) => {
               const searchProdRows= getSearchProductRows(result?.data?.productProjectionSearch?.results);
               setSearchProductRows(searchProdRows);
               
-              console.log('searchProdRows',SearchProducts);
-              console.log('setSearchProductRows',searchProductRows);
-              // return s;
             }}
             // noOptionsMessage="No exact match found"
             // loadingMessage="loading exact matches"
