@@ -29,7 +29,9 @@ export const useCartsFetcher = ({ page, perPage, tableSorting }) => {
       variables: {
         limit: perPage.value,
         offset: (page.value - 1) * perPage.value,
+
         sort: ['createdAt desc'],
+
       },
       context: {
         target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,

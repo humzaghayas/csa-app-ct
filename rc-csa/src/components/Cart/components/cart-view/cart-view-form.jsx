@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import { useIntl } from 'react-intl';
@@ -47,6 +47,7 @@ const columns = [
   { key: 'unitPrice', label: 'Original Unit Price' },
   { key: 'unitPrice', label: 'Unit Price' },
   { key: 'quantity', label: 'Qty' },
+  { key: 'update', labl: ''},
   // { key: 'lineItemState', label: 'LineItemState' },
   { key: 'subTotalPrice', label: 'Sub Total' },
   { key: 'tax', label: 'Tax' },
@@ -67,7 +68,9 @@ const CartViewForm = (props) => {
   const [active, setActive] = useState(false);
   const { executeProductSearch } = useProductSearchByText();
 
+
   const [searchProducts, setSearchProducts] = useState([]);
+
 
   //const placeOrder = () => {};
   const formik = useFormik({
@@ -81,6 +84,8 @@ const CartViewForm = (props) => {
   const params = useParams();
   const lineItemId = params.id;
 
+
+
   const itemRenderer = (item, column) => {
     switch (column.key) {
       case 'product':
@@ -88,11 +93,13 @@ const CartViewForm = (props) => {
           <div>
             <Spacings.Stack scale="s">
               <Spacings.Inline>
+
                 <img src={item.product.image} height={65} width={65} />
                 <Spacings.Stack scale="s">
                   <div>{item.product.name}</div>
                   <div>SKU: {item.product.sku}</div>
                   <div>Key: {item.product.key}</div>
+
                 </Spacings.Stack>
               </Spacings.Inline>
             </Spacings.Stack>
@@ -110,6 +117,7 @@ const CartViewForm = (props) => {
                     value={item.quantity}
                     isDisabled={item.isEditQuantity}
                     onChange={(e) => {
+
                       e.actions = [
                         {
                           changeLineItemQuantity: {
@@ -120,6 +128,8 @@ const CartViewForm = (props) => {
                       ];
                       props.onSubmit(e);
                       console.log('type of', typeof e.target.value);
+
+                       
                     }}
                   />
                 </Spacings.Stack>
@@ -144,6 +154,7 @@ const CartViewForm = (props) => {
             </Spacings.Stack>
           </div>
         );
+
       default:
         return item[column.key];
     }
@@ -173,9 +184,11 @@ const CartViewForm = (props) => {
               <Spacings.Inline>
                 <NumberInput
                   value={item.quantity}
+
                   isReadOnly={false}
                   onChange={(e) => {
                     item.quantity = e.target.value;
+
                   }}
                   horizontalConstraint={2}
                 />
@@ -201,7 +214,9 @@ const CartViewForm = (props) => {
                         addLineItem: {
                           productId: item?.productId,
                           variantId: item?.variantId,
+
                           quantity: item?.quantity,
+
                         },
                       },
                     ];
@@ -298,9 +313,9 @@ const CartViewForm = (props) => {
             {/* <SecondaryButton iconLeft={<PlusBoldIcon />} label="Place Order" onClick={() => setValue(true)} /> */}
 
             <Spacings.Stack scale="m">
-              {formik?.values?.lineItems ? (
+              {lineItems ? (
                 <DataTable
-                  rows={formik.values.lineItems}
+                  rows={lineItems}
                   columns={columns}
                   itemRenderer={itemRenderer}
                 />
@@ -338,12 +353,14 @@ const CartViewForm = (props) => {
                 onChange={() => {}}
                 placeholder="Search products by name"
                 loadOptions={async (s) => {
+
                   console.log(s);
                   const result = await executeProductSearch(s);
                   setSearchProducts(
                     result?.data?.productProjectionSearch?.results
                   );
                   console.log(result);
+
                   // return s;
                 }}
                 // noOptionsMessage="No exact match found"
@@ -354,9 +371,11 @@ const CartViewForm = (props) => {
                 // cacheOptions={false}
               />
 
+
               {searchProducts.length > 0 ? (
                 <DataTable
                   rows={getSearchProductRows(searchProducts)}
+
                   columns={searchColumns}
                   itemRenderer={itemRendererSearch}
                 />

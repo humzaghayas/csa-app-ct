@@ -21,9 +21,10 @@ const config = {
     SEND_EMAIL_API:'${env:atgProtocol}'+'${env:SEND_EMAIL_API}',
     MC_APP_ENV:'${env:ENV_VAL}',
     NODE_ENV:'${env:ENV_VAL}',
-    SEND_EMAIL_API:'${env:atgProtocol}'+'${env:SEND_EMAIL_API}',
+
     STRIPE_SECRET_KEY:'${env:STRIPE_SECRET_KEY}',
     SEND_EMAIL_API:'${env:atgProtocol}'+'${env:SEND_EMAIL_API}',
+
   },
   oAuthScopes: {
     view: [
@@ -54,7 +55,9 @@ const config = {
         'https://firebasestorage.googleapis.com/',
         '${env:atgPublicURL}',
         'https://api.stripe.com/',
-        '${env:SEND_EMAIL_API}'
+        '${env:SEND_EMAIL_API}',
+        '${env:ALGOLIA_SEARCH}'
+
       ],
       'style-src': [
         'http://localhost:3001',
@@ -80,6 +83,12 @@ const config = {
     {
       uriPath: 'channels',
       defaultLabel: 'Channels',
+      labelAllLocales: [],
+      permissions: [PERMISSIONS.View],
+    },
+    {
+      uriPath: 'dashboard',
+      defaultLabel: 'Dashboard',
       labelAllLocales: [],
       permissions: [PERMISSIONS.View],
     },
