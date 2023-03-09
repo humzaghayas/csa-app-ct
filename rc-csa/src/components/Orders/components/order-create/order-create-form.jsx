@@ -95,7 +95,11 @@ const OrderCreateForm = (props) => {
           image:li.product.image,
           quantity:li.quantity,
           startValue:li.quantity,
-          isEditQuantity:li.isEditQuantity
+          isEditQuantity:li.isEditQuantity,
+          unitPrice:li?.unitPrice,
+          subTotalPrice:li?.subTotalPrice,
+          tax:li?.tax,
+          totalPrice:li?.totalPrice
         }
       });
 
@@ -146,7 +150,11 @@ const OrderCreateForm = (props) => {
                               key:r.key,
                               startValue:r.startValue,
                               isEditQuantity:r.isEditQuantity,
-                              image:r.image
+                              image:r.image,
+                              unitPrice:r?.unitPrice,
+                              subTotalPrice:r?.subTotalPrice,
+                              tax:r?.tax,
+                              totalPrice:r?.totalPrice
                             };
 
                             // rows.push(row);
