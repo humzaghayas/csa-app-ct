@@ -27,7 +27,7 @@ import {
 //import ChannelDeletion from './place-order-popup';
 //import CustomPopup from './CustomPopup';
 import './custom-popup.module.css';
-import { useFetchOrderById } from '../../../../hooks/use-orders-connector/use-orders-connector';
+import { useSendOrderMail } from '../../../../hooks/use-order-sendmail-connector';
 
 const PlaceOrder = (props) => {
   const intl = useIntl();
@@ -47,6 +47,7 @@ const PlaceOrder = (props) => {
 
   const showApiErrorNotification = useShowApiErrorNotification();
   const placeOrderFromCart = usePlaceOrderFromCart();
+  const { execute: execSendEmail } = useSendOrderMail();
 
   const handleSubmit = useCallback(
     async (formikValues, formikHelpers) => {
@@ -61,6 +62,19 @@ const PlaceOrder = (props) => {
         setId(response.data.createOrderFromCart.id);
         setIsShown((current) => !current);
         console.log('response', response);
+        const orderId = response?.data?.createOrderFromCart?.id;
+        if (response?.data?.createOrderFromCart?.id) {
+          const order = await execSendEmail(
+            {},
+            {
+              to: response?.data?.createOrderFromCart?.customerEmail,
+              subject: 'Your order is created',
+              html: `<p>Thanks for creating order.</p><p>Your order ID: ${orderId} </p>`,
+            }
+          );
+          console.log('Mail sent', order);
+          console.log(orderId);
+        }
       } catch (graphQLErrors) {
         const transformedErrors = transformErrors(graphQLErrors);
         if (transformedErrors.unmappedErrors.length > 0) {
@@ -83,8 +97,6 @@ const PlaceOrder = (props) => {
       showNotification,
     ]
   );
-
-  //const { employee } = useEmployeeDetailsFetcher(params.id);
 
   return (
     <PlaceOrderForm
