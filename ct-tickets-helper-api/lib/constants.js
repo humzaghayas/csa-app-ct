@@ -30,6 +30,8 @@ exports.TICKET_PRIORITIY_VALUES = {
 };
 exports.CONSTANTS = {
     containerKey: "ticket-container",
+    CONTAINER: "container",
+    WHERE: "where",
     TICKET_TYPE_REQUEST: 'request',
     USER_CONTRAINER_KEY: "mc-users",
     USER_CONTAINER: "mc-user-info",
@@ -45,7 +47,15 @@ exports.CONSTANTS = {
     STATUS_OPERATION: 'UPDATED',
     PRIORITY: 'Priority',
     STATUS: 'Status',
-    ASSIGNED_TO: 'Assigned_To'
+    ASSIGNED_TO: 'Assigned_To',
+    ACTIVE_STATUS: "Active",
+    OPEN_STATUS: "Open",
+    CONFIRMED_STATUS: "Confirmed",
+    OFFSET: "offset",
+    LIMIT: "limit",
+    QUANTITY: "quantity",
+    IS_CHECKED: "isChecked",
+    COMMENT: "comment"
 };
 exports.TICKET_TYPE = (_b = {},
     _b[exports.CONSTANTS.TICKET_TYPE_REQUEST] = "Request",

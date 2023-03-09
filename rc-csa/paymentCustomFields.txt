@@ -1,0 +1,49 @@
+{
+    "id": "02c6f54f-61fb-446a-abea-283eca72c4bf",
+    "version": 2,
+    "versionModifiedAt": "2023-02-27T10:54:55.210Z",
+    "createdAt": "2023-02-24T11:07:11.833Z",
+    "lastModifiedAt": "2023-02-27T10:54:55.210Z",
+    "lastModifiedBy": {
+        "clientId": "9JVJc5xVV0vrnXzIlqgLe0vY",
+        "isPlatformClient": false
+    },
+    "createdBy": {
+        "clientId": "9JVJc5xVV0vrnXzIlqgLe0vY",
+        "isPlatformClient": false
+    },
+    "key": "paymentLink",
+    "name": {
+        "en": "paymentLink"
+    },
+    "description": {
+        "en": "Payment url field to save the url of payment link of PSP."
+    },
+    "resourceTypeIds": [
+        "payment"
+    ],
+    "fieldDefinitions": [
+        {
+            "name": "paymentLink",
+            "label": {
+                "en": "PaymentLink"
+            },
+            "required": false,
+            "type": {
+                "name": "String"
+            },
+            "inputHint": "SingleLine"
+        },
+        {
+            "name": "pspPaymentStatus",
+            "label": {
+                "en": "PspPaymentStatus"
+            },
+            "required": false,
+            "type": {
+                "name": "String"
+            },
+            "inputHint": "SingleLine"
+        }
+    ]
+}

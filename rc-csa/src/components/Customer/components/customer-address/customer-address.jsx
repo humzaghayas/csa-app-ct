@@ -75,6 +75,6 @@ const CustomerAddress = (props) => {
 };
 CustomerAddress.displayName = 'CustomerDetails';
 CustomerAddress.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  
 };
 export default CustomerAddress;

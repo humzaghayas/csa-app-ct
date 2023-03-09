@@ -9,7 +9,8 @@ import Text from '@commercetools-uikit/text';
 import messages from './messages';
 import styles from './welcome.module.css';
 import WebDeveloperSvg from './web-developer.svg';
-
+import { TextField } from '@commercetools-frontend/ui-kit';
+import { TicketDetails } from '../WelcomePage/components/ticketsWelcome';
 const WrapWith = (props) =>
   props.condition ? props.wrapper(props.children) : props.children;
 WrapWith.displayName = 'WrapWith';
@@ -65,7 +66,8 @@ InfoCard.propTypes = {
 const Welcome = () => {
   const match = useRouteMatch();
   const intl = useIntl();
-
+  // const ticket = TicketDetails;
+  // console.log('This is not going to work', ticket);
   return (
     <Constraints.Horizontal max={16}>
       <Spacings.Stack scale="xl">
@@ -105,25 +107,30 @@ const Welcome = () => {
               content={intl.formatMessage(messages.cardChannelsContent)}
               linkTo={`${match.url}/channels`}
             />
-             <InfoCard
+            <InfoCard
               title={intl.formatMessage(messages.cardTicketsTitle)}
               content={intl.formatMessage(messages.cardTicketsContent)}
               linkTo={`${match.url}/Tickets`}
             />
-              <InfoCard
+            <InfoCard
               title={intl.formatMessage(messages.cardCustomersTitle)}
               content={intl.formatMessage(messages.cardCustomersContent)}
               linkTo={`${match.url}/Customers`}
             />
-             <InfoCard
-              title={intl.formatMessage(messages.cardOrdersTitle)}
-              content={intl.formatMessage(messages.cardOrdersContent)}
+            <InfoCard
+              title={intl.formatMessage(messages.cardTicketsTitle)}
+              content={intl.formatMessage(messages.cardTicketsContent)}
               linkTo={`${match.url}/Tickets`}
             />
-              <InfoCard
+            <InfoCard
               title={intl.formatMessage(messages.cardOrdersTitle)}
               content={intl.formatMessage(messages.cardOrdersContent)}
               linkTo={`${match.url}/Orders`}
+            />
+            <InfoCard
+              title={intl.formatMessage(messages.cardAtgTitle)}
+              content={intl.formatMessage(messages.cardAtgContent)}
+              linkTo={`${match.url}/ATG`}
             />
           </Grid>
         </Spacings.Stack>

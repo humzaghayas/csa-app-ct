@@ -35,32 +35,39 @@ import { docToFormValues, formValuesToDoc } from './conversions';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
 import Spacings from '@commercetools-uikit/spacings';
-const rows = [
-  { Ordernumber: '00000001',PaymentDate:'Apr 11, 2022,2:54:47...',PaymentMethod:'COD',Status:'Ready',CancelledDate:'--'},
-  { Ordernumber: '00000002',PaymentDate:'Apr 11, 2022,2:54:47...',PaymentMethod:'COD',Status:'Ready',CancelledDate:'--'},
-  { Ordernumber: '00000003',PaymentDate:'Apr 11, 2022,2:54:47...',PaymentMethod:'COD',Status:'Ready',CancelledDate:'--'},
-];
+import { useGetPaymentsByCustomer } from '../../../../hooks/use-paymment-connector';
 
 const columns = [
 
-  { key: 'Ordernumber', label: 'Order number' },
+  { key: 'orderNumber', label: 'Order number' },
  
-  { key: 'PaymentDate', label: 'Payment Date' },
-  { key: 'PaymentMethod', label: 'Payment Method' },
-  { key: 'Status', label: 'Status' },
+  { key: 'paymentDate', label: 'Payment Date' },
+  { key: 'paymentMethod', label: 'Payment Method' },
+  { key: 'status', label: 'Status' },
   {key: 'CancelledDate', label: 'Cancelled Date'}
 ];
+
+let rows = null;
+
 const CustomerPayment = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
+  const params = useParams();
+
+  const payments = useGetPaymentsByCustomer(params.id)
+
+  console.log('params.id',params.id);
+  console.log('payments',payments);
+
+  rows = payments?.paymentList;
 
   return (
     <Spacings.Stack scale="xl">
     
-      {/* {data ? ( */}
+      {rows ?
         <Spacings.Stack scale="l">
          
           <DataTable
@@ -76,10 +83,11 @@ const CustomerPayment = (props) => {
             onPageChange={page.onChange}
             perPage={perPage.value}
             onPerPageChange={perPage.onChange}
-            // totalItems={data.total}
+            totalItems={payments?.total}
           />
           
         </Spacings.Stack>
+      :<p>Loading...</p>}
       {/* ) : null} */}
     </Spacings.Stack>
   );

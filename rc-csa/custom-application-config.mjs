@@ -18,8 +18,12 @@ const config = {
   },
   additionalEnv: {
     atgPublicURL: '${env:atgProtocol}'+'${env:atgPublicURL}',
+    SEND_EMAIL_API:'${env:atgProtocol}'+'${env:SEND_EMAIL_API}',
     MC_APP_ENV:'${env:ENV_VAL}',
     NODE_ENV:'${env:ENV_VAL}',
+    SEND_EMAIL_API:'${env:atgProtocol}'+'${env:SEND_EMAIL_API}',
+    STRIPE_SECRET_KEY:'${env:STRIPE_SECRET_KEY}',
+    SEND_EMAIL_API:'${env:atgProtocol}'+'${env:SEND_EMAIL_API}',
   },
   oAuthScopes: {
     view: [
@@ -49,7 +53,8 @@ const config = {
         'csa-project-1d161.firebaseapp.com',
         'https://firebasestorage.googleapis.com/',
         '${env:atgPublicURL}',
-        'https://send-email-f4b4o225iq-ue.a.run.app'
+        'https://api.stripe.com/',
+        '${env:SEND_EMAIL_API}'
       ],
       'style-src': [
         'http://localhost:3001',

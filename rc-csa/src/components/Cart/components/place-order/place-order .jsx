@@ -1,12 +1,14 @@
 import { useIntl } from 'react-intl';
 import PropTypes, { bool } from 'prop-types';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   PageNotFound,
   FormModalPage,
 } from '@commercetools-frontend/application-components';
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { DOMAINS, NO_VALUE_FALLBACK } from '@commercetools-frontend/constants';
+import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import {
   useShowNotification,
   useShowApiErrorNotification,
@@ -17,14 +19,16 @@ import { transformErrors } from './transform-errors';
 import messages from './messages';
 import validate from './validate';
 import {
+  useCartsFetcher,
+  useShippingAddressCreator,
   usePlaceOrderFromCart,
   useFetchCartById,
 } from '../../../../hooks/use-cart-connector/use-cart-connector';
+//import ChannelDeletion from './place-order-popup';
+//import CustomPopup from './CustomPopup';
 import './custom-popup.module.css';
-//import { sendOrderMail } from '../../api';
-import { useAsyncDispatch } from '@commercetools-frontend/sdk';
-import OrderMail from './order-mail';
-import { useSendOrderMail } from '../../../../hooks/use-sendmail-connector';
+import { useSendOrderMail } from '../../../../hooks/use-order-sendmail-connector';
+
 const PlaceOrder = (props) => {
   const intl = useIntl();
   const params = useParams();
@@ -32,20 +36,18 @@ const PlaceOrder = (props) => {
   // const { order, data } = useFetchOrderById(params.id);
   const [isShown, setIsShown] = useState(false);
   const [id, setId] = useState(null);
-  const [result, setData] = useState(null);
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
   }));
-
+  // const canManage = useIsAuthorized({
+  //   demandedPermissions: [PERMISSIONS.Manage],
+  // });
   const showNotification = useShowNotification();
 
   const showApiErrorNotification = useShowApiErrorNotification();
   const placeOrderFromCart = usePlaceOrderFromCart();
-  //const {order} = useFetchOrderById();
-  const { execute } = useSendOrderMail();
-
-  
+  const { execute: execSendEmail } = useSendOrderMail();
 
   const handleSubmit = useCallback(
     async (formikValues, formikHelpers) => {
@@ -53,23 +55,27 @@ const PlaceOrder = (props) => {
       try {
         const response = await placeOrderFromCart.execute({
           originalDraft: cart,
+          //draft: order,
           nextDraft: data,
         });
         //bool window.confirm([messages.OrderPlaced]);
         setId(response.data.createOrderFromCart.id);
         setIsShown((current) => !current);
         console.log('response', response);
-
-         if (response?.data?.createOrderFromCart?.id) {
-            const headers = {
-              'Content-Type': 'application/json',
-            };
-
-            const customerEmail = response?.data?.createOrderFromCart?.customerEmail;
-              const order = await execute(customerEmail);
-              console.log("Mail sent" , order);
-          }
-              //setData();
+        const orderId = response?.data?.createOrderFromCart?.id;
+        if (response?.data?.createOrderFromCart?.id) {
+          const order = await execSendEmail(
+            {},
+            {
+              to: response?.data?.createOrderFromCart?.customerEmail,
+              //to:"vikiranme003@gmail.com",
+              subject: 'Your order is created',
+              html: `<p>Thanks for creating order.</p><p>Your order ID: ${orderId} </p>`,
+            }
+          );
+          console.log('Mail sent', order);
+          console.log(orderId);
+        }
       } catch (graphQLErrors) {
         const transformedErrors = transformErrors(graphQLErrors);
         if (transformedErrors.unmappedErrors.length > 0) {
@@ -80,6 +86,7 @@ const PlaceOrder = (props) => {
 
         //  formikHelpers.setErrors(transformedErrors.formErrors);
       }
+      // console.log('response', response);
     },
 
     [
@@ -92,13 +99,14 @@ const PlaceOrder = (props) => {
     ]
   );
 
+  //const { employee } = useEmployeeDetailsFetcher(params.id);
+
   return (
     <PlaceOrderForm
       initialValues={docToFormValues(cart, projectLanguages)}
       onSubmit={handleSubmit}
       isShown={isShown}
       id={id}
-      result={result}
       //isReadOnly={!canManage}
       dataLocale={dataLocale}
     >

@@ -66,6 +66,7 @@ export const FETCH_ORDER_BY_ID = `query($id:String!){
         ...paymentInfo
         ...totalPrice
         ...taxedPrice
+        ...returnInfo
         customLineItems{
             __typename
         }
@@ -340,6 +341,23 @@ export const FETCH_ORDER_BY_ID = `query($id:String!){
                 fractionDigits
            }
         } 
+  }
+  
+  fragment returnInfo on Order{
+    returnInfo{
+          returnTrackingId
+          returnDate
+          items{
+            type
+            id
+            quantity
+            comment
+            shipmentState
+            paymentState
+            lastModifiedAt
+            createdAt
+          }
+        }
   }`
 export const UPDATE_ORDER_BY_ID = `mutation updateOrderById($version:Long!,
     $actions:[OrderUpdateAction!]!,
@@ -351,6 +369,24 @@ export const UPDATE_ORDER_BY_ID = `mutation updateOrderById($version:Long!,
         shipmentState
         paymentState
         version
+        shippingAddress{
+            id
+            streetName
+            streetNumber
+            postalCode
+              city
+              state
+              building
+            country
+        }
+
+          lineItems{
+              id
+              productId
+              productKey
+              name(locale:"en-US")
+              quantity
+          }
       }
   }`
 export const CREATE_EDIT_ORDER_BY_ID = `mutation createOrderEdit($draft:OrderEditDraft!){
@@ -367,3 +403,247 @@ export const REPLICATE_ORDER = `mutation orderReplicate($referenceInput:Referenc
     id
   }
 }`
+
+
+
+export const FETCH_PAYMENTS_TO_DISPLAY = `query FETCH_PAYMENTS_TO_DISPLAY($where:String,$offset:Int,$limit:Int) {
+  orders(where:$where,offset:$offset,limit:$limit){
+  	count
+    total
+    results{
+      id
+      paymentInfo{
+        payments{
+          transactions{
+            timestamp
+            state
+          }
+          paymentStatus{
+            interfaceCode
+            interfaceText
+            state{
+              key
+            }
+          }
+          paymentMethodInfo{
+            method
+            name(locale:"en")
+          }
+        }
+      }
+    }
+  }
+}
+`
+export const FETCH_ORDER_PAYMENTS_BY_ID = `query FetchOrderPaymentsByOrderId($id:String!){
+  order(id:$id){
+      id
+      version
+      createdAt
+      lastModifiedAt
+      customerId
+      customerEmail
+      country
+      orderState
+      orderNumber
+      paymentInfo{
+        payments{
+          id
+      key
+      interfaceId
+      version
+      createdAt
+      lastModifiedAt
+      custom{
+        customFieldsRaw{
+          name
+          value
+        }
+      }
+      paymentStatus{
+        interfaceCode
+        interfaceText
+      }
+      customer{
+        id
+      }
+      amountPlanned{
+        type
+        currencyCode
+        centAmount
+        fractionDigits
+      }
+      paymentMethodInfo{
+        paymentInterface
+        method
+        name(locale:"en")
+      }
+      transactions{
+        id
+        type
+        interactionId
+        timestamp
+        type
+        state
+        amount{
+          type
+          currencyCode
+          fractionDigits
+          centAmount
+        }
+        }
+        }
+      }
+  }
+}`
+export const FETCH_ORDER_RETURNINFO_BY_ID = `query fetchOrderReturnInfo($id:String!){
+  order(id:$id){
+      id
+      version
+      orderNumber
+      ...lineItems
+      ...returnInfo
+  }
+}
+
+fragment lineItems on Order{
+  lineItems{
+      id
+      productId
+      productKey
+      name(locale:"en-US")
+      ...prioductType
+      ...variant
+      ...price
+      quantity
+      discountedPricePerQuantity{
+          __typename
+      }
+      ...taxRate
+      lastModifiedAt
+      ...state
+      priceMode
+      lineItemMode
+      ...totalPriceLineItem
+      ...taxedPriceLineItem
+  }
+}
+fragment state on LineItem{
+  state{
+      quantity
+      state{
+          id
+            name(locale:"en-US")
+            description(locale:"en-US")
+            initial
+      }        
+  }
+}
+fragment prioductType on LineItem{
+  productType{
+          id
+          name
+      }
+}
+fragment variant on LineItem{
+  variant{
+
+      sku
+      key
+      prices{
+          id
+          value{
+              type
+              currencyCode
+              centAmount
+              fractionDigits
+          }
+          country
+      }
+      images{
+          url
+      }
+      attributesRaw{
+          name
+          value
+      }
+      assets{
+          __typename
+      }
+  }
+}
+fragment price on LineItem{
+  price{
+      id
+          value{
+              type
+              currencyCode
+              centAmount
+              fractionDigits
+          }
+          country
+  }
+}
+fragment taxRate on LineItem{
+  taxRate{
+      name
+      amount
+      includedInPrice
+      country
+      id
+      subRates{
+          __typename
+      }
+  }
+}
+fragment totalPriceLineItem on LineItem{
+  totalPrice{
+          type
+          currencyCode
+          centAmount
+          fractionDigits
+      }
+}
+fragment taxedPriceLineItem on LineItem{
+  taxedPrice{
+         totalNet{
+              type
+              currencyCode
+              centAmount
+              fractionDigits
+         }
+         totalGross{
+              type
+              currencyCode
+              centAmount
+              fractionDigits
+         }
+         totalTax{
+              type
+              currencyCode
+              centAmount
+              fractionDigits
+         }
+      } 
+}
+
+fragment returnInfo on Order{
+  returnInfo{
+        returnTrackingId
+        returnDate
+        items{
+          ... on LineItemReturnItem{
+            lineItemId
+          }
+          type
+          id
+          quantity
+          comment
+          shipmentState
+          paymentState
+          lastModifiedAt
+          createdAt
+        }
+      }
+}
+`

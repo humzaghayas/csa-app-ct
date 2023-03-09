@@ -433,3 +433,22 @@ export const UPDATE_CART_BY_ID = `mutation updateCartById($version:Long!,
     }
       }
     }`;
+
+
+export const FETCH_ACTIVE_CART_COUNT = `query FetchActiveCarts ($where:String){
+  carts(where:$where){
+      total
+      count
+      offset
+  }
+}
+  `;
+
+  export const FETCH_ORDER_COUNT = `query FETCH_ORDER_COUNT ($where:String){
+    orders(where:$where){
+        total
+        count
+        offset
+        }
+    }
+    `;

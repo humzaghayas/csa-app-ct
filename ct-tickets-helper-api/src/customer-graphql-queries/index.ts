@@ -278,10 +278,27 @@ export const FETCH_CUSTOMERS_ORDERS = `query FectchCustomerOrdersListQuery(
         shipmentState
         customerEmail
         createdAt
+        ...returnInfo
         __typename
       }
       __typename
     }
+  }
+  fragment returnInfo on Order{
+    returnInfo{
+          returnTrackingId
+          returnDate
+          items{
+            type
+            id
+            quantity
+            comment
+            shipmentState
+            paymentState
+            lastModifiedAt
+            createdAt
+          }
+        }
   }
   `
 export const FETCH_CUSTOMERS_GRAPHQL = `query FetchCustomers($limit: Int!, $offset: Int!, $sort: [String!]) {
@@ -503,3 +520,74 @@ export const UPDATE_CUSTOMERS_DETAILS = `mutation UpdateCustomerDetails(
     }
   
   `
+
+
+  export const GET_PASSWORD_RESET_TOKEN=`
+  mutation GET_PASSWORD_RESET_TOKEN($email:String!){
+    customerCreatePasswordResetToken(email:$email){
+      customerId
+      value
+      id
+      version
+    }
+  }
+  `
+
+  export const RESET_PASSWORD_FOR_CUSTOMER = `
+  mutation RESET_PASSWORD_FOR_CUSTOMER($version:Long,$tokenValue:String!,$newPassword:String!){
+    customerResetPassword(version:$version,
+      tokenValue:$tokenValue,newPassword:$newPassword){
+      customerNumber
+      email
+      key
+    }
+  }
+  `
+export const FETCH_CUSTOMER_PAYMENTS = `query FectchCustomerPaymentsListQuery(
+  $limit: Int
+  $offset: Int
+  $sort: [String!]
+  $where: String
+) {
+  payments(limit: $limit, offset: $offset, sort: $sort, where: $where) {
+    total
+    count
+    results{
+      id
+      key
+      interfaceId
+      version
+      createdAt
+      lastModifiedAt
+      paymentStatus{
+        interfaceCode
+        interfaceText
+      }
+      customer{
+        id
+      }
+      amountPlanned{
+        type
+        currencyCode
+        centAmount
+        fractionDigits
+      }
+      paymentMethodInfo{
+        paymentInterface
+        method
+        name(locale:"en")
+      }
+      transactions{
+        timestamp
+        type
+        state
+        amount{
+          type
+          currencyCode
+          fractionDigits
+          centAmount
+        }
+      }
+    }
+}
+}`

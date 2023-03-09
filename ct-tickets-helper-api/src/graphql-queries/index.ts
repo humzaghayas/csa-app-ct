@@ -106,7 +106,7 @@ export const FETCH_TICKETS=`
   `
 
   export const FETCH_CUSTOMER_TICKETS =`
-  query($container:String!,$where:String) {
+  query FETCH_CUSTOMER_TICKETS($container:String!,$where:String) {
       customObjects(container:$container,
       where:$where){
         offset

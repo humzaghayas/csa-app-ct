@@ -12,12 +12,13 @@ import {
   FETCH_CART_BY_CARTNUMBER,
   CREATE_ORDER_FROMCART,
   UPDATE_CART_BY_ID,
+  CONSTANTS,FETCH_ACTIVE_CART_COUNT,
+  FETCH_ORDER_COUNT
 } from 'ct-tickets-helper-api';
 import {
   convertToActionData,
   extractErrorFromGraphQlResponse,
 } from '../../helpers';
-import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 export const useCartsFetcher = ({ page, perPage, tableSorting }) => {
   const { data, error, loading } = useMcQuery(
@@ -28,8 +29,7 @@ export const useCartsFetcher = ({ page, perPage, tableSorting }) => {
       variables: {
         limit: perPage.value,
         offset: (page.value - 1) * perPage.value,
-        //sort: ['id'],
-         sort: ["createdAt desc"]
+        sort: ['createdAt desc'],
       },
       context: {
         target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
@@ -138,49 +138,53 @@ export const useCartUpdateById = () => {
   };
 };
 
-// export const useCartUpdateById = () => {
-//   const [updateCartByID, { loading }] = useMcMutation(
-//     gql`
-//       ${UPDATE_CART_BY_ID}
-//     `
-//   );
+export const useGetActiveCartByCustomer= () => {
 
-//   const sync = createSyncChannels();
-//   const execute = async ({ originalDraft, nextDraft, cartId, lineItems }) => {
-//     const actions1 = sync.buildActions(
-//       nextDraft,
-//       convertToActionData(originalDraft)
-//     );
+  const [carts, {  loading }] = useMcLazyQuery(gql`${FETCH_ACTIVE_CART_COUNT}`);
+  
+  const execute = async (id) => {
 
-//     try {
-//       return await updateCartByID({
-//         context: {
-//           target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-//         },
-//         variables: {
-//           id: originalDraft.id,
-//           version: originalDraft.version,
-//           actions: {
-//             // changeLineItemQuantity: {
-//             //   lineItemId: '7fec1491-2d46-4ac5-acb7-d4e8434d1fc3',
-//             //   //lineItemId: lineItems.id,
-//             //   quantity: 5,
-//             // },
-//             addLineItem: {
-//               productId: 'd2087232-7d2a-45bc-9b4a-9ce3fc870ba7',
-//               variantId: 1,
-//               quantity: 4,
-//             },
-//           },
-//         },
-//       });
-//     } catch (graphQlResponse) {
-//       throw extractErrorFromGraphQlResponse(graphQlResponse);
-//     }
-//   };
+    console.log('testetetetette');
+    try {
+      return await carts({ 
+        variables:  {
+          [CONSTANTS.WHERE]: "cartState=\""+CONSTANTS.ACTIVE_STATUS+"\" and customerId=\""+id+"\""
+        },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      } });
+    }catch (graphQlResponse) {
+      throw extractErrorFromGraphQlResponse(graphQlResponse);
+    }
+  }
+  return {
+    execute
+  };
 
-//   return {
-//     loading,
-//     execute,
-//   };
-// };
+}
+
+
+export const useGetOrdersByCustomer= () => {
+
+  const [carts, {  loading }] = useMcLazyQuery(gql`${FETCH_ORDER_COUNT}`);
+  
+  const execute = async (id,statuses) => {
+
+    console.log('testetetetette');
+    try {
+      return await carts({ 
+        variables:  {
+          [CONSTANTS.WHERE]: "orderState in ("+statuses+") and customerId=\""+id+"\""
+        },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      } });
+    }catch (graphQlResponse) {
+      throw extractErrorFromGraphQlResponse(graphQlResponse);
+    }
+  }
+  return {
+    execute
+  };
+
+}

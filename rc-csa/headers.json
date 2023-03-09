@@ -14,7 +14,7 @@
       "https://ms-company-f4b4o225iq-ue.a.run.app",
       "https://ms-gateway-f4b4o225iq-ue.a.run.app",
       "${env:atgPublicURL}",
-      "https://send-email-f4b4o225iq-ue.a.run.app"
+      "${env:SEND_EMAIL_API}"
     ],
     "style-src": [
       "commerce-tools-b2b-services.firebaseapp.com",
