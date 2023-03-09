@@ -1,0 +1,130 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: CSA-Project
+
+on:
+  repository_dispatch:
+    types: deploy-csa
+  push:
+    branches: 
+      - master
+    paths:
+      - 'rc-csa/**'
+      - '.github/workflows/csa-app-ci-master.yml'
+      - '*.json'
+      - '*.yml'
+      - '*.yaml'
+env:
+  FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
+  PROJECT_ID: ${{secrets.PROJECT_ID}}
+  PROJECT_PATH: rc-csa
+  CDN_URL: https://${{ secrets.PROJECT_ID }}.firebaseapp.com
+  NODE_ENV: production
+  
+jobs:
+  lint:
+    name: Lint (node.js)
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: |
+          cd rc-csa
+          yarn install --no-audit
+      - name: Lint Node.js
+        run: |
+          cd rc-csa
+          yarn lint
+      # - name: Lint Markdown
+      #   run: |
+      #     cd rc-csa
+      #     yarn lint-md    
+  # test:        
+  #   name: Test
+  #   needs: lint
+#   runs-on: ubuntu-22.04
+  #   strategy:
+  #     matrix:
+  #       node-version: [16.x]
+  #   steps:
+  #     - name: Checkout Repo
+  #       uses: actions/checkout@master
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #     - name: Install Dependencies
+  #       run: |
+  #         cd rc-csa
+  #         yarn install
+  #     - name: Unit Testing
+  #       run: |
+  #         cd rc-csa
+  #         yarn test
+  
+  build_and_deploy:
+    name: Build and Deploy
+    needs: lint
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [16.x]    
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies
+        run: |
+          cd rc-csa
+          yarn install
+
+      - name: Generate ENV configuration file
+        run: |
+          cd rc-csa        
+          cat << EOF > env-generated.json
+          {
+            "applicationName": "csa-app",
+            "frontendHost": "mc.commercetools.co",
+            "mcApiUrl": "https://mc-api.commercetools.co",
+            "location": "us",
+            "env": "production",
+            "cdnUrl": "$CDN_URL",
+            "servedByProxy": true,
+          }
+          EOF
+
+      - name: Generate HEADERS configuration file
+        run: |
+          cd rc-csa        
+          cat << EOF > headers-generated.json
+          {
+            "csp": {
+              "script-src": ["$CDN_URL"],
+              "connect-src": ["$CDN_URL"],
+              "style-src": ["$CDN_URL"]
+            }
+          }
+          EOF    
+          
+      - name: Build
+        run: |
+          cd rc-csa
+          yarn build
+          yarn run compile-html:firebase
+
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
