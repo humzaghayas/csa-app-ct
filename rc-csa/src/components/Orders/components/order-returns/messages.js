@@ -58,5 +58,5 @@ export default defineMessages({
   NoOrderReturnItemsSelected: {
     id: 'Order.NoOrderReturnItemsSelected',
     defaultMessage: 'No Order return items selected.',
-  },
+  }
 });

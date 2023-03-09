@@ -57,6 +57,7 @@ const OrderReturns = (props) =>{
               domain: DOMAINS.SIDE,
               text: intl.formatMessage(messages.OrderUpdated),
             }); 
+            window.location.reload(true);
           }catch (graphQLErrors) {
                   console.log(graphQLErrors.message)
                   const transformedErrors = transformErrors(graphQLErrors);

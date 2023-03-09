@@ -28,6 +28,7 @@ import {
 //import CustomPopup from './CustomPopup';
 import './custom-popup.module.css';
 import { useSendOrderMail } from '../../../../hooks/use-order-sendmail-connector';
+import { useCustomerDetailsFetcher, useCustomerDetailsFetcherLazy } from '../../../../hooks/use-customers-connector/use-customers-connector';
 
 const PlaceOrder = (props) => {
   const intl = useIntl();
@@ -47,6 +48,10 @@ const PlaceOrder = (props) => {
 
   const showApiErrorNotification = useShowApiErrorNotification();
   const placeOrderFromCart = usePlaceOrderFromCart();
+
+  const {getCustomerById} = useCustomerDetailsFetcherLazy();
+
+
   const { execute: execSendEmail } = useSendOrderMail();
 
   const handleSubmit = useCallback(
@@ -63,11 +68,16 @@ const PlaceOrder = (props) => {
         setIsShown((current) => !current);
         console.log('response', response);
         const orderId = response?.data?.createOrderFromCart?.id;
-        if (response?.data?.createOrderFromCart?.id) {
+
+        
+        if (response?.data?.createOrderFromCart?.id && cart?.customerId) {
+
+          const customer = await getCustomerById(cart?.customerId);
+          console.log('customer ttt',customer)
           const order = await execSendEmail(
             {},
             {
-              to: response?.data?.createOrderFromCart?.customerEmail,
+              to: customer?.data?.customer?.email,
               subject: 'Your order is created',
               html: `<p>Thanks for creating order.</p><p>Your order ID: ${orderId} </p>`,
             }
