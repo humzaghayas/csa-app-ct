@@ -16,6 +16,7 @@ describe('converter', () => {
         defaultBillingAddress: 'test',
         defaultShippingAddress: 'foo',
       };
+       
       expect(cleanDefaultShippingAndBilling(Ticket)).toEqual({});
     });
   });
