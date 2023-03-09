@@ -104,32 +104,12 @@ const CustomerAccount = (props) => {
           </Spacings.Stack>
           <Spacings.Stack scale="xl">
             <Spacings.Inline>
-              <TabHeader
-                to={`${match.url}/Customers-summary`}
-                label="Summary"
-              />
-              <TabHeader
-                to={`${match.url}/Customers-profile`}
-                label="Profile"
-              />
-               <TabHeader
-                to={`${match.url}/Customers-orders`}
-                label="Orders"
-              />
-               <TabHeader
-                to={`${match.url}/Customers-returns`}
-                label="Returns"
-              />
-               <TabHeader
-                to={`${match.url}/Customers-payments`}
-                label="Payments"
-              />
-              <TabHeader
-                to={`${match.url}/Customers-Address`}
-                label="Addresses"
-              />
-              <TabHeader to={`${match.url}/Customers-summary`} label="Summary"  />
-              <TabHeader to={`${match.url}/Customers-profile`} label="Profile" />
+              <TabHeader to={`${match.url}/Customers-summary`} label="Summary" /> 
+              <TabHeader to={`${match.url}/Customers-profile`} label="Profile" />  
+              <TabHeader to={`${match.url}/Customers-orders`} label="Orders" />
+               <TabHeader to={`${match.url}/Customers-returns`} label="Returns"/>
+               <TabHeader to={`${match.url}/Customers-payments`} label="Payments"/>
+              <TabHeader to={`${match.url}/Customers-Address`} label="Addresses"/>
               <TabHeader to={`${match.url}/Customers-tickets`} label="Tickets" />
               <TabHeader to={`${match.url}/Customers-password`} label="Password" />
             </Spacings.Inline>
@@ -164,9 +144,6 @@ const CustomerAccount = (props) => {
            </Route>
         <Route path={`${match.path}/Customers-payments`}>
           <CustomerPayment />
-        </Route>
-        <Route path={`${match.path}/Customers-sumary`}>
-           <CustomerPassword />
         </Route>
       </Switch>
     </TabularDetailPage>
