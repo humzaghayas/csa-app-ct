@@ -1,5 +1,5 @@
-export const FETCH_CARTS = `query FetchAllCarts($limit: Int!, $offset: Int!, $sort: [String!]) {
-    carts(limit: $limit, offset: $offset, sort: $sort) {
+export const FETCH_CARTS = `query FetchAllCarts($where:String,$limit: Int!, $offset: Int!, $sort: [String!]) {
+    carts(where:$where,limit: $limit, offset: $offset, sort: $sort) {
         total
         count
         offset
