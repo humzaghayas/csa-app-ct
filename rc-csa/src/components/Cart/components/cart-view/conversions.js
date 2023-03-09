@@ -95,7 +95,7 @@ function amountCalculator(centAmount, fractionDigits) {
 
 export const getSearchProductRows = (productProjectionSearchResults) => {
   if (productProjectionSearchResults) {
-    return productProjectionSearchResults?.map((product) => {
+    const searchProdRows = productProjectionSearchResults?.map((product) => {
       return {
         productId: product.id,
         product: product?.name,
@@ -117,6 +117,7 @@ export const getSearchProductRows = (productProjectionSearchResults) => {
         },
       };
     });
+    return searchProdRows;
   }
 };
 // export function getValue(customFieldsRaw) {

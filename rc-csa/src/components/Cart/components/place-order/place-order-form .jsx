@@ -133,9 +133,7 @@ const PlaceOrderForm = (props) => {
                     `/csa-project-2/csa-customer-tickets/order-edit/${props.id}/orders-general`
                   )
                 }
-
                 size="big"
-
               />
             </Spacings.Inline>
           </Spacings.Stack>

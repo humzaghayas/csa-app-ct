@@ -17,14 +17,13 @@ const config = {
     },
   },
   additionalEnv: {
-    atgPublicURL: '${env:atgProtocol}'+'${env:atgPublicURL}',
-    SEND_EMAIL_API:'${env:atgProtocol}'+'${env:SEND_EMAIL_API}',
-    MC_APP_ENV:'${env:ENV_VAL}',
-    NODE_ENV:'${env:ENV_VAL}',
-
-    STRIPE_SECRET_KEY:'${env:STRIPE_SECRET_KEY}',
-    SEND_EMAIL_API:'${env:atgProtocol}'+'${env:SEND_EMAIL_API}',
-
+    atgPublicURL: '${env:atgProtocol}' + '${env:atgPublicURL}',
+    SEND_EMAIL_API: '${env:atgProtocol}' + '${env:SEND_EMAIL_API}',
+    MC_APP_ENV: '${env:ENV_VAL}',
+    NODE_ENV: '${env:ENV_VAL}',
+    SEND_EMAIL_API: '${env:atgProtocol}' + '${env:SEND_EMAIL_API}',
+    STRIPE_SECRET_KEY: '${env:STRIPE_SECRET_KEY}',
+    SEND_EMAIL_API: '${env:atgProtocol}' + '${env:SEND_EMAIL_API}',
   },
   oAuthScopes: {
     view: [
@@ -46,7 +45,7 @@ const config = {
         'http://localhost:3001',
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
-        'https://firebasestorage.googleapis.com/'
+        'https://firebasestorage.googleapis.com/',
       ],
       'connect-src': [
         'http://localhost:3001',
@@ -56,20 +55,19 @@ const config = {
         '${env:atgPublicURL}',
         'https://api.stripe.com/',
         '${env:SEND_EMAIL_API}',
-        '${env:ALGOLIA_SEARCH}'
-
+        '${env:ALGOLIA_SEARCH}',
       ],
       'style-src': [
         'http://localhost:3001',
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
-        'https://firebasestorage.googleapis.com/'
+        'https://firebasestorage.googleapis.com/',
       ],
       'img-src': [
         'http://localhost:3001',
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
-        'https://firebasestorage.googleapis.com/'
+        'https://firebasestorage.googleapis.com/',
       ],
     },
   },
