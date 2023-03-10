@@ -55,8 +55,8 @@ import './product-list-module.css';
 const columns = [{ key: 'title', label: 'Title' }];
 
 const searchClient = algoliasearch(
-  'latency',
-  '6be0576ff61c053d5f9a3225e2a90f76'
+  '9KFLY67CI7',
+  '843cd3bdec93b819a55bf8aca0dbe4c8'
 );
 
 function Hit({ hit }) {
@@ -102,25 +102,27 @@ const ProductListSearch = (props) => {
   return (
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="s">
-        <InstantSearch indexName="bestbuy" searchClient={searchClient}>
+        <InstantSearch indexName="rc-ct-csa" searchClient={searchClient}>
        
         <Configure hitsPerPage={7} />
         <div className="refinement-list-search">
           <div>
             <div>
             <div className="refinement-list-category">Category</div>
-        <RefinementList attribute="category" />
+        <RefinementList attribute="categories"
+        />
         </div>
         <div>
-            <div className="refinement-list-brand">Brand</div>
-        <RefinementList attribute="manufacturer" />
+            <div className="refinement-list-brand">Color</div>
+        <RefinementList attribute="color" />
         </div>
         <div>
-        <div className="refinement-list-price">Price</div>
-        <RefinementList attribute="salePrice_range" />
+        <div className="refinement-list-price">Ingredients</div>
+        <RefinementList attribute="ingredients" />
         </div>
         </div>
-        <div className="searchbox-items">
+          <Constraints.Horizontal max={10}>
+          <div className="searchbox-items">
           <SearchBox placeholder="Search for products..." />
           
           {/* <button type="button" onClick={() => push(`products-search-items`)}>search</button> */}
@@ -138,7 +140,7 @@ const ProductListSearch = (props) => {
                         
                           <div className="search-result-details-left">
                         <img
-                            src={hit.thumbnailImage}
+                            src={hit.images}
                             alt=""
                             width="100%"
                             height="100%"
@@ -146,9 +148,9 @@ const ProductListSearch = (props) => {
                           />
                           </div>
                           <div class="search-result-details-right">
-                          <div class="search-result-category" id="category-value">{hit.category}</div>
-                          <div class="search-result-name">{hit.name}</div>
-                          <div class="search-result-price">${hit.salePrice}</div>
+                          <div class="search-result-category" id="category-value">{hit.categories}</div>
+                          <div class="search-result-name">{hit.title}</div>
+                          <div class="search-result-price">${hit.prices_usd/100}</div>
                           </div>
                         </div>
                        
@@ -161,6 +163,8 @@ const ProductListSearch = (props) => {
             }}
           />
           </div>
+
+          </Constraints.Horizontal>
           </div>
           <Pagination />
         </InstantSearch>

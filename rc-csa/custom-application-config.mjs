@@ -54,7 +54,8 @@ const config = {
         '${env:atgPublicURL}',
         'https://api.stripe.com/',
         '${env:SEND_EMAIL_API}',
-        '${env:ALGOLIA_SEARCH}'
+        '${env:ALGOLIA_SEARCH}',
+        '${env:ALGOLIA_SEARCH_CSA}'
       ],
       'style-src': [
         'http://localhost:3001',
