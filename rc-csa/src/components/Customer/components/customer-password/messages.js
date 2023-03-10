@@ -51,4 +51,8 @@ export default defineMessages({
     defaultMessage:
       'We were unable to fetch the Employee details. Please check your connection, the provided Employee ID and try again.',
   },
+  PsswordChangedSuccessfully: {
+    id: 'Customer.PsswordChangedSuccessfully',
+    defaultMessage: 'Password updated successfully!',
+  },
 });

@@ -1,6 +1,7 @@
 import {
   useMcQuery,
   useMcMutation,
+  useMcLazyQuery,
 } from '@commercetools-frontend/application-shell';
 import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
 
@@ -227,4 +228,26 @@ export const useCustomersPaymentsFetcher = ({ page, perPage, tableSorting, custo
     error,
     loading,
   };
+};
+
+
+export const useCustomerDetailsFetcherLazy = () => {
+
+  const [customer, {  loading }] = useMcLazyQuery(gql`${FETCH_CUSTOMERS_DETAILS}`);
+
+ const getCustomerById =async (id) =>{
+  try {
+    return await customer({ 
+      variables:  {
+        id,
+      },
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    } });
+  }catch (graphQlResponse) {
+    throw extractErrorFromGraphQlResponse(graphQlResponse);
+  }
+ }
+
+ return {getCustomerById}
 };

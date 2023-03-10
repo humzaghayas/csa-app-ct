@@ -27,7 +27,8 @@ import {
 //import ChannelDeletion from './place-order-popup';
 //import CustomPopup from './CustomPopup';
 import './custom-popup.module.css';
-import { useFetchOrderById } from '../../../../hooks/use-orders-connector/use-orders-connector';
+import { useSendOrderMail } from '../../../../hooks/use-order-sendmail-connector';
+import { useCustomerDetailsFetcher, useCustomerDetailsFetcherLazy } from '../../../../hooks/use-customers-connector/use-customers-connector';
 
 const PlaceOrder = (props) => {
   const intl = useIntl();
@@ -48,6 +49,11 @@ const PlaceOrder = (props) => {
   const showApiErrorNotification = useShowApiErrorNotification();
   const placeOrderFromCart = usePlaceOrderFromCart();
 
+  const {getCustomerById} = useCustomerDetailsFetcherLazy();
+
+
+  const { execute: execSendEmail } = useSendOrderMail();
+
   const handleSubmit = useCallback(
     async (formikValues, formikHelpers) => {
       const data = formValuesToDoc(formikValues);
@@ -61,6 +67,24 @@ const PlaceOrder = (props) => {
         setId(response.data.createOrderFromCart.id);
         setIsShown((current) => !current);
         console.log('response', response);
+        const orderId = response?.data?.createOrderFromCart?.id;
+
+        
+        if (response?.data?.createOrderFromCart?.id && cart?.customerId) {
+
+          const customer = await getCustomerById(cart?.customerId);
+          console.log('customer ttt',customer)
+          const order = await execSendEmail(
+            {},
+            {
+              to: customer?.data?.customer?.email,
+              subject: 'Your order is created',
+              html: `<p>Thanks for creating order.</p><p>Your order ID: ${orderId} </p>`,
+            }
+          );
+          console.log('Mail sent', order);
+          console.log(orderId);
+        }
       } catch (graphQLErrors) {
         const transformedErrors = transformErrors(graphQLErrors);
         if (transformedErrors.unmappedErrors.length > 0) {
@@ -83,8 +107,6 @@ const PlaceOrder = (props) => {
       showNotification,
     ]
   );
-
-  //const { employee } = useEmployeeDetailsFetcher(params.id);
 
   return (
     <PlaceOrderForm

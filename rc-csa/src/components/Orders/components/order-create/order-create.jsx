@@ -67,6 +67,7 @@ const OrderCreate = (props) => {
     async(e) =>{
       console.log("In Handle Submit");
       const stagedActions = e.stagedActions;
+      console.log("stagedActions",stagedActions);
       if(stagedActions.length!=0){
         try{
           const draft= {
@@ -78,6 +79,8 @@ const OrderCreate = (props) => {
            comment: "No Comment"
          }
           const result = await executeCreateOrderEdit(draft);
+
+          console.log('result oe',result);
           const data = await result.data.createOrderEdit;
           const orderEditId  = data?.id;
           const editVersion  = data?.version;
@@ -99,7 +102,7 @@ const OrderCreate = (props) => {
             console.log(result2);
           }
           console.log(result.data.createOrderEdit);
-          window.location.reload(true)
+          //window.location.reload(true)
           forceUpdate();
             showNotification({
             kind: 'success',
@@ -117,7 +120,7 @@ const OrderCreate = (props) => {
           }
         }
       }
-      push(`${match.url}`);
+      //push(`${match.url}`);
     }
   )
 

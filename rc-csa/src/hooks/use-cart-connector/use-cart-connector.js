@@ -12,8 +12,9 @@ import {
   FETCH_CART_BY_CARTNUMBER,
   CREATE_ORDER_FROMCART,
   UPDATE_CART_BY_ID,
-  CONSTANTS,FETCH_ACTIVE_CART_COUNT,
-  FETCH_ORDER_COUNT
+  CONSTANTS,
+  FETCH_ACTIVE_CART_COUNT,
+  FETCH_ORDER_COUNT,
 } from 'ct-tickets-helper-api';
 import {
   convertToActionData,
@@ -27,9 +28,12 @@ export const useCartsFetcher = ({ page, perPage, tableSorting }) => {
     `,
     {
       variables: {
+
+        where:"cartState in (\"Active\",\"Merged\")",
+
         limit: perPage.value,
         offset: (page.value - 1) * perPage.value,
-        sort: ['id'],
+        sort: ['createdAt desc'],
       },
       context: {
         target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
@@ -138,53 +142,62 @@ export const useCartUpdateById = () => {
   };
 };
 
-export const useGetActiveCartByCustomer= () => {
+export const useGetActiveCartByCustomer = () => {
+  const [carts, { loading }] = useMcLazyQuery(
+    gql`
+      ${FETCH_ACTIVE_CART_COUNT}
+    `
+  );
 
-  const [carts, {  loading }] = useMcLazyQuery(gql`${FETCH_ACTIVE_CART_COUNT}`);
-  
   const execute = async (id) => {
-
     console.log('testetetetette');
     try {
-      return await carts({ 
-        variables:  {
-          [CONSTANTS.WHERE]: "cartState=\""+CONSTANTS.ACTIVE_STATUS+"\" and customerId=\""+id+"\""
+      return await carts({
+        variables: {
+          [CONSTANTS.WHERE]:
+            'cartState="' +
+            CONSTANTS.ACTIVE_STATUS +
+            '" and customerId="' +
+            id +
+            '"',
         },
-      context: {
-        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-      } });
-    }catch (graphQlResponse) {
+        context: {
+          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+        },
+      });
+    } catch (graphQlResponse) {
       throw extractErrorFromGraphQlResponse(graphQlResponse);
     }
-  }
-  return {
-    execute
   };
+  return {
+    execute,
+  };
+};
 
-}
+export const useGetOrdersByCustomer = () => {
+  const [carts, { loading }] = useMcLazyQuery(
+    gql`
+      ${FETCH_ORDER_COUNT}
+    `
+  );
 
-
-export const useGetOrdersByCustomer= () => {
-
-  const [carts, {  loading }] = useMcLazyQuery(gql`${FETCH_ORDER_COUNT}`);
-  
-  const execute = async (id,statuses) => {
-
+  const execute = async (id, statuses) => {
     console.log('testetetetette');
     try {
-      return await carts({ 
-        variables:  {
-          [CONSTANTS.WHERE]: "orderState in ("+statuses+") and customerId=\""+id+"\""
+      return await carts({
+        variables: {
+          [CONSTANTS.WHERE]:
+            'orderState in (' + statuses + ') and customerId="' + id + '"',
         },
-      context: {
-        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-      } });
-    }catch (graphQlResponse) {
+        context: {
+          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+        },
+      });
+    } catch (graphQlResponse) {
       throw extractErrorFromGraphQlResponse(graphQlResponse);
     }
-  }
-  return {
-    execute
   };
-
-}
+  return {
+    execute,
+  };
+};

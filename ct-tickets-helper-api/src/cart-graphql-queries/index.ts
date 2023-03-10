@@ -1,5 +1,5 @@
-export const FETCH_CARTS = `query FetchAllCarts($limit: Int!, $offset: Int!, $sort: [String!]) {
-    carts(limit: $limit, offset: $offset, sort: $sort) {
+export const FETCH_CARTS = `query FetchAllCarts($where:String,$limit: Int!, $offset: Int!, $sort: [String!]) {
+    carts(where:$where,limit: $limit, offset: $offset, sort: $sort) {
         total
         count
         offset
@@ -381,6 +381,8 @@ export const CREATE_ORDER_FROMCART = `mutation createOrder(
     id
     ...cart
     version
+    customerEmail
+    customerId
     purchaseOrderNumber
     paymentState
     orderState
@@ -433,7 +435,6 @@ export const UPDATE_CART_BY_ID = `mutation updateCartById($version:Long!,
       }
     }`;
 
-
 export const FETCH_ACTIVE_CART_COUNT = `query FetchActiveCarts ($where:String){
   carts(where:$where){
       total
@@ -443,7 +444,7 @@ export const FETCH_ACTIVE_CART_COUNT = `query FetchActiveCarts ($where:String){
 }
   `;
 
-  export const FETCH_ORDER_COUNT = `query FETCH_ORDER_COUNT ($where:String){
+export const FETCH_ORDER_COUNT = `query FETCH_ORDER_COUNT ($where:String){
     orders(where:$where){
         total
         count
