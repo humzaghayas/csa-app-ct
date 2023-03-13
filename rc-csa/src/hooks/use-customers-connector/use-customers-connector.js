@@ -251,3 +251,23 @@ export const useCustomerDetailsFetcherLazy = () => {
 
  return {getCustomerById}
 };
+
+export const useCustomersCartsFetcher = ({ page, perPage, tableSorting, customerId}) => {
+  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMER_CARTS}`, {
+    variables: {
+      limit: perPage.value,
+      offset: (page.value - 1) * perPage.value,
+      sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
+      where:"customerId="+'"'+customerId+'"',
+    },
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    },
+  });
+
+  return {
+    customersOrderPaginatedResult: data?.orders,
+    error,
+    loading,
+  };
+};
