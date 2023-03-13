@@ -24,12 +24,17 @@ import { MailIcon } from '@commercetools-uikit/icons';
 
 import { useCustomersOrdersFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
 import { docToFormValues, getOrdersReturnInfo } from './conversions';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 const CustomerReturn = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
   const params = useParams();
+
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
 
   const OrderId = params.id;
 
@@ -100,7 +105,7 @@ const CustomerReturn = (props) => {
           rows={docToFormValues(customersOrderPaginatedResult?.results)}
           itemRenderer={(item, column) => itemRenderer(item, column)}
           maxHeight={600}
-          onRowClick={(row) => push(`/csa-project-2/csa-customer-tickets/order-edit/${row.id}/orders-returns`)}
+          onRowClick={(row) => push(`/${projectKey}/csa-customer-tickets/order-edit/${row.id}/orders-returns`)}
         />
         <Pagination
           page={page.value}

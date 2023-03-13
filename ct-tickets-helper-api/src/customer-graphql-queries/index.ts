@@ -609,6 +609,10 @@ export const FETCH_CUSTOMER_CARTS = `query FectchCustomerOrdersListQuery(
         fractionDigits
         __typename
       }
+      lineItems{
+        id
+        quantity
+      }
       cartState
       customerEmail
       customerId
