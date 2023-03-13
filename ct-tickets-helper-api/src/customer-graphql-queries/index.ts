@@ -591,3 +591,35 @@ export const FETCH_CUSTOMER_PAYMENTS = `query FectchCustomerPaymentsListQuery(
     }
 }
 }`
+export const FETCH_CUSTOMER_CARTS = `query FectchCustomerOrdersListQuery(
+  $limit: Int
+  $offset: Int
+  $sort: [String!]
+  $where: String
+) {
+  carts(limit: $limit, offset: $offset, sort: $sort, where: $where) {
+    total
+    count
+    results {
+      id
+      key
+      totalPrice {
+        centAmount
+        currencyCode
+        fractionDigits
+        __typename
+      }
+      lineItems{
+        id
+        quantity
+      }
+      cartState
+      customerEmail
+      customerId
+      createdAt
+      lastModifiedAt
+      __typename
+    }
+    __typename
+  }
+}`
