@@ -14,7 +14,7 @@ import {
 
 import {FETCH_CUSTOMERS_GRAPHQL, FETCH_CUSTOMERS_ADDRESS_DETAILS,
   FETCH_CUSTOMERS_DETAILS, FETCH_CUSTOMERS_ORDERS, UPDATE_CUSTOMERS_ADDRESS_DETAILS,
-  UPDATE_CUSTOMERS_DETAILS, FETCH_CUSTOMER_PAYMENTS, FETCH_CUSTOMER_CARTS} from 'ct-tickets-helper-api';
+  UPDATE_CUSTOMERS_DETAILS, FETCH_CUSTOMER_PAYMENTS, FETCH_CUSTOMER_CARTS, FETCH_CUSTOMER_ADDRESSES} from 'ct-tickets-helper-api';
   
 import { gql } from '@apollo/client';
 
@@ -267,6 +267,23 @@ export const useCustomersCartsFetcher = ({ page, perPage, tableSorting, customer
 
   return {
     customersCartPaginatedResult: data?.carts,
+    error,
+    loading,
+  };
+};
+
+export const useCustomerAddressesFetcher = (id) => {
+  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMER_ADDRESSES}`, {
+    variables: {
+      id,
+    },
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    },
+  });
+
+  return {
+    customer: data?.customer,
     error,
     loading,
   };

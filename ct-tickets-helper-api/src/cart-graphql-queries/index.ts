@@ -312,14 +312,28 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
   
   fragment shippingAddress on Cart{
     shippingAddress{
-        id
-        streetName
-        streetNumber
-        postalCode
-          city
-          state
-          building
-        country
+      id
+      streetName
+      streetNumber
+      salutation
+      additionalStreetInfo
+      additionalAddressInfo
+      city
+      region
+      state
+      country
+      company
+      department
+      building
+      apartment
+      pOBox
+      phone
+      mobile
+      email
+      firstName
+      lastName
+      postalCode
+      apartment
     }
   }
   fragment billingAddress on Cart{

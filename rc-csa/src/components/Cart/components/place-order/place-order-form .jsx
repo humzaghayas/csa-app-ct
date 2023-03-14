@@ -30,6 +30,7 @@ import {
   useFetchCartById,
   usePlaceOrderFromCart,
 } from '../../../../hooks/use-cart-connector/use-cart-connector';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 const columns = [
   { key: 'product', label: 'Product' },
@@ -68,6 +69,9 @@ const PlaceOrderForm = (props) => {
   const popupCloseHandler = (e) => {
     setVisibility(e);
   };
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
   const intl = useIntl();
   const params = useParams();
   const match = useRouteMatch();
@@ -130,7 +134,7 @@ const PlaceOrderForm = (props) => {
                 label="View order"
                 onClick={() =>
                   push(
-                    `/csa-project-2/csa-customer-tickets/order-edit/${props.id}/orders-general`
+                    `/${projectKey}/csa-customer-tickets/order-edit/${props.id}/orders-general`
                   )
                 }
                 size="big"

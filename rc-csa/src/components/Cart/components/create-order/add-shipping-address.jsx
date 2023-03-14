@@ -26,6 +26,7 @@ import {
   useFetchCartById,
   useCartUpdateById,
 } from '../../../../hooks/use-cart-connector/use-cart-connector';
+import { useCustomerAddressesFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
 
 const ShippingAddress = (props) => {
   const intl = useIntl();
@@ -60,6 +61,8 @@ const ShippingAddress = (props) => {
   let { cart } = useFetchCartById(match.params.id);
   const handleSubmit = useCallback(async (payload) => {
     console.log('In Handle Submit');
+    payload.cartId=cart?.id;
+    payload.version=cart?.version;
     console.log(payload);
     try {
       const result = await executeUpdateCart(payload);
@@ -84,12 +87,21 @@ const ShippingAddress = (props) => {
     }
   });
 
+  console.log("Cart in shipping address",cart)
+
+  const {customer} = useCustomerAddressesFetcher(cart?.customerId);
+
+
   return (
     <ShippingAddressForm
-      initialValues={docToFormValues(cart, projectLanguages)}
+      initialValues={docToFormValues(cart?.shippingAddress, projectLanguages)}
+      addresses = {customer?.addresses}
       onSubmit={handleSubmit}
       isReadOnly={!canManage}
       dataLocale={dataLocale}
+      onClose={props?.onClose}
+      cartId={cart?.id}
+      cartVersion={cart?.version}
     >
       {(formProps) => {
         return (
