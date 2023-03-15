@@ -21,9 +21,13 @@ const AtgCategory = (props) => {
   const { push } = useHistory();
   const params = useParams();
 
-  const atgPublicURL = useApplicationContext(
-    (context) => context.environment.atgPublicURL
-  );
+  const {atgPublicURL,entryPointUriPath,projectKey} = useApplicationContext(
+    (context) => ({
+      atgPublicURL:context.environment.atgPublicURL,
+      entryPointUriPath:context.environment.entryPointUriPath,
+      projectKey:context.project.key
+  }));
+
   // const OrderId = params.id;
 
   const id = params.id;
@@ -89,7 +93,7 @@ const AtgCategory = (props) => {
           maxHeight={600}
           onRowClick={(row) =>
             push(
-              `/csa-project-2/csa-customer-tickets/ATG/${row.id}/atg-products`
+              `/${projectKey}/${entryPointUriPath}/ATG/${row.id}/atg-products`
             )
           }
         />

@@ -69,9 +69,6 @@ const PlaceOrderForm = (props) => {
   const popupCloseHandler = (e) => {
     setVisibility(e);
   };
-  const { projectKey } =useApplicationContext((context) => ({
-    projectKey:context.project.key
-  }));
   const intl = useIntl();
   const params = useParams();
   const match = useRouteMatch();
@@ -87,6 +84,12 @@ const PlaceOrderForm = (props) => {
   const [visibility, setVisibility] = useState(props.isShown);
   console.log('intialvaluessssssss', props.initialValues);
   console.log(props.id);
+
+  const {entryPointUriPath,projectKey} = useApplicationContext(
+    (context) => ({
+      entryPointUriPath:context.environment.entryPointUriPath,
+      projectKey:context.project.key
+  }));
 
   const formElements = (
     <Spacings.Stack scale="l">
@@ -134,7 +137,7 @@ const PlaceOrderForm = (props) => {
                 label="View order"
                 onClick={() =>
                   push(
-                    `/${projectKey}/csa-customer-tickets/order-edit/${props.id}/orders-general`
+                    `/${projectKey}/${entryPointUriPath}/order-edit/${props.id}/orders-general`
                   )
                 }
                 size="big"

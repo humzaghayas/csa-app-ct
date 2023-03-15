@@ -27,6 +27,7 @@ import {
   useHistory,
   useParams
 } from 'react-router-dom';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 const rows = [
   {product: '', originalUnitPrice: '$350.00' ,UnitPrice:'$350.00',Qty:'3',LineItemState:'',subTotal:'$1150.00',Tax:"0",Total:'$1150.00'},
@@ -76,6 +77,12 @@ const ProductCreateForm = (props) => {
   });
   const history = useHistory();
  const { push } = useHistory();
+
+ const {entryPointUriPath,projectKey} = useApplicationContext(
+  (context) => ({
+    entryPointUriPath:context.environment.entryPointUriPath,
+    projectKey:context.project.key
+}));
 
   console.log("Order details LineItems");
   console.log(formik?.values);
@@ -167,7 +174,7 @@ const ProductCreateForm = (props) => {
   <Spacings.Stack scale="m">
     <Spacings.Inline>
   <Text.Subheadline  as="h4">{'You Can Instantly Search for the Products'}</Text.Subheadline>
-  <SecondaryButton iconLeft={<SearchIcon />} label="Search Product" onClick={() => history.push(`/csa-project-2/csa-customer-tickets/product-edit/parasite/products-search`)} />;
+  <SecondaryButton iconLeft={<SearchIcon />} label="Search Product" onClick={() => history.push(`/${projectKey}/${entryPointUriPath}/product-edit/parasite/products-search`)} />;
   </Spacings.Inline>
   </Spacings.Stack>
     </Spacings.Stack>
