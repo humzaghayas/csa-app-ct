@@ -5,7 +5,7 @@ import {
   useRouteMatch,
   Link,
   useHistory,
-  useParams
+  useParams,
 } from 'react-router-dom';
 import {
   TabularModalPage,
@@ -15,27 +15,16 @@ import {
   TabularDetailPage,
 } from '@commercetools-frontend/application-components';
 import PropTypes from 'prop-types';
-// import OrderDetails from '../Order-details/Order-details';
-// import OrderRules from '../Order-rules/Order-rules';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import { PlusBoldIcon, ExportIcon } from '@commercetools-uikit/icons';
 import Spacings from '@commercetools-uikit/spacings';
-
-
-// import RequiredApproval from '../required-approval';
-// import AddBudget from '../add-budget';
-// import AddNewRule from '../add-new-rule';
-// import EmployeeCreate from '../../../employees/components/employee-create';
-// import OrderEmployees from '../Order-employees/Order-employees';
-// import { getOrder } from '../../api';
+import { entryPointUriPath } from '../../../../constants';
 import { lazy, useState, useEffect } from 'react';
 
-import ProductCreate from '../product-create/product-create';
-import ProductSearch from '../product-search/product-search';
-import { entryPointUriPath } from '../../../../constants';
+import Products from '../product-list/product-list';
+import ProductListSearch from '../product-list/product-list-search';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
-//import OrderShipping from '../order-shipping/order-shipping';
-
+import ProductDetails from '../product-details';
 
 const ProductAccount = (props) => {
   const match = useRouteMatch();
@@ -43,59 +32,55 @@ const ProductAccount = (props) => {
   const history = useHistory();
   const params = useParams();
   const { push } = useHistory();
-  const { projectKey } =useApplicationContext((context) => ({
-    projectKey:context.project.key
-  }));
-
-  //const apiUrl ="http://localhost:4456";
+  const [Order, setData] = useState();
   const apiUrl = 'https://ms-Order-f4b4o225iq-ue.a.run.app';
   const OrderId = params.id;
-  // useEffect(() => {
-  //   getOrder({ url: apiUrl, id: OrderId }).then((res) => setData(res));
-  // }, [apiUrl, OrderId]);
+
+  const { projectKey } = useApplicationContext((context) => ({
+    projectKey: context.project.key,
+  }));
 
   return (
     <TabularDetailPage
       title=" "
-      //  onPreviousPathClick={() => history.push(`Order-list`)}
-      onPreviousPathClick={() => history.push(`/${projectKey}/${entryPointUriPath}/Products`)}
-      previousPathLabel="Go to View Products"
+      onPreviousPathClick={() =>
+        history.push(`/${projectKey}/${entryPointUriPath}/products`)
+      }
+      previousPathLabel="Go to View ProductsList"
       tabControls={
         <>
           <Spacings.Stack scale="xl">
             <Spacings.Inline>
               <TabHeader
-                to={`${match.url}/products-general`}
-                label="General"
+                to={`${match.url}/productsList-general`}
+                label="Product List"
               />
-             <TabHeader
-                to={`${match.url}/products-search`}
-                label="Search"
+              <TabHeader
+                to={`${match.url}/productsList-search`}
+                label="Product Search"
               />
+              
             </Spacings.Inline>
           </Spacings.Stack>
         </>
       }
     >
       <Switch>
-        <Route path={`${match.path}/products-general`}>
-        
-         <ProductCreate />
+        <Route path={`${match.path}/productsList-general`}>
+          <Products />
         </Route>
-        <Route path={`${match.path}/products-search`}>
-        
-         <ProductSearch />
+        <Route path={`${match.path}/productsList-search`}>
+          <ProductListSearch />
         </Route>
-          
-
+        {/* <Route path={`${match.path}/product-details`}>
+          <ProductDetails />
+        </Route> */}
       </Switch>
     </TabularDetailPage>
-
   );
 };
-ProductAccount.displayName = 'Companies';
+ProductAccount.displayName = 'ProductAccount';
 ProductAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  
 };
 export default ProductAccount;

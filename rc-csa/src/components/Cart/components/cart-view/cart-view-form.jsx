@@ -35,6 +35,7 @@ import { useProductSearchByText } from '../../../../hooks/use-product-search-con
 import { NumberInput, SearchSelectInput } from '@commercetools-frontend/ui-kit';
 
 import { SuspendedRoute } from '@commercetools-frontend/application-shell';
+import CartLineItems from './cart-line-items';
 
 const getCartStates = Object.keys(CART_STATE).map((key) => ({
   label: key,
@@ -84,6 +85,7 @@ const CartViewForm = (props) => {
   const params = useParams();
   const lineItemId = params.id;
 
+  console.log(formik?.values?.lineItems);
   useEffect(() => {
     if (lineItems == null) {
       const lItems = formik?.values?.lineItems?.map((li) => {
@@ -138,9 +140,9 @@ const CartViewForm = (props) => {
                     onChange={(e) => {
                       const newVal = Number(e.target.value);
 
-                      // if(newVal < item.startValue){
-                      //   return;
-                      // }
+                      if(newVal < item.startValue){
+                        return;
+                      }
 
                       const rows = lineItems.filter(
                         (l) => l.lineItemId !== item.lineItemId
@@ -150,14 +152,18 @@ const CartViewForm = (props) => {
                       );
 
                       const row = {
-                        lineItemId: r.lineItemId,
-                        name: r.name,
-                        sku: r.sku,
-                        unitPrice: r.unitPrice,
-                        key: r.key,
-                        startValue: r.startValue,
-                        isEditQuantity: r.isEditQuantity,
-                        image: r.image,
+                              lineItemId:r.lineItemId,
+                              name:r.name,
+                              sku:r.sku,
+                              key:r.key,
+                              startValue:r.startValue,
+                              isEditQuantity:r.isEditQuantity,
+                              image:r.image,
+                              unitPrice:r?.unitPrice,
+                              subTotalPrice:r?.subTotalPrice,
+                              tax:r?.tax,
+                              totalPrice:r?.totalPrice
+                        
                       };
 
                       // rows.push(row);
@@ -330,6 +336,14 @@ const CartViewForm = (props) => {
     }
   };
 
+  const onChange = (e)=>{
+    console.log(e?.target);
+    const id = e?.target?.id;
+    const value = e?.target?.value;
+    const cartId = formik?.values?.id;
+    const version = formik?.values?.version;
+    const actions = [];
+  }
   const onSubmit = (e) => {
     // console.log("In order create form");
     props.onSubmit(e);

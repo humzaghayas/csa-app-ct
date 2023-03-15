@@ -41,6 +41,7 @@ export function getLineItems(lineItems) {
         productId: lineItem?.productId,
         productKey: lineItem?.productKey,
         quantity: lineItem?.quantity,
+        isEditQuantity:false,
         product: {
           name: lineItem?.name,
           sku: lineItem?.variant?.sku,

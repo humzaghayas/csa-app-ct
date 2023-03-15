@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { lazy,useState,useEffect} from 'react';
+import { lazy, useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import {
   Link as RouterLink,
@@ -32,51 +32,43 @@ import messages from './messages';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import { FilterIcon } from '@commercetools-uikit/icons';
 import React from 'react';
-import { getProductItemsRows } from './productrows';
-import { ProductListItems } from './productsearchdata';
+import { getProductItemsRows } from './rows';
+//import { ProductListItems } from './productsearchdata';
+import { useProductsFetcher } from '../../../../hooks/use-product-search-connector/use-product-search-connector';
 import TextInput from '@commercetools-uikit/text-input';
-import ProductAccount from '../product-account/product-account';
+import ProductsAccount from '../product-account/product-account';
 import './product-list-module.css';
-
+import ProductAccount from './product-account';
 
 const columns = [
   { key: 'itemName', label: 'Product Name' },
   { key: 'productType', label: 'Product Type' },
-  { key: 'id', label: 'Product Key' },
-  {key:'unitPrice',label:'Price'},
+  { key: 'key', label: 'Product Key' },
+  // { key: 'sku', label: 'SKU' },
   { key: 'status', label: 'Status' },
-    { key: 'created', label: 'Created' },
+  { key: 'created', label: 'Created' },
   { key: 'modified', label: 'Modified' },
- 
 ];
 
+const Products = (props) => {
+  const [searchInputValue, setSearchInputValue] = useState('');
 
-
-
-
-
-
- 
-const Products =  (props) => {
- 
-  const[searchInputValue,setSearchInputValue] = useState('')
-  
-  
-  
- 
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
   const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
-  
- 
- 
+  const { ProductListItems } = useProductsFetcher({
+    page,
+    perPage,
+    tableSorting,
+  });
+  //console.log(ProductListItems);
 
   return (
     <Spacings.Stack scale="l">
-     
+      <Spacings.Stack scale="xs">
         <FlatButton
           as={RouterLink}
           to={props.linkToWelcome}
@@ -84,49 +76,47 @@ const Products =  (props) => {
           icon={<BackIcon />}
         />
         <Text.Headline as="h2" intlMessage={messages.title} />
-        
-      
-
-  
-      <Spacings.Stack  scale="s">
-    
-           
-           <Constraints.Horizontal min={13} max={13}>
-           <TextInput placeholder="Search for any Product...." value={searchInputValue}  onChange={(e) => { setSearchInputValue(e.target.value) }} />
-       
-   </Constraints.Horizontal>
-     
-     
       </Spacings.Stack>
-      {ProductListItems?(
+
+      <Spacings.Stack scale="s">
+        <Constraints.Horizontal min={13} max={13}>
+          <TextInput
+            placeholder="Search for any Product...."
+            value={searchInputValue}
+            onChange={(e) => {
+              setSearchInputValue(e.target.value);
+            }}
+          />
+        </Constraints.Horizontal>
+      </Spacings.Stack>
+      {ProductListItems ? (
         <Spacings.Stack scale="l">
-       
-         
-       <DataTable
-       isCondensed
-       rows={getProductItemsRows(ProductListItems,searchInputValue)}
-       columns={columns}
-       maxHeight={600}
-       />
-          
+          <DataTable
+            isCondensed
+            rows={getProductItemsRows(ProductListItems, searchInputValue)}
+            //rows={ProductListItems.results}
+            onRowClick={(row) => push(`/csa-project-3/csa-customer-tickets/product-edit/${row.id}/product-details`)}
+            columns={columns}
+            maxHeight={600}
+          />
+
           <Pagination
             page={page.value}
             onPageChange={page.onChange}
             perPage={perPage.value}
             onPerPageChange={perPage.onChange}
-           totalItems={ProductListItems.total}
+            totalItems={ProductListItems.total}
           />
-           <Switch>
-           
+          <Switch>
             <SuspendedRoute path={`${match.path}/:id`}>
-             <ProductAccount onClose={() => push(`${match.url}`)} />
+              <ProductsAccount onClose={() => push(`${match.url}`)} />
             </SuspendedRoute>
-          
-        
-          </Switch> 
-        </Spacings.Stack>):null }
-     
-      
+            <SuspendedRoute path={`${match.path}/:id`}>
+              <ProductAccount onClose={() => push(`${match.url}`)} />
+            </SuspendedRoute>
+          </Switch>
+        </Spacings.Stack>
+      ) : null}
     </Spacings.Stack>
   );
 };

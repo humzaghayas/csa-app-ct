@@ -28,9 +28,7 @@ export const useCartsFetcher = ({ page, perPage, tableSorting }) => {
     `,
     {
       variables: {
-
-        where:"cartState in (\"Active\",\"Merged\")",
-
+        where: 'cartState in ("Active","Merged")',
         limit: perPage.value,
         offset: (page.value - 1) * perPage.value,
         sort: ['createdAt desc'],

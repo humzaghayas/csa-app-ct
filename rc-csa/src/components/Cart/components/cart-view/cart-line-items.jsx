@@ -107,7 +107,7 @@ const CartLineItems = (props) => {
 
         if (resulType == 'PreviewSuccess') {
           console.log('Apply edit');
-          const result2 = await executeCartEditApply(payload, orderEditId);
+          // const result2 = await executeCartEditApply(payload, orderEditId);
           console.log(result2);
         }
 

@@ -44,10 +44,6 @@ const CartAccount = (props) => {
   const apiUrl = 'https://ms-Order-f4b4o225iq-ue.a.run.app';
   const OrderId = params.id;
   
-  // const cartNumber = params.id;
-  // useEffect(() => {
-  //   getOrder({ url: apiUrl, id: OrderId }).then((res) => setData(res));
-  // }, [apiUrl, OrderId]);
 
   return (
     <TabularDetailPage

@@ -40,15 +40,24 @@ export const PRODUCT_SEARCH_QUERY = `query productSearchQuery($locale:Locale!,$t
         slug(locale:$locale)
       }
     }
-  }`
+  }`;
 export const FETCH_PRODUCT_LIST = `query productsList($limit: Int!, $offset: Int!, $sort: [String!]){
   products(limit:$limit,offset:$offset,sort:$sort){
     count
     total
     results{
       id
+      key
       version
+      productType{
+        key
+        name
+      }
+      createdAt
+      lastModifiedAt
       masterData{
+        published
+        hasStagedChanges
         current{
           name(locale:"en-US")
           masterVariant{
@@ -58,9 +67,10 @@ export const FETCH_PRODUCT_LIST = `query productsList($limit: Int!, $offset: Int
             images{
               url
             }
-            price(currency:"USD"){
+            prices{
               id
               value{
+                type
                 centAmount
                 currencyCode
                 fractionDigits
@@ -71,4 +81,71 @@ export const FETCH_PRODUCT_LIST = `query productsList($limit: Int!, $offset: Int
       }
     }
   }
-}`
+}`;
+
+export const FETCH_PRODUCT_BY_ID = `query($id:String!){
+  product(id:$id){
+        id
+        version
+        key
+        createdAt
+        lastModifiedAt
+        productType{
+            key
+            name
+        }
+        taxCategory{
+          id
+          name
+        }
+        priceMode
+     masterData{
+        current{
+          name(locale:"en-US")
+          description(locale:"en-US")
+          categories{
+            id
+            name(locale:"en-US")
+          }
+           allVariants{
+            id
+            sku
+            key
+            images{
+              url
+            }
+            prices
+              {
+              id
+              value{
+                type
+                centAmount
+                currencyCode
+                fractionDigits
+              }
+            }
+          }
+          masterVariant{
+            id
+            sku
+            key
+            images{
+              url
+            }
+            prices
+              {
+              id
+              value{
+                type
+                centAmount
+                currencyCode
+                fractionDigits
+              }
+            }
+          }
+        }
+      }
+     
+  }
+}
+`

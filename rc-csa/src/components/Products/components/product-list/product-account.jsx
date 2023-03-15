@@ -21,11 +21,12 @@ import Spacings from '@commercetools-uikit/spacings';
 
 import { lazy, useState, useEffect } from 'react';
 
+import ProductDetails from '../product-details/product-details';
 import Products from './product-list';
-import ProductListSearch from './product-list-search';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { entryPointUriPath } from '../../../../constants';
 
-const ProductsList = (props) => {
+const ProductsAccount = (props) => {
   const match = useRouteMatch();
   const tabsModalState = useModalState(true);
   const history = useHistory();
@@ -33,7 +34,8 @@ const ProductsList = (props) => {
   const { push } = useHistory();
   const [Order, setData] = useState();
   const apiUrl = 'https://ms-Order-f4b4o225iq-ue.a.run.app';
-  const OrderId = params.id;
+  const orderId = params.id;
+  
 
   const { projectKey } =useApplicationContext((context) => ({
     projectKey:context.project.key
@@ -42,8 +44,9 @@ const ProductsList = (props) => {
   return (
     <TabularDetailPage
       title=" "
+      //title={`${props.productName}`}
       onPreviousPathClick={() =>
-        history.push(`/${projectKey}/${entryPointUriPath}/Products`)
+        history.push(`/${projectKey}/${entryPointUriPath}/Products/productsList-general`)
       }
       previousPathLabel="Go to View ProductsList"
       tabControls={
@@ -51,32 +54,30 @@ const ProductsList = (props) => {
           <Spacings.Stack scale="xl">
             <Spacings.Inline>
               <TabHeader
-                to={`${match.url}/ProductsList-search`}
-                label="Product Search"
+                to={`${match.url}/product-details`}
+                label="General"
               />
-               <TabHeader
-                to={`${match.url}/ProductsList-general`}
-                label="Product List"
-              />
+               
             </Spacings.Inline>
           </Spacings.Stack>
         </>
       }
     >
-      <Switch>
-        <Route path={`${match.path}/ProductsList-general`}>
+      <Route path={`${match.path}/productsList-general`}>
           <Products />
         </Route>
-        <Route path={`${match.path}/ProductsList-search`}>
-          <ProductListSearch />
+      <Switch>
+        <Route path={`${match.path}/product-details`}>
+          <ProductDetails />
         </Route>
+        
       </Switch>
     </TabularDetailPage>
   );
 };
-ProductsList.displayName = 'Companies';
-ProductsList.propTypes = {
+ProductsAccount.displayName = 'ProductsAccount';
+ProductsAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
   
 };
-export default ProductsList;
+export default ProductsAccount;
