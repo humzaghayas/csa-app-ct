@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { lazy,useState,useEffect} from 'react';
+import { lazy,useState,useEffect, useReducer} from 'react';
 import { useIntl } from 'react-intl';
 import {
   Link as RouterLink,
@@ -33,10 +33,14 @@ import SecondaryButton from '@commercetools-uikit/secondary-button';
 import { FilterIcon } from '@commercetools-uikit/icons';
 import React from 'react';
 import { getProductItemsRows } from './productrows';
-import { ProductListItems } from './productsearchdata';
+//import { ProductListItems as productSearchResults } from './productsearchdata';
 import TextInput from '@commercetools-uikit/text-input';
 import ProductAccount from '../product-account/product-account';
 import './product-list-module.css';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { useProductProjectionSearchByText } from '../../../../hooks/use-product-search-connector';
+import { getSearchProductRows } from '../../../Cart/components/cart-view/conversions';
+import { PrimaryButton } from '@commercetools-frontend/ui-kit';
 
 
 const columns = [
@@ -61,7 +65,18 @@ const Products =  (props) => {
  
   const[searchInputValue,setSearchInputValue] = useState('')
   
+  const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
+    dataLocale: context.dataLocale ?? '',
+    projectLanguages: context.project?.languages ?? [],
+  }));
+
+  console.log('projectLanguages',projectLanguages);
+  console.log('dataLocale',dataLocale);
+
+  const {executeSearch} =useProductProjectionSearchByText();
   
+  
+  const [productSearchResults, refreshResults] = useReducer(getProductItemsRows,null);
   
  
   const intl = useIntl();
@@ -70,6 +85,20 @@ const Products =  (props) => {
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
   const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
+
+  useEffect(
+    async () => {
+      await search("");
+    },[])
+
+
+    const search = async (text) =>{
+      const {data} =await executeSearch(text,dataLocale,["variants.attributes.color.key"])
+
+      refreshResults({productProjectionSearch:data?.productProjectionSearch,dataLocale,currencyCode:"USD"});
+      console.log('data',data?.productProjectionSearch?.results);
+    }
+  
   
  
  
@@ -88,25 +117,28 @@ const Products =  (props) => {
       
 
   
-      <Spacings.Stack  scale="s">
+      <Spacings.Inline >
     
            
            <Constraints.Horizontal min={13} max={13}>
-           <TextInput placeholder="Search for any Product...." value={searchInputValue}  onChange={(e) => { setSearchInputValue(e.target.value) }} />
-       
-   </Constraints.Horizontal>
+                <TextInput placeholder="Search for any Product...." value={searchInputValue}  onChange={(e) => { setSearchInputValue(e.target.value) }} />
+          </Constraints.Horizontal>
+          <PrimaryButton type="submit" label="Search"
+                  onClick={() => {search(searchInputValue)}}
+                  isDisabled={searchInputValue === ''}/>
+            
      
      
-      </Spacings.Stack>
-      {ProductListItems?(
+      </Spacings.Inline>
+      {productSearchResults?(
         <Spacings.Stack scale="l">
        
          
        <DataTable
-       isCondensed
-       rows={getProductItemsRows(ProductListItems,searchInputValue)}
-       columns={columns}
-       maxHeight={600}
+          isCondensed
+          rows={productSearchResults}
+          columns={columns}
+          maxHeight={600}
        />
           
           <Pagination
@@ -114,7 +146,7 @@ const Products =  (props) => {
             onPageChange={page.onChange}
             perPage={perPage.value}
             onPerPageChange={perPage.onChange}
-           totalItems={ProductListItems.total}
+           totalItems={productSearchResults.total}
           />
            <Switch>
            

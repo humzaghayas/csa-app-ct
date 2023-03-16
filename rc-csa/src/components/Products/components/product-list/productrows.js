@@ -1,21 +1,31 @@
 
 
-export function getProductItemsRows(ProductItemsResult,searchValue){
-    console.log(ProductItemsResult);
-    if(ProductItemsResult){
-        return ProductItemsResult.filter(item => item.id.toLowerCase().includes(searchValue) ||
-                                         item.productType.toLowerCase().includes(searchValue) || 
-                                         item.itemName.toLowerCase().includes(searchValue)).map(item=>{
+export function getProductItemsRows(state,{productProjectionSearch,dataLocale,currencyCode}){
+    console.log('productProjectionSearch',productProjectionSearch);
+    if(productProjectionSearch?.results){
+        let returnValue =  productProjectionSearch?.results.map(item=>{
+
+            let price = item?.masterVariant?.price?.value?.centAmount;
+            if(price == null){
+                price = 0;
+            }
+            price = new Intl.NumberFormat(dataLocale, { style: 'currency', currency: currencyCode }).format(
+                (price / 100).toFixed(item?.masterVariant?.price?.value?.fractionDigits)
+            );
             return {
                 id:item?.id, 
-                itemName:item?.itemName,
-                unitPrice:item?.unitPrice,
-                productType : item?.productType,
-                status: item?.status,
-         created: item?.created,
-         modified : item?.modified
+                itemName:item?.name,
+                unitPrice: price,
+                productType : item?.productType?.name,
+                status: 'published',
+                created: item?.createdAt,
+                modified : item?.lastModifiedAt
             }
         });
+
+        returnValue.total = productProjectionSearch.total;
+
+        return returnValue;
     }
 }
 

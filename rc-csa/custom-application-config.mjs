@@ -46,6 +46,8 @@ const config = {
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
         'https://firebasestorage.googleapis.com/',
+        '${env:ALGOLIA_SEARCH}',
+        '${env:ALGOLIA_SEARCH_CSA}'
       ],
       'connect-src': [
         'http://localhost:3001',

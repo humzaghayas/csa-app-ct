@@ -6,7 +6,7 @@ import {
   import { gql } from '@apollo/client';
   import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
   import {
-    PRODUCT_SEARCH_QUERY,FETCH_PRODUCT_LIST} from 'ct-tickets-helper-api';
+    PRODUCT_SEARCH_QUERY,FETCH_PRODUCT_LIST,PRODUCT_PROJECTION_SEARCH} from 'ct-tickets-helper-api';
 
 
 export const useProductsFetcher = ({ page, perPage, tableSorting }) => {
@@ -49,4 +49,37 @@ export const useProductSearchByText = () =>{
         executeProductSearch,
         loading,
     };
+}
+
+export const useProductProjectionSearchByText = () =>{
+  const [projectionSearch,{loading}] =  useMcLazyQuery(gql`${PRODUCT_PROJECTION_SEARCH}`);
+  
+  const executeSearch = async(text,locale,facetsAttr) =>{
+
+    let facets=[];
+    if(facetsAttr){
+      facets = facetsAttr.map(f => {
+        return {"string":f}
+      })
+    }
+    return await projectionSearch(
+      {
+        variables: {
+          locale,
+          text,
+          facets,
+          currency:"USD"
+        },
+        context: {
+          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+        },
+        fetchPolicy:"network-only"
+      } 
+    )
+  }
+  
+  return {
+    executeSearch,
+      loading,
+  };
 }
