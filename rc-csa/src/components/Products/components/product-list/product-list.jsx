@@ -32,7 +32,7 @@ import messages from './messages';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import { FilterIcon } from '@commercetools-uikit/icons';
 import React from 'react';
-import { getProductItemsRows } from './productrows';
+import { getFacetsResults, getProductItemsRows } from './productrows';
 //import { ProductListItems as productSearchResults } from './productsearchdata';
 import TextInput from '@commercetools-uikit/text-input';
 import ProductAccount from '../product-account/product-account';
@@ -77,6 +77,9 @@ const Products =  (props) => {
   
   
   const [productSearchResults, refreshResults] = useReducer(getProductItemsRows,null);
+  const [facetsResults, getFacets] = useReducer(getFacetsResults,null);
+
+  const [widthSearch,setWidthSearch] = useState("100%")
   
  
   const intl = useIntl();
@@ -96,6 +99,11 @@ const Products =  (props) => {
       const {data} =await executeSearch(text,dataLocale,["variants.attributes.color.key"])
 
       refreshResults({productProjectionSearch:data?.productProjectionSearch,dataLocale,currencyCode:"USD"});
+      getFacets({facetsFromSearch:data?.productProjectionSearch?.facets});
+
+      if(data?.productProjectionSearch?.facets){
+        setWidthSearch("85%");
+      }
       console.log('data',data?.productProjectionSearch?.results);
     }
   
@@ -131,32 +139,48 @@ const Products =  (props) => {
      
       </Spacings.Inline>
       {productSearchResults?(
-        <Spacings.Stack scale="l">
-       
-         
-       <DataTable
-          isCondensed
-          rows={productSearchResults}
-          columns={columns}
-          maxHeight={600}
-       />
+
+        <table>
+
+          <tr>
+
+            {facetsResults ?(
+                <td width="15%">
+
+
+
+
+                </td>
+            ):null}
+            <td width={widthSearch}>
+            <Spacings.Stack scale="l">
           
-          <Pagination
-            page={page.value}
-            onPageChange={page.onChange}
-            perPage={perPage.value}
-            onPerPageChange={perPage.onChange}
-           totalItems={productSearchResults.total}
-          />
-           <Switch>
-           
-            <SuspendedRoute path={`${match.path}/:id`}>
-             <ProductAccount onClose={() => push(`${match.url}`)} />
-            </SuspendedRoute>
-          
-        
-          </Switch> 
-        </Spacings.Stack>):null }
+            
+            <DataTable
+                isCondensed
+                rows={productSearchResults}
+                columns={columns}
+                maxHeight={600}
+            />
+                
+                <Pagination
+                  page={page.value}
+                  onPageChange={page.onChange}
+                  perPage={perPage.value}
+                  onPerPageChange={perPage.onChange}
+                totalItems={productSearchResults.total}
+                />
+                <Switch>
+                
+                  <SuspendedRoute path={`${match.path}/:id`}>
+                  <ProductAccount onClose={() => push(`${match.url}`)} />
+                  </SuspendedRoute>
+                
+              
+                </Switch> 
+            </Spacings.Stack>
+            </td></tr>
+        </table>):null }
      
       
     </Spacings.Stack>
