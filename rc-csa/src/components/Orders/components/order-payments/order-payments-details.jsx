@@ -10,6 +10,7 @@ import { useFetchPaymentById, usePaymenLinkEmail } from '../../../../hooks/use-p
 import { columns, dummyRows } from './constants';
 import { itemRenderer } from './helper';
 import { useFetchCheckoutSessionById, usePaymentUpdater } from '../../../../hooks/use-payments-connector'; 
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 const OrderPaymentsDetails = (props) =>{
     const intl = useIntl();
@@ -22,6 +23,10 @@ const OrderPaymentsDetails = (props) =>{
     const pspPaymentStatus = payment?.custom?.customFieldsRaw.filter(e=>e?.name=="pspPaymentStatus")[0]?.value;
     const paymentLink = payment?.custom?.customFieldsRaw.filter(e=>e?.name=="paymentLink")[0]?.value;
     const {execute:execSendEmail} = usePaymenLinkEmail();
+
+    const { projectKey } =useApplicationContext((context) => ({
+        projectKey:context.project.key
+      }));
 
     const onSubmit = useCallback(async (e)=>{
         console.log("handleSubmit",e);
@@ -76,7 +81,7 @@ const OrderPaymentsDetails = (props) =>{
                 <IconButton
                     icon={<UserLinearIcon/>}
                     onClick={()=>{
-                        push('/csa-project-2/csa-customer-tickets/customer-account/'+props?.customerId+'/Customers-summary')
+                        push(`/${projectKey}/csa-customer-tickets/customer-account/${props?.customerId}/Customers-summary`)
                     }}
                     isDisabled={!props?.customerId}
                     label='Customer'

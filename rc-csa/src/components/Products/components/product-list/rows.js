@@ -4,7 +4,7 @@ export function getProductItemsRows(ProductListItems, searchValue) {
     return ProductListItems.filter(
       (item) =>
         item?.key.toLowerCase().includes(searchValue) ||
-        item?.masterData?.current?.masterVariant?.sku.toLowerCase().includes(searchValue) ||
+        //item?.skus.toLowerCase().includes(searchValue) ||
         item?.productType?.name.toLowerCase().includes(searchValue) ||
         item?.masterData?.current?.name.toLowerCase().includes(searchValue)
     ).map((item) => {
@@ -13,7 +13,7 @@ export function getProductItemsRows(ProductListItems, searchValue) {
         key: item?.key,
         //key: item?.masterData?.current?.masterVariant?.key,
         itemName: item?.masterData?.current?.name,
-        sku:item?.masterData?.current?.masterVariant?.sku,
+        skus:item?.skus,
         //masterData:getData(item?.masterData),
         //unitPrice: getPrices(item?.masterData?.current?.masterVariant?.prices),
         unitPrice: amountCalculator(

@@ -30,6 +30,7 @@ import {
   useFetchCartById,
   usePlaceOrderFromCart,
 } from '../../../../hooks/use-cart-connector/use-cart-connector';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 const columns = [
   { key: 'product', label: 'Product' },
@@ -84,6 +85,12 @@ const PlaceOrderForm = (props) => {
   console.log('intialvaluessssssss', props.initialValues);
   console.log(props.id);
 
+  const {entryPointUriPath,projectKey} = useApplicationContext(
+    (context) => ({
+      entryPointUriPath:context.environment.entryPointUriPath,
+      projectKey:context.project.key
+  }));
+
   const formElements = (
     <Spacings.Stack scale="l">
       <Spacings.Stack scale="s">
@@ -130,7 +137,7 @@ const PlaceOrderForm = (props) => {
                 label="View order"
                 onClick={() =>
                   push(
-                    `/csa-project-2/csa-customer-tickets/order-edit/${props.id}/orders-general`
+                    `/${projectKey}/${entryPointUriPath}/order-edit/${props.id}/orders-general`
                   )
                 }
                 size="big"

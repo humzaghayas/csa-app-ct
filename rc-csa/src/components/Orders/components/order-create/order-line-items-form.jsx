@@ -36,7 +36,11 @@ const rows = [
 const OrderLineItemsForm = (props) => {
   const match = useRouteMatch();
   const history = useHistory();
-  const dataLocale = useApplicationContext((context) => context.dataLocale);
+  const {entryPointUriPath,projectKey} = useApplicationContext(
+    (context) => ({
+      entryPointUriPath:context.environment.entryPointUriPath,
+      projectKey:context.project.key
+  }));
   const formik = useFormik({
     // Pass initial values from the parent component.
     initialValues: props.initialValues,
@@ -103,7 +107,7 @@ const OrderLineItemsForm = (props) => {
           <SecondaryButton
           label="Go Back"
           data-track-event="click"
-          onClick={() => history.push(`/csa-project-2/csa-customer-tickets/order-edit/13d130e7-ebc8-41c4-838e-316e6a94202b/orders-general`)}
+          onClick={() => history.push(`/${projectKey}/${entryPointUriPath}/order-edit/13d130e7-ebc8-41c4-838e-316e6a94202b/orders-general`)}
          
           size="medium"
         />

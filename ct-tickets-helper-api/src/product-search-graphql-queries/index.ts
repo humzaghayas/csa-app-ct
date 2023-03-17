@@ -48,6 +48,7 @@ export const FETCH_PRODUCT_LIST = `query productsList($limit: Int!, $offset: Int
     results{
       id
       key
+      skus
       version
       productType{
         key

@@ -79,7 +79,7 @@ const CartView = (props) => {
           text: intl.formatMessage(messages.CartUpdated),
         });
 
-        window.location.reload(true);
+        window.location.reload(true)
       } catch (graphQLErrors) {
         console.log(graphQLErrors.message);
         const transformedErrors = transformErrors(graphQLErrors);
@@ -99,7 +99,7 @@ const CartView = (props) => {
     const payload = e?.payload;
     try {
       const result = await executeUpdateCart(payload);
-
+      
       // console.log(result);
       forceUpdate();
       showNotification({
@@ -108,7 +108,7 @@ const CartView = (props) => {
         text: intl.formatMessage(messages.CartUpdated),
       });
 
-      window.location.reload(true);
+      window.location.reload(true)
     } catch (graphQLErrors) {
       console.log(graphQLErrors.message);
       const transformedErrors = transformErrors(graphQLErrors);
@@ -139,5 +139,7 @@ const CartView = (props) => {
   );
 };
 CartView.displayName = 'CartDetails';
-CartView.propTypes = {};
+CartView.propTypes = {
+  
+};
 export default CartView;

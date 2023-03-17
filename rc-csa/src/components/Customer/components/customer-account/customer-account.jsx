@@ -35,6 +35,7 @@ import { useEffect, useState } from 'react';
 import { useGetActiveCartByCustomer ,useGetOrdersByCustomer} from '../../../../hooks/use-cart-connector';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { entryPointUriPath } from '../../../../constants';
+import CustomerCart from '../customer-carts/customer-cart';
 
 
 const CustomerAccount = (props) => {
@@ -104,32 +105,13 @@ const CustomerAccount = (props) => {
           </Spacings.Stack>
           <Spacings.Stack scale="xl">
             <Spacings.Inline>
-              <TabHeader
-                to={`${match.url}/Customers-summary`}
-                label="Summary"
-              />
-              <TabHeader
-                to={`${match.url}/Customers-profile`}
-                label="Profile"
-              />
-               <TabHeader
-                to={`${match.url}/Customers-orders`}
-                label="Orders"
-              />
-               <TabHeader
-                to={`${match.url}/Customers-returns`}
-                label="Returns"
-              />
-               <TabHeader
-                to={`${match.url}/Customers-payments`}
-                label="Payments"
-              />
-              <TabHeader
-                to={`${match.url}/Customers-Address`}
-                label="Addresses"
-              />
-              <TabHeader to={`${match.url}/Customers-summary`} label="Summary"  />
-              <TabHeader to={`${match.url}/Customers-profile`} label="Profile" />
+              <TabHeader to={`${match.url}/Customers-summary`} label="Summary" /> 
+              <TabHeader to={`${match.url}/Customers-profile`} label="Profile" />  
+              <TabHeader to={`${match.url}/Customers-carts`} label="Carts" />  
+              <TabHeader to={`${match.url}/Customers-orders`} label="Orders" />
+               <TabHeader to={`${match.url}/Customers-returns`} label="Returns"/>
+               <TabHeader to={`${match.url}/Customers-payments`} label="Payments"/>
+              <TabHeader to={`${match.url}/Customers-Address`} label="Addresses"/>
               <TabHeader to={`${match.url}/Customers-tickets`} label="Tickets" />
               <TabHeader to={`${match.url}/Customers-password`} label="Password" />
             </Spacings.Inline>
@@ -143,6 +125,9 @@ const CustomerAccount = (props) => {
         </Route>
         <Route path={`${match.path}/Customers-profile`}>
           <CustomerProfile customer={customer} />
+        </Route>
+        <Route path={`${match.path}/Customers-carts`}>
+          <CustomerCart customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-orders`}>
           <CustomerOrder customer={customer} />
@@ -164,9 +149,6 @@ const CustomerAccount = (props) => {
            </Route>
         <Route path={`${match.path}/Customers-payments`}>
           <CustomerPayment />
-        </Route>
-        <Route path={`${match.path}/Customers-sumary`}>
-           <CustomerPassword />
         </Route>
       </Switch>
     </TabularDetailPage>

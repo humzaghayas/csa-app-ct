@@ -25,6 +25,7 @@ import ProductDetails from '../product-details/product-details';
 import Products from './product-list';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { entryPointUriPath } from '../../../../constants';
+import messages from './messages';
 
 const ProductsAccount = (props) => {
   const match = useRouteMatch();
@@ -52,6 +53,7 @@ const ProductsAccount = (props) => {
       tabControls={
         <>
           <Spacings.Stack scale="xl">
+            
             <Spacings.Inline>
               <TabHeader
                 to={`${match.url}/product-details`}

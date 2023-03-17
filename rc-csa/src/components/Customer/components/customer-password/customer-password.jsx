@@ -16,6 +16,9 @@ import DataTable from '@commercetools-uikit/data-table';
 import { usePasswordGetToken,useResetPassword,useSendResetPasswordEmail } from '../../../../hooks/use-customer-password-connector';
 import { createPassword } from 'ct-tickets-helper-api';
 import { useFindCustomerService } from '../../../../hooks/use-customer-connector/use-customer-connector';
+import { useShowApiErrorNotification, useShowNotification } from '@commercetools-frontend/actions-global';
+import { DOMAINS } from '@commercetools-frontend/constants';
+import messages from './messages';
 
 const CustomerPassword = (props) => {
   const intl = useIntl();
@@ -26,6 +29,8 @@ const CustomerPassword = (props) => {
   const {execute:execReserPassword} = useResetPassword();
   const {execute:execSendEmail} = useSendResetPasswordEmail();
   const {getCustomerByEmail} = useFindCustomerService();
+
+  const showNotification = useShowNotification();
 
   const rows = [
     { externalId: props?.customer?.externalId,customerNumber:props?.customer?.customerNumber,
@@ -80,7 +85,11 @@ const CustomerPassword = (props) => {
         html:`<p>Your new password is Regenerated.</p><p>Your new password is: ${password}</p>`
     });
 
-    alert('Password updated successfully!');
+    showNotification({
+      kind: 'success',
+      domain: DOMAINS.SIDE,
+      text: intl.formatMessage(messages.PsswordChangedSuccessfully),
+    });
   }
   return (
     <Spacings.Stack scale="xl">

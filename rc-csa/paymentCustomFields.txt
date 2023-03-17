@@ -12,12 +12,12 @@
         "clientId": "9JVJc5xVV0vrnXzIlqgLe0vY",
         "isPlatformClient": false
     },
-    "key": "paymentLink",
+    "key": "paymentFields",
     "name": {
-        "en": "paymentLink"
+        "en": "Payment Fields"
     },
     "description": {
-        "en": "Payment url field to save the url of payment link of PSP."
+        "en": "Payment url field and Payment PSP Status Field to save the url of payment link of PSP."
     },
     "resourceTypeIds": [
         "payment"

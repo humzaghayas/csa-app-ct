@@ -591,3 +591,63 @@ export const FETCH_CUSTOMER_PAYMENTS = `query FectchCustomerPaymentsListQuery(
     }
 }
 }`
+export const FETCH_CUSTOMER_CARTS = `query FectchCustomerOrdersListQuery(
+  $limit: Int
+  $offset: Int
+  $sort: [String!]
+  $where: String
+) {
+  carts(limit: $limit, offset: $offset, sort: $sort, where: $where) {
+    total
+    count
+    results {
+      id
+      key
+      totalPrice {
+        centAmount
+        currencyCode
+        fractionDigits
+        __typename
+      }
+      lineItems{
+        id
+        quantity
+      }
+      cartState
+      customerEmail
+      customerId
+      createdAt
+      lastModifiedAt
+      __typename
+    }
+    __typename
+  }
+}`
+export const FETCH_CUSTOMER_ADDRESSES = `query fetchCustomerAddresses($id:String){
+  customer(id:$id){
+    addresses{
+      id
+      streetName
+      streetNumber
+      salutation
+      additionalStreetInfo
+      additionalAddressInfo
+      city
+      region
+      state
+      country
+      company
+      department
+      building
+      apartment
+      pOBox
+      phone
+      mobile
+      email
+      firstName
+      lastName
+      postalCode
+      apartment
+    }
+  }
+}`

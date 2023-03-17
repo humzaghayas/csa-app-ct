@@ -15,23 +15,37 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import {
   CheckboxInput,
+  DataTable,
   PrimaryButton,
+  RadioField,
+  RadioInput,
   SecondaryButton,
 } from '@commercetools-frontend/ui-kit';
 //  import EmployeeAddressDetail from '../employee-address-details';
 //  import EmployeeAddAddress from '../employee-add-address';
-import { formValuesToDoc } from './conversions';
+import { docToFormValues, formValuesToDoc } from './conversions';
+import { useCustomerAddressesFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
+import { useState } from 'react';
 
 const getCountryOptions = Object.keys(COUNTRY).map((key) => ({
   label: COUNTRY[key],
   value: COUNTRY[key],
 }));
+const columns = [
+  {key:'id',label:"Id"},
+  {key:'streetName',label:"Street Name"},
+  {key:'streetNumber',label:"Street Number"},
+  {key:'city',label:"City"},
+  {key:'region',label:"Region"},
+  {key:'country',label:"Country"},
+  {key:'state',label:"State"},
+]
 
 const ShippingAddressForm = (props) => {
   const intl = useIntl();
   const { push } = useHistory();
-  //const params = useParams();
-  // const match = useRouteMatch();
+  const [addressId,setAddressId] = useState("cartAddress");
+  const [address,setAddress] = useState(formik?.values)
   const formik = useFormik({
     initialValues: props.initialValues,
     validate,
@@ -39,14 +53,18 @@ const ShippingAddressForm = (props) => {
   });
   const onSubmit = (e) => {
     const updateData = formValuesToDoc(formik?.values);
+    console.log("Update data",updateData);
     props.onSubmit(updateData);
   };
 
-  //const { employee } = useEmployeeDetailsFetcher(params.id);
+  // console.log("Customer Addresses",props?.addresses);
+  // console.log("Address Id",addressId);
+  // console.log("Selected Address",address);
+  // console.log("formik values",formik.values);
 
   return (
     <form onSubmit={onSubmit}>
-      <Spacings.Stack scale="l">
+      <Spacings.Stack scale="xl">
         <Spacings.Stack scale="l">
           <CollapsiblePanel
             data-testid="address-summary-panel"
@@ -63,7 +81,7 @@ const ShippingAddressForm = (props) => {
                 <TextField
                   name="shippingMethodName"
                   title="Shipping method"
-                  value={formik.values.shippingMethodName}
+                  value={formik?.values?.shippingMethodName}
                   errors={formik.errors.shippingMethodName}
                   touched={formik.touched.shippingMethodName}
                   onChange={(event) => console.log(event)}
@@ -72,6 +90,36 @@ const ShippingAddressForm = (props) => {
                 />
               </Spacings.Inline>
             </Constraints.Horizontal>
+          </CollapsiblePanel>
+        </Spacings.Stack>
+        <Spacings.Stack scale='l'>
+          <CollapsiblePanel
+          header={<CollapsiblePanel.Header>
+          {'Addresses'}  
+          </CollapsiblePanel.Header>}
+          >
+           <RadioField
+              title="Addresses"
+              name="fruits"
+              value={addressId}
+              onChange={(event) => {
+                setAddressId(event.target.value);
+                if(event.target.value=="cartAddress"){
+                  formik.setValues(props.initialValues);
+                }else{
+                  console.log("Update on change")
+                  console.log(props?.addresses.filter(e=>e.id==event.target.value)[0])
+                  const customerAddress = props?.addresses.filter(e=>e.id==event.target.value)[0];
+                  formik.setValues(docToFormValues(customerAddress,null));
+                }
+              }
+            }
+            >
+              <RadioInput.Option value="cartAddress">{'Cart Address'}</RadioInput.Option>
+              {props?.addresses?.map((item,index)=>{
+                return <RadioInput.Option value={item.id}>{'Customer Address '+index+1}</RadioInput.Option>
+              })}
+            </RadioField>
           </CollapsiblePanel>
         </Spacings.Stack>
 
@@ -92,7 +140,7 @@ const ShippingAddressForm = (props) => {
                   id="streetNumber"
                   name="streetNumber"
                   title="Street Number"
-                  value={formik.values.streetNumber}
+                  value={formik?.values?.streetNumber}
                   errors={formik.errors.streetNumber}
                   touched={formik.touched.streetNumber}
                   onChange={formik.handleChange}
@@ -103,7 +151,7 @@ const ShippingAddressForm = (props) => {
                   id="streetName"
                   name="streetName"
                   title="Street Name"
-                  value={formik.values.streetName}
+                  value={formik?.values?.streetName}
                   errors={formik.errors.streetName}
                   touched={formik.touched.streetName}
                   onChange={formik.handleChange}
@@ -116,7 +164,7 @@ const ShippingAddressForm = (props) => {
                   id="apartment"
                   name="apartment"
                   title="Apartment/Suite"
-                  value={formik.values.apartment}
+                  value={formik?.values?.apartment}
                   errors={formik.errors.apartment}
                   touched={formik.touched.apartment}
                   onChange={formik.handleChange}
@@ -129,7 +177,7 @@ const ShippingAddressForm = (props) => {
                   id="building"
                   name="building"
                   title="Building"
-                  value={formik.values.building}
+                  value={formik?.values?.building}
                   errors={formik.errors.building}
                   touched={formik.touched.building}
                   onChange={formik.handleChange}
@@ -142,7 +190,7 @@ const ShippingAddressForm = (props) => {
                   id="pobox"
                   name="pobox"
                   title="PO Box"
-                  value={formik.values.pobox}
+                  value={formik?.values?.pobox}
                   errors={formik.errors.pobox}
                   touched={formik.touched.pobox}
                   onChange={formik.handleChange}
@@ -155,7 +203,7 @@ const ShippingAddressForm = (props) => {
                   id="city"
                   name="city"
                   title="City"
-                  value={formik.values.city}
+                  value={formik?.values?.city}
                   errors={formik.errors.city}
                   touched={formik.touched.city}
                   onChange={formik.handleChange}
@@ -168,7 +216,7 @@ const ShippingAddressForm = (props) => {
                   id="postalCode"
                   name="postalCode"
                   title="Postal code"
-                  value={formik.values.postalCode}
+                  value={formik?.values?.postalCode}
                   errors={formik.errors.postalCode}
                   touched={formik.touched.postalCode}
                   onChange={formik.handleChange}
@@ -181,7 +229,7 @@ const ShippingAddressForm = (props) => {
                   id="region"
                   name="region"
                   title="Region"
-                  value={formik.values.region}
+                  value={formik?.values?.region}
                   errors={formik.errors.region}
                   touched={formik.touched.region}
                   onChange={formik.handleChange}
@@ -194,7 +242,7 @@ const ShippingAddressForm = (props) => {
                   id="state"
                   name="state"
                   title="State"
-                  value={formik.values.state}
+                  value={formik?.values?.state}
                   errors={formik.errors.state}
                   touched={formik.touched.state}
                   onChange={formik.handleChange}
@@ -207,7 +255,7 @@ const ShippingAddressForm = (props) => {
                   id="country"
                   name="country"
                   title="Country"
-                  value={formik.values.country}
+                  value={formik?.values?.country}
                   errors={formik.errors.country}
                   touched={formik.touched.country}
                   // options={getCountryOptions}
@@ -220,12 +268,12 @@ const ShippingAddressForm = (props) => {
               </Spacings.Inline>
               <Spacings.Inline>
                 <TextField
-                  id="streetInfo"
-                  name="streetInfo"
+                  id="additionalStreetInfo"
+                  name="additionalStreetInfo"
                   title="Additional street info"
-                  value={formik.values.streetInfo}
-                  errors={formik.errors.streetInfo}
-                  touched={formik.touched.streetInfo}
+                  value={formik?.values?.additionalStreetInfo}
+                  errors={formik.errors.additionalStreetInfo}
+                  touched={formik.touched.additionalStreetInfo}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   horizontalConstraint={13}
@@ -233,12 +281,12 @@ const ShippingAddressForm = (props) => {
               </Spacings.Inline>
               <Spacings.Inline>
                 <TextField
-                  id="addressInfo"
-                  name="addressInfo"
+                  id="additionalAddressInfo"
+                  name="additionalAddressInfo"
                   title="Additional address info"
-                  value={formik.values.addressInfo}
-                  errors={formik.errors.addressInfo}
-                  touched={formik.touched.addressInfo}
+                  value={formik?.values?.additionalAddressInfo}
+                  errors={formik.errors.additionalAddressInfo}
+                  touched={formik.touched.additionalAddressInfo}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   horizontalConstraint={13}
@@ -247,7 +295,7 @@ const ShippingAddressForm = (props) => {
             </Constraints.Horizontal>
             <Spacings.Stack>
               <Spacings.Inline>
-                <SecondaryButton label="Cancel" onClick={formik.handleReset} />
+                <SecondaryButton label="Cancel" onClick={props?.onClose} />
                 <PrimaryButton
                   //type="submit"
                   label="Submit"

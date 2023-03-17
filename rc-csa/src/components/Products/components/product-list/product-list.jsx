@@ -44,8 +44,8 @@ const columns = [
   { key: 'itemName', label: 'Product Name' },
   { key: 'productType', label: 'Product Type' },
   { key: 'key', label: 'Product Key' },
-  // { key: 'sku', label: 'SKU' },
-  { key: 'status', label: 'Status' },
+  { key: 'skus', label: 'SKU' },
+  //{ key: 'status', label: 'Status' },
   { key: 'created', label: 'Created' },
   { key: 'modified', label: 'Modified' },
 ];

@@ -33,36 +33,38 @@ export function getAllVariants(allVariants){
              variantId:allVariant?.id,
              sku: allVariant?.sku,
              key: allVariant?.key,
-             prices: getPrices(allVariant?.prices),
-        //      unitPrice:  amountCalculator(
-        //   allVariant?.price?.value?.centAmount,
-        //   allVariant?.price?.value?.fractionDigits
-        // ),
+             //prices: getPrices(allVariant?.prices),
+             unitPrice:  amountCalculator(
+          allVariant?.prices[0]?.value?.centAmount,
+          allVariant?.prices[0]?.value?.fractionDigits
+        ),
             // unitPrice: allVariant?.price?.value?.centAmount,
              images:allVariant?.images[0]?.url,
              quantity: allVariant?.quantity?? '--',
-             attributes: allVariant?.attributesRaw?.value?.count,
+             attributes: allVariant?.attributesRaw?.value?.count?? '--',
 
           }
       });
   }
 }
-export function getPrices(prices){
-  if(prices){
-      return prices.map(pricee =>{
-          return {
-          id: pricee?.id,
-          currencyCode: pricee?.value?.currencyCode,   
-          type:pricee?.value?.type,
-             unitPrice: amountCalculator(
-          pricee?.value?.centAmount,
-          pricee?.value?.fractionDigits
-        ),
+// export function getPrices(prices){
+//   if(prices){
+//       return prices.map(pricee =>{
+//           return {
+//           id: pricee?.id,
+//           currencyCode: pricee?.value?.currencyCode,   
+//           type:pricee?.value?.type,
+//              unitPrice: amountCalculator(
+//           // masterData.current.allVariants[0].prices[0].value.centAmount,
+//           // masterData.current.allVariants[0].prices[0].value.fractionDigits
+//           pricee?.value?.centAmount,
+//           pricee?.value?.fractionDigits
+//         ),
              
-          }
-      });
-  }
-}
+//           }
+//       });
+//   }
+// }
 
 
 function amountCalculator(centAmount, fractionDigits) {
