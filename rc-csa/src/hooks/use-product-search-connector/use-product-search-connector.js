@@ -54,7 +54,7 @@ export const useProductSearchByText = () =>{
 export const useProductProjectionSearchByText = () =>{
   const [projectionSearch,{loading}] =  useMcLazyQuery(gql`${PRODUCT_PROJECTION_SEARCH}`);
   
-  const executeSearch = async(text,locale,facetsAttr) =>{
+  const executeSearch = async(text,locale,facetsAttr,queryFiltersA) =>{
 
     let facets=[];
     if(facetsAttr){
@@ -62,12 +62,18 @@ export const useProductProjectionSearchByText = () =>{
         return {"string":f}
       })
     }
+    let queryFilters;
+    if(queryFiltersA){
+      queryFilters= { "string":`${queryFiltersA.key}:${queryFiltersA.values}`}
+     }
+    
     return await projectionSearch(
       {
         variables: {
           locale,
           text,
           facets,
+          queryFilters,
           currency:"USD"
         },
         context: {

@@ -32,7 +32,7 @@ import messages from './messages';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import { FilterIcon } from '@commercetools-uikit/icons';
 import React from 'react';
-import { getFacetsResults, getProductItemsRows } from './productrows';
+import { getProductItemsRows } from './productrows';
 //import { ProductListItems as productSearchResults } from './productsearchdata';
 import TextInput from '@commercetools-uikit/text-input';
 import ProductAccount from '../product-account/product-account';
@@ -40,7 +40,7 @@ import './product-list-module.css';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useProductProjectionSearchByText } from '../../../../hooks/use-product-search-connector';
 import { getSearchProductRows } from '../../../Cart/components/cart-view/conversions';
-import { PrimaryButton } from '@commercetools-frontend/ui-kit';
+import { CheckboxInput, PrimaryButton } from '@commercetools-frontend/ui-kit';
 
 
 const columns = [
@@ -77,7 +77,7 @@ const Products =  (props) => {
   
   
   const [productSearchResults, refreshResults] = useReducer(getProductItemsRows,null);
-  const [facetsResults, getFacets] = useReducer(getFacetsResults,null);
+  const [facetsCheckboxes,setFacetsCheckboxes] = useState({})
 
   const [widthSearch,setWidthSearch] = useState("100%")
   
@@ -95,16 +95,54 @@ const Products =  (props) => {
     },[])
 
 
-    const search = async (text) =>{
-      const {data} =await executeSearch(text,dataLocale,["variants.attributes.color.key"])
+    const search = async (text,queryFilter) =>{
+      const {data} =await executeSearch(text,dataLocale,["variants.attributes.color.key"],queryFilter)
 
       refreshResults({productProjectionSearch:data?.productProjectionSearch,dataLocale,currencyCode:"USD"});
-      getFacets({facetsFromSearch:data?.productProjectionSearch?.facets});
+      // getFacets({facetsFromSearch:data?.productProjectionSearch?.facets});
 
       if(data?.productProjectionSearch?.facets){
         setWidthSearch("85%");
       }
-      console.log('data',data?.productProjectionSearch?.results);
+
+      const facetsResults = data?.productProjectionSearch?.facets;
+      if(facetsResults){
+        let cBoxes = facetsCheckboxes;
+
+        for (const f of facetsResults){
+
+          switch (f.facet) {
+            case 'variants.attributes.color.key':
+              
+                const terms = f.value.terms; 
+                let cb;
+                if( !facetsCheckboxes['Color'] ){
+                  cb = terms.map(t => {return {value:t.term,checked:false};});
+                }else{
+                  cb = facetsCheckboxes['Color'].terms;
+                  cb = terms.map(t => {
+                    const cbFindChecked = cb.filter(c => c.checked);
+
+                      if(cbFindChecked.some(c => t.term === c.value)){
+                        return {value:t.term,checked:true};
+                      }
+                      return {value:t.term,checked:false};
+                    });
+                  }
+                  cBoxes['Color'] ={key:"variants.attributes.color.key",terms:cb};
+                break;
+        
+            default:
+                break;
+          }
+          
+        }
+        setFacetsCheckboxes({
+          ...facetsCheckboxes
+        });
+        console.log('cBoxes111',cBoxes);
+      }
+      console.log('cBoxes',facetsCheckboxes);
     }
   
   
@@ -144,11 +182,54 @@ const Products =  (props) => {
 
           <tr>
 
-            {facetsResults ?(
-                <td width="15%">
+            {facetsCheckboxes ?(
+                <td width="15%" valign='top'>
 
+                  
+                  {Object.keys(facetsCheckboxes).map(function (k) {
+                    return (<>
+                          <div>
+                            <div>
+                              {k}
+                            </div>
+                            <div>
+                                {facetsCheckboxes[k].terms.map(function (t){
 
+                                  return (<>
+                                   <CheckboxInput
+                                        value={t.value}
+                                        onChange={(event) => {
+                                            let facetChk = facetsCheckboxes;
+                                            let c = facetsCheckboxes[k].terms.find(f => f.value === t.value);
 
+                                            c.checked = !c.checked;
+                                            setFacetsCheckboxes(
+                                              {
+                                                ...facetsCheckboxes,
+                                              }
+                                            );
+                                          
+                                            var queryFilter={};
+                                            queryFilter.values=facetsCheckboxes[k].terms.filter(t => t.checked)
+                                            .map(t1 =>`\"${t1.value}\"`).join(",");
+                                            queryFilter.key = facetsCheckboxes[k].key;
+                                            
+                                            console.log('queryFilter',queryFilter);
+                                            search(searchInputValue,queryFilter);
+
+                                          }}
+                                        isChecked={t.checked}>
+                                          {t.value}
+                                        </CheckboxInput>
+                                  </>
+                                  )
+
+                                  }
+                                )}
+                            </div>
+                          </div>
+                    </>)
+                  })}
 
                 </td>
             ):null}

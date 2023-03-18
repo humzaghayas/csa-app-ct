@@ -29,27 +29,24 @@ export function getProductItemsRows(state,{productProjectionSearch,dataLocale,cu
     }
 }
 
-export function getFacetsResults(state,{facetsFromSearch}){
+export async function getFacetsResults(facetsFromSearch){
     if(facetsFromSearch){
 
-        let facetsArray = [];
+        let facets = {};
         for (const f of facetsFromSearch){
             let facetValue={};
             switch (f.facet) {
                 case 'variants.attributes.color.key':
-                    facetValue.label = "Color"
+                    facets.Color = f.terms; 
                     break;
             
                 default:
                     break;
             }
 
-            facetValue.terms = f.terms;
-
-            facetsArray.push(facetValue);
         }
 
-        return facetsArray;
+        return facets;
     }
 }
 
