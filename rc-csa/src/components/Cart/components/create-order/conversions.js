@@ -2,20 +2,22 @@ import LocalizedTextInput from '@commercetools-uikit/localized-text-input';
 import { transformLocalizedFieldToLocalizedString } from '@commercetools-frontend/l10n';
 import { TextInput } from '@commercetools-frontend/ui-kit';
 
-export const docToFormValues = (cart, languages) => ({
-  id: cart?.id,
-  version: cart?.version,
-  quantity: cart?.lineItems
-    .map((item) => item.quantity)
-    .reduce((a, b) => a + b, 0),
-  streetNumber: cart?.shippingAddress?.streetNumber,
-  streetName: cart?.shippingAddress?.streetName,
-  postalCode: cart?.shippingAddress?.postalCode,
-  country: cart?.shippingAddress?.country,
-  city: cart?.shippingAddress?.city,
-  state: cart?.shippingAddress?.state,
-  building: cart?.shippingAddress?.building,
-  shippingMethodName: cart?.shippingInfo?.shippingMethodName ?? '--',
+export const docToFormValues = (shippingAddress, languages) => ({
+  streetNumber: shippingAddress?.streetNumber,
+  streetName: shippingAddress?.streetName,
+  postalCode: shippingAddress?.postalCode,
+  country: shippingAddress?.country,
+  city: shippingAddress?.city,
+  state: shippingAddress?.state,
+  building: shippingAddress?.building,
+  id:shippingAddress?.id,
+  additionalStreetInfo:shippingAddress?.additionalStreetInfo,
+  additionalAddressInfo:shippingAddress?.additionalAddressInfo,
+  region:shippingAddress?.region,
+  apartment:shippingAddress?.apartment,
+  pOBox:shippingAddress?.pOBox,
+  phone:shippingAddress?.phone,
+  mobile:shippingAddress?.mobile
 });
 
 export const formValuesToDoc = (formValues) => ({
@@ -25,14 +27,20 @@ export const formValuesToDoc = (formValues) => ({
     {
       setShippingAddress: {
         address: {
-          country: formValues?.country,
-          streetName: formValues?.streetName,
           streetNumber: formValues?.streetNumber,
+          streetName: formValues?.streetName,
           postalCode: formValues?.postalCode,
+          country: formValues?.country,
           city: formValues?.city,
-          region: formValues?.region,
           state: formValues?.state,
           building: formValues?.building,
+          additionalStreetInfo:formValues?.additionalStreetInfo,
+          additionalAddressInfo:formValues?.additionalAddressInfo,
+          region:formValues?.region,
+          apartment:formValues?.apartment,
+          pOBox:formValues?.pOBox,
+          phone:formValues?.phone,
+          mobile:formValues?.mobile
         },
       },
     },

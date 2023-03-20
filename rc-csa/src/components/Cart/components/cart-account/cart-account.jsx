@@ -82,7 +82,7 @@ const CartAccount = (props) => {
           <CartLineItems onClose={() => push(`${match.url}`)} />
         </Route> */}
         <Route path={`${match.path}/shipping-address`}>
-          <ShippingAddress />
+          <ShippingAddress onClose={() => push(`${match.url}/cart-general`)} />
         </Route>
         <Route path={`${match.path}/orders-general`}>
           <OrderCreate />

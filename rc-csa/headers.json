@@ -14,14 +14,18 @@
       "https://ms-company-f4b4o225iq-ue.a.run.app",
       "https://ms-gateway-f4b4o225iq-ue.a.run.app",
       "${env:atgPublicURL}",
-      "${env:SEND_EMAIL_API}"
+      "${env:SEND_EMAIL_API}",
+      "${env:ALGOLIA_SEARCH}",
+      "${env:ALGOLIA_SEARCH_CSA}"
     ],
     "style-src": [
       "commerce-tools-b2b-services.firebaseapp.com",
       "mc-api.us-central1.gcp.commercetools.com",
       "commerce-tools-b2b-services.firebaseapp.com",
       "https://ms-company-f4b4o225iq-ue.a.run.app",
-      "https://ms-gateway-f4b4o225iq-ue.a.run.app"
+      "https://ms-gateway-f4b4o225iq-ue.a.run.app",
+      "${env:ALGOLIA_SEARCH}",
+      "${env:ALGOLIA_SEARCH_CSA}"
     ]
   }
 }

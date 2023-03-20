@@ -126,7 +126,7 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
         productId
         productKey
         name(locale:"en-US")
-        ...prioductType
+        ...productType
         ...variant
         ...price
         quantity
@@ -154,7 +154,7 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
         }        
     }
   }
-  fragment prioductType on LineItem{
+  fragment productType on LineItem{
     productType{
             id
             name
@@ -162,7 +162,7 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
   }
   fragment variant on LineItem{
     variant{
-        id
+        
         sku
         key
         prices{
@@ -312,14 +312,28 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
   
   fragment shippingAddress on Cart{
     shippingAddress{
-        id
-        streetName
-        streetNumber
-        postalCode
-          city
-          state
-          building
-        country
+      id
+      streetName
+      streetNumber
+      salutation
+      additionalStreetInfo
+      additionalAddressInfo
+      city
+      region
+      state
+      country
+      company
+      department
+      building
+      apartment
+      pOBox
+      phone
+      mobile
+      email
+      firstName
+      lastName
+      postalCode
+      apartment
     }
   }
   fragment billingAddress on Cart{
@@ -420,6 +434,41 @@ export const UPDATE_CART_BY_ID = `mutation updateCartById($version:Long!,
         version
         lineItems{
           productId
+           price{
+        id
+            value{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+            country
+    }
+          variant{
+        
+        sku
+        key
+        prices{
+            id
+            value{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+            country
+        }
+        images{
+            url
+        }
+        attributesRaw{
+            name
+            value
+        }
+        assets{
+            __typename
+        }
+    }
 
         }
         shippingAddress{

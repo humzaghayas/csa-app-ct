@@ -623,3 +623,31 @@ export const FETCH_CUSTOMER_CARTS = `query FectchCustomerOrdersListQuery(
     __typename
   }
 }`
+export const FETCH_CUSTOMER_ADDRESSES = `query fetchCustomerAddresses($id:String){
+  customer(id:$id){
+    addresses{
+      id
+      streetName
+      streetNumber
+      salutation
+      additionalStreetInfo
+      additionalAddressInfo
+      city
+      region
+      state
+      country
+      company
+      department
+      building
+      apartment
+      pOBox
+      phone
+      mobile
+      email
+      firstName
+      lastName
+      postalCode
+      apartment
+    }
+  }
+}`

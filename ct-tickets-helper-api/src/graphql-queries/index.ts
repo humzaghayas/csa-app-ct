@@ -121,3 +121,16 @@ export const FETCH_TICKETS=`
         }
       }
     }`
+
+export const FETCH_CATEGORIES_INFO =`query ($locale:Locale){ 
+  categories(where:"parent is not defined",sort:"orderHint asc") {
+    results {
+      id  key name(locale:$locale) 
+      children { id key  name(locale:$locale)   
+        children { id key name(locale:$locale) 
+          children { id key name(locale:$locale)  } 
+        } 
+      } 
+    } 
+  } 
+}`
