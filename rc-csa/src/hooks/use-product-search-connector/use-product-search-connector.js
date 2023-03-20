@@ -6,7 +6,7 @@ import {
   import { gql } from '@apollo/client';
   import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
   import {
-    PRODUCT_SEARCH_QUERY,FETCH_PRODUCT_LIST,PRODUCT_PROJECTION_SEARCH} from 'ct-tickets-helper-api';
+    PRODUCT_SEARCH_QUERY,FETCH_PRODUCT_LIST,PRODUCT_PROJECTION_SEARCH,FETCH_CATEGORIES_INFO} from 'ct-tickets-helper-api';
 
 
 export const useProductsFetcher = ({ page, perPage, tableSorting }) => {
@@ -64,7 +64,7 @@ export const useProductProjectionSearchByText = () =>{
     }
     let queryFilters;
     if(queryFiltersA){
-      queryFilters= { "string":`${queryFiltersA.key}:${queryFiltersA.values}`}
+      queryFilters= queryFiltersA.map(qf =>({ "string":`${qf.key}:${qf.values}`}));
      }
     
     return await projectionSearch(
@@ -86,6 +86,51 @@ export const useProductProjectionSearchByText = () =>{
   
   return {
     executeSearch,
+      loading,
+  };
+}
+
+export const useGetCategoriesMap = () =>{
+  const [categories,{loading}] =  useMcLazyQuery(gql`${FETCH_CATEGORIES_INFO}`);
+  
+  const executeGetCategories = async(locale) =>{
+
+    const categoriesValues= await categories({
+      variables: {
+          locale,
+        },
+        context: {
+          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+        },
+        fetchPolicy:"network-only"
+      } 
+    );
+
+    let catValues =[];
+    console.log('categoriesValues',categoriesValues)
+
+    for(const c of categoriesValues?.data?.categories?.results){
+
+      await getTicketCategories(c,catValues);
+    }
+
+    return catValues;
+  }
+
+
+  const getTicketCategories= async (cat,catValues) =>{
+
+    catValues.push({id:cat.id,name:cat.name});
+
+    if(cat.children && cat.children.length > 0){
+      for(const c of cat.children){
+      await getTicketCategories(c,catValues);
+      }
+    }
+  }
+  
+  return {
+    executeGetCategories,
       loading,
   };
 }

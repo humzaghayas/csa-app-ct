@@ -13,7 +13,7 @@ import {
   usePaginationState,
   useDataTableSortingState,
 } from '@commercetools-uikit/hooks';
-import { BackIcon } from '@commercetools-uikit/icons';
+import { BackIcon, WarningIcon } from '@commercetools-uikit/icons';
 import Constraints from '@commercetools-uikit/constraints';
 import FlatButton from '@commercetools-uikit/flat-button';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
@@ -32,15 +32,15 @@ import messages from './messages';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import { FilterIcon } from '@commercetools-uikit/icons';
 import React from 'react';
-import { getProductItemsRows } from './productrows';
+import { applyFacetFilter, FACETS_KEY_VALUE_MAP, getFacetsResults, getProductItemsRows } from './productSearchResults';
 //import { ProductListItems as productSearchResults } from './productsearchdata';
 import TextInput from '@commercetools-uikit/text-input';
 import ProductAccount from '../product-account/product-account';
 import './product-list-module.css';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useProductProjectionSearchByText } from '../../../../hooks/use-product-search-connector';
-import { getSearchProductRows } from '../../../Cart/components/cart-view/conversions';
-import { CheckboxInput, PrimaryButton } from '@commercetools-frontend/ui-kit';
+import { CheckboxInput, PrimaryButton,FieldLabel } from '@commercetools-frontend/ui-kit';
+import { useGetCategoriesMap } from '../../../../hooks/use-product-search-connector/use-product-search-connector';
 
 
 const columns = [
@@ -64,6 +64,7 @@ const columns = [
 const Products =  (props) => {
  
   const[searchInputValue,setSearchInputValue] = useState('')
+  const[categoriesMap,setCategoriesMap] = useState(null)
   
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
@@ -74,6 +75,7 @@ const Products =  (props) => {
   console.log('dataLocale',dataLocale);
 
   const {executeSearch} =useProductProjectionSearchByText();
+  const {executeGetCategories} = useGetCategoriesMap();
   
   
   const [productSearchResults, refreshResults] = useReducer(getProductItemsRows,null);
@@ -91,12 +93,17 @@ const Products =  (props) => {
 
   useEffect(
     async () => {
+      if(categoriesMap === null){
+        const catMap = await executeGetCategories(dataLocale);
+
+        FACETS_KEY_VALUE_MAP.find(f => f.key === "categories.id").values =catMap;
+      }
       await search("");
     },[])
 
 
     const search = async (text,queryFilter) =>{
-      const {data} =await executeSearch(text,dataLocale,["variants.attributes.color.key"],queryFilter)
+      const {data} =await executeSearch(text,dataLocale,FACETS_KEY_VALUE_MAP.map(f => f.key),queryFilter)
 
       refreshResults({productProjectionSearch:data?.productProjectionSearch,dataLocale,currencyCode:"USD"});
       // getFacets({facetsFromSearch:data?.productProjectionSearch?.facets});
@@ -105,49 +112,11 @@ const Products =  (props) => {
         setWidthSearch("85%");
       }
 
-      const facetsResults = data?.productProjectionSearch?.facets;
-      if(facetsResults){
-        let cBoxes = facetsCheckboxes;
-
-        for (const f of facetsResults){
-
-          switch (f.facet) {
-            case 'variants.attributes.color.key':
-              
-                const terms = f.value.terms; 
-                let cb;
-                if( !facetsCheckboxes['Color'] ){
-                  cb = terms.map(t => {return {value:t.term,checked:false};});
-                }else{
-                  cb = facetsCheckboxes['Color'].terms;
-                  cb = terms.map(t => {
-                    const cbFindChecked = cb.filter(c => c.checked);
-
-                      if(cbFindChecked.some(c => t.term === c.value)){
-                        return {value:t.term,checked:true};
-                      }
-                      return {value:t.term,checked:false};
-                    });
-                  }
-                  cBoxes['Color'] ={key:"variants.attributes.color.key",terms:cb};
-                break;
-        
-            default:
-                break;
-          }
-          
-        }
+      const fCheckBoxes = await getFacetsResults(data?.productProjectionSearch?.facets,facetsCheckboxes)
         setFacetsCheckboxes({
-          ...facetsCheckboxes
+          ...fCheckBoxes
         });
-        console.log('cBoxes111',cBoxes);
-      }
-      console.log('cBoxes',facetsCheckboxes);
     }
-  
-  
- 
- 
 
   return (
     <Spacings.Stack scale="l">
@@ -159,10 +128,7 @@ const Products =  (props) => {
           icon={<BackIcon />}
         />
         <Text.Headline as="h2" intlMessage={messages.title} />
-        
       
-
-  
       <Spacings.Inline >
     
            
@@ -186,47 +152,57 @@ const Products =  (props) => {
                 <td width="15%" valign='top'>
 
                   
-                  {Object.keys(facetsCheckboxes).map(function (k) {
+                  {Object.keys(facetsCheckboxes).map(function (facetCheckbox) {
                     return (<>
-                          <div>
-                            <div>
-                              {k}
-                            </div>
-                            <div>
-                                {facetsCheckboxes[k].terms.map(function (t){
+                          <div style={{paddingTop: "25px"}}>
+                              <FieldLabel
+                                  title={facetCheckbox}
+                                  hasRequiredIndicator={true}
+                                  onInfoButtonClick={() => {}}
+                                  //hintIcon={<WarningIcon />}
+                                  htmlFor="sampleInput"
+                                  horizontalConstraint={1} />
+                              
+                                {facetsCheckboxes[facetCheckbox].terms.map(function (facetTerm){
 
                                   return (<>
                                    <CheckboxInput
-                                        value={t.value}
+                                        value={facetTerm.value}
                                         onChange={(event) => {
-                                            let facetChk = facetsCheckboxes;
-                                            let c = facetsCheckboxes[k].terms.find(f => f.value === t.value);
+                                            // let facetChk = facetsCheckboxes;
+                                            // let c = facetsCheckboxes[facetCheckbox].terms.find(f => f.value === t.value);
 
-                                            c.checked = !c.checked;
-                                            setFacetsCheckboxes(
-                                              {
-                                                ...facetsCheckboxes,
-                                              }
-                                            );
+                                            // c.checked = !c.checked;
+                                            // setFacetsCheckboxes(
+                                            //   {
+                                            //     ...facetsCheckboxes,
+                                            //   }
+                                            // );
                                           
-                                            var queryFilter={};
-                                            queryFilter.values=facetsCheckboxes[k].terms.filter(t => t.checked)
-                                            .map(t1 =>`\"${t1.value}\"`).join(",");
-                                            queryFilter.key = facetsCheckboxes[k].key;
+                                            // var queryFilter={};
+                                            // queryFilter.values=facetsCheckboxes[facetCheckbox].terms.filter(t => t.checked)
+                                            // .map(t1 =>`\"${t1.value}\"`).join(",");
+                                            // queryFilter.key = facetsCheckboxes[facetCheckbox].key;
                                             
-                                            console.log('queryFilter',queryFilter);
-                                            search(searchInputValue,queryFilter);
+                                            // console.log('queryFilter',queryFilter);
+                                            // search(searchInputValue,queryFilter);
+
+                                            const {fCheckboxes,queryFilters} = applyFacetFilter(facetsCheckboxes,facetTerm);
+
+                                            setFacetsCheckboxes({
+                                                ...fCheckboxes
+                                              });
+                                            search(searchInputValue,queryFilters);
 
                                           }}
-                                        isChecked={t.checked}>
-                                          {t.value}
+                                        isChecked={facetTerm.checked}>
+                                          {facetTerm.label}
                                         </CheckboxInput>
                                   </>
                                   )
 
                                   }
                                 )}
-                            </div>
                           </div>
                     </>)
                   })}
