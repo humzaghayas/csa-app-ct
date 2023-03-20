@@ -1,29 +1,62 @@
-import MoneyField from '@commercetools-uikit/money-field';
-
-export function getOrderRows(orderPaginationResult){
-    console.log(orderPaginationResult.results);
-    if(orderPaginationResult?.results){
-        return orderPaginationResult?.results.map(order =>{
-            return {
-                id:order?.id, 
-                orderNumber: order?.orderNumber,
-                customer: order?.customer?.firstName+" "+order?.customer?.lastName,
-                createdAt: order?.createdAt,
-                lastModifiedAt:order?.lastModifiedAt,
-                orderState:order?.orderState,
-                shipmentStatus:order?.shipmentState,
-                paymentStatus:order?.paymentState,
-                shippingMethodName:order?.shippingInfo?.shippingMethodName,
-                totalPrice:amountCalculator(order?.totalPrice?.centAmount,order?.totalPrice?.fractionDigits),
-                noOforderItems:order?.lineItems?.length,
-                totalItems:order?.lineItems.map(item => item.quantity).reduce((a,b)=>a+b,0),
-            }
-        });
-    }
+export function getProductItemsRows(ProductListItems, searchValue) {
+  console.log(ProductListItems);
+  if (ProductListItems) {
+    return ProductListItems.filter(
+      (item) =>
+        item?.key.toLowerCase().includes(searchValue) ||
+        //item?.skus.toLowerCase().includes(searchValue) ||
+        item?.productType?.name.toLowerCase().includes(searchValue) ||
+        item?.masterData?.current?.name.toLowerCase().includes(searchValue)
+    ).map((item) => {
+      return {
+        id: item?.id,
+        key: item?.key,
+        //key: item?.masterData?.current?.masterVariant?.key,
+        itemName: item?.masterData?.current?.name,
+        skus:item?.skus,
+        //masterData:getData(item?.masterData),
+        //unitPrice: getPrices(item?.masterData?.current?.masterVariant?.prices),
+        unitPrice: amountCalculator(
+          item?.masterData?.current?.masterVariant?.prices[0]?.value?.centAmount,
+          item?.masterData?.current?.masterVariant?.prices[0]?.value?.fractionDigits
+        ),
+        productType: item?.productType?.name,
+        //status:"Published",
+        status: item?.masterData?.published??'--',
+        created: item?.createdAt,
+        modified: item?.lastModifiedAt,
+      };
+    });
+  }
 }
 
-function amountCalculator(centAmount,fractionDigits){
-  centAmount = centAmount/100;
-  centAmount = "$"+centAmount+".00";
+// export function getData(masterData){
+//   if(masterData) {
+//     return masterData.map((dataa) => {
+//       return{
+//         prices: getPrices(dataa?.current?.masterVariant?.prices)
+//       }
+//     })
+//   }
+// }
+
+export function getPrices(prices) {
+  if (prices) {
+    return prices.map((price) => {
+      return {
+        id: price?.id,
+        currencyCode: price?.value?.currencyCode,
+        unitPrice: amountCalculator(
+          price?.value?.centAmount,
+          price?.value?.fractionDigits
+        ),
+      };
+    });
+  }
+}
+
+function amountCalculator(centAmount, fractionDigits) {
+  centAmount = centAmount / 100;
+  centAmount = '$' + centAmount + '.00';
   return centAmount;
 }

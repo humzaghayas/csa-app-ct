@@ -54,13 +54,6 @@ const columns = [
  
 ];
 
-
-
-
-
-
-
- 
 const Products =  (props) => {
  
   const[searchInputValue,setSearchInputValue] = useState('')
