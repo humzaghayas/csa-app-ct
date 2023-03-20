@@ -1,5 +1,15 @@
 import {
-  useMcQuery,
+
+    useMcQuery,
+    useMcMutation,
+    useMcLazyQuery
+  } from '@commercetools-frontend/application-shell';
+  import { gql } from '@apollo/client';
+  import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
+  import {
+    PRODUCT_SEARCH_QUERY,FETCH_PRODUCT_LIST,PRODUCT_PROJECTION_SEARCH,FETCH_CATEGORIES_INFO} from 'ct-tickets-helper-api';
+
+ import{ useMcQuery,
   useMcMutation,
   useMcLazyQuery,
 } from '@commercetools-frontend/application-shell';
@@ -10,6 +20,7 @@ import {
   FETCH_PRODUCT_LIST,
   FETCH_PRODUCT_BY_ID
 } from 'ct-tickets-helper-api';
+
 
 export const useProductsFetcher = ({ page, perPage, tableSorting }) => {
   const { data, error, loading } = useMcQuery(
@@ -74,12 +85,97 @@ export const useFetchProductById = (productId) => {
         target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
       },
       fetchPolicy: 'network-only',
-    }
-  );
+    });
+    
+    return {
+        executeProductSearch,
+        loading,
+    };
+}
 
+export const useProductProjectionSearchByText = () =>{
+  const [projectionSearch,{loading}] =  useMcLazyQuery(gql`${PRODUCT_PROJECTION_SEARCH}`);
+  
+  const executeSearch = async(text,locale,facetsAttr,queryFiltersA) =>{
+
+    let facets=[];
+    if(facetsAttr){
+      facets = facetsAttr.map(f => {
+        return {"string":f}
+      })
+    }
+    let queryFilters;
+    if(queryFiltersA){
+      queryFilters= queryFiltersA.map(qf =>({ "string":`${qf.key}:${qf.values}`}));
+     }
+    
+    return await projectionSearch(
+      {
+        variables: {
+          locale,
+          text,
+          facets,
+          queryFilters,
+          currency:"USD"
+        },
+        context: {
+          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+        },
+        fetchPolicy:"network-only"
+      } 
+    )
+  }
+  
   return {
-    product: data?.product,
-    error,
-    loading,
+    executeSearch,
+      loading,
   };
-};
+}
+
+export const useGetCategoriesMap = () =>{
+  const [categories,{loading}] =  useMcLazyQuery(gql`${FETCH_CATEGORIES_INFO}`);
+  
+  const executeGetCategories = async(locale) =>{
+
+    const categoriesValues= await categories({
+      variables: {
+          locale,
+        },
+        context: {
+          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+        },
+        fetchPolicy:"network-only"
+      } 
+    );
+
+    let catValues =[];
+    console.log('categoriesValues',categoriesValues)
+
+    for(const c of categoriesValues?.data?.categories?.results){
+
+      await getTicketCategories(c,catValues);
+    }
+
+    return catValues;
+  }
+
+
+  const getTicketCategories= async (cat,catValues) =>{
+
+    catValues.push({id:cat.id,name:cat.name});
+
+    if(cat.children && cat.children.length > 0){
+      for(const c of cat.children){
+      await getTicketCategories(c,catValues);
+      }
+    }
+  }
+  
+  return {
+    executeGetCategories,
+      loading,
+  };
+}
+
+
+
