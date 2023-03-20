@@ -1,25 +1,12 @@
-import {
-
-    useMcQuery,
-    useMcMutation,
-    useMcLazyQuery
-  } from '@commercetools-frontend/application-shell';
   import { gql } from '@apollo/client';
-  import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
   import {
-    PRODUCT_SEARCH_QUERY,FETCH_PRODUCT_LIST,PRODUCT_PROJECTION_SEARCH,FETCH_CATEGORIES_INFO} from 'ct-tickets-helper-api';
+    PRODUCT_SEARCH_QUERY,FETCH_PRODUCT_LIST,PRODUCT_PROJECTION_SEARCH,FETCH_CATEGORIES_INFO,FETCH_PRODUCT_BY_ID} from 'ct-tickets-helper-api';
 
  import{ useMcQuery,
   useMcMutation,
   useMcLazyQuery,
 } from '@commercetools-frontend/application-shell';
-import { gql } from '@apollo/client';
 import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
-import {
-  PRODUCT_SEARCH_QUERY,
-  FETCH_PRODUCT_LIST,
-  FETCH_PRODUCT_BY_ID
-} from 'ct-tickets-helper-api';
 
 
 export const useProductsFetcher = ({ page, perPage, tableSorting }) => {
