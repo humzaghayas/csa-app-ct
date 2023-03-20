@@ -197,6 +197,7 @@ const Tickets = (props) => {
             perPage={perPage.value}
             onPerPageChange={perPage.onChange}
             totalItems={data?.customObjects?.total}
+
           />
            <Switch>
                       
@@ -210,8 +211,8 @@ const Tickets = (props) => {
   );
 };
 Tickets.displayName = 'Tickets';
-Tickets.propTypes = {
-  linkToWelcome: PropTypes.string.isRequired,
-};
+// Tickets.propTypes = {
+//   linkToWelcome: PropTypes.string.isRequired,
+// };
 
 export default Tickets;

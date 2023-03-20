@@ -167,8 +167,8 @@ const ProductListSearch = (props) => {
   );
 };
 ProductListSearch.displayName = 'Products';
-ProductListSearch.propTypes = {
-  linkToWelcome: PropTypes.string.isRequired,
-};
+// ProductListSearch.propTypes = {
+//   linkToWelcome: PropTypes.string.isRequired,
+// };
 
 export default ProductListSearch;

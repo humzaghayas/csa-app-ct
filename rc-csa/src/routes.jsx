@@ -3,7 +3,6 @@ import Spacings from '@commercetools-uikit/spacings';
 import Channels from './components/channels';
 import Tickets from './components/Ticket/components/Ticket-list/ticket-list';
 import Welcome from './components/welcome';
-import ProductAccount from './components/Products/components/product-account/product-account';
 // import TicketDetails from './components/Ticket/components/Ticket-history/ticket-details';
 import TicketAccount from './components/Ticket/components/ticket-account/ticket-account';
 import Customers from './components/Customer/components/customer-list/customer-list';
@@ -21,10 +20,8 @@ import CustomerMessagesForm from './components/Customer/components/customer-mess
 import CustomerMessages from './components/Customer/components/customer-messages/customer-messages';
 import CustomerReply from './components/Customer/components/customer-messages/customer-reply';
 import AtgAccount from './components/ATG-Poc/components/atg-account/atg-account';
-import ProductsList from './components/Products/components/product-account/product-account';
 import TicketDisplay from './components/WelcomePage/components/ticket-details/ticket-details';
-import ProductsAccount from './components/Products/components/product-list/product-account';
-import Products from './components/Products/components/product-list/product-list';
+import ProductAccount from './components/Products/components/product-account/product-account';
 
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
@@ -62,13 +59,6 @@ const ApplicationRoutes = () => {
           )}
         </Route>
 
-        {/* <Route  path={`${match.path}/ticket-details`}>
-            {canManageTickets ? (
-              <TicketDetails linkToWelcome={match.url} />
-            ):(
-              <PageUnauthorized />
-            )}
-        </Route> */}
         <Route path={`${match.path}/ticket-create`}>
           {canManageTickets ? (
             <TicketCreate linkToWelcome={match.url} />
@@ -81,9 +71,6 @@ const ApplicationRoutes = () => {
         </Route>
         <Route path={`${match.path}/Products`}>
           <ProductAccount linkToWelcome={match.url} />
-        </Route>
-        <Route path={`${match.path}/product-edit/:id`}>
-          <ProductsAccount linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/Orders`}>
           <Orders linkToWelcome={match.url} />

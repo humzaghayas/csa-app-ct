@@ -15,7 +15,8 @@ export function getProductItemsRows(state,{productProjectionSearch,dataLocale,cu
                 (price / 100).toFixed(item?.masterVariant?.price?.value?.fractionDigits)
             );
             return {
-                id:item?.id, 
+                id:item.id,
+                key:item?.key, 
                 itemName:item?.name,
                 unitPrice: price,
                 productType : item?.productType?.name,

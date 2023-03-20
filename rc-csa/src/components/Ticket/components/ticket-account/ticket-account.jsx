@@ -50,20 +50,7 @@ const TicketAccount = (props) => {
                 label="General"
               />
               <TabHeader to={`${match.url}/tickets-history`} label="History" />
-              {/* <TabHeader
-                to={`${match.url}/ticket-administration`}
-                label="Administration"
-              /> */}
-               {/* <div className={styles.addEmployeeButton}>
-       <SecondaryButton
-            label="Add Employee"
-            data-track-event="click"
-            iconLeft={<PlusBoldIcon />}
-            // onClick={() => push(`employee-create`)}
-            size="medium"
-          
-          />
-          </div> */}
+            
             </Spacings.Inline>
           </Spacings.Stack>
         </>
@@ -95,8 +82,8 @@ const TicketAccount = (props) => {
   );
 };
 TicketAccount.displayName = 'Tickets';
-TicketAccount.propTypes = {
-  linkToWelcome: PropTypes.string.isRequired,
+// TicketAccount.propTypes = {
+//   linkToWelcome: PropTypes.string.isRequired,
   
-};
+// };
 export default TicketAccount;
