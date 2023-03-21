@@ -24,7 +24,6 @@ import { lazy, useState, useEffect } from 'react';
 import Products from '../product-list/product-list';
 import ProductListSearch from '../product-list/product-list-search';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
-import ProductDetails from '../product-details';
 
 const ProductAccount = (props) => {
   const match = useRouteMatch();
@@ -44,9 +43,9 @@ const ProductAccount = (props) => {
     <TabularDetailPage
       title=" "
       onPreviousPathClick={() =>
-        history.push(`/${projectKey}/${entryPointUriPath}/products`)
+        history.push(`/${projectKey}/${entryPointUriPath}`)
       }
-      previousPathLabel="Go to View ProductsList"
+      previousPathLabel="Go to View"
       tabControls={
         <>
           <Spacings.Stack scale="xl">
@@ -67,20 +66,17 @@ const ProductAccount = (props) => {
     >
       <Switch>
         <Route path={`${match.path}/productsList-general`}>
-          <Products />
+          <Products linkToWelcome="" />
         </Route>
         <Route path={`${match.path}/productsList-search`}>
           <ProductListSearch />
         </Route>
-        {/* <Route path={`${match.path}/product-details`}>
-          <ProductDetails />
-        </Route> */}
       </Switch>
     </TabularDetailPage>
   );
 };
 ProductAccount.displayName = 'ProductAccount';
-ProductAccount.propTypes = {
-  linkToWelcome: PropTypes.string.isRequired,
-};
+// ProductAccount.propTypes = {
+//   linkToWelcome: PropTypes.string.isRequired,
+// };
 export default ProductAccount;

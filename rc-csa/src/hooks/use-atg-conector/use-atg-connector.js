@@ -1,7 +1,7 @@
 import { loginATG } from "../../components/ATG-Poc/api";
-import { useAsyncDispatch } from '@commercetools-frontend/sdk';
+import { useAsyncDispatch , actions } from '@commercetools-frontend/sdk';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
-import { actions } from '@commercetools-frontend/sdk';
+
 import axios from 'axios';
 import createHttpUserAgent from '@commercetools/http-user-agent';
 import {

@@ -8,7 +8,8 @@ export const PRODUCT_PROJECTION_SEARCH = `query PRODUCT_PROJECTION_SEARCH($local
     count
       total
     results{
-      key,
+      id
+      key
       name(locale:$locale)
       variants{
         sku

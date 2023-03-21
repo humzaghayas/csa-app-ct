@@ -101,7 +101,7 @@ const TicketDisplay = (props) => {
   );
 };
 TicketDisplay.displayName = 'TicketDisplay';
-TicketDisplay.propTypes = {
-  onClose: PropTypes.func.isRequired,
-};
+// TicketDisplay.propTypes = {
+//   onClose: PropTypes.func.isRequired,
+// };
 export default TicketDisplay;
