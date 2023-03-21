@@ -34,14 +34,14 @@ export const useProductsFetcher = ({ page, perPage, tableSorting }) => {
 };
 
 export const useProductSearchByText = () => {
-  const [useProductSearch, { loading }] = useMcLazyQuery(
+  const [productSearch, { loading }] = useMcLazyQuery(
     gql`
       ${PRODUCT_SEARCH_QUERY}
     `
   );
 
   const executeProductSearch = async (text) => {
-    return await useProductSearch({
+    return await productSearch({
       variables: {
         locale: 'en-US',
         text: text,
@@ -58,27 +58,6 @@ export const useProductSearchByText = () => {
     loading,
   };
 };
-
-export const useFetchProductById = (productId) => {
-  const { data, error, loading } = useMcQuery(
-    gql`
-      ${FETCH_PRODUCT_BY_ID}
-    `,
-    {
-      variables: {
-        id: productId,
-      },
-      context: {
-        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-      },
-      fetchPolicy: 'network-only',
-    });
-    
-    return {
-        executeProductSearch,
-        loading,
-    };
-}
 
 export const useProductProjectionSearchByText = () =>{
   const [projectionSearch,{loading}] =  useMcLazyQuery(gql`${PRODUCT_PROJECTION_SEARCH}`);

@@ -23,7 +23,7 @@ import Spacings from '@commercetools-uikit/spacings';
 import { lazy, useState, useEffect } from 'react';
 import CartView from '../cart-view/cart-view';
 import ShippingAddress from '../create-order/add-shipping-address';
-import PlaceOrder from '../place-order/place-order ';
+import PlaceOrder from '../place-order/place-order';
 import OrderCreate from '../../../Orders/components/order-create/order-create';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { entryPointUriPath } from '../../../../constants';
