@@ -3,4 +3,7 @@ import { entryPointUriPathToPermissionKeys } from '@commercetools-frontend/appli
 
 export const entryPointUriPath = 'csa-customer-tickets';
 
-export const PERMISSIONS = entryPointUriPathToPermissionKeys(entryPointUriPath);
+export const PERMISSIONS = entryPointUriPathToPermissionKeys(entryPointUriPath
+    ,['orders','carts','tickets','customers','atg','products','dashboard']
+    );
+

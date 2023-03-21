@@ -1,4 +1,4 @@
-import { PERMISSIONS, entryPointUriPath } from './src/constants';
+import { PERMISSIONS, PERMISSIONS_ORDERS, entryPointUriPath } from './src/constants';
 
 /**
  * @type {import('@commercetools-frontend/application-config').ConfigOptions}
@@ -91,43 +91,43 @@ const config = {
       uriPath: 'dashboard',
       defaultLabel: 'Dashboard',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewDashboard],
     },
     {
       uriPath: 'Tickets',
       defaultLabel: 'Tickets',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewTickets],
     },
     {
       uriPath: 'Customers',
       defaultLabel: 'Customers',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewCustomers],
     },
     {
-      uriPath: 'Orders',
+      uriPath: 'orders',
       defaultLabel: 'Orders',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewOrders],
     },
     {
       uriPath: 'Cart',
       defaultLabel: 'Cart',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewCarts],
     },
     {
       uriPath: 'ATG',
       defaultLabel: 'ATG',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewAtg],
     },
     {
       uriPath: 'Products',
       defaultLabel: 'Products',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewProducts],
     },
   ],
 };

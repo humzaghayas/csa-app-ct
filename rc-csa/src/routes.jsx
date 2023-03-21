@@ -36,6 +36,16 @@ const ApplicationRoutes = () => {
   const canViewTickets = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.View],
   });
+
+  const canViewOrders = useIsAuthorized({
+    demandedPermissions : [PERMISSIONS.ViewOrders]
+  });
+
+  const canManageOrders = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.ManageOrders]
+  })
+
+
   /**
    * When using routes, there is a good chance that you might want to
    * restrict the access to a certain route based on the user permissions.
@@ -85,9 +95,14 @@ const ApplicationRoutes = () => {
         <Route path={`${match.path}/product-edit/:id`}>
           <ProductsAccount linkToWelcome={match.url} />
         </Route>
+        
         <Route path={`${match.path}/Orders`}>
-          <Orders linkToWelcome={match.url} />
+        {canManageOrders | canManageOrders?
+        <Orders linkToWelcome={match.url} />
+        :<PageUnauthorized/>
+        }
         </Route>
+        
         <Route path={`${match.path}/Cart`}>
           <Cart linkToWelcome={match.url} />
         </Route>
