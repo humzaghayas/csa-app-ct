@@ -32,7 +32,7 @@ export function getProductItemsRows(state,{productProjectionSearch,dataLocale,cu
     }
 }
 
-export async function getFacetsResults(facetsResults,facetsCheckboxes){
+export async function getFacetsResults(facetsResults,facetsCheckboxes,isReset){
     if(facetsResults){
         let cBoxes = facetsCheckboxes;
 
@@ -62,9 +62,9 @@ export async function getFacetsResults(facetsResults,facetsCheckboxes){
                         if(cbFindChecked.some(c => t.term === c.value)){
                             if(fac.values){
                                 const val = fac.values.find(f => f.id === t.term);
-                                return {label:val.name,value:t.term,checked:true};
+                                return {label:val.name,value:t.term,checked:isReset?false:true};
                             }
-                            return {label:t.term,value:t.term,checked:true};
+                            return {label:t.term,value:t.term,checked:isReset?false:true};
                         }
 
                         if(fac.values){
