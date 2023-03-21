@@ -45,8 +45,9 @@ import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
 import { useCreateEntry, useUserFetcher } from '../../../../hooks/use-register-user-connector/use-service-connector';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
-import { SecondaryIconButton } from '@commercetools-frontend/ui-kit';
+import { SecondaryIconButton, } from '@commercetools-frontend/ui-kit';
 import Grid from '@commercetools-uikit/grid';
+import SelectableSearchInput from '@commercetools-uikit/selectable-search-input';
 
 let rows = null;
 
@@ -137,7 +138,7 @@ const Tickets = (props) => {
       { canManage  ?
       <Spacings.Stack >
 
-          <Grid gridGap="16px" gridAutoColumns="12fr" gridTemplateColumns="repeat(12, 1fr)">
+          <Grid gridGap="16px" gridAutoColumns="12fr" gridTemplateColumns="20% 70% 10%">
             <Grid.Item >
               <SecondaryButton
                     label="Add Ticket"
@@ -149,30 +150,36 @@ const Tickets = (props) => {
 
 
             </Grid.Item>
-            <Grid.Item></Grid.Item>
-            <Grid.Item></Grid.Item>
-            <Grid.Item></Grid.Item>
-            <Grid.Item></Grid.Item>
-            <Grid.Item></Grid.Item>
-            <Grid.Item></Grid.Item>
-            <Grid.Item></Grid.Item>
-            <Grid.Item></Grid.Item>
-            <Grid.Item></Grid.Item>
-            <Grid.Item></Grid.Item>
+            <Grid.Item>&nbsp;</Grid.Item>
             <Grid.Item>
            
-            <SecondaryIconButton
-              label="Refresh"
-              data-track-event="click" 
-              onClick={()=>{refetch()}}
-              icon={<RefreshIcon />}
-              size="medium"
-              
-          />
+                <SecondaryIconButton
+                  label="Refresh"
+                  data-track-event="click" 
+                  onClick={()=>{refetch()}}
+                  icon={<RefreshIcon />}
+                  size="medium"/>
 
             </Grid.Item>
             
           </Grid>
+
+          {/* <Spacings.Inline>
+          <Grid gridGap="16px" gridAutoColumns="12fr" gridTemplateColumns="30%% 70%">
+              <Grid.Item >
+                <SelectableSearchInput
+                    value={""}
+                    onChange={(event) => alert(event.target.value)}
+                    onSubmit={(val) => alert(val)}
+                    onReset={() => alert('reset')}
+                    options={[
+                      { value: 'one', label: 'One' },
+                      { value: 'two', label: 'Two' },
+                    ]}/>
+                </Grid.Item>
+                <Grid.Item ></Grid.Item>
+            </Grid>
+          </Spacings.Inline> */}
 
       </Spacings.Stack>
       : null}

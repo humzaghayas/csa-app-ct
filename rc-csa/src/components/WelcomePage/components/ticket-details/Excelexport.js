@@ -4,11 +4,8 @@ import XLSX from 'sheetjs-style';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 
-ExportExcel.propTypes = {
-  excelData: PropTypes.any,
-  fileName: PropTypes.string
-};
 const ExportExcel = ({ excelData, fileName }) => {
+  
   const fileType =
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
   const fileExtension = '.xlsx';
@@ -35,6 +32,11 @@ const ExportExcel = ({ excelData, fileName }) => {
       </Tooltip>
     </>
   );
+};
+
+ExportExcel.propTypes = {
+  excelData: PropTypes.any,
+  fileName: PropTypes.string
 };
 
 export default ExportExcel;
