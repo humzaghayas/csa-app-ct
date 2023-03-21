@@ -1,8 +1,6 @@
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import Spacings from '@commercetools-uikit/spacings';
-import Channels from './components/channels';
 import Tickets from './components/Ticket/components/Ticket-list/ticket-list';
-import Welcome from './components/welcome';
 // import TicketDetails from './components/Ticket/components/Ticket-history/ticket-details';
 import TicketAccount from './components/Ticket/components/ticket-account/ticket-account';
 import Customers from './components/Customer/components/customer-list/customer-list';
@@ -47,9 +45,6 @@ const ApplicationRoutes = () => {
   return (
     <Spacings.Inset scale="l">
       <Switch>
-        <Route path={`${match.path}/channels`}>
-          <Channels linkToWelcome={match.url} />
-        </Route>
 
         <Route path={`${match.path}/Tickets`}>
           {canViewTickets ? (
@@ -108,9 +103,6 @@ const ApplicationRoutes = () => {
         </Route>
         <Route path={`${match.path}/dashboard`}>
           <TicketDisplay linkToWelcome={match.url} />
-        </Route>
-        <Route>
-          <Welcome />
         </Route>
       </Switch>
     </Spacings.Inset>
