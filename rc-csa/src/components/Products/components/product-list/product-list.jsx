@@ -41,6 +41,7 @@ import { useApplicationContext } from '@commercetools-frontend/application-shell
 import { useProductProjectionSearchByText } from '../../../../hooks/use-product-search-connector';
 import { CheckboxInput, PrimaryButton,FieldLabel } from '@commercetools-frontend/ui-kit';
 import { useGetCategoriesMap } from '../../../../hooks/use-product-search-connector/use-product-search-connector';
+import SelectableSearchInput from '@commercetools-uikit/selectable-search-input';
 
 
 const columns = [
@@ -92,7 +93,7 @@ const Products =  (props) => {
     },[])
 
 
-    const search = async (text,queryFilter) =>{
+    const search = async (text,queryFilter,isReset) =>{
       const {data} =await executeSearch(text,dataLocale,FACETS_KEY_VALUE_MAP.map(f => f.key),queryFilter)
 
       refreshResults({productProjectionSearch:data?.productProjectionSearch,dataLocale,currencyCode:"USD"});
@@ -102,7 +103,7 @@ const Products =  (props) => {
         setWidthSearch("85%");
       }
 
-      const fCheckBoxes = await getFacetsResults(data?.productProjectionSearch?.facets,facetsCheckboxes)
+      const fCheckBoxes = await getFacetsResults(data?.productProjectionSearch?.facets,facetsCheckboxes,isReset)
         setFacetsCheckboxes({
           ...fCheckBoxes
         });
@@ -122,16 +123,35 @@ const Products =  (props) => {
       <Spacings.Inline >
     
            
-           <Constraints.Horizontal min={13} max={13}>
+           {/* <Constraints.Horizontal min={13} max={13}>
                 <TextInput placeholder="Search for any Product...." value={searchInputValue}  
                   onChange={(e) => { setSearchInputValue(e.target.value) }} />
           </Constraints.Horizontal>
           <PrimaryButton type="submit" label="Search"
                   onClick={() => {search(searchInputValue)}}
-                  isDisabled={searchInputValue === ''}/>
-            
-     
-     
+                  isDisabled={searchInputValue === ''}/> */}
+          <div style={{width:"30%"}}>
+             <SelectableSearchInput
+                      value={{
+                        text: "",
+                        option: "allFields",
+                      }}
+                      showSubmitButton={true}
+                      // onChange={(event) => alert(event.target.value)}
+                      onSubmit={(val) => { 
+                        console.log('val',val);
+                        setSearchInputValue(val.text);
+                        search(val.text);
+                       }}
+                      onReset={() => {
+                        setSearchInputValue("");
+                        search("",null,true);
+                      }}
+                      options={[
+                        { value: 'allFields', label: 'All Fields' }
+                      ]}/>
+            </div>
+            <div  style={{width:"70%"}}></div>
       </Spacings.Inline>
       {productSearchResults?(
 

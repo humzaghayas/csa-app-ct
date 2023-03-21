@@ -39,7 +39,7 @@ import {
 import TicketHistory from '../Ticket-history/ticket-history';
 import TicketAccount from '../ticket-account/ticket-account';
 import { actions,useAsyncDispatch } from '@commercetools-frontend/sdk';
-import{FETCH_TICKETS,getTicketRows,CONSTANTS} from 'ct-tickets-helper-api'
+import{FETCH_TICKETS,getTicketRows,CONSTANTS, ref} from 'ct-tickets-helper-api'
 import {  gql } from '@apollo/client';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
@@ -77,6 +77,11 @@ const Tickets = (props) => {
     demandedPermissions: [PERMISSIONS.Manage],
   });
 
+  const [selectTextInput, setSelectTextInput] = useState({
+    text: "",
+    option: "ticketNumber",
+  })
+
   const canView = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.View],
   });
@@ -112,10 +117,26 @@ const Tickets = (props) => {
 
   rows = getTicketRows(data?.customObjects);
 
+  const applyFiltersOnTickets =({option,text}) =>{
+
+    let vars = { container:CONSTANTS.containerKey,
+      limit: perPage.value,
+      offset: (page.value - 1) * perPage.value,
+      sort:["lastModifiedAt desc"]};
+
+    if(text){
+      vars.where =`value(${option}=\"${text}\")`
+    }else{
+      vars.where ="version> 0";
+    }
+    refetch( vars);
+  }
+
+
   if (error) {
     return (
       <ContentNotification type="error">
-        <Text.Body>{getErrorMessage(error)}</Text.Body>
+        <Text.Body>{error}</Text.Body>
       </ContentNotification>
     );
   }
@@ -164,22 +185,47 @@ const Tickets = (props) => {
             
           </Grid>
 
-          {/* <Spacings.Inline>
-          <Grid gridGap="16px" gridAutoColumns="12fr" gridTemplateColumns="30%% 70%">
-              <Grid.Item >
-                <SelectableSearchInput
-                    value={""}
-                    onChange={(event) => alert(event.target.value)}
-                    onSubmit={(val) => alert(val)}
-                    onReset={() => alert('reset')}
-                    options={[
-                      { value: 'one', label: 'One' },
-                      { value: 'two', label: 'Two' },
-                    ]}/>
-                </Grid.Item>
-                <Grid.Item ></Grid.Item>
-            </Grid>
-          </Spacings.Inline> */}
+          <Spacings.Stack>
+            <Grid gridGap="16px" gridAutoColumns="12fr" gridTemplateColumns="30% 70%">
+                <Grid.Item >
+                  <SelectableSearchInput
+                      value={selectTextInput}
+                      name={'selectTextInput'}
+                      showSubmitButton={true}
+                      onChange={(event) => {
+                        let v = selectTextInput;
+                        if (event.target.name.endsWith('.textInput')) {
+                          v.text= event.target.value
+                        }
+                        if (event.target.name.endsWith('.dropdown')) {
+                          v.option= event.target.value
+                        }
+                        setSelectTextInput({
+                         ...v
+                        });
+                      }}
+                      onSubmit={(val) => {
+                        applyFiltersOnTickets(val);
+                      }}
+                      onReset={() => {
+                        setSelectTextInput({
+                          text: "",
+                          option: "ticketNumber",
+                        });
+                        applyFiltersOnTickets({
+                          text: "",
+                          option: "ticketNumber",
+                        });
+                      }}
+                      options={[
+                        { value: 'ticketNumber', label: 'Ticket Number' },
+                        { value: 'email', label: 'Customer Email' },
+                        { value: 'subject', label: 'Subject' },
+                      ]}/>
+                  </Grid.Item>
+                  <Grid.Item >&nbsp;</Grid.Item>
+              </Grid>
+          </Spacings.Stack>
 
       </Spacings.Stack>
       : null}

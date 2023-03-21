@@ -1,6 +1,8 @@
 export const FETCH_TICKETS=`
- query FetchTickets($container:String!,$limit:Int,$offset:Int,$sort:[String!]) {
-    customObjects(container: $container,limit:$limit,offset:$offset,sort:$sort){
+ query FetchTickets($container:String!,$limit:Int,$offset:Int,$sort:[String!],
+                    $where:String) {
+    customObjects(container: $container,limit:$limit,
+              offset:$offset,sort:$sort,where:$where){
       total
       count
       offset
