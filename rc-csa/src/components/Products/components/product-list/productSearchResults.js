@@ -18,6 +18,7 @@ export function getProductItemsRows(state,{productProjectionSearch,dataLocale,cu
                 id:item.id,
                 key:item?.key, 
                 itemName:item?.name,
+                itemDescription:item?.description,
                 unitPrice: price,
                 productType : item?.productType?.name,
                 status: 'published',

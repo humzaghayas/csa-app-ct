@@ -46,6 +46,7 @@ import SelectableSearchInput from '@commercetools-uikit/selectable-search-input'
 
 const columns = [
   { key: 'itemName', label: 'Product Name' },
+  { key: 'itemDescription', label: 'Product Description' },
   { key: 'productType', label: 'Product Type' },
   { key: 'key', label: 'Product Key' },
   {key:'unitPrice',label:'Price'},
@@ -58,7 +59,14 @@ const columns = [
 const Products =  (props) => {
  
   const[searchInputValue,setSearchInputValue] = useState("")
-  const[categoriesMap,setCategoriesMap] = useState(null)
+  const[categoriesMap,setCategoriesMap] = useState(null);
+  const [selectTextInput, setSelectTextInput] = useState({
+    text: "",
+    option: "allFields",
+  });
+
+  const[fieldSearch,setFieldSearch] = useState(null);
+
   
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
@@ -121,34 +129,49 @@ const Products =  (props) => {
         <Text.Headline as="h2" intlMessage={messages.title} />
       
       <Spacings.Inline >
-    
-           
-           {/* <Constraints.Horizontal min={13} max={13}>
-                <TextInput placeholder="Search for any Product...." value={searchInputValue}  
-                  onChange={(e) => { setSearchInputValue(e.target.value) }} />
-          </Constraints.Horizontal>
-          <PrimaryButton type="submit" label="Search"
-                  onClick={() => {search(searchInputValue)}}
-                  isDisabled={searchInputValue === ''}/> */}
           <div style={{width:"30%"}}>
              <SelectableSearchInput
-                      value={{
-                        text: "",
-                        option: "allFields",
-                      }}
+                      name={'searchInput'}
+                      value={selectTextInput}
                       showSubmitButton={true}
-                      // onChange={(event) => alert(event.target.value)}
+                      onChange={(event) => {
+                        let v = selectTextInput;
+                        if (event.target.name.endsWith('.textInput')) {
+                          v.text= event.target.value
+                        }
+                        if (event.target.name.endsWith('.dropdown')) {
+                          v.option= event.target.value
+                        }
+                        setSelectTextInput({
+                         ...v
+                        });
+                      }}
                       onSubmit={(val) => { 
                         console.log('val',val);
                         setSearchInputValue(val.text);
-                        search(val.text);
+
+                        if(val.option === 'allFields' ||
+                          val.option === 'name' ||
+                          val.option === 'description' ){
+                              search(val.text);
+                          }else{
+                            setSearchInputValue("");
+
+                            setFieldSearch({key:val.option,values:`\"${val.text}\"`});
+                            search("",[{key:val.option,values:`\"${val.text}\"`}]);
+                          }
                        }}
                       onReset={() => {
                         setSearchInputValue("");
                         search("",null,true);
                       }}
                       options={[
-                        { value: 'allFields', label: 'All Fields' }
+                        { value: 'allFields', label: 'All Fields' },
+                        { value: 'name', label: 'Name' },
+                        { value: 'description', label: 'Descriptions' },
+                        { value: 'key', label: 'Product Key' },
+                        { value: 'variants.sku', label: 'SKU' }
+
                       ]}/>
             </div>
             <div  style={{width:"70%"}}></div>
@@ -188,7 +211,11 @@ const Products =  (props) => {
                                             setFacetsCheckboxes({
                                                 ...fCheckboxes
                                               });
-                                            search(searchInputValue,queryFilters);
+
+                                              if(fieldSearch){
+                                                queryFilters.push(fieldSearch)
+                                              }
+                                              search(searchInputValue,queryFilters);
 
                                           }}
                                         isChecked={facetTerm.checked}>
@@ -210,14 +237,15 @@ const Products =  (props) => {
             <DataTable isCondensed 
               rows={productSearchResults} 
               columns={columns} 
-              maxHeight={600} key="table"/>
+              maxHeight={600} key="table"
+              onRowClick={(row) => push(`../product-details/${row.id}`)}/>
                 
                 <Pagination
                   page={page.value}
                   onPageChange={page.onChange}
                   perPage={perPage.value}
                   onPerPageChange={perPage.onChange}
-                totalItems={productSearchResults.total}
+                  totalItems={productSearchResults.total}
                 />
                 <Switch>
                 

@@ -11,6 +11,7 @@ export const PRODUCT_PROJECTION_SEARCH = `query PRODUCT_PROJECTION_SEARCH($local
       id
       key
       name(locale:$locale)
+      description(locale:$locale)
       variants{
         sku
        price(currency:$currency){
