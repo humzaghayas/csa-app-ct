@@ -112,6 +112,11 @@ export const FETCH_PRODUCT_BY_ID = `query($id:String!){
             id
             sku
             key
+            availability{
+              noChannel{
+                availableQuantity
+              }
+            }
             images{
               url
             }
