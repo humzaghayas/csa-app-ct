@@ -21,49 +21,26 @@ import AtgAccount from './components/ATG-Poc/components/atg-account/atg-account'
 import TicketDisplay from './components/WelcomePage/components/ticket-details/ticket-details';
 import ProductAccount from './components/Products/components/product-account/product-account';
 import ProductDetails from './components/Products/components/product-details';
+import { getPermission } from './utils';
 
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
 
-  const canManageTickets = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.Manage],
-  });
+  // const canManageTickets = useIsAuthorized({
+  //   demandedPermissions: [PERMISSIONS.Manage],
+  // });
 
-  const canViewTickets = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.View],
-  });
+  const canManageTickets = getPermission('Manage');
+  const canViewTickets = getPermission('View');
+  const canViewCustomer360 = getPermission('ViewCsaCustomer');
+  const canManageCustomer360 = getPermission('ManageCsaCustomer');
+  const canViewCustomerCarts = getPermission('ViewCustomerCarts');
+  const canViewDashboard = getPermission('ViewCsaDashboard');
+  const canManageCustomerCarts = getPermission('ManageCustomerCarts'); 
+  const canViewCustomerOrders = getPermission('ViewCustomerOrders');
+  const canManageCustomerOrders = getPermission('ManageCustomerOrders');
+  const canViewProductSearch = getPermission('ViewProductSearch');
 
-  const canViewCustomer360 = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.ViewCsaCustomer],
-  });
-
-  const canManageCustomer360 = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.ViewCsaCustomer],
-  });
-
-  const canViewCustomerCarts = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.ViewCustomerCarts],
-  });
-
-  const canManageCustomerCarts = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.ManageCustomerCarts],
-  });
-  
-  const canViewCustomerOrders = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.ViewCustomerOrders],
-  });
-
-  const canManageCustomerOrders = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.ManageCustomerOrders],
-  });
-
-  const canViewProductSearch = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.ViewProductSearch],
-  });
-
-  const canViewDashboard = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.ViewCsaDashboard],
-  });
   console.log('canManageTickets',PERMISSIONS)
   console.log('canManageCustomer',canViewCustomer360);
   console.log('canManageCustomerOrders',canManageCustomerOrders);
