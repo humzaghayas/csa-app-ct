@@ -40,7 +40,7 @@ const TicketCreate = (props) => {
     user:context.user
   }));
   const canManage = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.Manage],
+    demandedPermissions: [PERMISSIONS.ManageCsaTickets],
   });
   // const showNotification = useShowNotification();
   // const showApiErrorNotification = useShowApiErrorNotification();

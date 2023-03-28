@@ -39,9 +39,6 @@ const TicketHistory = (props) => {
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
   }));
-  const canManage = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.Manage],
-  });
 
   const { ticket } = useGetTicketById(match.params.id);
 

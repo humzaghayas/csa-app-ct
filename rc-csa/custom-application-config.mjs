@@ -46,6 +46,11 @@ const config = {
       "manage": ["manage_customers"]
     },
     {
+      "name": "csa-tickets",
+      "view": ["view_products"],
+      "manage":[]
+    },
+    {
       "name": "csa-dashboard",
       "view": ["view_customers"],
       "manage":[]
@@ -117,7 +122,7 @@ const config = {
       uriPath: 'Tickets',
       defaultLabel: 'Tickets',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewCsaTickets],
     },
     {
       uriPath: 'Customers',
