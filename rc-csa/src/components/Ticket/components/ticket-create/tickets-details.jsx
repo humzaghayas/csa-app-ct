@@ -18,7 +18,7 @@ const TicketDetailsP = (props) => {
     languages: context.project?.languages ?? [],
   }));
   const canManage = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.Manage],
+    demandedPermissions: [PERMISSIONS.ManageCsaTickets],
   });
 
   const {ticket} = useGetTicketById(match.params.id);

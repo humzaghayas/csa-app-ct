@@ -30,8 +30,8 @@ const ApplicationRoutes = () => {
   //   demandedPermissions: [PERMISSIONS.Manage],
   // });
 
-  const canManageTickets = getPermission('Manage');
-  const canViewTickets = getPermission('View');
+  const canManageTickets = getPermission('ManageCsaTickets');
+  const canViewTickets = getPermission('ViewCsaTickets');
   const canViewCustomer360 = getPermission('ViewCsaCustomer');
   const canManageCustomer360 = getPermission('ManageCsaCustomer');
   const canViewCustomerCarts = getPermission('ViewCustomerCarts');

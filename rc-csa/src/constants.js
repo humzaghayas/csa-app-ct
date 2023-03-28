@@ -9,10 +9,11 @@ export const groupNames = {
     "customer-orders": 'customer-orders',
     "product-search": 'product-search',
     "csa-dashboard": 'csa-dashboard',
-    "customer-payments":'customer-payments'
+    "customer-payments":'customer-payments',
+    "csa-tickets":'csa-tickets'
   };
 
 export const PERMISSIONS = entryPointUriPathToPermissionKeys(
                             entryPointUriPath,
-                           ['csa-customer','customer-carts','customer-orders',
+                           ['csa-customer','customer-carts','customer-orders','csa-tickets',
                            'customer-payments','product-search','csa-dashboard'] );                         
