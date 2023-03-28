@@ -39,6 +39,37 @@ const config = {
       'manage_project',
     ],
   },
+  "additionalOAuthScopes": [
+    {
+      "name": "csa-customer",
+      "view": ["view_customers"],
+      "manage": ["manage_customers"]
+    },
+    {
+      "name": "csa-tickets",
+      "view": ["view_products"],
+      "manage":[]
+    },
+    {
+      "name": "csa-dashboard",
+      "view": ["view_customers"],
+      "manage":[]
+    },
+    {
+      "name": "customer-carts",
+      "view": ["view_orders"],
+      "manage": ["manage_orders"]
+    },
+    {
+      "name": "customer-orders",
+      "view": ["view_orders"]
+    },
+    {
+      "name": "product-search",
+      "view": ["view_products"],
+      "manage":[]
+    }
+  ],
   headers: {
     csp: {
       'script-src': [
@@ -46,6 +77,8 @@ const config = {
         'mc-api.us-central1.gcp.commercetools.com',
         'csa-project-1d161.firebaseapp.com',
         'https://firebasestorage.googleapis.com/',
+        '${env:ALGOLIA_SEARCH}',
+        '${env:ALGOLIA_SEARCH_CSA}'
       ],
       'connect-src': [
         'http://localhost:3001',
@@ -80,40 +113,34 @@ const config = {
   },
   submenuLinks: [
     {
-      uriPath: 'channels',
-      defaultLabel: 'Channels',
-      labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
-    },
-    {
       uriPath: 'dashboard',
       defaultLabel: 'Dashboard',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewCsaDashboard],
     },
     {
       uriPath: 'Tickets',
       defaultLabel: 'Tickets',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewCsaTickets],
     },
     {
       uriPath: 'Customers',
       defaultLabel: 'Customers',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewCsaCustomer],
     },
     {
       uriPath: 'Orders',
       defaultLabel: 'Orders',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewCustomerOrders],
     },
     {
       uriPath: 'Cart',
       defaultLabel: 'Cart',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewCustomerCarts],
     },
     {
       uriPath: 'ATG',
@@ -125,7 +152,7 @@ const config = {
       uriPath: 'Products',
       defaultLabel: 'Products',
       labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
+      permissions: [PERMISSIONS.ViewProductSearch],
     },
   ],
 };

@@ -36,6 +36,7 @@ import { useGetActiveCartByCustomer ,useGetOrdersByCustomer} from '../../../../h
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { entryPointUriPath } from '../../../../constants';
 import CustomerCart from '../customer-carts/customer-cart';
+import { getPermission } from '../../../../utils';
 
 
 const CustomerAccount = (props) => {
@@ -44,6 +45,14 @@ const CustomerAccount = (props) => {
   const params = useParams();
   const { customer, error, loading } = useCustomerDetailsFetcher(params.id);
   const [ticket, setTicket] = useState(null);
+
+  const canViewCustomer360 = getPermission('ViewCsaCustomer');
+  const canManageCustomer360 = getPermission('ManageCsaCustomer');
+  const canViewCustomerCarts = getPermission('ViewCustomerCarts');
+  const canManageCustomerCarts = getPermission('ManageCustomerCarts'); 
+  const canViewCustomerOrders = getPermission('ViewCustomerOrders');
+  const canManageCustomerOrders = getPermission('ManageCustomerOrders');
+  const canViewCustomerPayments = getPermission('ViewCustomerPayments');
 
   const { projectKey } =useApplicationContext((context) => ({
     projectKey:context.project.key
@@ -105,15 +114,33 @@ const CustomerAccount = (props) => {
           </Spacings.Stack>
           <Spacings.Stack scale="xl">
             <Spacings.Inline>
+              
               <TabHeader to={`${match.url}/Customers-summary`} label="Summary" /> 
-              <TabHeader to={`${match.url}/Customers-profile`} label="Profile" />  
-              <TabHeader to={`${match.url}/Customers-carts`} label="Carts" />  
-              <TabHeader to={`${match.url}/Customers-orders`} label="Orders" />
-               <TabHeader to={`${match.url}/Customers-returns`} label="Returns"/>
-               <TabHeader to={`${match.url}/Customers-payments`} label="Payments"/>
-              <TabHeader to={`${match.url}/Customers-Address`} label="Addresses"/>
+              {canViewCustomerCarts ?(
+                <TabHeader to={`${match.url}/Customers-profile`} label="Profile" />  
+                ):null}
+              {canViewCustomerCarts ?(
+                <TabHeader to={`${match.url}/Customers-carts`} label="Carts" />  
+                ):null}
+
+              {canViewCustomerOrders ?(<>
+                  <TabHeader to={`${match.url}/Customers-orders`} label="Orders" />
+                
+                  <TabHeader to={`${match.url}/Customers-returns`} label="Returns"/>
+                </>
+               ):null}
+              {canViewCustomerPayments ?(
+                 <TabHeader to={`${match.url}/Customers-payments`} label="Payments"/>
+               ):null}
+               {canViewCustomer360?(
+                  <TabHeader to={`${match.url}/Customers-Address`} label="Addresses"/>
+              ):null}
+
               <TabHeader to={`${match.url}/Customers-tickets`} label="Tickets" />
-              <TabHeader to={`${match.url}/Customers-password`} label="Password" />
+              {canManageCustomer360?(
+                <TabHeader to={`${match.url}/Customers-password`} label="Password" />
+              ):null}
+
             </Spacings.Inline>
           </Spacings.Stack>
         </>

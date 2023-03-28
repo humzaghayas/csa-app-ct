@@ -30,7 +30,7 @@ export function getAllVariants(allVariants){
   if(allVariants){
       return allVariants.map(allVariant =>{
           return {
-             variantId:allVariant?.id,
+             id:allVariant?.id,
              sku: allVariant?.sku,
              key: allVariant?.key,
              //prices: getPrices(allVariant?.prices),
@@ -40,7 +40,7 @@ export function getAllVariants(allVariants){
         ),
             // unitPrice: allVariant?.price?.value?.centAmount,
              images:allVariant?.images[0]?.url,
-             quantity: allVariant?.quantity?? '--',
+             quantity: allVariant?.availability?.noChannel?.availableQuantity ?? '--',
              attributes: allVariant?.attributesRaw?.value?.count?? '--',
 
           }

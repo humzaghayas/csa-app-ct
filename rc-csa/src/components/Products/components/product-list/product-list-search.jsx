@@ -38,17 +38,10 @@ import {
   InstantSearch,
   SearchBox,
   Hits,
-  Highlight,
   Configure,
   RefinementList,
   Pagination 
 } from 'react-instantsearch-hooks-web';
-import { useHits } from 'react-instantsearch-hooks-web';
-import { getSearchItemsRows } from './productSearchRows';
-import TextInput from '@commercetools-uikit/text-input';
-import CollapsibleMotion from '@commercetools-uikit/collapsible-motion';
-import { PlusBoldIcon } from '@commercetools-uikit/icons';
-import ProductAccount from '../product-account/product-account';
 import './product-list-module.css';
 
 
@@ -174,8 +167,8 @@ const ProductListSearch = (props) => {
   );
 };
 ProductListSearch.displayName = 'Products';
-ProductListSearch.propTypes = {
-  linkToWelcome: PropTypes.string.isRequired,
-};
+// ProductListSearch.propTypes = {
+//   linkToWelcome: PropTypes.string.isRequired,
+// };
 
 export default ProductListSearch;

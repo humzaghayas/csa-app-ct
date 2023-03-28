@@ -2,4 +2,4 @@ export {
     useFetchCheckoutSessionById,
     useFetchPaymentById,
     usePaymentUpdater
-} from './use-payments-connector.js'
+} from './use-payments-connector'

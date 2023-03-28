@@ -25,14 +25,6 @@ import {
   useParams,
   useRouteMatch,
 } from 'react-router-dom';
-import { getSearchProductRows } from './conversions';
-import { useFetchProductById, useProductSearchByText } from '../../../../hooks/use-product-search-connector/use-product-search-connector';
-import { NumberInput, SearchSelectInput } from '@commercetools-frontend/ui-kit';
-
-import { SuspendedRoute } from '@commercetools-frontend/application-shell';
-import { docToFormValues, 
-  //getVariants 
-} from './conversions';
 
 
 const rows = [{
@@ -43,7 +35,7 @@ const rows = [{
 
 }];
 const columns = [
-  { key: 'variantId', label: 'Variant ID' },
+  { key: 'id', label: 'Variant ID' },
   { key: 'sku', label: 'SKU' },
   { key: 'key', label: 'Key' },
   { key: 'images', label: 'Images' },
@@ -213,7 +205,7 @@ const ProductDetailsForm = (props) => {
                 />
                     
               </Spacings.Stack>
-            ) : null}  
+            ) : <div></div>}  
           </Spacings.Stack>
           
           {/* <div>

@@ -23,6 +23,7 @@ __exportStar(require("./order-graphql-queries"), exports);
 __exportStar(require("./cart-graphql-queries"), exports);
 __exportStar(require("./product-search-graphql-queries"), exports);
 __exportStar(require("./payment-graphql-queries"), exports);
+__exportStar(require("./product-projection-search-queries"), exports);
 var firebase_1 = require("./firebase");
 Object.defineProperty(exports, "app", { enumerable: true, get: function () { return firebase_1.app; } });
 Object.defineProperty(exports, "storage", { enumerable: true, get: function () { return firebase_1.storage; } });

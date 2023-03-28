@@ -19,8 +19,6 @@ import { ChainIcon, CollapsibleMotion, MultilineTextField, PrimaryButton, Second
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useState } from 'react';
 import{CONSTANTS} from 'ct-tickets-helper-api'
-import { useIsAuthorized } from '@commercetools-frontend/permissions';
-import { PERMISSIONS } from '../../../../constants';
 //import {  useUserListFetcher } from '../../../../hooks/use-order-connector/use-order-service-connector';
 import { useFileDeleteService, useFileUploadService } from '../../../../hooks/use-file-upload-connector';
 import { useFindCustomerService } from '../../../../hooks/use-customer-connector';
@@ -30,6 +28,7 @@ import Tickets from '../Ticket-list/ticket-list';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import { useUserListFetcher } from '../../../../hooks/use-register-user-connector';
 import { useOrderService } from '../../../../hooks/use-order-connector';
+import { getPermission } from '../../../../utils';
 
 
 // const getEmployeeRoleOptions = Object.keys(EMPLOYEE_ROLES).map((key) => ({
@@ -85,14 +84,9 @@ const TicketCreateForm = (props) => {
     enableReinitialize: true,
   });
 
-  const canManage = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.Manage],
-  });
+  const canManage = getPermission('ManageCsaTickets');
 
   const{getUsersToAssignTo} =useUserListFetcher();
-
-
-
   
   const [customerFound, setCustomerFound] = useState(formik.values.isEdit);
   const [files, setFiles] = useState([]);

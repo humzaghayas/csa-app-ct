@@ -1,4 +1,6 @@
 export {
     useProductSearchByText,
-    useProductsFetcher   
+    useProductsFetcher,
+    useProductProjectionSearchByText,
+    useFetchProductById
 } from './use-product-search-connector';

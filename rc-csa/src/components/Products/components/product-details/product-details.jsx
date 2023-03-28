@@ -17,7 +17,7 @@ import {
 import { PERMISSIONS } from '../../../../constants';
 import {
   useFetchProductById,
-} from '../../../../hooks/use-product-search-connector/use-product-search-connector';
+} from '../../../../hooks/use-product-search-connector';
 import { docToFormValues, formValuesToDoc } from './conversions';
 import ProductDetailsForm from './product-details-form';
 import { transformErrors } from './transform-errors';
