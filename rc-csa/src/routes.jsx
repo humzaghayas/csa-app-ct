@@ -32,6 +32,43 @@ const ApplicationRoutes = () => {
   const canViewTickets = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.View],
   });
+
+  const canViewCustomer360 = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.ViewCsaCustomer],
+  });
+
+  const canManageCustomer360 = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.ViewCsaCustomer],
+  });
+
+  const canViewCustomerCarts = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.ViewCustomerCarts],
+  });
+
+  const canManageCustomerCarts = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.ManageCustomerCarts],
+  });
+  
+  const canViewCustomerOrders = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.ViewCustomerOrders],
+  });
+
+  const canManageCustomerOrders = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.ManageCustomerOrders],
+  });
+
+  const canViewProductSearch = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.ViewProductSearch],
+  });
+
+  const canViewDashboard = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.ViewCsaDashboard],
+  });
+  console.log('canManageTickets',PERMISSIONS)
+  console.log('canManageCustomer',canViewCustomer360);
+  console.log('canManageCustomerOrders',canManageCustomerOrders);
+
+
   /**
    * When using routes, there is a good chance that you might want to
    * restrict the access to a certain route based on the user permissions.
@@ -63,32 +100,64 @@ const ApplicationRoutes = () => {
           )}
         </Route>
         <Route path={`${match.path}/Customers`}>
-          <Customers linkToWelcome={match.url} />
+          {canViewCustomer360 ? (
+            <Customers linkToWelcome={match.url} />
+          ):(
+            <PageUnauthorized />
+          )}
         </Route>
         <Route path={`${match.path}/Products`}>
-          <ProductAccount linkToWelcome={match.url} />
+          {canViewProductSearch ? (
+            <ProductAccount linkToWelcome={match.url} />
+          ):(
+            <PageUnauthorized />
+          )}
         </Route>
         <Route path={`${match.path}/product-details/:id`}>
-          <ProductDetails linkToWelcome={match.url} />
+            {canViewProductSearch ? (
+              <ProductDetails linkToWelcome={match.url} />
+            ):(
+              <PageUnauthorized />
+            )}
         </Route>
         <Route path={`${match.path}/Orders`}>
-          <Orders linkToWelcome={match.url} />
+          {canViewCustomerOrders ? (
+              <Orders linkToWelcome={match.url} />
+            ):(
+              <PageUnauthorized />
+            )}          
         </Route>
         <Route path={`${match.path}/Cart`}>
-          <Cart linkToWelcome={match.url} />
+          {canViewCustomerCarts ? (
+              <Cart linkToWelcome={match.url} />
+            ):(
+              <PageUnauthorized />
+            )}
         </Route>
         <Route path={`${match.path}/order-edit/:id`}>
-          <OrderAccount linkToWelcome={match.url} />
+          {canManageCustomerOrders ? (
+            <OrderAccount linkToWelcome={match.url} />
+          ):(
+            <PageUnauthorized />
+          )}
         </Route>
 
         <Route path={`${match.path}/cart-edit/:id`}>
-          <CartAccount linkToWelcome={match.url} />
+            {canManageCustomerCarts ? (
+              <CartAccount linkToWelcome={match.url} />
+              ):(
+                <PageUnauthorized />
+              )}
         </Route>
         <Route path={`${match.path}/customer-edit/:lahari`}>
           <CustomerAccount linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/ticket-edit/:id`}>
-          <TicketAccount linkToWelcome={match.url} />
+          {canManageTickets ? (
+            <TicketAccount linkToWelcome={match.url} />
+            ):(
+              <PageUnauthorized />
+            )}
         </Route>
         <Route path={`${match.path}/customer-create`}>
           <CustomerCreate linkToWelcome={match.url} />
@@ -106,7 +175,11 @@ const ApplicationRoutes = () => {
           <AtgAccount linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/dashboard`}>
+        {canViewDashboard ? (
           <TicketDisplay linkToWelcome={match.url} />
+          ):(
+            <PageUnauthorized />
+          )}
         </Route>
       </Switch>
     </Spacings.Inset>
