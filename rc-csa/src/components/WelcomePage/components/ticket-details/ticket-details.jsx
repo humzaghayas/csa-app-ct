@@ -42,7 +42,7 @@ const TicketDisplay = (props) => {
     projectLanguages: context.project?.languages ?? [],
   }));
   const canManage = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.Manage],
+    demandedPermissions: [PERMISSIONS.ManageCsaTickets],
   });
 
   const { page, perPage } = usePaginationState();
@@ -117,7 +117,7 @@ const TicketDisplay = (props) => {
   );
 };
 TicketDisplay.displayName = 'TicketDisplay';
-TicketDisplay.propTypes = {
-  onClose: PropTypes.func.isRequired,
-};
+// TicketDisplay.propTypes = {
+//   onClose: PropTypes.func.isRequired,
+// };
 export default TicketDisplay;
