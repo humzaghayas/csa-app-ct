@@ -651,3 +651,46 @@ export const FETCH_CUSTOMER_ADDRESSES = `query fetchCustomerAddresses($id:String
     }
   }
 }`
+export const FETCH_CUSTOMER_PROMOTIONS = `query FetchCustomerPromotions($id:String!) {
+  customer(id:$id) {
+      id
+      version
+      customerNumber
+      custom{
+        customFieldsRaw{
+          name
+          value
+          referencedResourceSet{
+            ... on CartDiscount{
+              id
+              key
+              name(locale:"en-US")
+              validFrom
+              validUntil
+              isActive
+              requiresDiscountCode
+              value{
+                ... on AbsoluteDiscountValue{
+                  money{
+                    currencyCode
+                    fractionDigits
+                    centAmount
+                  }
+                }
+                ... on FixedPriceDiscountValue{
+                  money{
+                    currencyCode
+                    fractionDigits
+                    centAmount
+                  }
+                }
+                ... on RelativeDiscountValue{
+                  permyriad
+                }
+              }
+            }
+          }
+        }
+      }
+  }
+}`

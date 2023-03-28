@@ -36,6 +36,7 @@ import { useGetActiveCartByCustomer ,useGetOrdersByCustomer} from '../../../../h
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { entryPointUriPath } from '../../../../constants';
 import CustomerCart from '../customer-carts/customer-cart';
+import CustomerPromotion from '../customer-promotion/customer-promotion';
 
 
 const CustomerAccount = (props) => {
@@ -114,6 +115,7 @@ const CustomerAccount = (props) => {
               <TabHeader to={`${match.url}/Customers-Address`} label="Addresses"/>
               <TabHeader to={`${match.url}/Customers-tickets`} label="Tickets" />
               <TabHeader to={`${match.url}/Customers-password`} label="Password" />
+              <TabHeader to={`${match.url}/Customers-promotions`} label="Promotions" />
             </Spacings.Inline>
           </Spacings.Stack>
         </>
@@ -137,6 +139,9 @@ const CustomerAccount = (props) => {
         </Route>
         <Route path={`${match.path}/Customers-password`}>
            <CustomerPassword customer={customer} />
+        </Route>
+        <Route path={`${match.path}/Customers-promotions`}>
+           <CustomerPromotion customer={customer} />
         </Route>
         <Route path={`${match.path}/Customers-Address`}>
           <CustomerList customer={customer} />
