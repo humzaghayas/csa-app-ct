@@ -12,12 +12,18 @@ import { useFetchOrderPaymentsById } from '../../../../hooks/use-orders-connecto
 import { itemRenderer, itemRendererPayments } from './helper';
 import { SuspendedRoute } from '@commercetools-frontend/application-shell';
 import OrderPaymentsDetails from './order-payments-details';
+import { useIsAuthorized } from '@commercetools-frontend/permissions';
+import { PERMISSIONS } from '../../../../constants';
 
 const OrderPayments = (props) =>{
     const intl = useIntl();
     const [reducerValue, forceUpdate] = useReducer(x => x+1,0);
     const { push } = useHistory();
     const match = useRouteMatch();
+
+    const canManage = useIsAuthorized({
+        demandedPermissions: [PERMISSIONS.ManageCustomerOrders],
+    });
 
     const {order,loading,error} = useFetchOrderPaymentsById(match.params.id);
     const payments = order?.paymentInfo?.payments;
@@ -43,7 +49,8 @@ const OrderPayments = (props) =>{
               <OrderPaymentsDetails 
               customerEmail = {order?.customerEmail}
               customerId = {order?.customerId} 
-              onClose={() => push(`${match.url}`)} 
+              onClose={() => push(`${match.url}`)}
+              canManage={canManage} 
               />
             </SuspendedRoute>
         </Switch>

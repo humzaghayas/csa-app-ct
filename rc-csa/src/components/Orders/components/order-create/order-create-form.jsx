@@ -131,7 +131,7 @@ const OrderCreateForm = (props) => {
                           id='quantity'
                           label='Quantity'
                           value={item.quantity}
-                          isDisabled={item.isEditQuantity}
+                          isDisabled={item.isEditQuantity || !props?.canManage}
                           onChange={(e)=>{
 
                             const newVal =Number(e.target.value);
@@ -204,7 +204,7 @@ const OrderCreateForm = (props) => {
 
                       props.onSubmit(e);
                   }}
-                  isDisabled={lineItems.find(sr => sr.lineItemId  === item.lineItemId).quantity <= item.startValue}
+                  isDisabled={lineItems.find(sr => sr.lineItemId  === item.lineItemId).quantity <= item.startValue || !props?.canManage}
                 />
               </Spacings.Stack>
             </Spacings.Inline>
@@ -238,6 +238,7 @@ const OrderCreateForm = (props) => {
                           value={item.quantity}
                           min="1"
                           isReadOnly={false}
+                          isDisabled={!props?.canManage}
                           onChange={(e)=>{
                                 const rows = searchProductRows.filter(l => l.productId !== item.productId);
                                 const r = searchProductRows.find(sr => sr.productId  === item.productId);
@@ -274,6 +275,7 @@ const OrderCreateForm = (props) => {
                     title='Add'
                     label='Add'
                     type='button'
+                    isDisabled={!props?.canManage}
                     onClick={(e) => {
                       console.log("Add Order Item")
                       console.log("item",item);
@@ -403,6 +405,7 @@ const OrderCreateForm = (props) => {
           onChange={onChange}
           onBlur={formik.handleBlur}
           options={getOrderStates}
+          isDisabled={!props?.canManage}
           // isReadOnly={props.isReadOnly}
           horizontalConstraint={13}
         />
@@ -418,7 +421,7 @@ const OrderCreateForm = (props) => {
         touched={formik.touched.roles}
         onChange={onChange}
         onBlur={formik.handleBlur}
-        
+        isDisabled={!props?.canManage}
         options={getPaymentStates}
         isReadOnly={props.isReadOnly}
         // isRequired
@@ -438,6 +441,7 @@ const OrderCreateForm = (props) => {
           onBlur={formik.handleBlur}
           options={getShipmentStates}
           isReadOnly={props.isReadOnly}
+          isDisabled={!props?.canManage}
           horizontalConstraint={13}
         />
         </Spacings.Stack>

@@ -54,7 +54,7 @@ const OrderPaymentsDetails = (props) =>{
                 />
                 <IconButton
                     icon={<OperationsIcon/>}
-                    isDisabled={!payment?.transactions[0]?.interactionId}
+                    isDisabled={!payment?.transactions[0]?.interactionId || !props?.canManage}
                     onClick={async()=>{
                         const session = await useFetchCheckoutSessionById(payment?.transactions[0]?.interactionId);
                         // const paymentStatus= await session?.session?.payment_status;
@@ -88,7 +88,7 @@ const OrderPaymentsDetails = (props) =>{
                 />
                 <IconButton
                     icon={<MailIcon/>}
-                    isDisabled={!paymentLink && !props?.customerEmail}
+                    isDisabled={!paymentLink || !props?.customerEmail || !props?.canManage}
                     onClick={sendPaymentLinkEmail}
                 />
                 </Spacings.Inline>

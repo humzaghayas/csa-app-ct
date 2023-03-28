@@ -70,6 +70,7 @@ const OrderShippingForm = (props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             horizontalConstraint={13}
+            isReadOnly={props?.isReadOnly}
           />
         </Spacings.Stack>
         <Spacings.Stack scale="s">
@@ -84,6 +85,7 @@ const OrderShippingForm = (props) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
+          isReadOnly={props?.isReadOnly}
         />
       
         </Spacings.Stack>
@@ -98,6 +100,7 @@ const OrderShippingForm = (props) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
+          isReadOnly={props?.isReadOnly}
         />
         </Spacings.Stack>
         <Spacings.Stack scale="s">
@@ -111,6 +114,7 @@ const OrderShippingForm = (props) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
+          isReadOnly={props?.isReadOnly}
         />
         </Spacings.Stack>
         <Spacings.Stack scale="s">
@@ -124,6 +128,7 @@ const OrderShippingForm = (props) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
+          isReadOnly={props?.isReadOnly}
         />
         </Spacings.Stack>
         <Spacings.Stack scale="s">
@@ -137,6 +142,7 @@ const OrderShippingForm = (props) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
+          isReadOnly={props?.isReadOnly}
         />
         </Spacings.Stack>
         <Spacings.Stack scale="s">
@@ -150,6 +156,7 @@ const OrderShippingForm = (props) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
+          isReadOnly={props?.isReadOnly}
         />
         </Spacings.Stack>
         <Spacings.Stack scale="s">
@@ -163,6 +170,7 @@ const OrderShippingForm = (props) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           horizontalConstraint={13}
+          isReadOnly={props?.isReadOnly}
         />
         </Spacings.Stack>
         <Spacings.Stack scale="s">
@@ -171,7 +179,7 @@ const OrderShippingForm = (props) => {
                   label="Submit"
                   onClick={onSubmit}
                   onSubmit={onSubmit}
-                  isDisabled={false}
+                  isDisabled={props?.isReadOnly}
                 />
               </Spacings.Inline>
               </Spacings.Stack>

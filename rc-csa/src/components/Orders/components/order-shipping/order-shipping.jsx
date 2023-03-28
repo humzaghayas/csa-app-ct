@@ -38,7 +38,7 @@ const OrderShipping = (props) => {
     projectLanguages: context.project?.languages ?? [],
   }));
   const canManage = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.Manage],
+    demandedPermissions: [PERMISSIONS.ManageCustomerOrders],
   });
   const { push } = useHistory();
 

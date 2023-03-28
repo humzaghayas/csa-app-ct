@@ -17,6 +17,8 @@ import { transformErrors } from './transform-errors';
 import { useShowApiErrorNotification, useShowNotification } from '@commercetools-frontend/actions-global';
 import { DOMAINS } from '@commercetools-frontend/constants';
 import messages from './messages';
+import { useIsAuthorized } from '@commercetools-frontend/permissions';
+import { PERMISSIONS } from '../../../../constants';
 
 const OrderReturns = (props) =>{
     const intl = useIntl();
@@ -31,6 +33,10 @@ const OrderReturns = (props) =>{
         dataLocale: context.dataLocale ?? '',
         projectLanguages: context.project?.languages ?? [],
       }));
+    
+    const canManage = useIsAuthorized({
+      demandedPermissions: [PERMISSIONS.ManageCustomerOrders],
+    });
 
     
     const orderReturnInfo = docToFormValues(order?.data?.order,projectLanguages);
@@ -73,12 +79,13 @@ const OrderReturns = (props) =>{
     return(
         <Spacings.Stack scale='xl'>
             <Constraints.Horizontal>
-            <SecondaryButton
-                type='button'
-                iconLeft={<BidirectionalArrowIcon/>}
-                label='Create Order Returns'
-                onClick={onClickCreateReturn}
-                />
+                <SecondaryButton
+                    type='button'
+                    iconLeft={<BidirectionalArrowIcon/>}
+                    label='Create Order Returns'
+                    onClick={onClickCreateReturn}
+                    isDisabled={!canManage}
+                    />
                 <Switch>
                     <Route  path={`${match.path}/new`}>
                         <OrderReturnsNew

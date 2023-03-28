@@ -37,11 +37,10 @@ const OrderCreate = (props) => {
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
   }));
-  const canManage = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.Manage],
-  });
 
-  //const {executeFetchOrder} = useFetchOrderById(match.params.id);
+  const canManage = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.ManageCustomerOrders],
+  });
   const {executeUpdateOrder} = useOrderUpdateById();
   const {executeCreateOrderEdit} = useCreateOrderEditById();
   const {executeOrderEditApply} = useOrderEditApply();
@@ -159,6 +158,7 @@ const OrderCreate = (props) => {
     onChange={handleChange}
     isReadOnly={!canManage}
     dataLocale={dataLocale}
+    canManage={canManage}
     >
       {(formProps) => {
         return (

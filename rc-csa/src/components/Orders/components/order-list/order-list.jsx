@@ -46,6 +46,8 @@ import { getOrderRows } from './rows';
 import MoneyField from '@commercetools-uikit/money-field';
 import { IconButton } from '@commercetools-frontend/ui-kit';
 import { useCallback } from 'react';
+import { PERMISSIONS } from '../../../../constants';
+import { useIsAuthorized } from '@commercetools-frontend/permissions';
 // import { getCompanies } from '../../api';
 // import { useEffect } from 'react';
 
@@ -101,6 +103,9 @@ const Orders =  (props) => {
   const match = useRouteMatch();
   const { push } = useHistory();
   // const [query] = useState(QUERY);
+  const canManage = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.ManageCustomerOrders],
+  });
   const { executeReplicateOrder } = useReplicateOrderById();
   const { page, perPage } = usePaginationState();
   const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
@@ -141,6 +146,7 @@ const Orders =  (props) => {
             <Spacings.Inline>
               <IconButton
                 icon={<CopyIcon/>}
+                isDisabled={!canManage}
                 onClick={(e)=>{
                   e.orderId = item.id 
                   onClickDuplicateButton(e)
