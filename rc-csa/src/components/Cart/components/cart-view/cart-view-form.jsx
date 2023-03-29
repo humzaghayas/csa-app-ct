@@ -257,7 +257,7 @@ const CartViewForm = (props) => {
                 <NumberInput
                   value={item.quantity}
                   min="1"
-                  isReadOnly={false}
+                  isReadOnly={props?.isReadOnly}
                   onChange={(e) => {
                     const rows = searchProductRows.filter(
                       (l) => l.productId !== item.productId
@@ -302,6 +302,7 @@ const CartViewForm = (props) => {
                   title="Add"
                   label="Add"
                   type="button"
+                  isDisabled={props?.isReadOnly}
                   onClick={(e) => {
                     console.log('Add Cart Item');
                     console.log('item', item);
@@ -345,6 +346,7 @@ const CartViewForm = (props) => {
             onClick={() => push(`shipping-address`)}
             iconLeft={<PlusBoldIcon />}
             size="medium"
+            isDisabled={props?.isReadOnly}
           />
         </Spacings.Inline>
       </Spacings.Stack>
@@ -385,7 +387,7 @@ const CartViewForm = (props) => {
                 //onChange={onChange}
                 onBlur={formik.handleBlur}
                 options={getCartStates}
-                // isReadOnly={props.isReadOnly}
+                isReadOnly={props.isReadOnly}
                 // isRequired
                 horizontalConstraint={13}
               />

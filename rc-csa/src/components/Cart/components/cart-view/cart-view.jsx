@@ -43,7 +43,7 @@ const CartView = (props) => {
     projectLanguages: context.project?.languages ?? [],
   }));
   const canManage = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.Manage],
+    demandedPermissions: [PERMISSIONS.ManageCustomerCarts],
   });
   const { executeUpdateCart } = useCartUpdateById();
 
