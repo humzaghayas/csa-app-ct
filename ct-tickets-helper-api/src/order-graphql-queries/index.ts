@@ -1,43 +1,128 @@
-export const FETCH_ORDERS = `query FetchAllOrders($limit: Int!, $offset: Int!, $sort: [String!]){
-    orders(limit: $limit, offset: $offset, sort: $sort){
-      total
-      count
-      offset
-      results{
-        id
-        orderState
-        orderNumber
-        paymentState
-        shipmentState
-        customer{
-            firstName
-            lastName
+export const FETCH_ORDERS = `query FetchAllOrders($limit: Int!, $offset: Int!, $sort: [String!]) {
+  orders(limit: $limit, offset: $offset, sort: $sort) {
+    total
+    count
+    offset
+    results {
+      id
+      orderState
+      orderNumber
+      paymentState
+      shipmentState
+      customer {
+        firstName
+        lastName
+      }
+      customerEmail
+      createdAt
+      createdBy {
+        customerRef {
+          typeId
+          id
         }
-        customerEmail
-        createdAt
-        createdBy{
-          customerRef{
-            typeId
-            id
+      }
+      lastModifiedAt
+      shippingInfo {
+        shippingMethodName
+        shippingMethodState
+      }
+      shippingAddress {
+        id
+        streetNumber
+        streetName
+        building
+        city
+        postalCode
+        state
+        country
+      }
+      lineItems {
+        quantity
+        nameAllLocales {
+          value
+        }
+        variant{
+          sku
+        }
+        price {
+          value {
+            centAmount
+            currencyCode
+            fractionDigits
           }
         }
-        lastModifiedAt
-        shippingInfo{
-            shippingMethodName
-            shippingMethodState
-        }
-        lineItems{
-          quantity
-        }
-        totalPrice{
+      }
+      totalPrice {
+        type
+        centAmount
+        currencyCode
+        fractionDigits
+      }
+      returnInfo{
+        returnTrackingId
+        returnDate
+        items{
           type
-          centAmount
+          id
+          quantity
+          comment
+          shipmentState
+          paymentState
+          lastModifiedAt
+          createdAt
+        }
+      }
+      paymentInfo{
+        payments{
+          id
+      key
+      interfaceId
+      version
+      createdAt
+      lastModifiedAt
+      custom{
+        customFieldsRaw{
+          name
+          value
+        }
+      }
+      paymentStatus{
+        interfaceCode
+        interfaceText
+      }
+      customer{
+        id
+      }
+      amountPlanned{
+        type
+        currencyCode
+        centAmount
+        fractionDigits
+      }
+      paymentMethodInfo{
+        paymentInterface
+        method
+        name(locale:"en")
+      }
+      transactions{
+        id
+        type
+        interactionId
+        timestamp
+        type
+        state
+        amount{
+          type
           currencyCode
           fractionDigits
+          centAmount
+        }
+        }
         }
       }
     }
-  }`
+  }
+}`
 export const FETCH_ORDER_BY_ID = `query($id:String!){
     order(id:$id){
         id

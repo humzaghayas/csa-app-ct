@@ -30,7 +30,9 @@ import { useMcQuery } from '@commercetools-frontend/application-shell';
 import { gql } from '@apollo/client';
 import { FETCH_TICKETS } from 'ct-tickets-helper-api/lib/graphql-queries';
 import { CONSTANTS } from 'ct-tickets-helper-api/lib/constants';
-import { usePaginationState } from '@commercetools-uikit/hooks';
+import { useDataTableSortingState, usePaginationState } from '@commercetools-uikit/hooks';
+import { useOrdersFetcher } from '../../../../hooks/use-orders-connector';
+import { useCartsFetcher } from '../../../../hooks/use-cart-connector/use-cart-connector';
 
 const TicketDisplay = (props) => {
   const intl = useIntl();
@@ -61,24 +63,38 @@ const TicketDisplay = (props) => {
       fetchPolicy: 'network-only',
     }
   );
+  console.log('test');
 
-  // console.log('data', data);
-  // console.log("props",JSON.stringify(props));
-  // const showNotification = useShowNotification();
-  // const showApiErrorNotification = useShowApiErrorNotification();
-  // const CustomerDetailsCreator = useCustomerDetailsCreator();
+  const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
+  const orderData = useOrdersFetcher({
+    page,
+    perPage,
+    tableSorting,
+  });
+  const cartData = useCartsFetcher({
+    page,
+    perPage,
+    tableSorting,
+  });
+
   const handleSubmit = useCallback();
 
   return (
     <TicketDisplayForm
-      initialValues={docToFormValues(null, projectLanguages)}
+      initialValues={docToFormValues(
+        orderData, cartData, data,
+        null, projectLanguages)}
       onSubmit={handleSubmit}
       ticket={data}
+      order={orderData}
+      cart={cartData}
       isReadOnly={!canManage}
       dataLocale={dataLocale}
+
     >
       {(formProps) => {
         return (
+
           <React.Fragment>{formProps.formElements}</React.Fragment>
           // <FormModalPage
           //   title={intl.formatMessage(messages.modalTitle)}
