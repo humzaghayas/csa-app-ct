@@ -21,20 +21,28 @@ export const docToFormValues = (employee, languages) => ({
   confirmedPassword: employee?.confirmedPassword ?? '',
 });
 
-/*export const formValuesToDoc = (formValues) => ({
-  salutation: formValues.salutation,
-  title: formValues.title,
-  firstName: formValues.firstName,
-  middleName: formValues.middleName,
-  lastName: formValues.lastName,
-  email: formValues.email,
-  dateOfBirth: formValues.dateOfBirth,
-  employeeNumber: formValues.employeeNumber,
-  externalId: formValues.externalId,
-  customerGroup:{key:formValues.customerGroup} ,
-  roles: formValues.roles,
-  password: formValues.password,
-});*/
+export function getOrderData(orderPaginationResult){
+    console.log(orderPaginationResult.results);
+    if(orderPaginationResult?.results){
+        return orderPaginationResult?.results.map(order =>{
+            return {
+                id:order?.id, 
+                orderNumber: order?.orderNumber,
+                customer: fullName(order?.customer?.firstName,order?.customer?.lastName),
+                createdAt: order?.createdAt,
+                lastModifiedAt:order?.lastModifiedAt,
+                orderState:order?.orderState,
+                shipmentStatus:order?.shipmentState,
+                paymentStatus:order?.paymentState,
+                shippingMethodName:order?.shippingInfo?.shippingMethodName,
+                totalPrice:amountCalculator(order?.totalPrice?.centAmount,order?.totalPrice?.fractionDigits),
+                noOforderItems:order?.lineItems?.length,
+                totalItems:order?.lineItems.map(item => item.quantity).reduce((a,b)=>a+b,0),
+            }
+        });
+    }
+}
+
 export const formValuesToDoc = (formValues) => ({
   salutation: !TextInput.isEmpty(formValues.salutation)
     ? formValues.salutation

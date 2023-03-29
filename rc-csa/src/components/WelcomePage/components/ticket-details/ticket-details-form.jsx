@@ -13,7 +13,7 @@ import {
   SelectField,
 } from '@commercetools-frontend/ui-kit';
 import { Switch, useHistory, useRouteMatch } from 'react-router-dom';
-import { usePaginationState } from '@commercetools-uikit/hooks';
+import { useDataTableSortingState, usePaginationState } from '@commercetools-uikit/hooks';
 import DataTable from '@commercetools-uikit/data-table';
 import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
 import TicketAccount from '../../../Ticket/components/ticket-account/ticket-account';
@@ -21,7 +21,7 @@ import TicketAccount from '../../../Ticket/components/ticket-account/ticket-acco
 import { SuspendedRoute } from '@commercetools-frontend/application-shell';
 // import SelectField from 'material-ui/SelectField';
 // import MenuItem from 'material-ui/MenuItem';
-import ExportExcel from './Excelexport';
+import ExportExcel from './excelexport';
 import ExcelData from './values';
 import TicketDisplay from './ticket-details';
 import {
@@ -35,6 +35,11 @@ import 'react-datepicker/dist/react-datepicker.css';
 import * as moment from 'moment';
 import { PieChart, Pie, Cell, Label } from 'recharts';
 import { CART_STATE, REPORT_TYPE } from './constants';
+import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
+import styles from './ticket-details.module.css'
+import { useFetchOrderById, useOrdersFetcher } from '../../../../hooks/use-orders-connector';
+import { useCartsFetcher } from '../../../../hooks/use-cart-connector/use-cart-connector';
+//import { getOrderData } from './conversions';
 
 let rows = null;
 
@@ -70,6 +75,9 @@ const TicketDisplayForm = (props) => {
   // console.log('data', props?.ticket);
 
   const ticketData = props?.ticket;
+  const orderData = props?.order;
+  const cartData = props?.cart;
+
   const totalTicket = ticketData?.customObjects?.count;
   const newTickets = newFunctionTickets(ticketData);
   const highTickets = highProirityTickets(ticketData);
@@ -77,6 +85,7 @@ const TicketDisplayForm = (props) => {
   const inprogTickets = inProgressTickets(ticketData);
   const dataExcel = ExcelData;
 
+  console.log(orderData);
   rows = getTicketRows(ticketData?.customObjects);
 
   const [startDate, setStartDate] = useState(null);
@@ -84,6 +93,7 @@ const TicketDisplayForm = (props) => {
 
   const handleStartDateChange = (date) => {
     setStartDate(date);
+
   };
 
   const handleEndDateChange = (date) => {
@@ -96,29 +106,128 @@ const TicketDisplayForm = (props) => {
     return createdAt >= startDate && createdAt <= endDate;
   });
 
+
+  const filtereOrderData = orderData?.ordersPaginatedResult?.results?.filter((obj) => {
+    const createdAt = new Date(obj.createdAt);
+
+    return createdAt >= startDate && createdAt <= endDate;
+  });
+
+  const filterCartData = cartData?.cartPaginatedResult?.results?.filter((obj) => {
+    const createdAt = new Date(obj.createdAt);
+
+    return createdAt >= startDate && createdAt <= endDate;
+  });
+
+  const starttDate = moment(startDate).format('DD-MM-YYYY');
+  const enddDate = moment(endDate).format('DD-MM-YYYY');
+
   // console.log(filteredData);
   const ticketExcel = filteredData?.map((obj) => {
     return {
       'Ticket Number': obj?.value?.ticketNumber,
-      Customer: obj?.value?.email,
+      'Customer': obj?.value?.email,
       // CreatedAt: obj?.createdAt,
-      Created: moment(obj?.value?.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+      'Created': moment(obj?.value?.createdAt).format('YYYY-MM-DD HH:mm:ss'),
       // LastModifiedAt: obj?.lastModifiedAt
-      Modified: moment(obj?.value?.lastModifiedAt).format(
+      'Modified': moment(obj?.value?.lastModifiedAt).format(
         'YYYY-MM-DD HH:mm:ss'
       ),
-      Source: obj?.value?.source,
-      Status: obj?.value?.status,
-      Priority: obj?.value?.priority,
-      Category: obj?.value?.category,
-      Subject: obj?.value?.subject,
-      Assignee: obj?.value?.assignedTo,
+      'Source': obj?.value?.source,
+      'Status': obj?.value?.status,
+      'Priority': obj?.value?.priority,
+      'Category': obj?.value?.category,
+      'Subject': obj?.value?.subject,
+      'Assignee': obj?.value?.assignedTo,
       'Created by': obj?.value?.createdBy,
+      'Message': obj?.value?.ticketData?.message,
+      'Worklog': obj?.value?.ticketData?.comments?.comment ?? '--',
+
     };
   });
 
+
+  const Orders = filtereOrderData?.map((obj) => {
+    return {
+      'Order Number': obj?.id,
+      'Customer': fullName(obj?.customer?.firstName ?? '--', obj?.customer?.lastName),
+      'Order Total': amountCalculator(obj?.totalPrice?.centAmount, obj?.totalPrice?.fractionDigits),
+      'No.of Order Items': obj?.lineItems?.length,
+      'Total Items': obj?.lineItems.map(item => item.quantity).reduce((a, b) => a + b, 0),
+      'Order Status': obj?.orderState ?? '--',
+      'Shipment Status': obj?.shipmentState ?? '--',
+      'Payment Status': obj?.paymentState ?? '--',
+      'Created At': moment(obj?.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+      'Last ModifiedAt': moment(obj?.lastModifiedAt).format('YYYY-MM-DD HH:mm:ss'),
+      // 'Product Name': obj?.lineItems?.nameAllLocales?.value ?? '--',
+      // 'SKU': obj?.lineItems?.variants?.sku ?? '--',
+      // 'Unit Price': amountCalculator(obj?.lineItems?.price?.value?.centAmount, obj?.lineItems?.price?.value?.fractionDigits),
+      // 'Quantity': obj?.lineItems?.quantity ?? '--',
+      'Shipping ID': obj?.shippingAddress?.id ?? '--',
+      'Shipped Quantity': obj?.lineItems.map(item => item.quantity).reduce((a, b) => a + b, 0),
+      'Street Number': obj?.shippingAddress?.streetNumber ?? '--',
+      'Street Name': obj?.shippingAddress?.streetName,
+      'Building': obj?.shippingAddress?.building ?? '--',
+      'City': obj?.shippingAddress?.city ?? '--',
+      'Postal Code': obj?.shippingAddress?.postalCode ?? '--',
+      'State': obj?.shippingAddress?.state ?? '--',
+      'Country': obj?.shippingAddress?.country ?? '--',
+      'Return Tracking ID': obj?.returninfo?.returnTrackingId ?? '--',
+      'Return Date': obj?.returninfo?.returnDate ?? '--',
+      'Payment ID': obj?.paymentInfo?.payments?.id ?? '--',
+      'Interface ID': obj?.paymentInfo?.payments?.interfaceId ?? '--',
+    };
+  });
+
+
+  function amountCalculator(centAmount, fractionDigits) {
+    centAmount = centAmount / 100;
+    centAmount = "$" + centAmount + ".00";
+    return centAmount;
+  }
+  function fullName(firstName, lastName) {
+    const f1 = firstName ? firstName : "";
+    const f2 = lastName ? lastName : "";
+    return f1 + " " + f2;
+  }
+
+  const Carts = filterCartData?.map((obj) => {
+    return {
+      'Cart Number': obj?.id,
+      'Order Number': obj?.orderId,
+      'Customer': fullName(obj?.customer?.firstName ?? '--', obj?.customer?.lastName),
+      'Cart Total': amountCalculator(obj?.totalPrice?.centAmount, obj?.totalPrice?.fractionDigits),
+      'No.of Order Items': obj?.lineItems?.length,
+      'Total Items': obj?.lineItems.map(item => item.quantity).reduce((a, b) => a + b, 0),
+      'Cart Status': obj?.cartState ?? '--',
+      'Created At': moment(obj?.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+      'Last ModifiedAt': moment(obj?.lastModifiedAt).format('YYYY-MM-DD HH:mm:ss')
+    };
+  });
+  function amountCalculator(centAmount, fractionDigits) {
+    centAmount = centAmount / 100;
+    centAmount = "$" + centAmount + ".00";
+    return centAmount;
+  }
+  function fullName(firstName, lastName) {
+    const f1 = firstName ? firstName : "";
+    const f2 = lastName ? lastName : "";
+    return f1 + " " + f2;
+  }
+
+
+  const exportData = () => {
+    console.log(selectedOption)
+    switch (selectedOption) {
+      case "Tickets": return ticketExcel;
+      case "Orders": return Orders;
+      case "Carts": return Carts;
+    }
+
+  }
+
   // Dropdown options
-  const [selectedOption, setSelectedOption] = useState('Tickets');
+  const [selectedOption, setSelectedOption] = useState('--');
 
   const handleSelectChange = (event) => {
     setSelectedOption(event.target.value);
@@ -170,100 +279,124 @@ const TicketDisplayForm = (props) => {
   };
 
   const formElements = (
-    <Spacings.Stack scale="xxl">
-      <Spacings.Inline>
-        <Header />
-      </Spacings.Inline>
 
+    <Spacings.Stack scale="xxl">
+      <div
+        className={styles.header}>
+        <Header />
+      </div>
       <br />
-      <Spacings.Inline></Spacings.Inline>
-      <Spacings.Inline>
-        <Spacings.Stack scale="xl">
-          <Constraints.Horizontal constraint="l" max={8}>
-            <Card constraint="xl">
-              <div>
-                <Text.Subheadline as="h4" isBold={true} tone="positive">
-                  {'Ticket details'}
-                </Text.Subheadline>
-                <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                  <PieChart width={200} height={200}>
-                    <Pie
-                      data={data}
-                      dataKey="tickets"
-                      nameKey="name"
-                      outerRadius={100}
-                    >
-                      {data.map((entry, index) => (
-                        <>
-                          <Cell key={`cell-${index}`} fill={entry.fill} />
-                          {/* <Label key={`label-${index}`} position="outside" offset={10}>
+
+      <Spacings.Inline alignItems="stretch" justifyContent="space-between">
+        <div
+          className={styles.ticdetails}>
+          <Spacings.Stack scale="xl" alignItems="flexEnd">
+            <Constraints.Horizontal constraint="l" max={8}>
+              <Card constraint="xl">
+                <br />
+                <div>
+                  <Text.Subheadline as="h4" isBold={true} tone="positive">
+                    {'Ticket details'}
+                  </Text.Subheadline>
+                  <br />
+                  <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                    <PieChart width={200} height={200}>
+                      <Pie
+                        data={data}
+                        dataKey="tickets"
+                        nameKey="name"
+                        outerRadius={100}
+                      >
+                        {data.map((entry, index) => (
+                          <>
+                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                            {/* <Label key={`label-${index}`} position="outside" offset={10}>
                              {entry.name}
                           </Label> */}
-                        </>
-                      ))}
-                    </Pie>
-                  </PieChart>
-                  <Text.Subheadline as="h5" isBold={true} tone="primary">
-                    {'Total tickets = '}
-                    {totalTicket}
-                  </Text.Subheadline>
-                </div>
+                          </>
+                        ))}
+                      </Pie>
+                    </PieChart>
+                    <br />
+                    <Text.Subheadline as="h5" isBold={true} tone="primary">
+                      {'Total tickets = '}
+                      {totalTicket}
+                    </Text.Subheadline>
+                  </div>
+                  <br />
+                  <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                      {'High Priority = '}
+                      {highTickets}
+                    </Text.Subheadline>
+                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                      {'New Tickets = '}
+                      {newTickets}
+                    </Text.Subheadline>
+                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                      {'In-progress = '}
+                      {inprogTickets}
+                    </Text.Subheadline>
+                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                      {'Resloved = '}
+                      {resolvedstatusTickets}
+                    </Text.Subheadline>
 
-                <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                  <Text.Subheadline as="h5" isBold={true} tone="information">
-                    {'High Priority = '}
-                    {highTickets}
-                  </Text.Subheadline>
-                  <Text.Subheadline as="h5" isBold={true} tone="information">
-                    {'New Tickets = '}
-                    {newTickets}
-                  </Text.Subheadline>
-                  <Text.Subheadline as="h5" isBold={true} tone="information">
-                    {'In-progress = '}
-                    {inprogTickets}
-                  </Text.Subheadline>
-                  <Text.Subheadline as="h5" isBold={true} tone="information">
-                    {'Resloved = '}
-                    {resolvedstatusTickets}
-                  </Text.Subheadline>
+                  </div>
                 </div>
-              </div>
-              {/* <Spacings.Stack scale="l">
-                <Constraints.Horizontal>
-                  <Card constraint="xl" theme="dark" insetScale="l"></Card>
-                </Constraints.Horizontal>
-              </Spacings.Stack> */}
-            </Card>
-          </Constraints.Horizontal>
-        </Spacings.Stack>
-        <Spacings.Stack scale="xl">
+              </Card>
+
+            </Constraints.Horizontal>
+          </Spacings.Stack>
+        </div>
+
+        <Spacings.Stack scale="xl" alignItems="flexEnd">
+
+          {/* <Card constraint="xl"> */}
+
           <Constraints.Horizontal max={13}>
-            <Card constraint="xl" theme="dark" insetScale="l">
-              {rows ? (
-                <Spacings.Stack scale="l">
-                  <DataTable
-                    isCondensed
-                    columns={columns}
-                    rows={rows.slice(0, 5)} // limit to first 5 rows
-                    maxHeight={600}
-                    onRowClick={(row) =>
-                      push(`ticket-edit/${row.id}/tickets-general`)
-                    }
-                  />
-                  <Switch>
-                    <SuspendedRoute path={`${match.path}/:id`}>
-                      <TicketAccount onClose={() => push(`${match.url}`)} />
-                    </SuspendedRoute>
-                  </Switch>
-                </Spacings.Stack>
-              ) : (
-                <p>Loading...</p>
-              )}
-            </Card>
+            <div
+              className={styles.tickets_component}
+            >
+              <Card constraint="xl" theme="dark" insetScale="l">
+
+                <Text.Subheadline as="h4" isBold={true} tone="positive">
+                  {'Recent Tickets '}
+
+                </Text.Subheadline>
+                <br />
+                {rows ? (
+                  <Spacings.Stack scale="l">
+                    <DataTable
+                      isCondensed
+                      columns={columns}
+                      rows={rows.slice(0, 5)} // limit to first 5 rows
+                      maxHeight={600}
+                      onRowClick={(row) =>
+                        push(`ticket-edit/${row.id}/tickets-general`)
+                      }
+                    />
+                    <Switch>
+                      <SuspendedRoute path={`${match.path}/:id`}>
+                        <TicketAccount onClose={() => push(`${match.url}`)} />
+                      </SuspendedRoute>
+                    </Switch>
+                  </Spacings.Stack>
+                ) : (
+                  <p>Loading...</p>
+                )}
+
+              </Card>
+            </div>
           </Constraints.Horizontal>
+
+          {/* </Card> */}
+
         </Spacings.Stack>
-      </Spacings.Inline>
+
+      </Spacings.Inline >
       <br />
+
 
       <Spacings.Inline alignItems="stretch" justifyContent="space-between">
         <Spacings.Stack scale="xl" alignItems="flexEnd">
@@ -320,7 +453,10 @@ const TicketDisplayForm = (props) => {
                           startDate={startDate}
                           endDate={endDate}
                           minDate={startDate}
+
+
                         />
+
                       </div>
                       <div style={{ marginRight: '20px', marginBottom: '5px' }}>
                         <Text.Subheadline
@@ -328,7 +464,7 @@ const TicketDisplayForm = (props) => {
                           isBold={true}
                           tone="information"
                         >
-                          {'Report type'}
+                          {'Report type:'}
                         </Text.Subheadline>
                         <select
                           id="dropdown"
@@ -336,14 +472,16 @@ const TicketDisplayForm = (props) => {
                           onChange={handleSelectChange}
                           style={{ width: '200px' }}
                         >
+                          <option value="--">--</option>
                           <option value="Tickets">Tickets</option>
                           <option value="Agent">Agent</option>
-                          <option value="Order">Order</option>
-                          <option value="Cart">Cart</option>
+                          <option value="Orders">Orders</option>
+                          <option value="Carts">Carts</option>
                           <option value="Customer">Customer</option>
                           <option value="Product">Product</option>
                         </select>
                       </div>
+                      <br />
                       <div
                         style={{
                           display: 'inline-block',
@@ -351,8 +489,11 @@ const TicketDisplayForm = (props) => {
                         }}
                       >
                         <ExportExcel
-                          excelData={ticketExcel}
-                          fileName={'Work Report'}
+                          name={'Generatee'}
+
+                          excelData={exportData()}
+
+                          fileName={'Work Report - ' + selectedOption + ' (' + starttDate + ' to ' + enddDate + ')'}
                         />
                       </div>
                     </Card>
@@ -393,7 +534,7 @@ const TicketDisplayForm = (props) => {
                         isBold={true}
                         tone="information"
                       >
-                        {'Present'}
+                        {'Present     '}
                       </Text.Subheadline>
                       {/* make changes here */}
                       <Text.Subheadline as="h3">47</Text.Subheadline>
@@ -442,6 +583,7 @@ const TicketDisplayForm = (props) => {
                 <Text.Subheadline as="h4" isBold={true} tone="information">
                   {'Time Tracker'}
                 </Text.Subheadline>
+                <br />
                 <div>
                   {!isLoggedIn ? (
                     <PrimaryButton
@@ -449,7 +591,7 @@ const TicketDisplayForm = (props) => {
                       onClick={handleLoginClick}
                       size="big"
                       isToggled={true}
-                      // theme="info"
+                    // theme="info"
                     />
                   ) : (
                     <>
@@ -468,7 +610,7 @@ const TicketDisplayForm = (props) => {
                         size="big"
                         isToggled={true}
                         tone="urgent"
-                        // theme="info"
+                      // theme="info"
                       />
                     </>
                   )}
@@ -480,7 +622,7 @@ const TicketDisplayForm = (props) => {
       </Spacings.Inline>
       <br />
       <br />
-    </Spacings.Stack>
+    </Spacings.Stack >
   );
 
   return props.children({
