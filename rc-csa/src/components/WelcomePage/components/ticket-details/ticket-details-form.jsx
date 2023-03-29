@@ -35,6 +35,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import * as moment from 'moment';
 import { PieChart, Pie, Cell, Label } from 'recharts';
 import { CART_STATE, REPORT_TYPE } from './constants';
+import TawkTo from './chat';
 
 let rows = null;
 
@@ -135,6 +136,11 @@ const TicketDisplayForm = (props) => {
     },
     { name: 'inprogTickets', tickets: inprogTickets, fill: 'royalblue' },
   ];
+
+  // chat link
+  function navigateToLink(link) {
+    window.location.href = link;
+  }
 
   // Login details
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -480,6 +486,18 @@ const TicketDisplayForm = (props) => {
       </Spacings.Inline>
       <br />
       <br />
+      <div>
+        <button
+          onClick={() =>
+            navigateToLink('https://dashboard.tawk.to/#/dashboard')
+          }
+        >
+          Chat
+        </button>
+      </div>
+      <br />
+      <br />
+      <TawkTo />
     </Spacings.Stack>
   );
 
