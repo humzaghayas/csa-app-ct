@@ -74,17 +74,13 @@ const Tickets = (props) => {
   const { page, perPage } = usePaginationState();
 
   const canManage = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.Manage],
+    demandedPermissions: [PERMISSIONS.ManageCsaTickets],
   });
 
   const [selectTextInput, setSelectTextInput] = useState({
     text: "",
     option: "ticketNumber",
   })
-
-  const canView = useIsAuthorized({
-    demandedPermissions: [PERMISSIONS.View],
-  });
 
   const { user } = useApplicationContext((context) => ({
     user: context.user ?? ''

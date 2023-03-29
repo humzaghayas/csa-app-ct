@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   PageNotFound,
   FormModalPage,
@@ -30,9 +30,9 @@ import DataTable from '@commercetools-uikit/data-table';
 
 
 import Spacings from '@commercetools-uikit/spacings';
-import { useCustomerPromotionFetcher, useCustomersPaymentsFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
+import { useCustomerPromotionFetcher, useCustomerPromotionsAdder, useCustomersPaymentsFetcher, usePromotionSearchByKey } from '../../../../hooks/use-customers-connector/use-customers-connector';
 import { CheckActiveIcon, CheckInactiveIcon } from '@commercetools-uikit/icons';
-import { SearchSelectField, TextField } from '@commercetools-frontend/ui-kit';
+import { PrimaryButton, SearchSelectField, SearchSelectInput, TextField } from '@commercetools-frontend/ui-kit';
 
 const columns = [
 
@@ -44,6 +44,19 @@ const columns = [
   {key: 'requiresDiscountCode', label: 'Discount Code Required'},
   {key: 'validFrom', label: 'Valid From'},
   {key: 'validUntil', label: 'Valid Until'},
+];
+
+const columnsSearch = [
+
+  { key: 'key', label: 'Key' },
+  { key: 'name', label: 'Name' },
+  { key: 'value', label: 'Discount' },
+  {key: 'type', label: 'Type'},
+  { key: 'isActive', label: 'Active' },
+  {key: 'requiresDiscountCode', label: 'Discount Code Required'},
+  {key: 'validFrom', label: 'Valid From'},
+  {key: 'validUntil', label: 'Valid Until'},
+  {key: 'add', label: ''},
 ];
 
 const itemRenderer = (item, column) => {
@@ -67,6 +80,24 @@ const itemRenderer = (item, column) => {
                     {returnValue(item?.value?.__typename,item)}
                 </Spacings.Inline>
             </Spacings.Stack>
+        case 'add': return <div>
+          <Spacings.Stack scale='s'>
+            <Spacings.Inline>
+            <PrimaryButton
+              label="Add"
+              onClick={() => {
+                if(rows.find(e=>e.id==item?.id)){
+                  alert("already added")
+                }else{
+                  // execute({item.version,})
+                }
+              }
+              }
+              isDisabled={false}
+            />
+            </Spacings.Inline>
+          </Spacings.Stack>
+        </div>
         default:
             return item[column.key];
     }
@@ -92,6 +123,7 @@ const returnType = (type)=>{
 
 
 
+
 let rows = null;
 
 const CustomerPromotion = (props) => {
@@ -101,7 +133,9 @@ const CustomerPromotion = (props) => {
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
   const params = useParams();
-
+  const [promotions,setPromotions] = useState([]);
+  const {executePromotionSearch} = usePromotionSearchByKey();
+  const {execute} = useCustomerPromotionsAdder();
   const customer = useCustomerPromotionFetcher(params.id)
 
   console.log('params.id',params.id);
@@ -114,12 +148,42 @@ const CustomerPromotion = (props) => {
   return (
     <Spacings.Stack scale="xl">
     <Spacings.Stack scale='l'>
-        {/* <TextField
-            title="Search discount code"
+      <SearchSelectInput
+            id='searchProduct'
+            name='searchProduct'
+            horizontalConstraint={7}
+            optionType="single-lined"
+            isAutofocussed={false}
+            backspaceRemovesValue={true}
+            isClearable={true}
+            isDisabled={false}
+            isReadOnly={false}
+            isMulti={false}
             onChange={()=>{}}
-        /> */}
-    </Spacings.Stack>
+            placeholder="Search promotions by key"
+            loadOptions={async (s)=>{
+              console.log(s)
+              const result = await executePromotionSearch(s);
+              const searchPromotionRows= result?.data?.cartDiscounts?.results;
+              setPromotions(searchPromotionRows);
+              console.log("Promotions",promotions);
+              console.log("Result",searchPromotionRows);
+            }}
+            // noOptionsMessage="No exact match found"
+            // loadingMessage="loading exact matches"
+            // placeholder="Select customers"
+            // eslint-disable-next-line no-undef
+            // loadOptions={customLoadOptionsFunction}
+            // cacheOptions={false}
+        />
+      {promotions?.length>0 ? <DataTable
+            rows={promotions}
+            columns={columnsSearch}
+            itemRenderer={itemRenderer}
+          />: null}
 
+    </Spacings.Stack>
+      {/* <Text.Subheadline title="List of Promotions"/> */}
       {rows ?
         <Spacings.Stack scale="l">
          
