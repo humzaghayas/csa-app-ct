@@ -32,20 +32,20 @@ const getCountryOptions = Object.keys(COUNTRY).map((key) => ({
   value: COUNTRY[key],
 }));
 const columns = [
-  {key:'id',label:"Id"},
-  {key:'streetName',label:"Street Name"},
-  {key:'streetNumber',label:"Street Number"},
-  {key:'city',label:"City"},
-  {key:'region',label:"Region"},
-  {key:'country',label:"Country"},
-  {key:'state',label:"State"},
+  { key: 'id', label: "Id" },
+  { key: 'streetName', label: "Street Name" },
+  { key: 'streetNumber', label: "Street Number" },
+  { key: 'city', label: "City" },
+  { key: 'region', label: "Region" },
+  { key: 'country', label: "Country" },
+  { key: 'state', label: "State" },
 ]
 
 const ShippingAddressForm = (props) => {
   const intl = useIntl();
   const { push } = useHistory();
-  const [addressId,setAddressId] = useState("cartAddress");
-  const [address,setAddress] = useState(formik?.values)
+  const [addressId, setAddressId] = useState("cartAddress");
+
   const formik = useFormik({
     initialValues: props.initialValues,
     validate,
@@ -53,9 +53,10 @@ const ShippingAddressForm = (props) => {
   });
   const onSubmit = (e) => {
     const updateData = formValuesToDoc(formik?.values);
-    console.log("Update data",updateData);
+    console.log("Update data", updateData);
     props.onSubmit(updateData);
   };
+  const [address, setAddress] = useState(formik?.values)
 
   // console.log("Customer Addresses",props?.addresses);
   // console.log("Address Id",addressId);
@@ -94,30 +95,30 @@ const ShippingAddressForm = (props) => {
         </Spacings.Stack>
         <Spacings.Stack scale='l'>
           <CollapsiblePanel
-          header={<CollapsiblePanel.Header>
-          {'Addresses'}  
-          </CollapsiblePanel.Header>}
+            header={<CollapsiblePanel.Header>
+              {'Addresses'}
+            </CollapsiblePanel.Header>}
           >
-           <RadioField
+            <RadioField
               title="Addresses"
               name="fruits"
               value={addressId}
               onChange={(event) => {
                 setAddressId(event.target.value);
-                if(event.target.value=="cartAddress"){
+                if (event.target.value == "cartAddress") {
                   formik.setValues(props.initialValues);
-                }else{
+                } else {
                   console.log("Update on change")
-                  console.log(props?.addresses.filter(e=>e.id==event.target.value)[0])
-                  const customerAddress = props?.addresses.filter(e=>e.id==event.target.value)[0];
-                  formik.setValues(docToFormValues(customerAddress,null));
+                  console.log(props?.addresses.filter(e => e.id == event.target.value)[0])
+                  const customerAddress = props?.addresses.filter(e => e.id == event.target.value)[0];
+                  formik.setValues(docToFormValues(customerAddress, null));
                 }
               }
-            }
+              }
             >
               <RadioInput.Option value="cartAddress">{'Cart Address'}</RadioInput.Option>
-              {props?.addresses?.map((item,index)=>{
-                return <RadioInput.Option value={item.id}>{'Customer Address '+index+1}</RadioInput.Option>
+              {props?.addresses?.map((item, index) => {
+                return <RadioInput.Option value={item.id}>{'Customer Address ' + index + 1}</RadioInput.Option>
               })}
             </RadioField>
           </CollapsiblePanel>
@@ -263,7 +264,7 @@ const ShippingAddressForm = (props) => {
                   onBlur={formik.handleBlur}
                   isReadOnly={props.isReadOnly}
                   horizontalConstraint={13}
-                  //isRequired
+                //isRequired
                 />
               </Spacings.Inline>
               <Spacings.Inline>
