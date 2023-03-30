@@ -62,17 +62,17 @@ fetchPolicy: 'network-only',
 export const useProductProjectionSearchByText = () =>{
   const [projectionSearch,{loading}] =  useMcLazyQuery(gql`${PRODUCT_PROJECTION_SEARCH}`);
   
-  const executeSearch = async(text,locale,facetsAttr,queryFiltersA) =>{
+  const executeSearch = async(text,locale,facetsAttr,queryFiltersA,page, perPage) =>{
 
  let facets=[];
  if(facetsAttr){
-facets = facetsAttr.map(f => {
-  return {"string":f}
-})
- }
- let queryFilters;
- if(queryFiltersA){
-queryFilters= queryFiltersA.map(qf =>({ "string":`${qf.key}:${qf.values}`}));
+    facets = facetsAttr.map(f => {
+      return {"string":f}
+    })
+    }
+    let queryFilters;
+    if(queryFiltersA){
+    queryFilters= queryFiltersA.map(qf =>({ "string":`${qf.key}:${qf.values}`}));
   }
  
  return await projectionSearch(
@@ -82,7 +82,9 @@ queryFilters= queryFiltersA.map(qf =>({ "string":`${qf.key}:${qf.values}`}));
  text,
  facets,
  queryFilters,
- currency:"USD"
+ currency:"USD",
+ limit: perPage.value,
+ offset: (page.value - 1) * perPage.value,
   },
   context: {
  target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
@@ -93,8 +95,8 @@ queryFilters= queryFiltersA.map(qf =>({ "string":`${qf.key}:${qf.values}`}));
   }
   
   return {
- executeSearch,
-loading,
+    executeSearch,
+    loading,
   };
 }
 
