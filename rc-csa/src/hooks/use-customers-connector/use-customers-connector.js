@@ -15,7 +15,7 @@ import {
 import {FETCH_CUSTOMERS_GRAPHQL, FETCH_CUSTOMERS_ADDRESS_DETAILS,
   FETCH_CUSTOMERS_DETAILS, FETCH_CUSTOMERS_ORDERS, UPDATE_CUSTOMERS_ADDRESS_DETAILS,
   UPDATE_CUSTOMERS_DETAILS, FETCH_CUSTOMER_PAYMENTS, FETCH_CUSTOMER_CARTS, FETCH_CUSTOMER_ADDRESSES,
-  FETCH_CUSTOMER_PROMOTIONS, FETCH_CUSTOMER_PROMOTIONS_LIST,UPDATE_CUSTOMER_PROMOTIONS} from 'ct-tickets-helper-api';
+  FETCH_CUSTOMER_PROMOTIONS, FETCH_CUSTOMER_PROMOTIONS_LIST,UPDATE_CUSTOMER_PROMOTIONS,FETCH_PROMOTIONS_LIST} from 'ct-tickets-helper-api';
   
 import { gql } from '@apollo/client';
 
@@ -336,28 +336,47 @@ export const usePromotionSearchByKey = () => {
 export const useCustomerPromotionsAdder = () => {
   const [updateCustomerPromotion, { loading }] = useMcMutation(
     gql`${UPDATE_CUSTOMER_PROMOTIONS}`
-  );
-
-  const execute = async ({id, version, actions}) => {
-    try {
-      return await updateCustomerPromotion({
-        context: {
-          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-        },
-        variables: {
-          id: id,
-          version: version,
-          actions: actions,
-        },
-      });
-    } catch (graphQlResponse) {
-      throw extractErrorFromGraphQlResponse(graphQlResponse);
+    );
+    
+    const execute = async ({id, version, actions}) => {
+      try {
+        console.log(id,version,actions);
+        return await updateCustomerPromotion({
+          context: {
+            target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+          },
+          variables: {
+            id: id,
+            verison: version,
+            actions: actions,
+          },
+        });
+      } catch (graphQlResponse) {
+        throw extractErrorFromGraphQlResponse(graphQlResponse);
+      }
+    };
+    
+    return{
+      execute,
+      loading
     }
-  };
-
-  return{
-    execute,
-    loading
+    
   }
 
-}
+export const useFetchPromotionsList = () => {
+  const { data, error, loading } = useMcQuery(gql`${FETCH_PROMOTIONS_LIST}`, {
+    variables: {
+      sort: [`createdAt`],
+      where: `isActive=\"true\"`
+    },
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    },
+  });
+
+  return {
+    promotions: data?.cartDiscounts?.results,
+    error,
+    loading,
+  };
+};

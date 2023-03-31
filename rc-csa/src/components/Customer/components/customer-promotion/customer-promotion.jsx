@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   PageNotFound,
   FormModalPage,
@@ -13,6 +13,8 @@ import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import {
   useShowNotification,
   useShowApiErrorNotification,
+  showNotification,
+  showApiErrorNotification,
 } from '@commercetools-frontend/actions-global';
 import { PERMISSIONS } from '../../../../constants';
 import { Pagination } from '@commercetools-uikit/pagination';
@@ -30,9 +32,13 @@ import DataTable from '@commercetools-uikit/data-table';
 
 
 import Spacings from '@commercetools-uikit/spacings';
-import { useCustomerPromotionFetcher, useCustomerPromotionsAdder, useCustomersPaymentsFetcher, usePromotionSearchByKey } from '../../../../hooks/use-customers-connector/use-customers-connector';
+import { useCustomerPromotionFetcher, useCustomerPromotionsAdder, 
+   usePromotionSearchByKey, useFetchPromotionsList } from '../../../../hooks/use-customers-connector/use-customers-connector';
 import { CheckActiveIcon, CheckInactiveIcon } from '@commercetools-uikit/icons';
-import { PrimaryButton, SearchSelectField, SearchSelectInput, TextField } from '@commercetools-frontend/ui-kit';
+import { CreatableSelectField, PrimaryButton, SearchSelectField, SearchSelectInput, SecondaryButton, TextField } from '@commercetools-frontend/ui-kit';
+import { useFormik } from 'formik';
+import { objectToOptions, promotionUpdateActions } from './conversion';
+import { transformErrors } from './transform-errors';
 
 const columns = [
 
@@ -130,57 +136,102 @@ const CustomerPromotion = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
-  // const [query] = useState(QUERY);
+  const isMulti = true;
   const { page, perPage } = usePaginationState();
   const params = useParams();
-  const [promotions,setPromotions] = useState([]);
-  const {executePromotionSearch} = usePromotionSearchByKey();
   const {execute} = useCustomerPromotionsAdder();
-  const customer = useCustomerPromotionFetcher(params.id)
-
-  console.log('params.id',params.id);
-  console.log('Customer Promotions',customer);
-
+  const customer = useCustomerPromotionFetcher(params.id);
+  const promotions = useFetchPromotionsList();
+  
   rows = customer?.customer?.custom?.customFieldsRaw?.filter(e=>e?.name=="promotions")[0]?.referencedResourceSet;
+  const options = objectToOptions(promotions?.promotions,rows);
+  
+  const formik = useFormik({
+    initialValues: {promotion: isMulti ? [] : undefined},
+    // validate:(values) => {
+    //   const errors = { promotion: {} };
+    //   if (isMulti ? values.promotion.length === 0 : !values.promotion)
+    //     errors.promotion.missing = true;
+    //   return errors;
+    // },
+    onSubmit:(values, formik) => {
+      console.log("On Submit",values);
+      if(values?.promotion?.length>0 && customer?.customer?.version){
+        const updateActionList = {
+          id : params.id,
+          version: parseInt(customer?.customer?.version),
+          actions: [
+            {
+              setCustomType: {
+              typeKey: "promotionsList"
+              }
+            },
+            {
+              setCustomField: {
+                name: "promotions",
+                value: JSON.stringify(promotionUpdateActions(values?.promotion,rows))
+              }
+            }
+          ]
+        }
+        console.log(updateActionList);
+        try{
+          const updateResults = execute(updateActionList);
+          console.log(updateResults);
 
-  console.log("Rows ",rows);
+          showNotification({
+            kind: 'success',
+            domain: DOMAINS.SIDE,
+            text: intl.formatMessage(messages.PromotionUpdate),
+          }); 
+          // formik.resetForm();
+        }catch(error){
+          if (transformErrors?.unmappedErrors?.length > 0) {
+            showApiErrorNotification({
+              errors: graphQLErrors.message,
+            });
+          }
+        }
+        finally{
+          formik.resetForm();
+        }
+      }  
+    }
+  });
 
   return (
     <Spacings.Stack scale="xl">
     <Spacings.Stack scale='l'>
-      <SearchSelectInput
-            id='searchProduct'
-            name='searchProduct'
-            horizontalConstraint={7}
-            optionType="single-lined"
-            isAutofocussed={false}
-            backspaceRemovesValue={true}
-            isClearable={true}
-            isDisabled={false}
-            isReadOnly={false}
-            isMulti={false}
-            onChange={()=>{}}
-            placeholder="Search promotions by key"
-            loadOptions={async (s)=>{
-              console.log(s)
-              const result = await executePromotionSearch(s);
-              const searchPromotionRows= result?.data?.cartDiscounts?.results;
-              setPromotions(searchPromotionRows);
-              console.log("Promotions",promotions);
-              console.log("Result",searchPromotionRows);
-            }}
-            // noOptionsMessage="No exact match found"
-            // loadingMessage="loading exact matches"
-            // placeholder="Select customers"
-            // eslint-disable-next-line no-undef
-            // loadOptions={customLoadOptionsFunction}
-            // cacheOptions={false}
+      <CreatableSelectField
+        horizontalConstraint={8}
+        errors={formik.errors.promotion}
+        isRequired={true}
+        touched={formik.touched.promotion}
+        name="promotion"
+        value={formik.values.promotion}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        isDisabled={formik.isSubmitting}
+        isMulti={isMulti}
+        hasWarning={false}
+        options={options}
+        title="Promotion"
+        description="Assign promotions to customers"
+        isClearable={true}
+      />
+
+      <Spacings.Inline>
+        <SecondaryButton
+          onClick={formik.handleReset}
+          isDisabled={formik.isSubmitting}
+          label="Reset"
         />
-      {promotions?.length>0 ? <DataTable
-            rows={promotions}
-            columns={columnsSearch}
-            itemRenderer={itemRenderer}
-          />: null}
+        <PrimaryButton
+          onClick={formik.handleSubmit}
+          isDisabled={formik.isSubmitting || !formik.dirty}
+          label="Submit"
+        />
+      </Spacings.Inline>
 
     </Spacings.Stack>
       {/* <Text.Subheadline title="List of Promotions"/> */}
@@ -204,7 +255,7 @@ const CustomerPromotion = (props) => {
           />
           
         </Spacings.Stack>
-      :<p>Loading...</p>}
+      :null}
       {/* ) : null} */}
     </Spacings.Stack>
   );

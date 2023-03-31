@@ -771,3 +771,40 @@ export const UPDATE_CUSTOMER_PROMOTIONS = `mutation updateCustomerPromotion($id:
     }
   }
 }`
+export const FETCH_PROMOTIONS_LIST = `query FetchCustomerPromotionsList($sort:[String!],$where:String) {
+  cartDiscounts(sort:$sort,where:$where) {
+    count
+    total
+    results{
+      id
+      key
+      name(locale:"en-US")
+      validFrom
+      validUntil
+      isActive
+      requiresDiscountCode
+      value{
+        ... on AbsoluteDiscountValue{
+          type
+          money{
+            centAmount
+            fractionDigits
+            currencyCode
+          }
+        }
+        ... on FixedPriceDiscountValue{
+          type
+          money{
+            centAmount
+            fractionDigits
+            currencyCode
+          }
+        }
+        ... on RelativeDiscountValue{
+          permyriad
+          type
+        }
+      }
+    }
+  }
+}`
