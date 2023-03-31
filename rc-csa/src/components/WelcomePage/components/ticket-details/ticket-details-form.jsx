@@ -35,6 +35,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import * as moment from 'moment';
 import { PieChart, Pie, Cell, Label } from 'recharts';
 import { CART_STATE, REPORT_TYPE } from './constants';
+import TawkTo from './chat';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import styles from './ticket-details.module.css'
 import { useFetchOrderById, useOrdersFetcher } from '../../../../hooks/use-orders-connector';
@@ -244,6 +245,11 @@ const TicketDisplayForm = (props) => {
     },
     { name: 'inprogTickets', tickets: inprogTickets, fill: 'royalblue' },
   ];
+
+  // chat link
+  function navigateToLink(link) {
+    window.location.href = link;
+  }
 
   // Login details
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -622,7 +628,19 @@ const TicketDisplayForm = (props) => {
       </Spacings.Inline>
       <br />
       <br />
-    </Spacings.Stack >
+      <div>
+        <button
+          onClick={() =>
+            navigateToLink('https://dashboard.tawk.to/#/dashboard')
+          }
+        >
+          Chat
+        </button>
+      </div>
+      <br />
+      <br />
+      <TawkTo />
+    </Spacings.Stack>
   );
 
   return props.children({

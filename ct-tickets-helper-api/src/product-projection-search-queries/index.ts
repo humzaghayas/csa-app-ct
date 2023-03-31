@@ -1,9 +1,10 @@
 export const PRODUCT_PROJECTION_SEARCH = `query PRODUCT_PROJECTION_SEARCH($locale:Locale,
   $text:String,$fuzzy:Boolean,$fuzzyLevel:Int,
-    $facets:[SearchFacetInput!],$currency:Currency!,$queryFilters:[SearchFilterInput!]){
+    $facets:[SearchFacetInput!],$currency:Currency!,$queryFilters:[SearchFilterInput!],
+    ,$limit:Int,$offset:Int){
   productProjectionSearch(locale:$locale,
     text:$text,fuzzy:$fuzzy,fuzzyLevel:$fuzzyLevel,
-    facets:$facets,queryFilters:$queryFilters){
+    facets:$facets,queryFilters:$queryFilters,limit:$limit,offset:$offset){
     offset
     count
       total

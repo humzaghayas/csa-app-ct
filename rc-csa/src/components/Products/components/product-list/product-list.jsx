@@ -102,7 +102,7 @@ const Products =  (props) => {
 
 
     const search = async (text,queryFilter,isReset) =>{
-      const {data} =await executeSearch(text,dataLocale,FACETS_KEY_VALUE_MAP.map(f => f.key),queryFilter)
+      const {data} =await executeSearch(text,dataLocale,FACETS_KEY_VALUE_MAP.map(f => f.key),queryFilter,page,perPage)
 
       refreshResults({productProjectionSearch:data?.productProjectionSearch,dataLocale,currencyCode:"USD"});
       // getFacets({facetsFromSearch:data?.productProjectionSearch?.facets});
@@ -163,6 +163,7 @@ const Products =  (props) => {
                        }}
                       onReset={() => {
                         setSearchInputValue("");
+                        setFieldSearch(null);
                         search("",null,true);
                       }}
                       options={[
