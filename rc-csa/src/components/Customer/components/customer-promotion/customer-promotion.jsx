@@ -34,10 +34,10 @@ import DataTable from '@commercetools-uikit/data-table';
 import Spacings from '@commercetools-uikit/spacings';
 import { useCustomerPromotionFetcher, useCustomerPromotionsAdder, 
    usePromotionSearchByKey, useFetchPromotionsList } from '../../../../hooks/use-customers-connector/use-customers-connector';
-import { CheckActiveIcon, CheckInactiveIcon } from '@commercetools-uikit/icons';
-import { CreatableSelectField, PrimaryButton, SearchSelectField, SearchSelectInput, SecondaryButton, TextField } from '@commercetools-frontend/ui-kit';
+import { CheckActiveIcon, CheckInactiveIcon, CloseIcon } from '@commercetools-uikit/icons';
+import { CreatableSelectField, IconButton, PrimaryButton, SearchSelectField, SearchSelectInput, SecondaryButton, TextField, ToggleInput } from '@commercetools-frontend/ui-kit';
 import { useFormik } from 'formik';
-import { objectToOptions, promotionUpdateActions } from './conversion';
+import { objectToOptions, promotionRemove, promotionUpdateActions } from './conversion';
 import { transformErrors } from './transform-errors';
 
 const columns = [
@@ -50,22 +50,101 @@ const columns = [
   {key: 'requiresDiscountCode', label: 'Discount Code Required'},
   {key: 'validFrom', label: 'Valid From'},
   {key: 'validUntil', label: 'Valid Until'},
+  {key:'delete',labael:'Remove'}
 ];
 
-const columnsSearch = [
+const returnValue = (type,item)=>{
+    switch(type){
+        case 'RelativeDiscountValue':
+            return item?.value?.permyriad/100+'%';
+        case 'AbsoluteDiscountValue':
+            return item?.value?.money[0]?.centAmount/100+'$';
+    }
+};
 
-  { key: 'key', label: 'Key' },
-  { key: 'name', label: 'Name' },
-  { key: 'value', label: 'Discount' },
-  {key: 'type', label: 'Type'},
-  { key: 'isActive', label: 'Active' },
-  {key: 'requiresDiscountCode', label: 'Discount Code Required'},
-  {key: 'validFrom', label: 'Valid From'},
-  {key: 'validUntil', label: 'Valid Until'},
-  {key: 'add', label: ''},
-];
+const returnType = (type)=>{
+    switch(type){
+        case 'RelativeDiscountValue':
+            return 'Relative';
+        case 'AbsoluteDiscountValue':
+            return 'Absolute';
+    }
+};
 
-const itemRenderer = (item, column) => {
+
+
+
+let rows = null;
+
+const CustomerPromotion = (props) => {
+  const intl = useIntl();
+  const match = useRouteMatch();
+  const { push } = useHistory();
+  const isMulti = true;
+  const { page, perPage } = usePaginationState();
+  const params = useParams();
+  const {execute} = useCustomerPromotionsAdder();
+  const customer = useCustomerPromotionFetcher(params.id);
+  const promotions = useFetchPromotionsList();
+  const [isEditable,setIsEditable] = useState(false);
+
+  rows = customer?.customer?.custom?.customFieldsRaw?.filter(e=>e?.name=="promotions")[0]?.referencedResourceSet;
+  const options = objectToOptions(promotions?.promotions,rows);
+  
+  const formik = useFormik({
+    initialValues: {promotion: isMulti ? [] : undefined},
+    // validate:(values) => {
+    //   const errors = { promotion: {} };
+    //   if (isMulti ? values.promotion.length === 0 : !values.promotion)
+    //     errors.promotion.missing = true;
+    //   return errors;
+    // },
+    onSubmit:(values, formik) => {
+      console.log("On Submit",values);
+      if(values?.promotion?.length>0 && customer?.customer?.version){
+        const updateActionList = {
+          id : params.id,
+          version: parseInt(customer?.customer?.version),
+          actions: [
+            {
+              setCustomType: {
+              typeKey: "promotionsList"
+              }
+            },
+            {
+              setCustomField: {
+                name: "promotions",
+                value: JSON.stringify(promotionUpdateActions(values?.promotion,rows))
+              }
+            }
+          ]
+        }
+        console.log(updateActionList);
+        try{
+          const updateResults = execute(updateActionList);
+          console.log(updateResults);
+          window.location.reload();
+          // showNotification({
+          //   kind: 'success',
+          //   domain: DOMAINS.SIDE,
+          //   text: intl.formatMessage(messages.PromotionUpdate),
+          // }); 
+          // formik.resetForm();
+        }catch(error){
+          if (transformErrors?.unmappedErrors?.length > 0) {
+            showApiErrorNotification({
+              errors: graphQLErrors.message,
+            });
+          }
+        }
+        finally{
+          formik.resetForm();
+        }
+      }  
+    }
+  });
+
+  const itemRenderer = (item, column) => {
     switch (column.key) {
         case 'isActive':
             console.log('IsActive')
@@ -104,100 +183,53 @@ const itemRenderer = (item, column) => {
             </Spacings.Inline>
           </Spacings.Stack>
         </div>
+        case 'delete':
+          return <Spacings.Stack scale='s'>
+            <IconButton
+              icon={<CloseIcon/>}
+              isDisabled={!isEditable}
+              onClick={()=>{
+                // alert(item?.id);
+                rows = rows?.filter(e=>e?.id!=item?.id);
+                const updateActionList = {
+                  id : params.id,
+                  version: parseInt(customer?.customer?.version),
+                  actions: [
+                    {
+                      setCustomType: {
+                      typeKey: "promotionsList"
+                      }
+                    },
+                    {
+                      setCustomField: {
+                        name: "promotions",
+                        value: JSON.stringify(promotionRemove(rows))
+                      }
+                    }
+                  ]
+                }
+                console.log(updateActionList);
+                try{
+                  const updateResults = execute(updateActionList); 
+                  window.location.reload();
+                }catch(error){
+                  if (transformErrors?.unmappedErrors?.length > 0) {
+                    showApiErrorNotification({
+                      errors: graphQLErrors.message,
+                    });
+                  }
+                }
+                finally{
+                  
+                }
+              }}
+              title='Remove'
+            />
+          </Spacings.Stack>
         default:
             return item[column.key];
     }
 }
-
-const returnValue = (type,item)=>{
-    switch(type){
-        case 'RelativeDiscountValue':
-            return item?.value?.permyriad/100+'%';
-        case 'AbsoluteDiscountValue':
-            return item?.value?.money[0]?.centAmount/100+'$';
-    }
-};
-
-const returnType = (type)=>{
-    switch(type){
-        case 'RelativeDiscountValue':
-            return 'Relative';
-        case 'AbsoluteDiscountValue':
-            return 'Absolute';
-    }
-};
-
-
-
-
-let rows = null;
-
-const CustomerPromotion = (props) => {
-  const intl = useIntl();
-  const match = useRouteMatch();
-  const { push } = useHistory();
-  const isMulti = true;
-  const { page, perPage } = usePaginationState();
-  const params = useParams();
-  const {execute} = useCustomerPromotionsAdder();
-  const customer = useCustomerPromotionFetcher(params.id);
-  const promotions = useFetchPromotionsList();
-  
-  rows = customer?.customer?.custom?.customFieldsRaw?.filter(e=>e?.name=="promotions")[0]?.referencedResourceSet;
-  const options = objectToOptions(promotions?.promotions,rows);
-  
-  const formik = useFormik({
-    initialValues: {promotion: isMulti ? [] : undefined},
-    // validate:(values) => {
-    //   const errors = { promotion: {} };
-    //   if (isMulti ? values.promotion.length === 0 : !values.promotion)
-    //     errors.promotion.missing = true;
-    //   return errors;
-    // },
-    onSubmit:(values, formik) => {
-      console.log("On Submit",values);
-      if(values?.promotion?.length>0 && customer?.customer?.version){
-        const updateActionList = {
-          id : params.id,
-          version: parseInt(customer?.customer?.version),
-          actions: [
-            {
-              setCustomType: {
-              typeKey: "promotionsList"
-              }
-            },
-            {
-              setCustomField: {
-                name: "promotions",
-                value: JSON.stringify(promotionUpdateActions(values?.promotion,rows))
-              }
-            }
-          ]
-        }
-        console.log(updateActionList);
-        try{
-          const updateResults = execute(updateActionList);
-          console.log(updateResults);
-
-          showNotification({
-            kind: 'success',
-            domain: DOMAINS.SIDE,
-            text: intl.formatMessage(messages.PromotionUpdate),
-          }); 
-          // formik.resetForm();
-        }catch(error){
-          if (transformErrors?.unmappedErrors?.length > 0) {
-            showApiErrorNotification({
-              errors: graphQLErrors.message,
-            });
-          }
-        }
-        finally{
-          formik.resetForm();
-        }
-      }  
-    }
-  });
 
   return (
     <Spacings.Stack scale="xl">
@@ -235,9 +267,16 @@ const CustomerPromotion = (props) => {
 
     </Spacings.Stack>
       {/* <Text.Subheadline title="List of Promotions"/> */}
-      {rows ?
+      {rows?.length>0 ?
         <Spacings.Stack scale="l">
-         
+         <ToggleInput
+          isDisabled={false}
+          isChecked={isEditable}
+          onChange={(event) => {
+            setIsEditable(event.target.checked);
+          }}
+          size="small"
+        />
           <DataTable
             isCondensed
             columns={columns}

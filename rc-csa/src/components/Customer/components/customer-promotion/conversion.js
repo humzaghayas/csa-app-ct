@@ -23,5 +23,14 @@ export const promotionUpdateActions = (promotions,rows)=>{
         })
     });
 
-    return updatedListOfPromoltions;
+    return updatedListOfPromoltions? updatedListOfPromoltions: [];
+}
+
+export const promotionRemove = (rows) =>{
+    return rows? rows?.map(row=>{
+        return {
+            typeId:CART_DISCOUNT,
+            id:row?.id
+        }
+    }) : [];
 }
