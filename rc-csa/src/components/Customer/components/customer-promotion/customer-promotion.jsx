@@ -34,7 +34,7 @@ import DataTable from '@commercetools-uikit/data-table';
 import Spacings from '@commercetools-uikit/spacings';
 import { useCustomerPromotionFetcher, useCustomerPromotionsAdder, 
    usePromotionSearchByKey, useFetchPromotionsList } from '../../../../hooks/use-customers-connector/use-customers-connector';
-import { CheckActiveIcon, CheckInactiveIcon, CloseIcon } from '@commercetools-uikit/icons';
+import { CheckActiveIcon, CheckInactiveIcon, CloseIcon, MinimizeIcon } from '@commercetools-uikit/icons';
 import { CreatableSelectField, IconButton, PrimaryButton, SearchSelectField, SearchSelectInput, SecondaryButton, TextField, ToggleInput } from '@commercetools-frontend/ui-kit';
 import { useFormik } from 'formik';
 import { objectToOptions, promotionRemove, promotionUpdateActions } from './conversion';
@@ -186,7 +186,7 @@ const CustomerPromotion = (props) => {
         case 'delete':
           return <Spacings.Stack scale='s'>
             <IconButton
-              icon={<CloseIcon/>}
+              icon={<MinimizeIcon/>}
               isDisabled={!isEditable}
               onClick={()=>{
                 // alert(item?.id);
