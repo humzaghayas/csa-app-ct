@@ -789,7 +789,7 @@ export const FETCH_CUSTOMER_PROMOTIONS = `query FetchCustomerPromotions($id:Stri
       
     }
   }
-}
+
 `;
 
 export const FETCH_CUSTOMERS_SHOPPINGLIST = `query FetchShoppinglist($limit: Int, $offset: Int, $sort: [String!], $where: String) {
