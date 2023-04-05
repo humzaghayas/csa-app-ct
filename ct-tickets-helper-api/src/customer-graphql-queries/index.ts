@@ -651,3 +651,160 @@ export const FETCH_CUSTOMER_ADDRESSES = `query fetchCustomerAddresses($id:String
     }
   }
 }`
+export const FETCH_CUSTOMER_PROMOTIONS = `query FetchCustomerPromotions($id:String!) {
+  customer(id:$id) {
+      id
+      version
+      customerNumber
+      custom{
+        customFieldsRaw{
+          name
+          value
+          referencedResourceSet{
+            ... on CartDiscount{
+              id
+              key
+              name(locale:"en-US")
+              validFrom
+              validUntil
+              isActive
+              requiresDiscountCode
+              value{
+                ... on AbsoluteDiscountValue{
+                  money{
+                    currencyCode
+                    fractionDigits
+                    centAmount
+                  }
+                }
+                ... on FixedPriceDiscountValue{
+                  money{
+                    currencyCode
+                    fractionDigits
+                    centAmount
+                  }
+                }
+                ... on RelativeDiscountValue{
+                  permyriad
+                }
+              }
+            }
+          }
+        }
+      }
+  }
+}`
+export const FETCH_CUSTOMER_PROMOTIONS_LIST = `query FetchCustomerPromotionsList($sort:[String!],$where:String) {
+  cartDiscounts(sort:$sort,where:$where) {
+    count
+    total
+    results{
+      id
+      key
+      name(locale:"en-US")
+      validFrom
+      validUntil
+      isActive
+      requiresDiscountCode
+      value{
+        ... on AbsoluteDiscountValue{
+          type
+          money{
+            centAmount
+            fractionDigits
+            currencyCode
+          }
+        }
+        ... on FixedPriceDiscountValue{
+          type
+          money{
+            centAmount
+            fractionDigits
+            currencyCode
+          }
+        }
+        ... on RelativeDiscountValue{
+          permyriad
+          type
+        }
+      }
+    }
+  }
+}`
+export const UPDATE_CUSTOMER_PROMOTIONS = `mutation updateCustomerPromotion($id:String!,$verison:Long!,$actions:[CustomerUpdateAction!]!){
+  updateCustomer(id:$id,version:$verison,actions:$actions){
+    custom{
+      customFieldsRaw{
+        name
+        value
+        referencedResourceSet{
+          ... on CartDiscount{
+              	id
+                key
+                name(locale:"en-US")
+                validFrom
+                validUntil
+                isActive
+                requiresDiscountCode
+                value{
+                  ... on AbsoluteDiscountValue{
+                    money{
+                      currencyCode
+                      fractionDigits
+                      centAmount
+                    }
+                  }
+                  ... on FixedPriceDiscountValue{
+                    money{
+                      currencyCode
+                      fractionDigits
+                      centAmount
+                    }
+                  }
+                  ... on RelativeDiscountValue{
+                    permyriad
+                  }
+                }
+            	}
+        }
+      }
+    }
+  }
+}`
+export const FETCH_PROMOTIONS_LIST = `query FetchCustomerPromotionsList($sort:[String!],$where:String) {
+  cartDiscounts(sort:$sort,where:$where) {
+    count
+    total
+    results{
+      id
+      key
+      name(locale:"en-US")
+      validFrom
+      validUntil
+      isActive
+      requiresDiscountCode
+      value{
+        ... on AbsoluteDiscountValue{
+          type
+          money{
+            centAmount
+            fractionDigits
+            currencyCode
+          }
+        }
+        ... on FixedPriceDiscountValue{
+          type
+          money{
+            centAmount
+            fractionDigits
+            currencyCode
+          }
+        }
+        ... on RelativeDiscountValue{
+          permyriad
+          type
+        }
+      }
+    }
+  }
+}`
