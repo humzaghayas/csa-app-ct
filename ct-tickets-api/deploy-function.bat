@@ -1,0 +1,1 @@
+call firebase deploy --only functions
