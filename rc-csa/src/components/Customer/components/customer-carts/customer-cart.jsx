@@ -32,16 +32,16 @@ const CustomerCart = (props) => {
 
   const OrderId = params.id;
 
-  const { projectKey } =useApplicationContext((context) => ({
-    projectKey:context.project.key
+  const { projectKey } = useApplicationContext((context) => ({
+    projectKey: context.project.key
   }));
 
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
   const tableSorting = useDataTableSortingState('createdAt desc');
   const customerId = props.customer?.id;
-console.log("params",params);
-console.log("props",props);
+  console.log("params", params);
+  console.log("props", props);
   const { customersCartPaginatedResult, error, loading } = useCustomersCartsFetcher({
     page,
     perPage,
@@ -50,54 +50,65 @@ console.log("props",props);
   });
 
   const columns = [
-    { key: 'id', label: 'Order Number' },
+    { key: 'id', label: 'Cart Number' },
     { key: 'customerEmail', label: 'Email' },
-    { key: 'lineItems', label: 'Line Items Count' },
-    { key: 'totalItems', label: 'Items Quantity' },
+    { key: 'totalPrice', label: 'Cart Total' },
+    { key: 'lineItems', label: 'No of Order Items ' },
+    { key: 'totalItems', label: 'Total Items' },
     { key: 'cartState', label: 'Status' },
     { key: 'createdAt', label: 'Date Created' },
   ];
-  
+
   const itemRenderer = (item, column) => {
     switch (column.key) {
+      case 'totalPrice':
+        return amountCalculator(
+          item?.totalPrice?.centAmount,
+          item?.totalPrice?.fractionDigits
+        );
       case 'lineItems':
         return item?.lineItems?.length;
       case 'totalItems':
-        return item?.lineItems.map(item => item.quantity).reduce((a,b)=>a+b,0)
+        return item?.lineItems.map(item => item.quantity).reduce((a, b) => a + b, 0)
       default:
         return item[column.key];
     }
   };
+  function amountCalculator(centAmount, fractionDigits) {
+    centAmount = centAmount / 100;
+    centAmount = '$' + centAmount + '.00';
+    return centAmount;
+  }
 
   return (
     <Spacings.Stack scale="xl">
-    
+
       {customersCartPaginatedResult ? (
         <Spacings.Stack scale="l">
-        <ToggleInput
-    isDisabled={false}
-    isChecked={true}
-     onChange={(event) => alert(event.target.checked)}
-    size="medium"
-  />
+          <ToggleInput
+            isDisabled={false}
+            isChecked={true}
+            onChange={(event) => alert(event.target.checked)}
+            size="medium"
+          />
 
-          
+
           <DataTable
-              isCondensed
-              columns={columns}
-              rows={customersCartPaginatedResult?.results}
-              itemRenderer={(item, column) => itemRenderer(item, column)}
-              maxHeight={600}
+            isCondensed
+            columns={columns}
+            rows={customersCartPaginatedResult?.results}
+            itemRenderer={(item, column) => itemRenderer(item, column)}
+            maxHeight={600}
 
-              onRowClick={(row) => push(`/${projectKey}/${entryPointUriPath}/cart-edit/${row.id}/cart-general`)}
-            />
-            <Pagination
-              page={page.value}
-              onPageChange={page.onChange}
-              perPage={perPage.value}
-              onPerPageChange={perPage.onChange}
-              totalItems={customersCartPaginatedResult.total}
-            />
+            onRowClick={(row) => push(`/${projectKey}/${entryPointUriPath}/cart-edit/${row.id}/cart-general`)}
+          />
+          <Pagination
+            page={page.value}
+            onPageChange={page.onChange}
+            perPage={perPage.value}
+            onPerPageChange={perPage.onChange}
+            totalItems={customersCartPaginatedResult.total}
+          />
 
         </Spacings.Stack>
       ) : "Loading..."}

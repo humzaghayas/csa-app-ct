@@ -1,4 +1,4 @@
-export const FETCH_CUSTOMERS_ADDRESS_DETAILS =`query CustomerDetailsAddressesQuery($id: String!) {
+export const FETCH_CUSTOMERS_ADDRESS_DETAILS = `query CustomerDetailsAddressesQuery($id: String!) {
     customer(id: $id) {
       ...CustomerDetailsAddressesFragment
       __typename
@@ -161,7 +161,7 @@ export const FETCH_CUSTOMERS_ADDRESS_DETAILS =`query CustomerDetailsAddressesQue
     }
     __typename
   }
-  `
+  `;
 export const FETCH_CUSTOMERS_DETAILS = `query FetchCustomerDetails($id: String!) {
     customer(id: $id) {
       id
@@ -254,7 +254,7 @@ export const FETCH_CUSTOMERS_DETAILS = `query FetchCustomerDetails($id: String!)
       }
     }
   }
-  `
+  `;
 export const FETCH_CUSTOMERS_ORDERS = `query FectchCustomerOrdersListQuery(
     $limit: Int
     $offset: Int
@@ -278,6 +278,22 @@ export const FETCH_CUSTOMERS_ORDERS = `query FectchCustomerOrdersListQuery(
         shipmentState
         customerEmail
         createdAt
+        lineItems {
+        quantity
+        nameAllLocales {
+          value
+        }
+        variant{
+          sku
+        }
+        price {
+          value {
+            centAmount
+            currencyCode
+            fractionDigits
+          }
+        }
+      }
         ...returnInfo
         __typename
       }
@@ -300,7 +316,7 @@ export const FETCH_CUSTOMERS_ORDERS = `query FectchCustomerOrdersListQuery(
           }
         }
   }
-  `
+  `;
 export const FETCH_CUSTOMERS_GRAPHQL = `query FetchCustomers($limit: Int!, $offset: Int!, $sort: [String!]) {
     customers(limit: $limit, offset: $offset, sort: $sort) {
       total
@@ -324,7 +340,7 @@ export const FETCH_CUSTOMERS_GRAPHQL = `query FetchCustomers($limit: Int!, $offs
       }
     }
   } 
-  `
+  `;
 export const UPDATE_CUSTOMERS_ADDRESS_DETAILS = `mutation UpdateCustomerAddressesDetailsMutation(
   $customerId: String!
   $version: Long!
@@ -491,7 +507,7 @@ fragment CustomFieldsTypeFragment on TypeDefinition {
   }
   __typename
 }
-  `
+  `;
 export const UPDATE_CUSTOMERS_DETAILS = `mutation UpdateCustomerDetails(
     $id: String!
     $version: Long!
@@ -519,10 +535,9 @@ export const UPDATE_CUSTOMERS_DETAILS = `mutation UpdateCustomerDetails(
     }
     }
   
-  `
+  `;
 
-
-  export const GET_PASSWORD_RESET_TOKEN=`
+export const GET_PASSWORD_RESET_TOKEN = `
   mutation GET_PASSWORD_RESET_TOKEN($email:String!){
     customerCreatePasswordResetToken(email:$email){
       customerId
@@ -531,9 +546,9 @@ export const UPDATE_CUSTOMERS_DETAILS = `mutation UpdateCustomerDetails(
       version
     }
   }
-  `
+  `;
 
-  export const RESET_PASSWORD_FOR_CUSTOMER = `
+export const RESET_PASSWORD_FOR_CUSTOMER = `
   mutation RESET_PASSWORD_FOR_CUSTOMER($version:Long,$tokenValue:String!,$newPassword:String!){
     customerResetPassword(version:$version,
       tokenValue:$tokenValue,newPassword:$newPassword){
@@ -542,7 +557,7 @@ export const UPDATE_CUSTOMERS_DETAILS = `mutation UpdateCustomerDetails(
       key
     }
   }
-  `
+  `;
 export const FETCH_CUSTOMER_PAYMENTS = `query FectchCustomerPaymentsListQuery(
   $limit: Int
   $offset: Int
@@ -590,7 +605,7 @@ export const FETCH_CUSTOMER_PAYMENTS = `query FectchCustomerPaymentsListQuery(
       }
     }
 }
-}`
+}`;
 export const FETCH_CUSTOMER_CARTS = `query FectchCustomerOrdersListQuery(
   $limit: Int
   $offset: Int
@@ -622,7 +637,7 @@ export const FETCH_CUSTOMER_CARTS = `query FectchCustomerOrdersListQuery(
     }
     __typename
   }
-}`
+}`;
 export const FETCH_CUSTOMER_ADDRESSES = `query fetchCustomerAddresses($id:String){
   customer(id:$id){
     addresses{
@@ -650,6 +665,59 @@ export const FETCH_CUSTOMER_ADDRESSES = `query fetchCustomerAddresses($id:String
       apartment
     }
   }
+
+}`;
+
+export const FETCH_CUSTOMERS_WISHLIST = `query FetchWishlist($limit: Int, $offset: Int, $sort: [String!], $where: String) {
+  shoppingLists( limit: $limit, offset: $offset, sort: $sort, where: $where) {
+    total
+    count
+    offset
+    exists
+    results {
+      id
+      key
+      nameAllLocales{
+        locale
+        value
+      }
+      name(locale:"en")
+      description(locale:"en")
+      customer{
+        id
+        customerNumber
+        email
+      }
+      lineItems{
+        id
+        productId
+        variantId
+        productType{
+          name
+        }
+        quantity
+        name(locale:"en-US")
+        variant{
+          id
+          key
+          sku
+          availability{
+            noChannel{
+              isOnStock
+            }
+          }
+          images{
+            url
+            label
+          }
+          prices{
+            id
+            value{
+              type
+              currencyCode
+              centAmount
+              fractionDigits
+
 }`
 export const FETCH_CUSTOMER_PROMOTIONS = `query FetchCustomerPromotions($id:String!) {
   customer(id:$id) {
@@ -688,10 +756,112 @@ export const FETCH_CUSTOMER_PROMOTIONS = `query FetchCustomerPromotions($id:Stri
                   permyriad
                 }
               }
+
             }
           }
         }
       }
+
+    	custom{
+        typeRef{
+          typeId
+        }
+        type{
+          id
+          key
+          name(locale:"en")
+          }
+        
+        customFieldsRaw{
+          name
+          value
+          
+        }
+      }
+      createdAt
+      lastModifiedAt
+      
+    }
+  }
+}
+`;
+
+export const FETCH_CUSTOMERS_SHOPPINGLIST = `query FetchShoppinglist($limit: Int, $offset: Int, $sort: [String!], $where: String) {
+  shoppingLists( limit: $limit, offset: $offset, sort: $sort, where: $where) {
+    total
+    count
+    offset
+    exists
+    results {
+      id
+      key
+      nameAllLocales{
+        locale
+        value
+      }
+      name(locale:"en")
+      description(locale:"en")
+      customer{
+        id
+        customerNumber
+        email
+      }
+      lineItems{
+        id
+        productId
+        variantId
+        productType{
+          name
+        }
+        quantity
+        name(locale:"en-US")
+        variant{
+          id
+          key
+          sku
+          availability{
+            noChannel{
+              isOnStock
+            }
+          }
+          images{
+            url
+            label
+          }
+          prices{
+            id
+            value{
+              type
+              currencyCode
+              centAmount
+              fractionDigits
+            }
+          }
+        }
+      }
+    	custom{
+        typeRef{
+          typeId
+        }
+        type{
+          id
+          key
+          name(locale:"en")
+          }
+        
+        customFieldsRaw{
+          name
+          value
+          
+        }
+      }
+      createdAt
+      lastModifiedAt
+      
+    }
+  }
+}`;
+
   }
 }`
 export const FETCH_CUSTOMER_PROMOTIONS_LIST = `query FetchCustomerPromotionsList($sort:[String!],$where:String) {
@@ -808,3 +978,4 @@ export const FETCH_PROMOTIONS_LIST = `query FetchCustomerPromotionsList($sort:[S
     }
   }
 }`
+
