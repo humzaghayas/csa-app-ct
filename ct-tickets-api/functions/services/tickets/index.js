@@ -1,6 +1,6 @@
 const {getApiRoot,projectKey } = require('../../config/commercetools-client');
 const {CREATE_CUSTOMOBJECT_MUTATION,FETCH_TICKETS,CONSTANTS,getTicketRows,
-    getCreateTicketDraft} =require ('ct-tickets-helper-api');
+    getCreateTicketDraft,createTicketHistory} =require ('ct-tickets-helper-api');
 const { dataToFormValues } = require('./conversions');
 
 const validateTicket = require('./validation')();
@@ -52,6 +52,10 @@ module.exports = ()=>{
             }
 
             const ticketDraft = await getCreateTicketDraft(data);
+
+            await createTicketHistory(data,ticketDraft);
+
+            console.log('ticketDraft',ticketDraft);
 
             const apiRoot =  getApiRoot();
             const result = await apiRoot.withProjectKey({projectKey}).graphql()

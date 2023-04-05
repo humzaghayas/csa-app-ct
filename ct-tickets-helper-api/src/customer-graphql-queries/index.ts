@@ -651,3 +651,10 @@ export const FETCH_CUSTOMER_ADDRESSES = `query fetchCustomerAddresses($id:String
     }
   }
 }`
+
+export const FETCH_CUSTOMERS_EMAIL_BY_ID =`query CustomerEmailByID($id:String) {
+  customer(id:$id) {
+    version
+    email
+  }
+}`
