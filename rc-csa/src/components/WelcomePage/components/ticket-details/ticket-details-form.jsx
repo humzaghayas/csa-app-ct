@@ -13,7 +13,10 @@ import {
   SelectField,
 } from '@commercetools-frontend/ui-kit';
 import { Switch, useHistory, useRouteMatch } from 'react-router-dom';
-import { useDataTableSortingState, usePaginationState } from '@commercetools-uikit/hooks';
+import {
+  useDataTableSortingState,
+  usePaginationState,
+} from '@commercetools-uikit/hooks';
 import DataTable from '@commercetools-uikit/data-table';
 import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
 import TicketAccount from '../../../Ticket/components/ticket-account/ticket-account';
@@ -37,9 +40,13 @@ import { PieChart, Pie, Cell, Label } from 'recharts';
 import { CART_STATE, REPORT_TYPE } from './constants';
 import TawkTo from './chat';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
-import styles from './ticket-details.module.css'
-import { useFetchOrderById, useOrdersFetcher } from '../../../../hooks/use-orders-connector';
+import styles from './ticket-details.module.css';
+import {
+  useFetchOrderById,
+  useOrdersFetcher,
+} from '../../../../hooks/use-orders-connector';
 import { useCartsFetcher } from '../../../../hooks/use-cart-connector/use-cart-connector';
+
 //import { getOrderData } from './conversions';
 
 let rows = null;
@@ -73,12 +80,13 @@ const TicketDisplayForm = (props) => {
     enableReinitialize: true,
   });
 
-  // console.log('data', props?.ticket);
+  console.log('product', props?.product);
 
   const ticketData = props?.ticket;
   const orderData = props?.order;
   const cartData = props?.cart;
-
+  const customerData = props?.customer;
+  const productData = props?.product;
   const totalTicket = ticketData?.customObjects?.count;
   const newTickets = newFunctionTickets(ticketData);
   const highTickets = highProirityTickets(ticketData);
@@ -86,7 +94,6 @@ const TicketDisplayForm = (props) => {
   const inprogTickets = inProgressTickets(ticketData);
   const dataExcel = ExcelData;
 
-  console.log(orderData);
   rows = getTicketRows(ticketData?.customObjects);
 
   const [startDate, setStartDate] = useState(null);
@@ -94,7 +101,6 @@ const TicketDisplayForm = (props) => {
 
   const handleStartDateChange = (date) => {
     setStartDate(date);
-
   };
 
   const handleEndDateChange = (date) => {
@@ -102,19 +108,37 @@ const TicketDisplayForm = (props) => {
   };
 
   // Export to excel
-  const filteredData = ticketData?.customObjects?.results?.filter((obj) => {
-    const createdAt = new Date(obj.createdAt);
-    return createdAt >= startDate && createdAt <= endDate;
-  });
+  const filteredTicketData = ticketData?.customObjects?.results?.filter(
+    (obj) => {
+      const createdAt = new Date(obj.createdAt);
+      return createdAt >= startDate && createdAt <= endDate;
+    }
+  );
 
+  const filtereOrderData = orderData?.ordersPaginatedResult?.results?.filter(
+    (obj) => {
+      const createdAt = new Date(obj.createdAt);
 
-  const filtereOrderData = orderData?.ordersPaginatedResult?.results?.filter((obj) => {
-    const createdAt = new Date(obj.createdAt);
+      return createdAt >= startDate && createdAt <= endDate;
+    }
+  );
 
-    return createdAt >= startDate && createdAt <= endDate;
-  });
+  const filterCartData = cartData?.cartPaginatedResult?.results?.filter(
+    (obj) => {
+      const createdAt = new Date(obj.createdAt);
 
-  const filterCartData = cartData?.cartPaginatedResult?.results?.filter((obj) => {
+      return createdAt >= startDate && createdAt <= endDate;
+    }
+  );
+
+  const filterCustomerData =
+    customerData?.customersPaginatedResult?.results?.filter((obj) => {
+      const createdAt = new Date(obj.createdAt);
+
+      return createdAt >= startDate && createdAt <= endDate;
+    });
+
+  const filterProductData = productData?.ProductListItems?.filter((obj) => {
     const createdAt = new Date(obj.createdAt);
 
     return createdAt >= startDate && createdAt <= endDate;
@@ -124,55 +148,65 @@ const TicketDisplayForm = (props) => {
   const enddDate = moment(endDate).format('DD-MM-YYYY');
 
   // console.log(filteredData);
-  const ticketExcel = filteredData?.map((obj) => {
+  const ticketExcel = filteredTicketData?.map((obj) => {
     return {
       'Ticket Number': obj?.value?.ticketNumber,
-      'Customer': obj?.value?.email,
+      Customer: obj?.value?.email,
       // CreatedAt: obj?.createdAt,
-      'Created': moment(obj?.value?.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+      Created: moment(obj?.value?.createdAt).format('YYYY-MM-DD HH:mm:ss'),
       // LastModifiedAt: obj?.lastModifiedAt
-      'Modified': moment(obj?.value?.lastModifiedAt).format(
+      Modified: moment(obj?.value?.lastModifiedAt).format(
         'YYYY-MM-DD HH:mm:ss'
       ),
-      'Source': obj?.value?.source,
-      'Status': obj?.value?.status,
-      'Priority': obj?.value?.priority,
-      'Category': obj?.value?.category,
-      'Subject': obj?.value?.subject,
-      'Assignee': obj?.value?.assignedTo,
+      Source: obj?.value?.source,
+      Status: obj?.value?.status,
+      Priority: obj?.value?.priority,
+      Category: obj?.value?.category,
+      Subject: obj?.value?.subject,
+      Assignee: obj?.value?.assignedTo,
       'Created by': obj?.value?.createdBy,
-      'Message': obj?.value?.ticketData?.message,
-      'Worklog': obj?.value?.ticketData?.comments?.comment ?? '--',
-
+      Message: obj?.value?.ticketData?.message,
+      Worklog: obj?.value?.ticketData?.comments?.comment ?? '--',
     };
   });
-
 
   const Orders = filtereOrderData?.map((obj) => {
     return {
       'Order Number': obj?.id,
-      'Customer': fullName(obj?.customer?.firstName ?? '--', obj?.customer?.lastName),
-      'Order Total': amountCalculator(obj?.totalPrice?.centAmount, obj?.totalPrice?.fractionDigits),
+      Customer: fullName(
+        obj?.customer?.firstName ?? '--',
+        obj?.customer?.lastName
+      ),
+      'Order Total': amountCalculator(
+        obj?.totalPrice?.centAmount,
+        obj?.totalPrice?.fractionDigits
+      ),
       'No.of Order Items': obj?.lineItems?.length,
-      'Total Items': obj?.lineItems.map(item => item.quantity).reduce((a, b) => a + b, 0),
+      'Total Items': obj?.lineItems
+        .map((item) => item.quantity)
+        .reduce((a, b) => a + b, 0),
       'Order Status': obj?.orderState ?? '--',
       'Shipment Status': obj?.shipmentState ?? '--',
       'Payment Status': obj?.paymentState ?? '--',
       'Created At': moment(obj?.createdAt).format('YYYY-MM-DD HH:mm:ss'),
-      'Last ModifiedAt': moment(obj?.lastModifiedAt).format('YYYY-MM-DD HH:mm:ss'),
+      'Last ModifiedAt': moment(obj?.lastModifiedAt).format(
+        'YYYY-MM-DD HH:mm:ss'
+      ),
       // 'Product Name': obj?.lineItems?.nameAllLocales?.value ?? '--',
       // 'SKU': obj?.lineItems?.variants?.sku ?? '--',
       // 'Unit Price': amountCalculator(obj?.lineItems?.price?.value?.centAmount, obj?.lineItems?.price?.value?.fractionDigits),
       // 'Quantity': obj?.lineItems?.quantity ?? '--',
       'Shipping ID': obj?.shippingAddress?.id ?? '--',
-      'Shipped Quantity': obj?.lineItems.map(item => item.quantity).reduce((a, b) => a + b, 0),
+      'Shipped Quantity': obj?.lineItems
+        .map((item) => item.quantity)
+        .reduce((a, b) => a + b, 0),
       'Street Number': obj?.shippingAddress?.streetNumber ?? '--',
       'Street Name': obj?.shippingAddress?.streetName,
-      'Building': obj?.shippingAddress?.building ?? '--',
-      'City': obj?.shippingAddress?.city ?? '--',
+      Building: obj?.shippingAddress?.building ?? '--',
+      City: obj?.shippingAddress?.city ?? '--',
       'Postal Code': obj?.shippingAddress?.postalCode ?? '--',
-      'State': obj?.shippingAddress?.state ?? '--',
-      'Country': obj?.shippingAddress?.country ?? '--',
+      State: obj?.shippingAddress?.state ?? '--',
+      Country: obj?.shippingAddress?.country ?? '--',
       'Return Tracking ID': obj?.returninfo?.returnTrackingId ?? '--',
       'Return Date': obj?.returninfo?.returnDate ?? '--',
       'Payment ID': obj?.paymentInfo?.payments?.id ?? '--',
@@ -180,52 +214,96 @@ const TicketDisplayForm = (props) => {
     };
   });
 
-
   function amountCalculator(centAmount, fractionDigits) {
     centAmount = centAmount / 100;
-    centAmount = "$" + centAmount + ".00";
+    centAmount = '$' + centAmount + '.00';
     return centAmount;
   }
   function fullName(firstName, lastName) {
-    const f1 = firstName ? firstName : "";
-    const f2 = lastName ? lastName : "";
-    return f1 + " " + f2;
+    const f1 = firstName ? firstName : '';
+    const f2 = lastName ? lastName : '';
+    return f1 + ' ' + f2;
   }
 
   const Carts = filterCartData?.map((obj) => {
     return {
       'Cart Number': obj?.id,
       'Order Number': obj?.orderId,
-      'Customer': fullName(obj?.customer?.firstName ?? '--', obj?.customer?.lastName),
-      'Cart Total': amountCalculator(obj?.totalPrice?.centAmount, obj?.totalPrice?.fractionDigits),
+      Customer: fullName(
+        obj?.customer?.firstName ?? '--',
+        obj?.customer?.lastName
+      ),
+      'Cart Total': amountCalculator(
+        obj?.totalPrice?.centAmount,
+        obj?.totalPrice?.fractionDigits
+      ),
       'No.of Order Items': obj?.lineItems?.length,
-      'Total Items': obj?.lineItems.map(item => item.quantity).reduce((a, b) => a + b, 0),
+      'Total Items': obj?.lineItems
+        .map((item) => item.quantity)
+        .reduce((a, b) => a + b, 0),
       'Cart Status': obj?.cartState ?? '--',
       'Created At': moment(obj?.createdAt).format('YYYY-MM-DD HH:mm:ss'),
-      'Last ModifiedAt': moment(obj?.lastModifiedAt).format('YYYY-MM-DD HH:mm:ss')
+      'Last ModifiedAt': moment(obj?.lastModifiedAt).format(
+        'YYYY-MM-DD HH:mm:ss'
+      ),
     };
   });
   function amountCalculator(centAmount, fractionDigits) {
     centAmount = centAmount / 100;
-    centAmount = "$" + centAmount + ".00";
+    centAmount = '$' + centAmount + '.00';
     return centAmount;
   }
   function fullName(firstName, lastName) {
-    const f1 = firstName ? firstName : "";
-    const f2 = lastName ? lastName : "";
-    return f1 + " " + f2;
+    const f1 = firstName ? firstName : '';
+    const f2 = lastName ? lastName : '';
+    return f1 + ' ' + f2;
   }
 
+  const Customers = filterCustomerData?.map((obj) => {
+    return {
+      'Customer number': obj?.customerNumber,
+      'External Id': obj?.externalId,
+      'First Name': obj?.firstName,
+      'Last Name': obj?.lastName,
+      Company: obj?.companyName,
+      Email: obj?.email,
+      'Date Created': obj?.createdAt,
+      'Last Modified': obj?.lastModifiedAt,
+    };
+  });
+
+  const Products = filterProductData?.map((obj) => {
+    return {
+      'Product Name': obj?.masterData?.current?.name,
+      'Product Description': obj?.masterData?.current?.__typename,
+      'Product Type': obj?.productType?.name,
+      'Product Key': obj?.productType?.key,
+      Price: amountCalculator(
+        obj?.masterData?.current?.masterVariant?.prices[0]?.value?.centAmount,
+        obj?.masterData?.current?.masterVariant?.prices[0]?.value
+          ?.fractionDigits
+      ),
+      SKU: obj?.masterData?.current?.masterVariant?.sku,
+      Created: obj?.createdAt,
+      Modified: obj?.lastModifiedAt,
+    };
+  });
 
   const exportData = () => {
-    console.log(selectedOption)
+    console.log(selectedOption);
     switch (selectedOption) {
-      case "Tickets": return ticketExcel;
-      case "Orders": return Orders;
-      case "Carts": return Carts;
+      case 'Tickets':
+        return ticketExcel;
+      case 'Orders':
+        return Orders;
+      case 'Carts':
+        return Carts;
+      case 'Customer':
+        return Customers;
+      case 'Product':
+        return Products;
     }
-
-  }
+  };
 
   // Dropdown options
   const [selectedOption, setSelectedOption] = useState('--');
@@ -285,17 +363,14 @@ const TicketDisplayForm = (props) => {
   };
 
   const formElements = (
-
     <Spacings.Stack scale="xxl">
-      <div
-        className={styles.header}>
+      <div className={styles.header}>
         <Header />
       </div>
-      <br />
+      {/* <br /> */}
 
       <Spacings.Inline alignItems="stretch" justifyContent="space-between">
-        <div
-          className={styles.ticdetails}>
+        <div className={styles.ticdetails}>
           <Spacings.Stack scale="xl" alignItems="flexEnd">
             <Constraints.Horizontal constraint="l" max={8}>
               <Card constraint="xl">
@@ -347,28 +422,21 @@ const TicketDisplayForm = (props) => {
                       {'Resloved = '}
                       {resolvedstatusTickets}
                     </Text.Subheadline>
-
                   </div>
                 </div>
               </Card>
-
             </Constraints.Horizontal>
           </Spacings.Stack>
         </div>
 
         <Spacings.Stack scale="xl" alignItems="flexEnd">
-
           {/* <Card constraint="xl"> */}
 
           <Constraints.Horizontal max={13}>
-            <div
-              className={styles.tickets_component}
-            >
+            <div className={styles.tickets_component}>
               <Card constraint="xl" theme="dark" insetScale="l">
-
                 <Text.Subheadline as="h4" isBold={true} tone="positive">
                   {'Recent Tickets '}
-
                 </Text.Subheadline>
                 <br />
                 {rows ? (
@@ -391,18 +459,14 @@ const TicketDisplayForm = (props) => {
                 ) : (
                   <p>Loading...</p>
                 )}
-
               </Card>
             </div>
           </Constraints.Horizontal>
 
           {/* </Card> */}
-
         </Spacings.Stack>
-
-      </Spacings.Inline >
-      <br />
-
+      </Spacings.Inline>
+      {/* <br /> */}
 
       <Spacings.Inline alignItems="stretch" justifyContent="space-between">
         <Spacings.Stack scale="xl" alignItems="flexEnd">
@@ -459,10 +523,7 @@ const TicketDisplayForm = (props) => {
                           startDate={startDate}
                           endDate={endDate}
                           minDate={startDate}
-
-
                         />
-
                       </div>
                       <div style={{ marginRight: '20px', marginBottom: '5px' }}>
                         <Text.Subheadline
@@ -496,10 +557,16 @@ const TicketDisplayForm = (props) => {
                       >
                         <ExportExcel
                           name={'Generatee'}
-
                           excelData={exportData()}
-
-                          fileName={'Work Report - ' + selectedOption + ' (' + starttDate + ' to ' + enddDate + ')'}
+                          fileName={
+                            'Report - ' +
+                            selectedOption +
+                            ' (' +
+                            starttDate +
+                            ' to ' +
+                            enddDate +
+                            ')'
+                          }
                         />
                       </div>
                     </Card>
@@ -597,7 +664,7 @@ const TicketDisplayForm = (props) => {
                       onClick={handleLoginClick}
                       size="big"
                       isToggled={true}
-                    // theme="info"
+                      // theme="info"
                     />
                   ) : (
                     <>
@@ -616,7 +683,7 @@ const TicketDisplayForm = (props) => {
                         size="big"
                         isToggled={true}
                         tone="urgent"
-                      // theme="info"
+                        // theme="info"
                       />
                     </>
                   )}
