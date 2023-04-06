@@ -1,1 +1,5 @@
 firebase deploy --only functions
+
+
+--- test
+firebase emulators:start

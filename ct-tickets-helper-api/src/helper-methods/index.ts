@@ -132,6 +132,72 @@ export async function getCreateTicketDraft(ticketInfo){
     return ticketDraft;
 }
 
+export async function getCreateTicketDraftForDB(ticketInfo){
+    const email = ticketInfo.email;
+    const uuid = uuidv4(); 
+
+    if(!ticketInfo.key){
+        ticketDraft.key = uuid;
+    }else{
+        ticketDraft.key = ticketInfo.key;
+    }
+
+    const filesStr = ticketInfo.files.map((f) =>{
+        return {name:f.name,url:f.url}
+    });
+
+    const d = new Date().toISOString();
+    const commentsStr = ticketInfo?.comments?.map((c) =>{
+        if(c.createdAt){
+            return {comment:c.comment,createdAt:c.createdAt}
+        }else{
+            return {comment:c.comment,createdAt:d}
+        }
+    });
+
+    
+    let orderNumberVal = '';
+    if(ticketInfo.category && (ticketInfo.category == CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
+        || ticketInfo.category == CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
+        || ticketInfo.category == CONSTANTS.TICKET_TYPE_RETURNS)){
+        orderNumberVal = ticketInfo.orderNumber;
+    }
+    
+    let ticketData = {	
+        message: ticketInfo.message,
+        files: filesStr,
+        comments:commentsStr,
+        orderNumber:orderNumberVal};
+        
+    ticketDraft = getTicketValue(ticketInfo,uuid);   
+    ticketDraft.ticketData =ticketData;
+    return ticketDraft;
+}
+
+export async function createTicketHistoryForDB(ticketInfo,ticketDraft){
+
+    let history = ticketInfo.history;
+    if(!history){
+        history = [];
+    }
+
+    let h = {user:ticketInfo.email};
+    h[CONSTANTS.PRIORITY] = ticketInfo.priority;
+    h[CONSTANTS.STATUS] = ticketInfo.status;
+    h[CONSTANTS.ASSIGNED_TO] = ticketInfo.assignedTo;
+    h['operationDate']= new Date().toUTCString();
+    history.push(h);
+
+    const historyVal = history?.map((h) =>{
+        return {[CONSTANTS.PRIORITY]:h[CONSTANTS.PRIORITY],
+                [CONSTANTS.STATUS]:h[CONSTANTS.STATUS] ,
+                [CONSTANTS.ASSIGNED_TO]:h[CONSTANTS.ASSIGNED_TO],
+                user:h.user,operationDate:h.operationDate}
+    });
+
+    ticketDraft.history = historyVal;
+}
+
 export async function createTicketHistory(ticketInfo,ticketDraft){
 
     let history = ticketInfo.history;
@@ -185,6 +251,36 @@ function getTicketValueString( ticketInfo,uuid){
         ${CONSTANTS.TICKET_DATA},
         ${CONSTANTS.TICKET_HISTORY}
     }`
+}
+
+
+function getTicketValue( ticketInfo,uuid){
+
+    const currentDate = new Date().toUTCString();
+    const email = ticketInfo.email;
+    const customerId = ticketInfo.customerId;
+    let tNumber = ticketInfo.ticketNumber;
+
+    if(!tNumber){
+        tNumber = getInvoiceNumber();
+    }
+
+    return {
+        id: uuid,
+        ticketNumber:tNumber,
+        customerId: customerId,
+        email:email,
+        source: ticketInfo.contactType,
+        status: ticketInfo.status,
+        priority: ticketInfo.priority,
+        category: ticketInfo.category,
+        subject: ticketInfo.subject,
+        type:ticketInfo.category,
+        createdAt: currentDate,
+        modifiedAt: currentDate,
+        createdBy:ticketInfo.createdBy,
+        assignedTo:ticketInfo.assignedTo,
+    }
 }
 
 function getRandomInt(min, max) {

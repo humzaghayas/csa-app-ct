@@ -4,6 +4,8 @@ admin.initializeApp();
 
 const customObjectsService = require('./services/tickets')();
 const customerService = require('./services/customer')();
+const jwtAuthenticationService = require('./services/ct-jwt-authentication')();
+
 const {getTicketCategories,getTicketPriorityValues} = require('ct-tickets-helper-api');
 
 
@@ -11,6 +13,8 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
+
+require('./ctMerchantCenterRoutes')(app);
 
 app.use(cors({ origin: true }));
 
@@ -39,6 +43,8 @@ app.post('/create-ticket', async(req, res) =>{
     }
 
 });
+
+
 
 app.post('/create-ticket-chatbot', async(req, res) =>{
 
