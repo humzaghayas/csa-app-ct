@@ -665,9 +665,12 @@ export const FETCH_CUSTOMER_ADDRESSES = `query fetchCustomerAddresses($id:String
       apartment
     }
   }
+
 }`;
 
-export const FETCH_CUSTOMERS_EMAIL_BY_ID = `query CustomerEmailByID($id:String) {
+
+
+export const FETCH_CUSTOMERS_EMAIL_BY_ID =`query CustomerEmailByID($id:String) {
   customer(id:$id) {
     version
     email
@@ -748,7 +751,7 @@ export const FETCH_CUSTOMERS_WISHLIST = `query FetchWishlist($limit: Int, $offse
       
     }
   }
-}
+
 `;
 
 export const FETCH_CUSTOMERS_SHOPPINGLIST = `query FetchShoppinglist($limit: Int, $offset: Int, $sort: [String!], $where: String) {
@@ -827,6 +830,7 @@ export const FETCH_CUSTOMERS_SHOPPINGLIST = `query FetchShoppinglist($limit: Int
   }
 }`;
 
+
 export const FETCH_CUSTOMER_PROMOTIONS = `query FetchCustomerPromotions($id:String!) {
   customer(id:$id) {
       id
@@ -890,9 +894,8 @@ export const FETCH_CUSTOMER_PROMOTIONS = `query FetchCustomerPromotions($id:Stri
       lastModifiedAt
       
     }
-  }
+  }`;
 
-`;
 
 export const FETCH_CUSTOMER_PROMOTIONS_LIST = `query FetchCustomerPromotionsList($sort:[String!],$where:String) {
   cartDiscounts(sort:$sort,where:$where) {
@@ -1007,4 +1010,6 @@ export const FETCH_PROMOTIONS_LIST = `query FetchCustomerPromotionsList($sort:[S
       }
     }
   }
+
 }`;
+

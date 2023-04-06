@@ -3,6 +3,7 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 const customObjectsService = require('./services/tickets')();
+const customerService = require('./services/customer')();
 const {getTicketCategories,getTicketPriorityValues} = require('ct-tickets-helper-api');
 
 
@@ -30,6 +31,35 @@ app.post('/create-ticket', async(req, res) =>{
 
     const {data} = req.body;
     const result =await customObjectsService.createTicket(data);
+
+    if(result.error){
+        res.status(400).json({result: result.errors});    
+    }else{
+        res.status(200).json({result:result});
+    }
+
+});
+
+app.post('/create-ticket-chatbot', async(req, res) =>{
+
+    const data = JSON.parse(req.body);
+    // const data = req.body;
+
+    console.log('data',data);
+     console.log('data?.customerId',data?.customerId);
+    const email = await customerService.getCustomerEmailById(data?.customerId);
+    console.log('email5t',email);
+
+    const tic = {...data,
+        type:data.category,
+        contactType:'chat_bot',
+		status: "new",
+        email,
+		createdBy: email,
+		assignedTo: ""}
+
+        console.log('tic',tic);
+    const result =await customObjectsService.createTicket(tic);
 
     if(result.error){
         res.status(400).json({result: result.errors});    
