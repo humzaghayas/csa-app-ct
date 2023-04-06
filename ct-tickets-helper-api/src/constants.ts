@@ -18,7 +18,8 @@ export const TICKET_WORKFLOW={
 
 export const TICKET_SOURCE={
     phone:"Phone",
-    email:"E-Mail"
+    email:"E-Mail",
+    chat_bot:"Chat Bot"
 }
 
 export const TICKET_PRIORITIY_VALUES={

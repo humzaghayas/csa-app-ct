@@ -3,6 +3,7 @@ import { transformLocalizedFieldToLocalizedString } from '@commercetools-fronten
 import { TextInput } from '@commercetools-frontend/ui-kit';
 
 export const docToFormValues = (shippingAddress, languages) => ({
+  shippingMethodName: shippingAddress?.shippingMethodName ?? '--',
   streetNumber: shippingAddress?.streetNumber,
   streetName: shippingAddress?.streetName,
   postalCode: shippingAddress?.postalCode,
@@ -10,14 +11,14 @@ export const docToFormValues = (shippingAddress, languages) => ({
   city: shippingAddress?.city,
   state: shippingAddress?.state,
   building: shippingAddress?.building,
-  id:shippingAddress?.id,
-  additionalStreetInfo:shippingAddress?.additionalStreetInfo,
-  additionalAddressInfo:shippingAddress?.additionalAddressInfo,
-  region:shippingAddress?.region,
-  apartment:shippingAddress?.apartment,
-  pOBox:shippingAddress?.pOBox,
-  phone:shippingAddress?.phone,
-  mobile:shippingAddress?.mobile
+  id: shippingAddress?.id,
+  additionalStreetInfo: shippingAddress?.additionalStreetInfo,
+  additionalAddressInfo: shippingAddress?.additionalAddressInfo,
+  region: shippingAddress?.region,
+  apartment: shippingAddress?.apartment,
+  pOBox: shippingAddress?.pOBox,
+  phone: shippingAddress?.phone,
+  mobile: shippingAddress?.mobile,
 });
 
 export const formValuesToDoc = (formValues) => ({
@@ -34,13 +35,13 @@ export const formValuesToDoc = (formValues) => ({
           city: formValues?.city,
           state: formValues?.state,
           building: formValues?.building,
-          additionalStreetInfo:formValues?.additionalStreetInfo,
-          additionalAddressInfo:formValues?.additionalAddressInfo,
-          region:formValues?.region,
-          apartment:formValues?.apartment,
-          pOBox:formValues?.pOBox,
-          phone:formValues?.phone,
-          mobile:formValues?.mobile
+          additionalStreetInfo: formValues?.additionalStreetInfo,
+          additionalAddressInfo: formValues?.additionalAddressInfo,
+          region: formValues?.region,
+          apartment: formValues?.apartment,
+          pOBox: formValues?.pOBox,
+          phone: formValues?.phone,
+          mobile: formValues?.mobile,
         },
       },
     },

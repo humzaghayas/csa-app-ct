@@ -20,7 +20,8 @@ exports.TICKET_WORKFLOW = (_a = {},
     _a);
 exports.TICKET_SOURCE = {
     phone: "Phone",
-    email: "E-Mail"
+    email: "E-Mail",
+    chat_bot: "Chat Bot"
 };
 exports.TICKET_PRIORITIY_VALUES = {
     Low: "Low",
