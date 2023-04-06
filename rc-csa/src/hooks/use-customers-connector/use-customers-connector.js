@@ -12,25 +12,42 @@ import {
   convertToActionData,
 } from '../../helpers';
 
-import {FETCH_CUSTOMERS_GRAPHQL, FETCH_CUSTOMERS_ADDRESS_DETAILS,
-  FETCH_CUSTOMERS_DETAILS, FETCH_CUSTOMERS_ORDERS, UPDATE_CUSTOMERS_ADDRESS_DETAILS,
-  UPDATE_CUSTOMERS_DETAILS, FETCH_CUSTOMER_PAYMENTS, FETCH_CUSTOMER_CARTS, FETCH_CUSTOMER_ADDRESSES,
-  FETCH_CUSTOMER_PROMOTIONS, FETCH_CUSTOMER_PROMOTIONS_LIST,UPDATE_CUSTOMER_PROMOTIONS,FETCH_PROMOTIONS_LIST} from 'ct-tickets-helper-api';
-  
+import {
+  FETCH_CUSTOMERS_GRAPHQL,
+  FETCH_CUSTOMERS_ADDRESS_DETAILS,
+  FETCH_CUSTOMERS_DETAILS,
+  FETCH_CUSTOMERS_ORDERS,
+  UPDATE_CUSTOMERS_ADDRESS_DETAILS,
+  UPDATE_CUSTOMERS_DETAILS,
+  FETCH_CUSTOMER_PAYMENTS,
+  FETCH_CUSTOMER_CARTS,
+  FETCH_CUSTOMER_ADDRESSES,
+  FETCH_CUSTOMER_PROMOTIONS,
+  FETCH_CUSTOMER_PROMOTIONS_LIST,
+  UPDATE_CUSTOMER_PROMOTIONS,
+  FETCH_PROMOTIONS_LIST,
+  FETCH_CUSTOMERS_WISHLIST,
+  FETCH_CUSTOMERS_SHOPPINGLIST,
+} from 'ct-tickets-helper-api';
+
 import { gql } from '@apollo/client';
 
-
 export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
-  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMERS_GRAPHQL}`, {
-    variables: {
-      limit: perPage.value,
-      offset: (page.value - 1) * perPage.value,
-      sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-  });
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_CUSTOMERS_GRAPHQL}
+    `,
+    {
+      variables: {
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
 
   return {
     customersPaginatedResult: data?.customers,
@@ -40,14 +57,19 @@ export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
 };
 
 export const useCustomerDetailsFetcher = (id) => {
-  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMERS_DETAILS}`, {
-    variables: {
-      id,
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-  });
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_CUSTOMERS_DETAILS}
+    `,
+    {
+      variables: {
+        id,
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
 
   return {
     customer: data?.customer,
@@ -58,7 +80,9 @@ export const useCustomerDetailsFetcher = (id) => {
 
 export const useCustomerDetailsUpdater = () => {
   const [updateCustomerDetails, { loading }] = useMcMutation(
-    gql`${UPDATE_CUSTOMERS_DETAILS}`
+    gql`
+      ${UPDATE_CUSTOMERS_DETAILS}
+    `
   );
 
   const syncStores = createSyncCustomers();
@@ -90,14 +114,19 @@ export const useCustomerDetailsUpdater = () => {
 };
 
 export const useCustomerAddressDetailsFetcher = (id) => {
-  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMERS_ADDRESS_DETAILS}`, {
-    variables: {
-      id,
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-  });
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_CUSTOMERS_ADDRESS_DETAILS}
+    `,
+    {
+      variables: {
+        id,
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
 
   return {
     customerAddress: data?.customer,
@@ -108,18 +137,20 @@ export const useCustomerAddressDetailsFetcher = (id) => {
 
 export const useCustomerAddressDetailsUpdater = () => {
   const [updateCustomerDetails, { loading }] = useMcMutation(
-    gql`${UPDATE_CUSTOMERS_ADDRESS_DETAILS}`
+    gql`
+      ${UPDATE_CUSTOMERS_ADDRESS_DETAILS}
+    `
   );
 
   const syncStores = createSyncCustomers();
-  const execute = async ({ originalDraft, nextDraft,addressId }) => {
+  const execute = async ({ originalDraft, nextDraft, addressId }) => {
     const actions = syncStores.buildActions(
       nextDraft,
       convertToActionData(originalDraft)
     );
-    console.log("actions",actions);
+    console.log('actions', actions);
     const address = nextDraft;
-    
+
     try {
       return await updateCustomerDetails({
         context: {
@@ -128,12 +159,14 @@ export const useCustomerAddressDetailsUpdater = () => {
         variables: {
           customerId: originalDraft.id,
           version: originalDraft.version,
-          actions: [{
-            changeAddress:{
-              addressId:addressId,
+          actions: [
+            {
+              changeAddress: {
+                addressId: addressId,
                 address,
-          },
-        }],
+              },
+            },
+          ],
         },
       });
     } catch (graphQlResponse) {
@@ -147,19 +180,22 @@ export const useCustomerAddressDetailsUpdater = () => {
   };
 };
 
-
 export const useCustomerAddressDetailsCreator = () => {
   const [CreateCustomerAddress, { loading }] = useMcMutation(
-    gql`${UPDATE_CUSTOMERS_ADDRESS_DETAILS}`
+    gql`
+      ${UPDATE_CUSTOMERS_ADDRESS_DETAILS}
+    `
   );
-    console.log("===========================customer address update =====================")
+  console.log(
+    '===========================customer address update ====================='
+  );
   const syncStores = createSyncCustomers();
-    const execute = async ({ originalDraft,nextDraft }) => {
-      const actions1 = syncStores.buildActions(
-        nextDraft,
-       convertToActionData(originalDraft)
-      );
-      const address = nextDraft;
+  const execute = async ({ originalDraft, nextDraft }) => {
+    const actions1 = syncStores.buildActions(
+      nextDraft,
+      convertToActionData(originalDraft)
+    );
+    const address = nextDraft;
     try {
       return await CreateCustomerAddress({
         context: {
@@ -173,12 +209,14 @@ export const useCustomerAddressDetailsCreator = () => {
         variables: {
           customerId: originalDraft.id,
           version: originalDraft.version,
-          actions: [{
-            addAddress:{
+          actions: [
+            {
+              addAddress: {
                 address,
-          },
-        }],
-      },
+              },
+            },
+          ],
+        },
       });
     } catch (graphQlResponse) {
       throw extractErrorFromGraphQlResponse(graphQlResponse);
@@ -191,18 +229,28 @@ export const useCustomerAddressDetailsCreator = () => {
   };
 };
 
-export const useCustomersOrdersFetcher = ({ page, perPage, tableSorting, customerId}) => {
-  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMERS_ORDERS}`, {
-    variables: {
-      limit: perPage.value,
-      offset: (page.value - 1) * perPage.value,
-      sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
-      where:"customerId="+'"'+customerId+'"',
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-  });
+export const useCustomersOrdersFetcher = ({
+  page,
+  perPage,
+  tableSorting,
+  customerId,
+}) => {
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_CUSTOMERS_ORDERS}
+    `,
+    {
+      variables: {
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
+        where: 'customerId=' + '"' + customerId + '"',
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
 
   return {
     customersOrderPaginatedResult: data?.orders,
@@ -211,18 +259,28 @@ export const useCustomersOrdersFetcher = ({ page, perPage, tableSorting, custome
   };
 };
 
-export const useCustomersPaymentsFetcher = ({ page, perPage, tableSorting, customerId}) => {
-  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMER_PAYMENTS}`, {
-    variables: {
-      limit: perPage.value,
-      offset: (page.value - 1) * perPage.value,
-      sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
-      where:"customer(id=\""+customerId+"\")",
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-  });
+export const useCustomersPaymentsFetcher = ({
+  page,
+  perPage,
+  tableSorting,
+  customerId,
+}) => {
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_CUSTOMER_PAYMENTS}
+    `,
+    {
+      variables: {
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
+        where: 'customer(id="' + customerId + '")',
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
 
   return {
     customersPaymentsPaginatedResult: data?.payments,
@@ -231,40 +289,53 @@ export const useCustomersPaymentsFetcher = ({ page, perPage, tableSorting, custo
   };
 };
 
-
 export const useCustomerDetailsFetcherLazy = () => {
+  const [customer, { loading }] = useMcLazyQuery(
+    gql`
+      ${FETCH_CUSTOMERS_DETAILS}
+    `
+  );
 
-  const [customer, {  loading }] = useMcLazyQuery(gql`${FETCH_CUSTOMERS_DETAILS}`);
+  const getCustomerById = async (id) => {
+    try {
+      return await customer({
+        variables: {
+          id,
+        },
+        context: {
+          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+        },
+      });
+    } catch (graphQlResponse) {
+      throw extractErrorFromGraphQlResponse(graphQlResponse);
+    }
+  };
 
- const getCustomerById =async (id) =>{
-  try {
-    return await customer({ 
-      variables:  {
-        id,
-      },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    } });
-  }catch (graphQlResponse) {
-    throw extractErrorFromGraphQlResponse(graphQlResponse);
-  }
- }
-
- return {getCustomerById}
+  return { getCustomerById };
 };
 
-export const useCustomersCartsFetcher = ({ page, perPage, tableSorting, customerId}) => {
-  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMER_CARTS}`, {
-    variables: {
-      limit: perPage.value,
-      offset: (page.value - 1) * perPage.value,
-      sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
-      where:"customerId="+'"'+customerId+'"',
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-  });
+export const useCustomersCartsFetcher = ({
+  page,
+  perPage,
+  tableSorting,
+  customerId,
+}) => {
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_CUSTOMER_CARTS}
+    `,
+    {
+      variables: {
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
+        where: 'customerId=' + '"' + customerId + '"',
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
 
   return {
     customersCartPaginatedResult: data?.carts,
@@ -274,14 +345,19 @@ export const useCustomersCartsFetcher = ({ page, perPage, tableSorting, customer
 };
 
 export const useCustomerAddressesFetcher = (id) => {
-  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMER_ADDRESSES}`, {
-    variables: {
-      id,
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-  });
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_CUSTOMER_ADDRESSES}
+    `,
+    {
+      variables: {
+        id,
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
 
   return {
     customer: data?.customer,
@@ -290,15 +366,80 @@ export const useCustomerAddressesFetcher = (id) => {
   };
 };
 
+export const useCustomersWishlistFetcher = ({
+  page,
+  perPage,
+  tableSorting,
+  customerId,
+}) => {
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_CUSTOMERS_WISHLIST}
+    `,
+    {
+      variables: {
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
+        where: 'customer(id="' + customerId + '") and custom is defined',
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
+
+  return {
+    customersWishlistPaginatedResult: data?.shoppingLists,
+    error,
+    loading,
+  };
+};
+
+export const useCustomersShoppinglistFetcher = ({
+  page,
+  perPage,
+  tableSorting,
+  customerId,
+}) => {
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_CUSTOMERS_SHOPPINGLIST}
+    `,
+    {
+      variables: {
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
+        where: 'customer(id="' + customerId + '") and custom is not defined',
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
+
+  return {
+    customersWishlistPaginatedResult: data?.shoppingLists,
+    error,
+    loading,
+  };
+};
+
 export const useCustomerPromotionFetcher = (id) => {
-  const { data, error, loading } = useMcQuery(gql`${FETCH_CUSTOMER_PROMOTIONS}`, {
-    variables: {
-      id,
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-  });
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_CUSTOMER_PROMOTIONS}
+    `,
+    {
+      variables: {
+        id,
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
 
   return {
     customer: data?.customer,
@@ -310,20 +451,20 @@ export const useCustomerPromotionFetcher = (id) => {
 export const usePromotionSearchByKey = () => {
   const [promotionSearch, { loading }] = useMcLazyQuery(
     gql`
-    ${FETCH_CUSTOMER_PROMOTIONS_LIST}
+      ${FETCH_CUSTOMER_PROMOTIONS_LIST}
     `
   );
 
   const executePromotionSearch = async (key) => {
-  return await promotionSearch({
-  variables: {
-    sort: [`createdAt`],
-    where: `key=\"${key}\"`
-  },
-  context: {
-    target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-  },
-  fetchPolicy: 'network-only',
+    return await promotionSearch({
+      variables: {
+        sort: [`createdAt`],
+        where: `key=\"${key}\"`,
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+      fetchPolicy: 'network-only',
     });
   };
 
@@ -335,44 +476,50 @@ export const usePromotionSearchByKey = () => {
 
 export const useCustomerPromotionsAdder = () => {
   const [updateCustomerPromotion, { loading }] = useMcMutation(
-    gql`${UPDATE_CUSTOMER_PROMOTIONS}`
-    );
-    
-    const execute = async ({id, version, actions}) => {
-      try {
-        console.log(id,version,actions);
-        return await updateCustomerPromotion({
-          context: {
-            target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-          },
-          variables: {
-            id: id,
-            verison: version,
-            actions: actions,
-          },
-        });
-      } catch (graphQlResponse) {
-        throw extractErrorFromGraphQlResponse(graphQlResponse);
-      }
-    };
-    
-    return{
-      execute,
-      loading
+    gql`
+      ${UPDATE_CUSTOMER_PROMOTIONS}
+    `
+  );
+
+  const execute = async ({ id, version, actions }) => {
+    try {
+      console.log(id, version, actions);
+      return await updateCustomerPromotion({
+        context: {
+          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+        },
+        variables: {
+          id: id,
+          verison: version,
+          actions: actions,
+        },
+      });
+    } catch (graphQlResponse) {
+      throw extractErrorFromGraphQlResponse(graphQlResponse);
     }
-    
-  }
+  };
+
+  return {
+    execute,
+    loading,
+  };
+};
 
 export const useFetchPromotionsList = () => {
-  const { data, error, loading } = useMcQuery(gql`${FETCH_PROMOTIONS_LIST}`, {
-    variables: {
-      sort: [`createdAt`],
-      where: `isActive=\"true\"`
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-  });
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_PROMOTIONS_LIST}
+    `,
+    {
+      variables: {
+        sort: [`createdAt`],
+        where: `isActive=\"true\"`,
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
 
   return {
     promotions: data?.cartDiscounts?.results,
