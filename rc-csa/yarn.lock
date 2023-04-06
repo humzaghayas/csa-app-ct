@@ -8229,7 +8229,7 @@
 
 "ct-tickets-helper-api@file:../ct-tickets-helper-api":
   "resolved" "file:../ct-tickets-helper-api"
-  "version" "1.0.0"
+  "version" "1.0.1"
   dependencies:
     "firebase" "^9.14.0"
     "invoice-number" "^2.0.1"
