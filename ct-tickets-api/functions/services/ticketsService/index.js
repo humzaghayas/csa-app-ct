@@ -14,17 +14,19 @@ const {MONGO_TICKETS_COLLECTION} = process.env;
   ticketsService.getTickets=async (projectKey) => {
 
     try{
-      const adminConf = await adminDBService.fetchAdminConf();
+      const adminConf = await adminDBService.fetchAdminConf(projectKey);
 
-      const projectConnection = adminConf.find(a => a._doc.projectKey === projectKey);
+      // const projectConnection = adminConf.find(a => a._doc.projectKey === projectKey);
 
-      console.log('projectConnection',projectConnection);
+      // console.log('projectConnection',projectConnection);
 
-      if(projectConnection?._doc.isMongoDB){
-        const Tickets = mongoClientConnection( projectConnection?._doc.connectionUri);
+      // if(projectConnection?._doc.isMongoDB){
+      //   const Tickets = mongoClientConnection( projectConnection?._doc.connectionUri);
 
-        return Tickets.find({});
-      }
+      //   return Tickets.find({});
+      // }
+
+      console.log(adminConf);
 
       // return adminConf;
     }catch(e){

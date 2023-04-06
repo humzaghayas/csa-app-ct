@@ -1,7 +1,23 @@
 const ticketsService = require('./services/ticketsService')();
+const adminDBService = require('./services/adminDBService')();
 
 
 module.exports = function(app){
+
+    app.post('/encrypt', async(req, res) =>{
+        const {value} = req.body;
+
+        const encryptVal = await adminDBService.encryptValue(value);
+        res.status(200).json({[value]:encryptVal});
+    });
+
+    // app.post('/decrypt', async(req, res) =>{
+    //     const {value} = req.body;
+
+    //     const decryptVal = await adminDBService.decryptValue(value);
+    //     res.status(200).json({[value]:decryptVal});
+    // });
+
 
     app.post('/tickets-list', async(req, res) =>{
 
