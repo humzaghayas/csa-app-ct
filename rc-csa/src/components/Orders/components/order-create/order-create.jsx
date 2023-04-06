@@ -102,7 +102,7 @@ const OrderCreate = (props) => {
             console.log(result2);
           }
           console.log(result.data.createOrderEdit);
-          //window.location.reload(true)
+          window.location.reload(true)
           forceUpdate();
             showNotification({
             kind: 'success',
