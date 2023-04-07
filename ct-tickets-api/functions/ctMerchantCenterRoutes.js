@@ -28,14 +28,14 @@ module.exports = function(app){
         //     return;
         // }
     
-        const {projectKey} = req.body;
-        const tickets = await ticketsService.getTickets(projectKey);
+        const {projectKey,page,perPage} = req.body;
+        const results = await ticketsService.getTickets({projectKey,page,perPage});
     
-        // if(result.error){
-        //     res.status(400).json({result: result.errors});    
-        // }else{
-            res.status(200).json({tickets});
-        //}
+        if(results.error){
+            res.status(400).json( results);    
+        }else{
+            res.status(200).json(results);
+        }
     
     });
 

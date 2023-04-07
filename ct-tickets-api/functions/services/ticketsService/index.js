@@ -1,4 +1,4 @@
-const { mongoClientConnection } = require('../../config/database');
+const { clientDBConnection } = require('../../config/database');
 const {getCreateTicketDraftForDB,createTicketHistoryForDB} =require ('ct-tickets-helper-api');
 const { dataToFormValues } = require('../tickets/conversions');
 
@@ -11,42 +11,55 @@ const {MONGO_TICKETS_COLLECTION} = process.env;
 
     const ticketsService = {};
 
-  ticketsService.getTickets=async (projectKey) => {
+  ticketsService.getTickets=async ({projectKey,page,perPage}) => {
 
+    let results = [];
     try{
-      const adminConf = await adminDBService.fetchAdminConf(projectKey);
+      const adminConf = await adminDBService.adminConfiguration(projectKey);
+      
+      if(adminConf.error){
+        console.log('error',adminConf);
+        return adminConf;
+      }
 
-      // const projectConnection = adminConf.find(a => a._doc.projectKey === projectKey);
+      if(adminConf[projectKey].isDatabase){
 
-      // console.log('projectConnection',projectConnection);
+        console.log('bbbbb');
+        const uri = adminConf[projectKey].connectionUri.replace("{{USERNAME}}",adminConf[projectKey].username)
+                .replace("{{PASSWORD}}",adminConf[projectKey].password);
 
-      // if(projectConnection?._doc.isMongoDB){
-      //   const Tickets = mongoClientConnection( projectConnection?._doc.connectionUri);
+        const Tickets =await clientDBConnection( uri);
 
-      //   return Tickets.find({});
-      // }
+        const offset = perPage * (page-1);
+        results=await Tickets.find({}).limit(perPage).skip(offset);
+        results = results.map(t => t.toObject());
+      }else{
 
-      console.log(adminConf);
+      }
 
-      // return adminConf;
     }catch(e){
       console.error(e);
     } 
 
-    return [];
+    return results;
   }
 
   ticketsService.createTicket=async (projectKey,ticket) => {
 
     try{
-      const adminConf = await adminDBService.fetchAdminConf();
+      const adminConf = await adminDBService.adminConfiguration(projectKey);
 
-      const projectConnection = adminConf.find(a => (a._doc.projectKey === projectKey ));
+      if(adminConf.error){
+        console.log('error',adminConf);
+        return adminConf;
+      }
 
-      console.log('projectConnection3',projectConnection);
-      if(projectConnection?._doc?.isMongoDB){
+      const conf = adminConf[projectKey];
 
-        console.log('projectConnection2',projectConnection);
+      console.log('conf3',conf);
+      if(conf.isDatabase){
+
+        console.log('conf2',conf);
 
         const data = await dataToFormValues(ticket,false);
         const isValid = await validateTicket.validate(data);
@@ -63,7 +76,10 @@ const {MONGO_TICKETS_COLLECTION} = process.env;
 
         console.log('ticketDraft',ticketDraft);
 
-        const Ticket =await mongoClientConnection( projectConnection._doc.connectionUri);
+        const uri = conf.connectionUri.replace("{{USERNAME}}",conf.username)
+                  .replace("{{PASSWORD}}",conf.password);
+
+        const Ticket =await clientDBConnection( uri);
         let doc1 = new Ticket(ticketDraft);
         return await doc1.save();
       }

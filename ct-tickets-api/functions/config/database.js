@@ -19,10 +19,10 @@ const adminConnection = () =>{
   return adminSchema.registerSchema(conn);
 }  
 
-const mongoClientConnection = (uri) =>{
+const clientDBConnection = (uri) =>{
   let conn = connect(uri,MONGO_TICKETS_DB);
 
   return ticketSchema.registerSchema(conn);
 }  
 
-module.exports ={adminConnection,mongoClientConnection};
+module.exports ={adminConnection, clientDBConnection};

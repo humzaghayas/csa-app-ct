@@ -10,7 +10,7 @@ const iv = "csa-royalcyber12";
     const adminDBService = {};
 
   adminDBService.adminConnections = {};
-  adminDBService.fetchAdminConf=async (projectKey) => {
+  adminDBService.adminConfiguration=async (projectKey) => {
 
     try {
 
@@ -19,9 +19,14 @@ const iv = "csa-royalcyber12";
         const Client = await adminConnection();
         const c= await Client.findOne({projectKey});
 
+        if(!c){
+          return {error:true,message:"Project Key not configured!"}
+        }
         const conn = c.toObject();
         console.log('conn',conn);
         console.log('conn',Object.keys(conn));
+
+
 
         if(conn.isDatabase){
           let temp = await adminDBService.decryptValue(conn.username);
