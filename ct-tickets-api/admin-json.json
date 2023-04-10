@@ -14,10 +14,13 @@
 	},
 	{
 		"projectKey":"humza",
-		"isDatabase": false,
+		"isDatabase": true,
+		"connectionUri": "mongodb+srv://{{USERNAME}}:{{PASSWORD}}@cluster0.vsgtgxh.mongodb.net/?retryWrites=true&w=majority",
+		"username":"dc17586c740666174ecda77905858e9a",
+		"password":"02cce1dbf794099fb2206fd4d6634b38",
 		"CTP_PROJECT_KEY":"humza"
-		"CTP_CLIENT_SECRET":"$2a$04$D0Sut85HVtp.5s8oFhs0t.ALLgMwHUHRYxNnygfnWNquvOFqA3PAy"
-		"CTP_CLIENT_ID":"$2a$04$jA.td.1zOmDUykAqSZRGJussr/m5yeCDrXm3Hwz4fVwHLDzqlpOYS"
+		"CTP_CLIENT_SECRET":"77c44ba1966396ed99669e77bc14739b8624339909aa5fa9889091a9212a85b23c9de725eb8e7fd0f13c565376d9efa4"
+		"CTP_CLIENT_ID":"24bd22f4df11011a2fb37fd6c4bb499bb53efd13ac7eb2240363670f81eb366e"
 		"CTP_AUTH_URL":"https://auth.us-central1.gcp.commercetools.com"
 		"CTP_API_URL":"https://api.us-central1.gcp.commercetools.com"
 		"CTP_SCOPES":"manage_project:humza"

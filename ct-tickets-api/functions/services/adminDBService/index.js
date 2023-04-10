@@ -10,6 +10,15 @@ const iv = "csa-royalcyber12";
     const adminDBService = {};
 
   adminDBService.adminConnections = {};
+
+  adminDBService.setApiRoot=async (projectKey,apiRoot) => {
+
+    if(adminDBService.adminConnections[projectKey]){
+
+      adminDBService.adminConnections[projectKey].apiRoot = apiRoot;
+    }
+  }
+
   adminDBService.adminConfiguration=async (projectKey) => {
 
     try {

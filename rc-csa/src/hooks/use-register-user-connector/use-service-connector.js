@@ -10,6 +10,8 @@ import{getForKey,CONSTANTS,FETCH_USERS_INFO,FETCH_CUSTOMER_TICKETS,
   FETCH_USERS_LIST,FETCH_TICKETS_BY_ID, getCreateTicketDraft, 
   getTicketFromCustomObject ,createTicketHistory} from 'ct-tickets-helper-api'
 import { extractErrorFromGraphQlResponse } from '../../helpers';
+import { useAsyncDispatch , actions } from '@commercetools-frontend/sdk';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 export const useUserFetcher = (email) => {
   
@@ -64,26 +66,58 @@ export const useCreateEntry = (email) => {
 export const useCreateOrUpdateTicket = ()=>{
 
 
-  const [createOrUpdateCustomObject, {  loading }] = useMcMutation(gql`${CREATE_CUSTOMOBJECT_MUTATION}`);
+  const dispatch = useAsyncDispatch();
+  const {ctCsaBackendURL} = useApplicationContext(
+    (context) => ({
+      ctCsaBackendURL:context.environment.CT_CSA_BACKEND,
+    })
+  );
 
-  const execute = async (data,operation) => {
+  const apiUrl = ctCsaBackendURL+'/createTicketM'
+  // const [createOrUpdateCustomObject, {  loading }] = useMcMutation(gql`${CREATE_CUSTOMOBJECT_MUTATION}`);
+
+  const execute = async (projectKey,data,operation) => {
     console.log("createTicket");
 
-    let ticketDraft = await getCreateTicketDraft(data);
+    //let ticketDraft = await getCreateTicketDraft(data);
 
-    await createTicketHistory(data,ticketDraft,operation);
-    try {
-      return await createOrUpdateCustomObject({ variables: {
-        draft: ticketDraft,
-      },
-      context: {
-        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-      } });
-    }catch (graphQlResponse) {
+    ///await createTicketHistory(data,ticketDraft,operation);
+    // try {
+    //   return await createOrUpdateCustomObject({ variables: {
+    //     draft: ticketDraft,
+    //   },
+    //   context: {
+    //     target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    //   } });
+    // }catch (graphQlResponse) {
 
-      console.error(graphQlResponse);
-      throw extractErrorFromGraphQlResponse(graphQlResponse);
+    //   console.error(graphQlResponse);
+    //   throw extractErrorFromGraphQlResponse(graphQlResponse);
+    // }
+
+
+    const header= {
+      'Content-Type': 'application/json',
     }
+
+    const payload = {
+      projectKey,
+	    data
+    }
+
+    console.log('payload',payload);
+
+    const result =await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header
+        },
+      })
+    );
+
+    return result;
   }
 
   return {
@@ -154,3 +188,46 @@ export const useGetTicketByCustomerEmail= () => {
   };
 
 }
+
+
+export const useFetchTicketsList = ()=>{
+
+  const dispatch = useAsyncDispatch();
+  const {ctCsaBackendURL} = useApplicationContext(
+    (context) => ({
+      ctCsaBackendURL:context.environment.CT_CSA_BACKEND,
+    })
+  );
+
+  const apiUrl = ctCsaBackendURL+'/tickets-list'
+
+  const execute = async (projectKey,variables) => {
+
+    const header= {
+      'Content-Type': 'application/json',
+    }
+
+    const payload = {
+      projectKey,
+	    variables
+    }
+
+    console.log('apiUrl',apiUrl);
+
+    const data =await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header
+        },
+      })
+    );
+
+    return data;
+  }
+
+  return {
+    execute
+  };
+};

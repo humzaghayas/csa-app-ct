@@ -14,7 +14,7 @@ const cors = require('cors');
 
 const app = express();
 
-require('./ctMerchantCenterRoutes')(app);
+require('./ct-routes-ticekets')(app);
 
 app.use(cors({ origin: true }));
 

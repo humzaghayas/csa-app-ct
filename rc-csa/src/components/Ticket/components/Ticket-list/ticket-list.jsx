@@ -43,13 +43,13 @@ import{FETCH_TICKETS,getTicketRows,CONSTANTS, ref} from 'ct-tickets-helper-api'
 import {  gql } from '@apollo/client';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
 import { PERMISSIONS } from '../../../../constants';
-import { useCreateEntry, useUserFetcher } from '../../../../hooks/use-register-user-connector/use-service-connector';
+import { useCreateEntry, useFetchTicketsList, useUserFetcher } from '../../../../hooks/use-register-user-connector';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { SecondaryIconButton, } from '@commercetools-frontend/ui-kit';
 import Grid from '@commercetools-uikit/grid';
 import SelectableSearchInput from '@commercetools-uikit/selectable-search-input';
 
-let rows = null;
+
 
 const columns = [
   { key:'ticketNumber', label: 'Ticket Number' },
@@ -73,6 +73,11 @@ const Tickets = (props) => {
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
 
+  const {projectKey} = useApplicationContext(
+    (context) => ({
+      projectKey:context.project.key
+  }));
+
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.ManageCsaTickets],
   });
@@ -82,6 +87,7 @@ const Tickets = (props) => {
     option: "ticketNumber",
   })
 
+  const [rows,setRows] = useState(null);
   const { user } = useApplicationContext((context) => ({
     user: context.user ?? ''
   }));
@@ -89,29 +95,42 @@ const Tickets = (props) => {
   const {foundUser} = useUserFetcher(user.email);
   const {execute} = useCreateEntry(user.email);
 
-  useEffect(() => {
+  const {execute:fetchTickets}=useFetchTicketsList();
+
+  useEffect(async () => {
     if(canManage && foundUser == false){
       console.log('calling execute !');
-      execute();
+      await execute();
+    }
+
+    if(!rows){
+
+      const data = await fetchTickets( projectKey,{
+            limit: perPage.value,
+            offset: (page.value - 1) * perPage.value,
+            sort:{"lastModifiedAt": -1}
+          });
+      const r = await getTicketRows(data);
+      setRows(r);
     }
     console.log('inside hook !');
   }, [foundUser]);
 
   
-  const { data, error, loading,refetch } = useMcQuery(gql`${FETCH_TICKETS}`, {
-    variables: {
-      container:CONSTANTS.containerKey,
-      limit: perPage.value,
-      offset: (page.value - 1) * perPage.value,
-      sort:["lastModifiedAt desc"]
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-    fetchPolicy:"network-only"
-  });
+  // const { data, error, loading,refetch } = useMcQuery(gql`${FETCH_TICKETS}`, {
+  //   variables: {
+  //     container:CONSTANTS.containerKey,
+  //     limit: perPage.value,
+  //     offset: (page.value - 1) * perPage.value,
+  //     sort:{"lastModifiedAt": -1}
+  //   },
+  //   context: {
+  //     target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+  //   },
+  //   fetchPolicy:"network-only"
+  // });
 
-  rows = getTicketRows(data?.customObjects);
+  // rows = getTicketRows(data?.customObjects);
 
   const applyFiltersOnTickets =({option,text}) =>{
 
@@ -129,13 +148,13 @@ const Tickets = (props) => {
   }
 
 
-  if (error) {
-    return (
-      <ContentNotification type="error">
-        <Text.Body>{error}</Text.Body>
-      </ContentNotification>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <ContentNotification type="error">
+  //       <Text.Body>{error}</Text.Body>
+  //     </ContentNotification>
+  //   );
+  // }
 
 
   return (
@@ -245,7 +264,8 @@ const Tickets = (props) => {
             onPageChange={page.onChange}
             perPage={perPage.value}
             onPerPageChange={perPage.onChange}
-            totalItems={data?.customObjects?.total}
+            totalItems={100}//data?.customObjects?.total
+            
 
           />
            <Switch>
