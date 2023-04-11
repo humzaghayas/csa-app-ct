@@ -303,7 +303,7 @@ let history = useHistory();
 const saveTicket =async (e)=>{
   formik.handleSubmit(e);
 
-  //history.push(`/${projectKey}/${entryPointUriPath}/Tickets`);
+  history.push(`/${projectKey}/${entryPointUriPath}/Tickets`);
 }
 
 const [disableWLButton,setDisableWLButton] = useState(false);

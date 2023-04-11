@@ -39,7 +39,7 @@ module.exports = function(app){
     
     });
 
-    app.post('/createTicketM', async(req, res) =>{
+    app.post('/create-ticket-db', async(req, res) =>{
 
         // const isAuthenticate = jwtAuthenticationService.authenticate(req,res);
     
@@ -59,6 +59,26 @@ module.exports = function(app){
         // }else{
             res.status(200).json({tickets});
         //}
+    
+    });
+
+    app.get('/ticket-db/:id', async(req, res) =>{
+
+        // const isAuthenticate = jwtAuthenticationService.authenticate(req,res);
+    
+        // if(isAuthenticate &&  isAuthenticate.error){
+        //     res.status(400).json({isAuthenticate}); 
+        //     return;
+        // }
+    
+        const {id} = req.params;
+        const results = await ticketsService.getTicketById(id);
+    
+        if(results.error){
+            res.status(400).json( results);    
+        }else{
+            res.status(200).json(results);
+        }
     
     });
 }

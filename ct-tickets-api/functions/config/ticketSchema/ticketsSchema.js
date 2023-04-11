@@ -32,6 +32,7 @@ const ticketSchema = new mongoose.Schema( {
     "customerId": { type: String, required: true },
     "email": { type: String, required: true },
     "source": { type: String, default:"" },
+    "contactType": { type: String, default:"" },
     "status": { type: String, required: true },
     "priority": { type: String, required: true },
     "category": { type: String, required: true },

@@ -88,6 +88,7 @@ const Tickets = (props) => {
   })
 
   const [rows,setRows] = useState(null);
+  const [resData,setResData] = useState(null);
   const { user } = useApplicationContext((context) => ({
     user: context.user ?? ''
   }));
@@ -112,39 +113,28 @@ const Tickets = (props) => {
           });
       const r = await getTicketRows(data);
       setRows(r);
+      setResData(data);
     }
     console.log('inside hook !');
   }, [foundUser]);
 
-  
-  // const { data, error, loading,refetch } = useMcQuery(gql`${FETCH_TICKETS}`, {
-  //   variables: {
-  //     container:CONSTANTS.containerKey,
-  //     limit: perPage.value,
-  //     offset: (page.value - 1) * perPage.value,
-  //     sort:{"lastModifiedAt": -1}
-  //   },
-  //   context: {
-  //     target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-  //   },
-  //   fetchPolicy:"network-only"
-  // });
+  const applyFiltersOnTickets =async({option,text}) =>{
 
-  // rows = getTicketRows(data?.customObjects);
-
-  const applyFiltersOnTickets =({option,text}) =>{
-
-    let vars = { container:CONSTANTS.containerKey,
+    let vars = { 
       limit: perPage.value,
       offset: (page.value - 1) * perPage.value,
-      sort:["lastModifiedAt desc"]};
+      sort:{"lastModifiedAt": -1}};
 
     if(text){
-      vars.where =`value(${option}=\"${text}\")`
-    }else{
-      vars.where ="version> 0";
+      vars.filter ={[option]:text}
     }
-    refetch( vars);
+    // else{
+    //   vars.where ="version> 0";
+    // }
+    const data = await fetchTickets( projectKey,vars);
+
+    const r = await getTicketRows(data);
+    setRows(r);
   }
 
 
@@ -192,7 +182,7 @@ const Tickets = (props) => {
                 <SecondaryIconButton
                   label="Refresh"
                   data-track-event="click" 
-                  onClick={()=>{refetch()}}
+                  onClick={()=>{applyFiltersOnTickets(selectTextInput)}}
                   icon={<RefreshIcon />}
                   size="medium"/>
 
@@ -261,10 +251,10 @@ const Tickets = (props) => {
           />
           <Pagination
             page={page.value}
-            onPageChange={page.onChange}
+            onPageChange={()=>{applyFiltersOnTickets(selectTextInput)}}
             perPage={perPage.value}
-            onPerPageChange={perPage.onChange}
-            totalItems={100}//data?.customObjects?.total
+            onPerPageChange={()=>{applyFiltersOnTickets(selectTextInput)}}
+            totalItems={resData?.total}
             
 
           />

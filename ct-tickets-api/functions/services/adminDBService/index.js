@@ -5,17 +5,19 @@ const {MONGO_ADMIN_COLLECTION} = process.env;
 
 const SECRET_KEY = "csa-royalcyber12";
 const iv = "csa-royalcyber12";
+
+let adminConnections={};
   module.exports = ()=>{
 
     const adminDBService = {};
 
-  adminDBService.adminConnections = {};
+ // adminDBService.adminConnections = {};
 
   adminDBService.setApiRoot=async (projectKey,apiRoot) => {
 
-    if(adminDBService.adminConnections[projectKey]){
+    if(adminConnections[projectKey]){
 
-      adminDBService.adminConnections[projectKey].apiRoot = apiRoot;
+      adminConnections[projectKey].apiRoot = apiRoot;
     }
   }
 
@@ -23,8 +25,8 @@ const iv = "csa-royalcyber12";
 
     try {
 
-      console.log('adminDBService.adminConf1 ',adminDBService.adminConf );
-      if(!adminDBService[projectKey]){
+      console.log('adminDBService.adminConf1 ');
+      if(!adminConnections[projectKey]){
         const Client = await adminConnection();
         const c= await Client.findOne({projectKey});
 
@@ -32,10 +34,7 @@ const iv = "csa-royalcyber12";
           return {error:true,message:"Project Key not configured!"}
         }
         const conn = c.toObject();
-        console.log('conn',conn);
-        console.log('conn',Object.keys(conn));
-
-
+        console.log('conn');
 
         if(conn.isDatabase){
           let temp = await adminDBService.decryptValue(conn.username);
@@ -49,11 +48,11 @@ const iv = "csa-royalcyber12";
         temp = await adminDBService.decryptValue(conn.CTP_CLIENT_SECRET);
         conn.CTP_CLIENT_SECRET=temp;
 
-        adminDBService.adminConnections = {
-          ...adminDBService.adminConnections,
+        adminConnections = {
+          ...adminConnections,
           [projectKey]:conn
         }
-        console.log('adminDBService.adminConf 2',adminDBService.adminConnections );
+        console.log('adminDBService.adminConf 2' );
       }
 
       
@@ -63,7 +62,7 @@ const iv = "csa-royalcyber12";
       //await client.close();
     }
 
-    return adminDBService.adminConnections;
+    return adminConnections;
   }
 
 

@@ -169,7 +169,14 @@ export async function getCreateTicketDraftForDB(ticketInfo){
         comments:commentsStr,
         orderNumber:orderNumberVal};
         
-    ticketDraft = getTicketValue(ticketInfo,uuid);   
+
+        console.log('ticketInfo',ticketInfo);
+        
+    ticketDraft = getTicketValue(ticketInfo,uuid); 
+    
+    if(ticketInfo?._id){
+        ticketDraft._id =ticketInfo?._id;
+    }
     ticketDraft.ticketData =ticketData;
     return ticketDraft;
 }
@@ -271,6 +278,7 @@ function getTicketValue( ticketInfo,uuid){
         customerId: customerId,
         email:email,
         source: ticketInfo.contactType,
+        contactType: ticketInfo.contactType,
         status: ticketInfo.status,
         priority: ticketInfo.priority,
         category: ticketInfo.category,

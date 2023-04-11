@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import Text from '@commercetools-uikit/text';
@@ -13,16 +13,29 @@ import { CONSTANTS } from 'ct-tickets-helper-api/lib/constants';
 
 const TicketDetailsP = (props) => {
   const match = useRouteMatch();
-  const { dataLocale, languages } = useApplicationContext((context) => ({
+  const {projectKey, dataLocale, languages } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
+    projectKey:context.project.key,
     languages: context.project?.languages ?? [],
   }));
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.ManageCsaTickets],
   });
 
-  const {ticket} = useGetTicketById(match.params.id);
-  console.log("ticket",ticket);
+  const [ticket, setTicket] = useState(null);
+
+  const {getTicketById} = useGetTicketById();//();
+ 
+  
+  useEffect(async () => {
+    if(!ticket){
+      console.log('calling execute !');
+      const t = await getTicketById(match.params.id);
+
+      console.log('ticket',t);
+      setTicket(t);
+    }
+  },[ticket]);
 
   const{execute} = useCreateOrUpdateTicket();
   const handleSubmit = useCallback(
@@ -32,7 +45,7 @@ const TicketDetailsP = (props) => {
 
       console.log("data from form",data);
       const opr = formValues?.operation ?? '';
-      let t = await execute(data);
+      let t = await execute(projectKey,data);
 
       console.log(t);
     },

@@ -15,7 +15,7 @@ const {MONGO_TICKETS_COLLECTION} = process.env;
 
   ticketsService.getTickets=async ({projectKey,variables}) => {
 
-    let results = [];
+    let resultingValues = {};
     try{
       const adminConf = await adminDBService.adminConfiguration(projectKey);
       
@@ -24,17 +24,32 @@ const {MONGO_TICKETS_COLLECTION} = process.env;
         return adminConf;
       }
 
+      
       if(adminConf[projectKey].isDatabase){
+        let filter = {};
+        
+        if(variables?.filter){
 
-        console.log('bbbbb');
+          for(let key of Object.keys(variables?.filter)){
+            filter[key]= new RegExp(variables?.filter[key] ,'i');
+          }
+        }
+        
+
         const uri = adminConf[projectKey].connectionUri.replace("{{USERNAME}}",adminConf[projectKey].username)
                 .replace("{{PASSWORD}}",adminConf[projectKey].password);
 
         const Tickets =await clientDBConnection( uri);
 
         const offset = variables.offset;
-        results=await Tickets.find({}).limit(variables.limit).skip(offset).sort(variables.sort);
-        results = results.map(t => {return {id:t.toObject()._id,value:t.toObject()}});
+        let r=await Tickets.find(filter).limit(variables.limit).skip(offset).sort(variables.sort);
+        resultingValues.results = r.map(t => {return {id:t.toObject()._id,value:t.toObject()}});
+
+        resultingValues.total = await Tickets.count(filter);
+        resultingValues.limit = variables.limit;
+        resultingValues.offset = offset;
+        resultingValues.count = r.length;
+
       }else{
 
       }
@@ -43,7 +58,7 @@ const {MONGO_TICKETS_COLLECTION} = process.env;
       console.error(e);
     } 
 
-    return {results};
+    return resultingValues;
   }
 
   ticketsService.createTicket=async (projectKey,ticket) => {
@@ -58,7 +73,6 @@ const {MONGO_TICKETS_COLLECTION} = process.env;
 
         const conf = adminConf[projectKey];
 
-        console.log('conf3',conf);
         if(conf.isDatabase){
           return await ticketsService.createTicketMongo(conf,ticket);
         
@@ -74,12 +88,11 @@ const {MONGO_TICKETS_COLLECTION} = process.env;
   }
 
   ticketsService.createTicketMongo=async (conf,ticket) => {
-    console.log('conf2',conf);
-
     const data = await dataToFormValues(ticket,false);
+
+    console.log('data kasnkasdkasd',data);
     const isValid = await validateTicket.validate(data);
 
-    console.log('dastatv44',data);
 
     if(isValid.isError){
         return {error:true,errors:isValid.errors};
@@ -95,8 +108,20 @@ const {MONGO_TICKETS_COLLECTION} = process.env;
               .replace("{{PASSWORD}}",conf.password);
 
     const Ticket =await clientDBConnection( uri);
-    let doc1 = new Ticket(ticketDraft);
-    return await doc1.save();
+
+    if(ticketDraft._id){
+      let doc1 = new Ticket(ticketDraft);
+      return await Ticket.findOneAndUpdate({_id:ticketDraft._id}, ticketDraft, {
+          new: true,
+        });
+    }else{
+      let doc1 = new Ticket(ticketDraft);    
+      return await doc1.save();
+    }
+
+
+
+    return doc;
   }
 
 
@@ -133,6 +158,39 @@ const {MONGO_TICKETS_COLLECTION} = process.env;
       console.log('resutls',result);
 
       return result?.body?.data?.createOrUpdateCustomObject;
+  }
+
+
+  ticketsService.getTicketById=async (id) => {
+
+    let result = {};
+    try{
+      const adminConf = await adminDBService.adminConfiguration(projectKey);
+      
+      if(adminConf.error){
+        console.log('error',adminConf);
+        return adminConf;
+      }
+
+      
+      if(adminConf[projectKey].isDatabase){
+
+        const uri = adminConf[projectKey].connectionUri.replace("{{USERNAME}}",adminConf[projectKey].username)
+                .replace("{{PASSWORD}}",adminConf[projectKey].password);
+
+        const Tickets =await clientDBConnection( uri);
+        result=await Tickets.findById( id);
+
+        console.log('find by id',result);
+      }else{
+
+      }
+
+    }catch(e){
+      console.error(e);
+    } 
+
+    return result;
   }
   return ticketsService;
 }

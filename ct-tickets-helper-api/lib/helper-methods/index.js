@@ -198,6 +198,7 @@ function getCreateTicketDraftForDB(ticketInfo) {
                 comments: commentsStr,
                 orderNumber: orderNumberVal
             };
+            console.log('ticketInfo', ticketInfo);
             ticketDraft = getTicketValue(ticketInfo, uuid);
             ticketDraft.ticketData = ticketData;
             return [2 /*return*/, ticketDraft];
@@ -272,10 +273,12 @@ function getTicketValue(ticketInfo, uuid) {
     }
     return {
         id: uuid,
+        _id: ticketInfo._id,
         ticketNumber: tNumber,
         customerId: customerId,
         email: email,
         source: ticketInfo.contactType,
+        contactType: ticketInfo.contactType,
         status: ticketInfo.status,
         priority: ticketInfo.priority,
         category: ticketInfo.category,

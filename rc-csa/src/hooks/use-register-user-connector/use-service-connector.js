@@ -65,7 +65,6 @@ export const useCreateEntry = (email) => {
 
 export const useCreateOrUpdateTicket = ()=>{
 
-
   const dispatch = useAsyncDispatch();
   const {ctCsaBackendURL} = useApplicationContext(
     (context) => ({
@@ -73,28 +72,10 @@ export const useCreateOrUpdateTicket = ()=>{
     })
   );
 
-  const apiUrl = ctCsaBackendURL+'/createTicketM'
-  // const [createOrUpdateCustomObject, {  loading }] = useMcMutation(gql`${CREATE_CUSTOMOBJECT_MUTATION}`);
+  const apiUrl = ctCsaBackendURL+'/create-ticket-db';
 
   const execute = async (projectKey,data,operation) => {
     console.log("createTicket");
-
-    //let ticketDraft = await getCreateTicketDraft(data);
-
-    ///await createTicketHistory(data,ticketDraft,operation);
-    // try {
-    //   return await createOrUpdateCustomObject({ variables: {
-    //     draft: ticketDraft,
-    //   },
-    //   context: {
-    //     target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    //   } });
-    // }catch (graphQlResponse) {
-
-    //   console.error(graphQlResponse);
-    //   throw extractErrorFromGraphQlResponse(graphQlResponse);
-    // }
-
 
     const header= {
       'Content-Type': 'application/json',
@@ -104,8 +85,6 @@ export const useCreateOrUpdateTicket = ()=>{
       projectKey,
 	    data
     }
-
-    console.log('payload',payload);
 
     const result =await dispatch(
       actions.forwardTo.post({
@@ -146,22 +125,37 @@ export const useUserListFetcher = () => {
 }
 
 
-export const useGetTicketById = (id) => {
-  const { data, error, loading } = useMcQuery(gql`${FETCH_TICKETS_BY_ID}`, {
-    variables: {
-      id
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-    fetchPolicy:"network-only"
-  });
+export const useGetTicketById = () => {
+  const dispatch = useAsyncDispatch();
+  const {ctCsaBackendURL} = useApplicationContext(
+    (context) => ({
+      ctCsaBackendURL:context.environment.CT_CSA_BACKEND,
+    })
+  );
 
-  const ticket = getTicketFromCustomObject(data);
+  const apiUrl = ctCsaBackendURL+'/ticket-db';
 
-  return{
-    ticket
+  const getTicketById = async (id) => {
+    const header= {
+      'Content-Type': 'application/json',
+    };
+
+    const result =await dispatch(
+      actions.forwardTo.get({
+        uri: `${apiUrl}/${id}`,
+        headers: {
+          ...header
+        },
+      })
+    );
+
+    console.log('ticket update',result);
+    return result;
   }
+
+  return {
+    getTicketById
+  };
 }
 
 
