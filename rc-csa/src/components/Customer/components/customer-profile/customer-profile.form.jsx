@@ -6,15 +6,17 @@ import TextField from '@commercetools-uikit/text-field';
 import SelectField from '@commercetools-uikit/select-field';
 import Spacings from '@commercetools-uikit/spacings';
 import validate from './validate';
-import { CUSTOMER_GROUP,PREFERED_LANGUAGE,GENDER,AGE_GROUP,PREFERED_CURRENCY } from './constants';
+import { CUSTOMER_GROUP, PREFERED_LANGUAGE, GENDER, AGE_GROUP, PREFERED_CURRENCY } from './constants';
 import DateField from '@commercetools-uikit/date-field';
 import RadioField from '@commercetools-uikit/radio-field';
 import RadioInput from '@commercetools-uikit/radio-input';
 import DateInput from '@commercetools-uikit/date-input';
 import {
+  FlatButton,
   PrimaryButton,
   SecondaryButton,
 } from '@commercetools-frontend/ui-kit';
+import { BackIcon } from '@commercetools-uikit/icons';
 
 
 const getCustomerGroup = Object.keys(CUSTOMER_GROUP).map(
@@ -37,7 +39,7 @@ const getCustomerAgeGroup = Object.keys(AGE_GROUP).map(
   })
 );
 
-const getCustomerPreferedCurrency= Object.keys(PREFERED_CURRENCY).map(
+const getCustomerPreferedCurrency = Object.keys(PREFERED_CURRENCY).map(
   (key) => ({
     label: key,
     value: PREFERED_CURRENCY[key],
@@ -55,18 +57,19 @@ const getCustomerPreferedLanguage = Object.keys(PREFERED_LANGUAGE).map(
 
 const CustomerProfileForm = (props) => {
   const intl = useIntl();
-  console.log("propsPF",props);
+  console.log("propsPF", props);
   const formik = useFormik({
     initialValues: props.initialValues,
     onSubmit: props.onSubmit,
     validate,
     enableReinitialize: true,
   });
-  console.log("formik",formik);
+  console.log("formik", formik);
   const formElements = (
     <Spacings.Stack scale="l">
       <form onSubmit={formik.handleSubmit}>
         <Spacings.Stack scale="l">
+
           <Spacings.Stack scale="m">
             <Spacings.Inline>
               <TextField
@@ -187,7 +190,7 @@ const CustomerProfileForm = (props) => {
                 touched={formik.touched.preferredCurrency}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-             //   isDisabled={formik.isSubmitting}
+                //   isDisabled={formik.isSubmitting}
                 // options={[
                 //   { value: 'EUR', label: 'EUR' },
                 //   { value: 'USD', label: 'USD' },

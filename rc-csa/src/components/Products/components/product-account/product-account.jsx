@@ -45,7 +45,7 @@ const ProductAccount = (props) => {
       onPreviousPathClick={() =>
         history.push(`/${projectKey}/${entryPointUriPath}`)
       }
-      previousPathLabel="Go to View"
+      previousPathLabel="Back to Welcome page"
       tabControls={
         <>
           <Spacings.Stack scale="xl">

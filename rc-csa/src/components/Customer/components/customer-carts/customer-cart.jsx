@@ -66,6 +66,8 @@ const CustomerCart = (props) => {
           item?.totalPrice?.centAmount,
           item?.totalPrice?.fractionDigits
         );
+      case 'customerEmail':
+        return item?.customerEmail;
       case 'lineItems':
         return item?.lineItems?.length;
       case 'totalItems':

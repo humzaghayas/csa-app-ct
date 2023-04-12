@@ -23,7 +23,7 @@ import OrderCreateForm from './order-create-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
 import { useRouteMatch, useHistory } from 'react-router-dom';
-import { useFetchOrderById, useOrderUpdateById, useCreateOrderEditById,useOrderEditApply} from '../../../../hooks/use-orders-connector';
+import { useFetchOrderById, useOrderUpdateById, useCreateOrderEditById, useOrderEditApply } from '../../../../hooks/use-orders-connector';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useReducer } from 'react';
@@ -42,68 +42,68 @@ const OrderCreate = (props) => {
   });
 
   //const {executeFetchOrder} = useFetchOrderById(match.params.id);
-  const {executeUpdateOrder} = useOrderUpdateById();
-  const {executeCreateOrderEdit} = useCreateOrderEditById();
-  const {executeOrderEditApply} = useOrderEditApply();
+  const { executeUpdateOrder } = useOrderUpdateById();
+  const { executeCreateOrderEdit } = useCreateOrderEditById();
+  const { executeOrderEditApply } = useOrderEditApply();
   const showNotification = useShowNotification();
   const showApiErrorNotification = useShowApiErrorNotification();
-  
+
   //const [order,setOrder] = useState(null);
 
-  const [reducerValue, forceUpdate] = useReducer(x => x+1,0);
+  const [reducerValue, forceUpdate] = useReducer(x => x + 1, 0);
 
-  let {order,loading,error} =  useFetchOrderById(match.params.id);
+  let { order, loading, error } = useFetchOrderById(match.params.id);
 
-  console.log('order',order);
+  console.log('order', order);
   // useEffect(async()=>{
   //   if(order == null){
   //     const result  = await executeFetchOrder(match.params.id);
   //     setOrder(result);
   //   }
   // },[reducerValue]);
-  
+
 
   const handleSubmit = useCallback(
-    async(e) =>{
+    async (e) => {
       console.log("In Handle Submit");
       const stagedActions = e.stagedActions;
-      console.log("stagedActions",stagedActions);
-      if(stagedActions.length!=0){
-        try{
-          const draft= {
-            resource : {
-             id: order?.data?.order?.id,
-             typeId: "order"
-           },
-           stagedActions,
-           comment: "No Comment"
-         }
+      console.log("stagedActions", stagedActions);
+      if (stagedActions.length != 0) {
+        try {
+          const draft = {
+            resource: {
+              id: order?.data?.order?.id,
+              typeId: "order"
+            },
+            stagedActions,
+            comment: "No Comment"
+          }
           const result = await executeCreateOrderEdit(draft);
 
-          console.log('result oe',result);
+          console.log('result oe', result);
           const data = await result.data.createOrderEdit;
-          const orderEditId  = data?.id;
-          const editVersion  = data?.version;
+          const orderEditId = data?.id;
+          const editVersion = data?.version;
           const orderVersion = order?.data?.order?.version;
           const resulType = data?.result?.type;
 
           const payload = {
-            resourceVersion:orderVersion,
-            editVersion:editVersion
+            resourceVersion: orderVersion,
+            editVersion: editVersion
           }
 
           console.log(payload);
           console.log(resulType);
-          console.log(resulType=="PreviewSuccess");
-          
-          if(resulType=="PreviewSuccess"){
+          console.log(resulType == "PreviewSuccess");
+
+          if (resulType == "PreviewSuccess") {
             console.log("Apply edit");
-            const result2 = await executeOrderEditApply(payload,orderEditId)
+            const result2 = await executeOrderEditApply(payload, orderEditId)
             console.log(result2);
           }
           console.log(result.data.createOrderEdit);
           forceUpdate();
-            showNotification({
+          showNotification({
             kind: 'success',
             domain: DOMAINS.SIDE,
             text: intl.formatMessage(messages.OrderUpdated),
@@ -124,47 +124,49 @@ const OrderCreate = (props) => {
     }
   )
 
-  const handleChange = useCallback (
-    async (e)=>
-    {
-      console.log("handle Change");  
+  const handleChange = useCallback(
+    async (e) => {
+      console.log("handle Change");
       console.log(e);
       const payload = e?.payload;
-      try{
+      try {
         const result = await executeUpdateOrder(payload);
         // window.location.reload(true)
         // console.log(result);
         forceUpdate();
-          showNotification({
+        showNotification({
           kind: 'success',
           domain: DOMAINS.SIDE,
           text: intl.formatMessage(messages.OrderUpdated),
-        }); 
-      }catch (graphQLErrors) {
-              console.log(graphQLErrors.message)
-              const transformedErrors = transformErrors(graphQLErrors);
-              if (transformedErrors.unmappedErrors.length > 0) {
-                showApiErrorNotification({
-                  errors: transformedErrors.unmappedErrors,
-                });
-              }
+        });
+      } catch (graphQLErrors) {
+        console.log(graphQLErrors.message)
+        const transformedErrors = transformErrors(graphQLErrors);
+        if (transformedErrors.unmappedErrors.length > 0) {
+          showApiErrorNotification({
+            errors: transformedErrors.unmappedErrors,
+          });
+        }
       }
-  }
+    }
   )
 
   return (
     <OrderCreateForm
-    initialValues={docToFormValues(order?.data?.order, projectLanguages)}
-    onSubmit={handleSubmit}
-    onChange={handleChange}
-    isReadOnly={!canManage}
-    dataLocale={dataLocale}
+      initialValues={docToFormValues(order?.data?.order, projectLanguages)}
+      onSubmit={handleSubmit}
+      onChange={handleChange}
+      isReadOnly={!canManage}
+      dataLocale={dataLocale}
+
+
     >
       {(formProps) => {
         return (
           <React.Fragment>
-          {formProps.formElements}
-        </React.Fragment>
+
+            {formProps.formElements}
+          </React.Fragment>
           // <FormModalPage
           //   title={intl.formatMessage(messages.modalTitle)}
           //   isOpen
@@ -187,6 +189,6 @@ const OrderCreate = (props) => {
 };
 OrderCreate.displayName = 'OrderDetails';
 OrderCreate.propTypes = {
-  
+
 };
 export default OrderCreate;
