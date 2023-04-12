@@ -9,7 +9,7 @@ import Spacings from '@commercetools-uikit/spacings';
 import validate from './validate';
 import messages from './messages';
 import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
-import { EMPLOYEE_ROLES,CUSTOMER_GROUPS,CUSTOMER_PRIORITY} from './constants';
+import { EMPLOYEE_ROLES, CUSTOMER_GROUPS, CUSTOMER_PRIORITY } from './constants';
 import Constraints from '@commercetools-uikit/constraints';
 import DataTable from '@commercetools-uikit/data-table';
 import { useState } from 'react';
@@ -38,6 +38,8 @@ const columns = [
   { key: 'state', label: 'state' },
   { key: 'region', label: 'Region' },
   { key: 'country', label: 'Country' },
+  // { key: 'country', label: 'Country' },
+  // { key: 'lastModifiedBy', label: 'Last Modified' }
 ];
 
 const itemRenderer = (item, column) => {
@@ -47,7 +49,7 @@ const itemRenderer = (item, column) => {
     case 'company':
       return item.company;
     case 'Address':
-     const address = item.streetNumber + ',' + item.apartment + ',' + item.building
+      const address = item.streetNumber + ',' + item.apartment + ',' + item.building
       return address;
     case 'city':
       return item.city;
@@ -66,8 +68,8 @@ const itemRenderer = (item, column) => {
 
 
 const CustomerAddressForm = (props) => {
-  console.log("propsADdresForm",JSON.stringify(props.customer?.addresses));
-   const[value , setValue] = useState(false)
+  console.log("propsADdresForm", JSON.stringify(props.customer?.addresses));
+  const [value, setValue] = useState(false)
   const intl = useIntl();
   const formik = useFormik({
     initialValues: props.initialValues,
@@ -80,38 +82,38 @@ const CustomerAddressForm = (props) => {
     <Spacings.Stack scale="l">
       {/* <Spacings.Inline> */}
       <Spacings.Stack scale="s">
-             <Constraints.Horizontal min={13}>
-             <SecondaryButton iconLeft={<PlusBoldIcon />} label="Add Address" onClick={() => setValue(true)} />;
-            {/* <DataTable rows={rows} columns={columns}  /> */}
+        <Constraints.Horizontal min={13}>
+          <SecondaryButton iconLeft={<PlusBoldIcon />} label="Add Address" onClick={() => setValue(true)} />;
+          {/* <DataTable rows={rows} columns={columns}  /> */}
           {props.customer?.addresses ? (
-          <Spacings.Stack scale="l">
-            <DataTable
-              isCondensed
-              columns={columns}
-              rows={props.customer?.addresses}
-              itemRenderer={(item, column) => itemRenderer(item, column)}
-              maxHeight={600}
-              onRowClick={(row) => push(`customer-account/${row.id}/Customers-summary`)}
-            />
-            {/* <Pagination
+            <Spacings.Stack scale="l">
+              <DataTable
+                isCondensed
+                columns={columns}
+                rows={props.customer?.addresses}
+                itemRenderer={(item, column) => itemRenderer(item, column)}
+                maxHeight={600}
+                onRowClick={(row) => push(`customer-account/${row.id}/Customers-summary`)}
+              />
+              {/* <Pagination
               page={page.value}
               onPageChange={page.onChange}
               perPage={perPage.value}
               onPerPageChange={perPage.onChange}
               totalItems={customersPaginatedResult.total}
             /> */}
-            {/* <Switch>
+              {/* <Switch>
               <SuspendedRoute path={`${match.path}/:id`}>
                  <CustomerAccount onClose={() => push(`${match.url}`)} /> 
               </SuspendedRoute>
             </Switch> */}
-          </Spacings.Stack>
-        ) : null}
+            </Spacings.Stack>
+          ) : null}
 
-          </Constraints.Horizontal>
-          </Spacings.Stack>
-        {value == true ? <div >
-      <CollapsiblePanel
+        </Constraints.Horizontal>
+      </Spacings.Stack>
+      {value == true ? <div >
+        <CollapsiblePanel
           data-testid="quote-summary-panel"
           header={
             <CollapsiblePanel.Header>
@@ -120,110 +122,110 @@ const CustomerAddressForm = (props) => {
             </CollapsiblePanel.Header>
           }
           scale="l">
-            <Constraints.Horizontal >
-             <Spacings.Stack scale="m">
-             <Spacings.Stack scale="s">
-        <TextField
-          name="Address Type"
-          title="Address Type"
-          value={formik.values.title}
-          errors={formik.errors.title}
-          touched={formik.touched.title}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-          <Spacings.Stack scale="s">
-            <Spacings.Inline>
-          <TextField
-          name="Street Number"
-          title="Street Number"
-          value={formik.values.firstName}
-          errors={formik.errors.firstName}
-          touched={formik.touched.firstName}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-      
-          <TextField
-          name="Street Name"
-          title="Street Name"
-          value={formik.values.firstName}
-          errors={formik.errors.firstName}
-          touched={formik.touched.firstName}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Inline>
-        </Spacings.Stack>
-        <Spacings.Stack scale="s">
-        <TextField
-          name="Building"
-          title="Building"
-          value={formik.values.title}
-          errors={formik.errors.title}
-          touched={formik.touched.title}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-        <Spacings.Stack scale="s">
-        <TextField
-          name="City"
-          title="City"
-          value={formik.values.title}
-          errors={formik.errors.title}
-          touched={formik.touched.title}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-        <Spacings.Stack scale="s">
-        <TextField
-          name="Postal Code"
-          title="Postal Code"
-          value={formik.values.title}
-          errors={formik.errors.title}
-          touched={formik.touched.title}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-        <Spacings.Stack scale="s">
-        <TextField
-          name="State"
-          title="State"
-          value={formik.values.title}
-          errors={formik.errors.title}
-          touched={formik.touched.title}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-        <Spacings.Stack scale="s">
-        <TextField
-          name="Country"
-          title="Country"
-          value={formik.values.title}
-          errors={formik.errors.title}
-          touched={formik.touched.title}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          horizontalConstraint={13}
-        />
-        </Spacings.Stack>
-        </Spacings.Stack>
-        </Constraints.Horizontal>
-      {/* </Spacings.Inline> */}
-     </CollapsiblePanel>
-     </div> : null} 
+          <Constraints.Horizontal >
+            <Spacings.Stack scale="m">
+              <Spacings.Stack scale="s">
+                <TextField
+                  name="Address Type"
+                  title="Address Type"
+                  value={formik.values.title}
+                  errors={formik.errors.title}
+                  touched={formik.touched.title}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  horizontalConstraint={13}
+                />
+              </Spacings.Stack>
+              <Spacings.Stack scale="s">
+                <Spacings.Inline>
+                  <TextField
+                    name="Street Number"
+                    title="Street Number"
+                    value={formik.values.firstName}
+                    errors={formik.errors.firstName}
+                    touched={formik.touched.firstName}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    horizontalConstraint={13}
+                  />
+
+                  <TextField
+                    name="Street Name"
+                    title="Street Name"
+                    value={formik.values.firstName}
+                    errors={formik.errors.firstName}
+                    touched={formik.touched.firstName}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    horizontalConstraint={13}
+                  />
+                </Spacings.Inline>
+              </Spacings.Stack>
+              <Spacings.Stack scale="s">
+                <TextField
+                  name="Building"
+                  title="Building"
+                  value={formik.values.title}
+                  errors={formik.errors.title}
+                  touched={formik.touched.title}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  horizontalConstraint={13}
+                />
+              </Spacings.Stack>
+              <Spacings.Stack scale="s">
+                <TextField
+                  name="City"
+                  title="City"
+                  value={formik.values.title}
+                  errors={formik.errors.title}
+                  touched={formik.touched.title}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  horizontalConstraint={13}
+                />
+              </Spacings.Stack>
+              <Spacings.Stack scale="s">
+                <TextField
+                  name="Postal Code"
+                  title="Postal Code"
+                  value={formik.values.title}
+                  errors={formik.errors.title}
+                  touched={formik.touched.title}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  horizontalConstraint={13}
+                />
+              </Spacings.Stack>
+              <Spacings.Stack scale="s">
+                <TextField
+                  name="State"
+                  title="State"
+                  value={formik.values.title}
+                  errors={formik.errors.title}
+                  touched={formik.touched.title}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  horizontalConstraint={13}
+                />
+              </Spacings.Stack>
+              <Spacings.Stack scale="s">
+                <TextField
+                  name="Country"
+                  title="Country"
+                  value={formik.values.title}
+                  errors={formik.errors.title}
+                  touched={formik.touched.title}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  horizontalConstraint={13}
+                />
+              </Spacings.Stack>
+            </Spacings.Stack>
+          </Constraints.Horizontal>
+          {/* </Spacings.Inline> */}
+        </CollapsiblePanel>
+      </div> : null}
     </Spacings.Stack>
   );
 

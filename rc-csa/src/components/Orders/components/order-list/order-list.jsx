@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { lazy,useState } from 'react';
+import { lazy, useState } from 'react';
 import { useIntl } from 'react-intl';
 import {
   Link as RouterLink,
@@ -31,7 +31,7 @@ import {
 import messages from './messages';
 // import toggleFeature from '@commercetools-frontend/application-shell/node_modules/@flopflip/react-broadcast/dist/declarations/src/components/toggle-feature';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
-import { useOrdersFetcher,useReplicateOrderById } from '../../../../hooks/use-orders-connector/use-orders-connector';
+import { useOrdersFetcher, useReplicateOrderById } from '../../../../hooks/use-orders-connector/use-orders-connector';
 import {
   // BinLinearIcon,
   // IconButton,
@@ -62,17 +62,17 @@ import { useCallback } from 'react';
 
 
 const rows = [
-  { OrderNumber: 'CS0012875',Customer:'Lahari',OrderTotal:'$350.00',NooforderItems:'1',TotalItems:'1',OrderStatus:'',ShipmentStatus:"",PaymentStatus:'',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...'},
-  { OrderNumber: 'CS0012875',Customer:'Lahari',OrderTotal:'$350.00',NooforderItems:'1',TotalItems:'1',OrderStatus:'',ShipmentStatus:"",PaymentStatus:'',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...'},
-  { OrderNumber: 'CS0012875',Customer:'Lahari',OrderTotal:'$350.00',NooforderItems:'1',TotalItems:'1',OrderStatus:'',ShipmentStatus:"",PaymentStatus:'',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...'},
+  { OrderNumber: 'CS0012875', Customer: 'Lahari', OrderTotal: '$350.00', NooforderItems: '1', TotalItems: '1', OrderStatus: '', ShipmentStatus: "", PaymentStatus: '', Created: 'jun 14, 2022,2:54:47...', Modified: 'Aug 14, 2022,2:54:47...' },
+  { OrderNumber: 'CS0012875', Customer: 'Lahari', OrderTotal: '$350.00', NooforderItems: '1', TotalItems: '1', OrderStatus: '', ShipmentStatus: "", PaymentStatus: '', Created: 'jun 14, 2022,2:54:47...', Modified: 'Aug 14, 2022,2:54:47...' },
+  { OrderNumber: 'CS0012875', Customer: 'Lahari', OrderTotal: '$350.00', NooforderItems: '1', TotalItems: '1', OrderStatus: '', ShipmentStatus: "", PaymentStatus: '', Created: 'jun 14, 2022,2:54:47...', Modified: 'Aug 14, 2022,2:54:47...' },
   // { OrderNumber: '00012876',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
   // { OrderNumber: '00012877',Customer:'women',Created:'Apr 11, 2022,2:54:47...',Modified:'Apr 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
   // { OrderNumber: '00012879',Customer:'RanjithKumar',Created:'Nov 11, 2022,2:54:47...',Modified:'Dec 11, 2022,2:54:47...',Status:'In Progress',DeliveryMode:'standard'},
 ];
 
 const columns = [
-{ key: 'orderNumber', label: 'Order Number' },
-  { key:'customer', label: 'Customer' },
+  { key: 'orderNumber', label: 'Order Number' },
+  { key: 'customer', label: 'Customer' },
   { key: 'totalPrice', label: 'Order Total' },
   { key: 'noOforderItems', label: 'No.of order Items' },
   { key: 'totalItems', label: 'Total Items' },
@@ -81,7 +81,8 @@ const columns = [
   { key: 'paymentStatus', label: 'Payment Status' },
   { key: 'createdAt', label: 'Created' },
   { key: 'lastModifiedAt', label: 'Modified' },
-  { key: 'duplicate', label:'Duplicate'}
+  //{ key: 'lastModifiedBy', label: 'Modified By' },
+  { key: 'duplicate', label: 'Duplicate' }
 
   // { key: 'orderNumber', label: 'Order Number' },
   // { key:'customer', label: 'Customer' },
@@ -89,14 +90,14 @@ const columns = [
   // { key: 'lastModifiedAt', label: 'Modified' },
   // { key: 'orderState', label: 'Status' },
   // { key: 'shippingMethodName', label: 'Delivery Mode' },
- 
+
 ];
 
 
 
 
 
-const Orders =  (props) => {
+const Orders = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
@@ -106,29 +107,29 @@ const Orders =  (props) => {
   const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
   // const [isEditable, setIsEditable] = useState(true);
   let isEditable = true;
-  const { ordersPaginatedResult, error, loading } =  useOrdersFetcher({
+  const { ordersPaginatedResult, error, loading } = useOrdersFetcher({
     page,
     perPage,
     tableSorting,
   });
 
-  const onClickDuplicateButton = useCallback(  
-    async (e)=>{
+  const onClickDuplicateButton = useCallback(
+    async (e) => {
 
-      console.log(e,"Duplicate")
-      const reference ={
-        typeId:"order",
-        id:e?.orderId
+      console.log(e, "Duplicate")
+      const reference = {
+        typeId: "order",
+        id: e?.orderId
       }
       console.log(reference);
-      console.log("isEditable",isEditable);
-      isEditable=false;
-      console.log("isEditable",isEditable);
+      console.log("isEditable", isEditable);
+      isEditable = false;
+      console.log("isEditable", isEditable);
       // push(`/csa-project-2/csa-customer-tickets/cart-edit/57e66be7-d796-430b-95ca-6070bd59ef30/cart-general`)
       const result = await executeReplicateOrder(reference);
       const cartId = await result?.data?.replicateCart?.id;
       console.log(result);
-      if(cartId){
+      if (cartId) {
         push(`cart-edit/${cartId}/cart-general`)
       }
     });
@@ -140,9 +141,9 @@ const Orders =  (props) => {
           <Spacings.Stack scale='s'>
             <Spacings.Inline>
               <IconButton
-                icon={<CopyIcon/>}
-                onClick={(e)=>{
-                  e.orderId = item.id 
+                icon={<CopyIcon />}
+                onClick={(e) => {
+                  e.orderId = item.id
                   onClickDuplicateButton(e)
                 }
                 }
@@ -167,10 +168,10 @@ const Orders =  (props) => {
         />
         <Text.Headline as="h2" intlMessage={messages.title} />
 
-  </Spacings.Stack>
-      {ordersPaginatedResult?(
+      </Spacings.Stack>
+      {ordersPaginatedResult ? (
         <Spacings.Stack scale="l">
-         
+
           <DataTable
             isCondensed
             columns={columns}
@@ -180,10 +181,9 @@ const Orders =  (props) => {
             // sortedBy={tableSorting.value.key}
             // sortDirection={tableSorting.value.order}
             // onSortChange={tableSorting.onChange}
-            onRowClick={(row) => 
-            {
-              console.log("isEditable",isEditable);
-              if(isEditable){
+            onRowClick={(row) => {
+              console.log("isEditable", isEditable);
+              if (isEditable) {
                 push(`order-edit/${row.id}/orders-general`)
               }
             }
@@ -196,21 +196,21 @@ const Orders =  (props) => {
             onPerPageChange={perPage.onChange}
             totalItems={ordersPaginatedResult.total}
           />
-           <Switch>
+          <Switch>
             {/* <SuspendedRoute path={`${match.path}/:id`}>
                 <TicketAccount onClose={() => push(`${match.url}`)} />  
             </SuspendedRoute> */}
-            
+
             <SuspendedRoute path={`${match.path}/:id`}>
               <OrderAccount onClose={() => push(`${match.url}`)} />
             </SuspendedRoute>
-          
-          {/* <SuspendedRoute path={`${match.path}/ticket-details`}>
+
+            {/* <SuspendedRoute path={`${match.path}/ticket-details`}>
             <TicketDetails  onClose={() => push(`${match.url}`)} />
             </SuspendedRoute> */}
-          </Switch> 
+          </Switch>
         </Spacings.Stack>
-      ):null}
+      ) : null}
     </Spacings.Stack>
   );
 };
