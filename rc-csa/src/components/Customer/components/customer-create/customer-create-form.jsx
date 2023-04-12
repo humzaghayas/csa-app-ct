@@ -31,6 +31,7 @@ import {
   useDataTableSortingState,
 } from '@commercetools-uikit/hooks';
 import { ListWithSearchIcon } from '@commercetools-uikit/icons';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 const CustomerCreateForm = (props) => {
   const intl = useIntl();
@@ -45,11 +46,15 @@ const CustomerCreateForm = (props) => {
     enableReinitialize: true,
   });
 
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
+
   const formElements = (
     <Spacings.Stack scale="xxl">
       <FlatButton
-        //as={RouterLink}
-        //to={props.linkToWelcome}
+        as={RouterLink}
+        to={`/${projectKey}/customers/${props?.customer?.id}/general/change-history`}
         label={"Open change history"}
         icon={<ListWithSearchIcon />}
 
