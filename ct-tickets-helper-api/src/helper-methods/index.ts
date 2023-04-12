@@ -6,14 +6,14 @@ import { InvoiceNumber } from 'invoice-number';
 export function getTicketRows(customObjects){
 
 //
-    console.log("customObjects :: " +JSON.stringify(customObjects));
+    console.log("customObjects qwwewewe:: " ,customObjects);
     if(customObjects?.results){
         return customObjects?.results.map(co =>{
             return { id: co.id,
                 ticketNumber:co.value.ticketNumber,
                 Customer: co.value.email,
-                Created: co.createdAt,
-                Modified:co.lastModifiedAt,
+                Created: co.value.createdAt,
+                Modified:co.value.lastModifiedAt,
                 Source:co.value.source,
                 status:co.value.status,
                 Priority:co.value.priority,
@@ -252,7 +252,7 @@ function getTicketValueString( ticketInfo,uuid){
         \"subject\": \"${ticketInfo.subject}\",
         \"type\":\"${ticketInfo.category}\",
         \"createdAt\": \"${currentDate}\",
-        \"modifiedAt\": \"${currentDate}\",
+        \"lastModifiedAt\": \"${currentDate}\",
         \"createdBy\":\"${ticketInfo.createdBy}\",
         \"assignedTo\":\"${ticketInfo.assignedTo}\",
         ${CONSTANTS.TICKET_DATA},
@@ -284,7 +284,7 @@ function getTicketValue( ticketInfo,uuid){
         category: ticketInfo.category,
         subject: ticketInfo.subject,
         type:ticketInfo.category,
-        modifiedAt: currentDate,
+        lastModifiedAt: currentDate,
         createdBy:ticketInfo.createdBy,
         assignedTo:ticketInfo.assignedTo,
     }

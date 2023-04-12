@@ -43,14 +43,14 @@ var uuid_1 = require("uuid");
 var invoice_number_1 = require("invoice-number");
 function getTicketRows(customObjects) {
     //
-    console.log("customObjects :: " + JSON.stringify(customObjects));
+    console.log("customObjects qwwewewe:: ", customObjects);
     if (customObjects === null || customObjects === void 0 ? void 0 : customObjects.results) {
         return customObjects === null || customObjects === void 0 ? void 0 : customObjects.results.map(function (co) {
             return { id: co.id,
                 ticketNumber: co.value.ticketNumber,
                 Customer: co.value.email,
-                Created: co.createdAt,
-                Modified: co.lastModifiedAt,
+                Created: co.value.createdAt,
+                Modified: co.value.lastModifiedAt,
                 Source: co.value.source,
                 status: co.value.status,
                 Priority: co.value.priority,
@@ -200,6 +200,9 @@ function getCreateTicketDraftForDB(ticketInfo) {
             };
             console.log('ticketInfo', ticketInfo);
             ticketDraft = getTicketValue(ticketInfo, uuid);
+            if (ticketInfo === null || ticketInfo === void 0 ? void 0 : ticketInfo._id) {
+                ticketDraft._id = ticketInfo === null || ticketInfo === void 0 ? void 0 : ticketInfo._id;
+            }
             ticketDraft.ticketData = ticketData;
             return [2 /*return*/, ticketDraft];
         });
@@ -261,7 +264,7 @@ function getTicketValueString(ticketInfo, uuid) {
     if (!tNumber) {
         tNumber = getInvoiceNumber();
     }
-    return "{\n        \"id\": \"".concat(uuid, "\",\n        \"ticketNumber\":\"").concat(tNumber, "\",\n        \"customerId\": \"").concat(customerId, "\",\n        \"email\":\"").concat(email, "\",\n        \"source\": \"").concat(ticketInfo.contactType, "\",\n        \"status\": \"").concat(ticketInfo.status, "\",\n        \"priority\": \"").concat(ticketInfo.priority, "\",\n        \"category\": \"").concat(ticketInfo.category, "\",\n        \"subject\": \"").concat(ticketInfo.subject, "\",\n        \"type\":\"").concat(ticketInfo.category, "\",\n        \"createdAt\": \"").concat(currentDate, "\",\n        \"modifiedAt\": \"").concat(currentDate, "\",\n        \"createdBy\":\"").concat(ticketInfo.createdBy, "\",\n        \"assignedTo\":\"").concat(ticketInfo.assignedTo, "\",\n        ").concat(constants_1.CONSTANTS.TICKET_DATA, ",\n        ").concat(constants_1.CONSTANTS.TICKET_HISTORY, "\n    }");
+    return "{\n        \"id\": \"".concat(uuid, "\",\n        \"ticketNumber\":\"").concat(tNumber, "\",\n        \"customerId\": \"").concat(customerId, "\",\n        \"email\":\"").concat(email, "\",\n        \"source\": \"").concat(ticketInfo.contactType, "\",\n        \"status\": \"").concat(ticketInfo.status, "\",\n        \"priority\": \"").concat(ticketInfo.priority, "\",\n        \"category\": \"").concat(ticketInfo.category, "\",\n        \"subject\": \"").concat(ticketInfo.subject, "\",\n        \"type\":\"").concat(ticketInfo.category, "\",\n        \"createdAt\": \"").concat(currentDate, "\",\n        \"lastModifiedAt\": \"").concat(currentDate, "\",\n        \"createdBy\":\"").concat(ticketInfo.createdBy, "\",\n        \"assignedTo\":\"").concat(ticketInfo.assignedTo, "\",\n        ").concat(constants_1.CONSTANTS.TICKET_DATA, ",\n        ").concat(constants_1.CONSTANTS.TICKET_HISTORY, "\n    }");
 }
 function getTicketValue(ticketInfo, uuid) {
     var currentDate = new Date().toUTCString();
@@ -271,9 +274,8 @@ function getTicketValue(ticketInfo, uuid) {
     if (!tNumber) {
         tNumber = getInvoiceNumber();
     }
-    return {
+    var t = {
         id: uuid,
-        _id: ticketInfo._id,
         ticketNumber: tNumber,
         customerId: customerId,
         email: email,
@@ -284,11 +286,17 @@ function getTicketValue(ticketInfo, uuid) {
         category: ticketInfo.category,
         subject: ticketInfo.subject,
         type: ticketInfo.category,
-        createdAt: currentDate,
-        modifiedAt: currentDate,
+        lastModifiedAt: currentDate,
         createdBy: ticketInfo.createdBy,
         assignedTo: ticketInfo.assignedTo,
     };
+    if (ticketInfo.createdAt) {
+        t['createdAt'] = ticketInfo.createdAt;
+    }
+    else {
+        t['createdAt'] = currentDate;
+    }
+    return t;
 }
 function getRandomInt(min, max) {
     min = Math.ceil(min);

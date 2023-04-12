@@ -111,9 +111,13 @@ const Tickets = (props) => {
             offset: (page.value - 1) * perPage.value,
             sort:{"lastModifiedAt": -1}
           });
+
+          console.log('data ti list');
       const r = await getTicketRows(data);
       setRows(r);
       setResData(data);
+
+      console.log('data ti list rrr',r);
     }
     console.log('inside hook !');
   }, [foundUser]);
