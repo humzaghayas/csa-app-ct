@@ -72,7 +72,9 @@ module.exports = function(app){
         // }
     
         const {id} = req.params;
-        const {projectKey} = req.params;
+        const projectKey = req.query.projectKey;
+
+        console.log('p',projectKey);
         const results = await ticketsService.getTicketById(projectKey,id);
     
         if(results.error){

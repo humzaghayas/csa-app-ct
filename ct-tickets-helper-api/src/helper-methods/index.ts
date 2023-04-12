@@ -272,7 +272,7 @@ function getTicketValue( ticketInfo,uuid){
         tNumber = getInvoiceNumber();
     }
 
-    return {
+    let t= {
         id: uuid,
         ticketNumber:tNumber,
         customerId: customerId,
@@ -284,11 +284,18 @@ function getTicketValue( ticketInfo,uuid){
         category: ticketInfo.category,
         subject: ticketInfo.subject,
         type:ticketInfo.category,
-        createdAt: currentDate,
         modifiedAt: currentDate,
         createdBy:ticketInfo.createdBy,
         assignedTo:ticketInfo.assignedTo,
     }
+
+    if(ticketInfo.createdAt){
+        t['createdAt'] = ticketInfo.createdAt
+    }else{
+        t['createdAt'] = currentDate
+    }
+
+    return t;
 }
 
 function getRandomInt(min, max) {

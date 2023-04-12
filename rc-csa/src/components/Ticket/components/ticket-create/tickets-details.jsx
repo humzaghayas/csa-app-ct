@@ -32,7 +32,7 @@ const TicketDetailsP = (props) => {
       console.log('calling execute !');
       const t = await getTicketById(projectKey,match.params.id);
 
-      console.log('ticket',t);
+      console.log('ticket det',t);
       setTicket(t);
     }
   },[ticket]);

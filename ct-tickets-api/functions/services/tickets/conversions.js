@@ -4,7 +4,7 @@ const dataToFormValues = async(ticket,isEdit) => {
   data.files =ticket?.files ?? [];
   data.message= escapeQuotes(ticket?.message )?? '';
   data.comments =ticket?.comments ?? [];
-
+  data.history =ticket?.history ?? [];
 
   if(data.category && (data.category == CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
     || data.category == CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
