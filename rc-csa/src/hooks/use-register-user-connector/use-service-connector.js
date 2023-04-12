@@ -135,14 +135,14 @@ export const useGetTicketById = () => {
 
   const apiUrl = ctCsaBackendURL+'/ticket-db';
 
-  const getTicketById = async (id) => {
+  const getTicketById = async (projectKey,id) => {
     const header= {
       'Content-Type': 'application/json',
     };
 
     const result =await dispatch(
       actions.forwardTo.get({
-        uri: `${apiUrl}/${id}`,
+        uri: `${apiUrl}/${id}?projectKey=${projectKey}`,
         headers: {
           ...header
         },

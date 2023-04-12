@@ -30,7 +30,7 @@ const TicketDetailsP = (props) => {
   useEffect(async () => {
     if(!ticket){
       console.log('calling execute !');
-      const t = await getTicketById(match.params.id);
+      const t = await getTicketById(projectKey,match.params.id);
 
       console.log('ticket',t);
       setTicket(t);

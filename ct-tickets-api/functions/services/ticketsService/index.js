@@ -2,7 +2,7 @@ const { clientDBConnection } = require('../../config/database');
 const {CREATE_CUSTOMOBJECT_MUTATION,getCreateTicketDraftForDB,createTicketHistoryForDB,
   getCreateTicketDraft,createTicketHistory} =require ('ct-tickets-helper-api');
 const { dataToFormValues } = require('../tickets/conversions');
-const {getApiRoot,projectKey } = require('../../config/commercetools-client');
+const {getApiRoot } = require('../../config/commercetools-client');
 
 const validateTicket = require('../tickets/validation')();
 
@@ -161,7 +161,7 @@ const {MONGO_TICKETS_COLLECTION} = process.env;
   }
 
 
-  ticketsService.getTicketById=async (id) => {
+  ticketsService.getTicketById=async (projectKey,id) => {
 
     let result = {};
     try{
