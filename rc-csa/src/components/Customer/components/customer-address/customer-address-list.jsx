@@ -36,30 +36,33 @@ const columns = [
   { key: 'Address', label: 'Address' },
   { key: 'city', label: 'City Name' },
   { key: 'postalCode', label: 'PostalCode' },
-  { key: 'state', label: 'state' },
+  { key: 'state', label: 'State' },
   { key: 'region', label: 'Region' },
   { key: 'country', label: 'Country' },
+  //{ key: 'lastModifiedBy', label: 'Last Modified' }
 ];
 
 const itemRenderer = (item, column) => {
   switch (column.key) {
     case 'firstName':
-      return item.firstName?item.firstName:'--';
+      return item.firstName ? item.firstName : '--';
     case 'company':
-      return item.company?item.company:'---';
+      return item.companyName ? item.companyName : '--';
     case 'Address':
-     //const address = item.streetNumber + ',' + item.apartment + ',' + item.building
-      return item.streetNumber?item.streetNumber:'--';
+      //const address = item.streetNumber + ',' + item.apartment + ',' + item.building
+      return item.streetNumber ? item.streetNumber : '--';
     case 'city':
-      return item.city?item.city:'--';
+      return item.city ? item.city : '--';
     case 'postalCode':
-      return item.postalCode?item.postalCode:'--';
+      return item.postalCode ? item.postalCode : '--';
     case 'state':
-      return item.state?item.state:'--';
+      return item.state ? item.state : '--';
     case 'region':
-      return item.region?item.region:'--';
+      return item.region ? item.region : '--';
     case 'country':
-      return item.country?item.country:'--';
+      return item.country ? item.country : '--';
+    case 'lastModifiedBy':
+      return item?.lastModifiedBy?.userRef?.id ?? '--';
     default:
       return item[column.key];
   }
@@ -74,7 +77,7 @@ const CustomersAddressList = (props) => {
   const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
 
 
- // console.log("customersPaginatedResult",JSON.stringify(customersPaginatedResult));
+  // console.log("customersPaginatedResult",JSON.stringify(customersPaginatedResult));
   return (
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="xs">
@@ -97,7 +100,7 @@ const CustomersAddressList = (props) => {
         />
       </Spacings.Inline>
       <Spacings.Stack scale="l">
-        {props.customer?.addresses  ? (
+        {props.customer?.addresses ? (
           <Spacings.Stack scale="l">
             <DataTable
               isCondensed
@@ -105,7 +108,7 @@ const CustomersAddressList = (props) => {
               rows={props.customer?.addresses}
               itemRenderer={(item, column) => itemRenderer(item, column)}
               maxHeight={600}
-              onRowClick={(row) => push(`${match.url}/${row.id}`+"+"+props.customer?.id)}
+              onRowClick={(row) => push(`${match.url}/${row.id}` + "+" + props.customer?.id)}
             />
             <Pagination
               page={page.value}
@@ -121,7 +124,7 @@ const CustomersAddressList = (props) => {
             </Switch>
           </Spacings.Stack>
         ) : null}
-       
+
       </Spacings.Stack>
     </Spacings.Stack>
   );
