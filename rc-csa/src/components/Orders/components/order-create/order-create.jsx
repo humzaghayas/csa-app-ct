@@ -102,13 +102,13 @@ const OrderCreate = (props) => {
             console.log(result2);
           }
           console.log(result.data.createOrderEdit);
-          //window.location.reload(true)
           forceUpdate();
             showNotification({
             kind: 'success',
             domain: DOMAINS.SIDE,
             text: intl.formatMessage(messages.OrderUpdated),
           }); 
+          window.location.reload(true);
         }
         catch (graphQLErrors) {
           console.log(graphQLErrors.message)

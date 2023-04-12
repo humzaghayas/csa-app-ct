@@ -23,6 +23,7 @@ import { NumberInput, SearchSelectInput } from '@commercetools-frontend/ui-kit';
 import { useProductSearchByText } from '../../../../hooks/use-product-search-connector/use-product-search-connector';
 import { useState } from 'react';
 import { getSearchProductRows } from './conversions';
+import OrderDiscountCode from './order-discount-code';
 
 const getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
   label: key,
@@ -361,10 +362,8 @@ const OrderCreateForm = (props) => {
     props.onSubmit(e);
   }
 
+  console.log(formik?.values);
 
-  // console.log("Order details LineItems");
-  // console.log(props.onSubmit);
-  // console.log(props);
   const formElements = (
     <Spacings.Stack scale="xl">
      <Spacings.Stack scale="l">
@@ -466,38 +465,9 @@ const OrderCreateForm = (props) => {
                 rows={lineItems} 
                 columns={columns} 
                 itemRenderer={itemRenderer}
-                //  onRowClick={(row) =>{ push(`${match.url}/${row.id}/order-item`);
-                //   }
-                // }
                 />:null}
               </Spacings.Stack>
-            {/* <Spacings.Stack scale="s">
-              <Spacings.Inline>
-            <SecondaryButton
-          label="Add Line Items"
-          isDisabled={true}
-          data-track-event="click"
-          onClick={() => push(`order-line-items`)}
-          iconLeft={<PlusBoldIcon />}
-          size="medium"
-        />
-        </Spacings.Inline>
-            </Spacings.Stack> */}
             </Spacings.Stack>
-              <Switch>
-              <SuspendedRoute path={`${match.path}/:id/order-item`}>
-                <OrderItemDetails 
-                  onClose={() => push(`${match.url}`)} 
-                  orderId = {formik?.values?.id} 
-                  orderItems={formik?.values?.lineItems}
-                  onSubmit = {onSubmit}
-                />
-              </SuspendedRoute>
-              <Route  path={`${match.path}/order-line-items`}>
-                 <OrderLineItems  onClose={() => push(`${match.url}`)} />
-              </Route>
-              </Switch>
-
         </Constraints.Horizontal>
        
       {/* </Spacings.Inline> */}
@@ -559,6 +529,9 @@ const OrderCreateForm = (props) => {
       </Constraints.Horizontal>
      </CollapsiblePanel>
      </Spacings.Stack>
+
+     <OrderDiscountCode onSubmit = {props.onSubmit} discountCodes = {formik?.values?.discountCodes} />
+
     </Spacings.Stack>
   );
 
