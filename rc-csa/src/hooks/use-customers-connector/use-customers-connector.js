@@ -28,6 +28,7 @@ import {
   FETCH_PROMOTIONS_LIST,
   FETCH_CUSTOMERS_WISHLIST,
   FETCH_CUSTOMERS_SHOPPINGLIST,
+  FETCH_QUOTES_LIST
 } from 'ct-tickets-helper-api';
 
 import { gql } from '@apollo/client';
@@ -523,6 +524,36 @@ export const useFetchPromotionsList = () => {
 
   return {
     promotions: data?.cartDiscounts?.results,
+    error,
+    loading,
+  };
+};
+
+export const useCustomersQuotesFetcher = ({
+  page,
+  perPage,
+  tableSorting,
+  customerId,
+}) => {
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_QUOTES_LIST}
+    `,
+    {
+      variables: {
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
+        where: 'customer(id="' + customerId + '") and custom is not defined',
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
+
+  return {
+    quotes : data?.quotes,
     error,
     loading,
   };
