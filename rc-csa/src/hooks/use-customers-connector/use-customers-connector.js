@@ -507,10 +507,7 @@ export const useCustomerPromotionsAdder = () => {
 };
 
 export const useFetchPromotionsList = () => {
-  const { data, error, loading } = useMcQuery(
-    gql`
-      ${FETCH_PROMOTIONS_LIST}
-    `,
+  const { data, error, loading } = useMcQuery(gql`${FETCH_PROMOTIONS_LIST}`,
     {
       variables: {
         sort: [`createdAt`],
@@ -535,10 +532,9 @@ export const useCustomersQuotesFetcher = ({
   tableSorting,
   customerId,
 }) => {
-  const { data, error, loading } = useMcQuery(
-    gql`
-      ${FETCH_QUOTES_LIST}
-    `,
+
+  console.log('FETCH_QUOTES_LIST',FETCH_QUOTES_LIST);
+  const { data, error, loading } = useMcQuery(gql`${FETCH_QUOTES_LIST}`,
     {
       variables: {
         limit: perPage.value,
