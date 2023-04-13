@@ -154,13 +154,13 @@ const Customers = (props) => {
                 <SecondaryButton
                   label="Add Customer"
                   data-track-event="click"
-                  // onClick={() => push(`/${projectKey}/customers/new`)}
-                  onClick={() => {
-                    const win = window.open(`/${projectKey}/customers/new`, "_blank");
-                    win.focus();
+                  onClick={() => push(`/${projectKey}/customers/new`)}
+                  // onClick={() => {
+                  //   const win = window.open(`/${projectKey}/customers/new`, "_blank");
+                  //   win.focus();
                     
-                    // push(`/${projectKey}/orders/quotes/${row.id}`)
-                  }}
+                  //   // push(`/${projectKey}/orders/quotes/${row.id}`)
+                  // }}
                   iconLeft={<PlusBoldIcon />}
                   size="medium"
                 />
