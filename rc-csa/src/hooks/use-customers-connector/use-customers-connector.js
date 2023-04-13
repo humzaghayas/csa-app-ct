@@ -34,7 +34,7 @@ import {
 import { gql } from '@apollo/client';
 
 export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
-  const { data, error, loading } = useMcQuery(
+  const { data, error, loading,refetch } = useMcQuery(
     gql`
       ${FETCH_CUSTOMERS_GRAPHQL}
     `,
@@ -54,6 +54,7 @@ export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
     customersPaginatedResult: data?.customers,
     error,
     loading,
+    refetch
   };
 };
 

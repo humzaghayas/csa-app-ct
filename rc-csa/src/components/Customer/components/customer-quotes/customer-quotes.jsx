@@ -96,7 +96,7 @@ const CustomerQuotes = (props) => {
            maxHeight={600}
            onRowClick={(row) => {
             
-            const win = window.open(`/${projectKey}/orders/quotes/${row.id}`, "_blank");
+            const win = window.open(`/${projectKey}/orders/quotes/requests/${row.id}`, "_blank");
             win.focus();
             
             // push(`/${projectKey}/orders/quotes/${row.id}`)

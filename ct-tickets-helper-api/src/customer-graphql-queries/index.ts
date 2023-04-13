@@ -1012,14 +1012,15 @@ export const FETCH_PROMOTIONS_LIST = `query FetchCustomerPromotionsList($sort:[S
   }
 
 }`;
-export const FETCH_QUOTES_LIST = `query fetchAllQuotes($limit: Int
-  $offset: Int
-  $sort: [String!]
+export const FETCH_QUOTES_LIST = `query fetchAllQuotes($limit: Int,
+  $offset: Int,
+  $sort: [String!],
   $where: String){
   quotes(limit: $limit, offset: $offset, sort: $sort, where: $where){
     total
     count
     results{
+      id
       customer{
        email
         id
