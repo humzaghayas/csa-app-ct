@@ -534,14 +534,13 @@ export const useCustomersQuotesFetcher = ({
   customerId,
 }) => {
 
-  console.log('FETCH_QUOTES_LIST',FETCH_QUOTES_LIST);
   const { data, error, loading } = useMcQuery(gql`${FETCH_QUOTES_LIST}`,
     {
       variables: {
         limit: perPage.value,
         offset: (page.value - 1) * perPage.value,
         sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
-        where: 'customer(id="' + customerId + '") and custom is not defined',
+        where: "customer(id=\"" + customerId + "\") and custom is not defined",
       },
       context: {
         target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,

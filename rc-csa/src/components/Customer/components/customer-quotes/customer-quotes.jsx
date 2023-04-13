@@ -79,7 +79,7 @@ const CustomerQuotes = (props) => {
     customerId  
   });
 
-  console.log('params.id',params.id);
+  console.log('params.id',customerId);
   console.log('Quotes',quotes);
 
 

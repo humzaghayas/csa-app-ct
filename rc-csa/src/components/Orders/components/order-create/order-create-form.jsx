@@ -418,10 +418,16 @@ const OrderCreateForm = (props) => {
       <Spacings.Stack scale="l">
         {/* <div className={styles.link}> */}
         <FlatButton
-          as={RouterLink}
-          to={`/${projectKey}/orders/${formik?.values?.id}/general/change-history`}
+          // as={RouterLink}
+          // to={`/${projectKey}/orders/${formik?.values?.id}/general/change-history`}
           label={"Open change history"}
           icon={<ListWithSearchIcon />}
+          onClick={() => {
+            const win = window.open(`/${projectKey}/orders/${formik?.values?.id}/general/change-history`, "_blank");
+            win.focus();
+            
+            // push(`/${projectKey}/orders/quotes/${row.id}`)
+          }}
         />
         {/* </div> */}
         <CollapsiblePanel

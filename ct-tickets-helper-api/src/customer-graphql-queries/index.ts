@@ -1012,7 +1012,7 @@ export const FETCH_PROMOTIONS_LIST = `query FetchCustomerPromotionsList($sort:[S
   }
 
 }`;
-export const FETCH_QUOTES_LIST = `query fetchAllQuotes($limit: Int,
+export const FETCH_QUOTES_LIST = ` query fetchAllQuotes($limit: Int,
   $offset: Int,
   $sort: [String!],
   $where: String){
