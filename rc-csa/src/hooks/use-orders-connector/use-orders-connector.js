@@ -15,7 +15,8 @@ import {
   CREATE_EDIT_ORDER_BY_ID,
   REPLICATE_ORDER,
   FETCH_ORDER_PAYMENTS_BY_ID,
-  FETCH_ORDER_RETURNINFO_BY_ID} from 'ct-tickets-helper-api';
+  FETCH_ORDER_RETURNINFO_BY_ID,
+  FETCH_DISCOUNT_CODES} from 'ct-tickets-helper-api';
 
 export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
 
@@ -193,4 +194,20 @@ export const useFetchOrderReturnInfoById =  (orderId) =>{
     loading,
     error
   };
+}
+export const useFetchDiscountCodes = () =>{
+  const {data,loading,error}= useMcQuery(gql`${FETCH_DISCOUNT_CODES}`,
+  {
+    context:{
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM
+    },
+    fetchPolicy:"network-only"
+  })
+
+  return {
+    discountCodes : data?.discountCodes?.results,
+    loading,
+    error
+  }
+
 }

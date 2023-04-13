@@ -32,6 +32,7 @@ import { useState } from 'react';
 import { getSearchProductRows } from './conversions';
 import { TabularDetailPage } from '@commercetools-frontend/application-components';
 import styles from './order-create-module.css';
+import OrderDiscountCode from './order-discount-code';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 // let getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
@@ -410,10 +411,8 @@ const OrderCreateForm = (props) => {
     props.onSubmit(e);
   }
 
+  console.log(formik?.values);
 
-  // console.log("Order details LineItems");
-  // console.log(props.onSubmit);
-  // console.log(props);
   const formElements = (
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="l">
@@ -516,65 +515,36 @@ const OrderCreateForm = (props) => {
             </CollapsiblePanel.Header>
           }
           scale="l">
-          <Constraints.Horizontal >
-            <Spacings.Stack scale="m">
-              <Spacings.Stack scale="s">
-
-                {lineItems ?
-                  <DataTable
-                    rows={lineItems}
-                    columns={columns}
-                    itemRenderer={itemRenderer}
-                  //  onRowClick={(row) =>{ push(`${match.url}/${row.id}/order-item`);
-                  //   }
-                  // }
-                  /> : null}
+            <Constraints.Horizontal >
+              <Spacings.Stack scale="m">
+             <Spacings.Stack scale="s">
+            
+             {lineItems? 
+                <DataTable 
+                rows={lineItems} 
+                columns={columns} 
+                itemRenderer={itemRenderer}
+                />:null}
               </Spacings.Stack>
-              {/* <Spacings.Stack scale="s">
-              <Spacings.Inline>
-            <SecondaryButton
-          label="Add Line Items"
-          isDisabled={true}
-          data-track-event="click"
-          onClick={() => push(`order-line-items`)}
-          iconLeft={<PlusBoldIcon />}
-          size="medium"
-        />
-        </Spacings.Inline>
-            </Spacings.Stack> */}
             </Spacings.Stack>
-            <Switch>
-              <SuspendedRoute path={`${match.path}/:id/order-item`}>
-                <OrderItemDetails
-                  onClose={() => push(`${match.url}`)}
-                  orderId={formik?.values?.id}
-                  orderItems={formik?.values?.lineItems}
-                  onSubmit={onSubmit}
-                />
-              </SuspendedRoute>
-              <Route path={`${match.path}/order-line-items`}>
-                <OrderLineItems onClose={() => push(`${match.url}`)} />
-              </Route>
-            </Switch>
-
-          </Constraints.Horizontal>
-
-          {/* </Spacings.Inline> */}
-        </CollapsiblePanel>
-        {/* Product search */}
-        <CollapsiblePanel
-          data-testid="quote-summary-panel"
-          header={
-            <CollapsiblePanel.Header>
-              {/* {formatMessage(messages.panelTitle)} */}
-              {'Add line items'}
-            </CollapsiblePanel.Header>
-          }
-          scale="l"
-        >
-          <Constraints.Horizontal>
-            <Spacings.Stack scale='m'>
-              <Spacings.Stack scale='s'>
+        </Constraints.Horizontal>
+       
+      {/* </Spacings.Inline> */}
+     </CollapsiblePanel>
+     {/* Product search */}
+     <CollapsiblePanel
+       data-testid="quote-summary-panel"
+       header={
+         <CollapsiblePanel.Header>
+           {/* {formatMessage(messages.panelTitle)} */}
+           {'Add line items'}
+         </CollapsiblePanel.Header>
+       }
+       scale="l"
+     >
+      <Constraints.Horizontal>
+       <Spacings.Stack scale='m'>
+        <Spacings.Stack scale='s'>
 
                 <SearchSelectInput
                   id='searchProduct'
@@ -613,11 +583,14 @@ const OrderCreateForm = (props) => {
                 /> : null}
 
 
-              </Spacings.Stack>
-            </Spacings.Stack>
-          </Constraints.Horizontal>
-        </CollapsiblePanel>
-      </Spacings.Stack>
+        </Spacings.Stack>
+       </Spacings.Stack>
+      </Constraints.Horizontal>
+     </CollapsiblePanel>
+     </Spacings.Stack>
+
+     <OrderDiscountCode onSubmit = {props.onSubmit} discountCodes = {formik?.values?.discountCodes} />
+
     </Spacings.Stack>
   );
 
