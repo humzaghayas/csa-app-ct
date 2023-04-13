@@ -40,6 +40,7 @@ import { getPermission } from '../../../../utils';
 import CustomerShoppinglist from '../customer-shoppinglist/customer-shoppinglist';
 import CustomerWishlist from '../customer-wishlist/customer-wishlist';
 import CustomerPromotion from '../customer-promotion/customer-promotion';
+import CustomerQuotes from '../customer-quotes/customer-quotes';
 
 
 const CustomerAccount = (props) => {
@@ -129,8 +130,8 @@ const CustomerAccount = (props) => {
 
               {canViewCustomerOrders ? (<>
                 <TabHeader to={`${match.url}/Customers-orders`} label="Orders" />
-
                 <TabHeader to={`${match.url}/Customers-returns`} label="Returns" />
+                <TabHeader to={`${match.url}/Customers-quotes`} label="Quotes" />
               </>
               ) : null}
               {canViewCustomerPayments ? (
@@ -193,6 +194,9 @@ const CustomerAccount = (props) => {
         </Route>
         <Route path={`${match.path}/Customers-payments`}>
           <CustomerPayment />
+        </Route>
+        <Route path={`${match.path}/Customers-quotes`}>
+          <CustomerQuotes />
         </Route>
       </Switch>
     </TabularDetailPage>

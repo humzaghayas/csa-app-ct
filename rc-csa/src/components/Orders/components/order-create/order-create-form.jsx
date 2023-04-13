@@ -33,6 +33,7 @@ import { getSearchProductRows } from './conversions';
 import { TabularDetailPage } from '@commercetools-frontend/application-components';
 import styles from './order-create-module.css';
 import OrderDiscountCode from './order-discount-code';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 const getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
   label: key,
@@ -84,6 +85,9 @@ const OrderCreateForm = (props) => {
 
   // const [searchProducts,setSearchProducts] = useState([]);
   const [searchProductRows, setSearchProductRows] = useState([]);
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
   const formik = useFormik({
     initialValues: props.initialValues,
     onSubmit: props.onSubmit,
@@ -378,8 +382,8 @@ const OrderCreateForm = (props) => {
       <Spacings.Stack scale="l">
         {/* <div className={styles.link}> */}
         <FlatButton
-          //as={RouterLink}
-          //to={props.linkToWelcome}
+          as={RouterLink}
+          to={`/${projectKey}/orders/${formik?.values?.id}/general/change-history`}
           label={"Open change history"}
           icon={<ListWithSearchIcon />}
         />
