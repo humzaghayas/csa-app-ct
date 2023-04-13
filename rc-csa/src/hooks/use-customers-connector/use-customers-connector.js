@@ -11,7 +11,7 @@ import {
   extractErrorFromGraphQlResponse,
   convertToActionData,
 } from '../../helpers';
-
+import { useAsyncDispatch , actions } from '@commercetools-frontend/sdk';
 import {
   FETCH_CUSTOMERS_GRAPHQL,
   FETCH_CUSTOMERS_ADDRESS_DETAILS,
@@ -32,6 +32,7 @@ import {
 } from 'ct-tickets-helper-api';
 
 import { gql } from '@apollo/client';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
   const { data, error, loading,refetch } = useMcQuery(
@@ -527,30 +528,43 @@ export const useFetchPromotionsList = () => {
   };
 };
 
-export const useCustomersQuotesFetcher = ({
-  page,
-  perPage,
-  tableSorting,
-  customerId,
-}) => {
+export const useCustomersQuotesFetcher =() => {
 
-  const { data, error, loading } = useMcQuery(gql`${FETCH_QUOTES_LIST}`,
-    {
-      variables: {
-        limit: perPage.value,
-        offset: (page.value - 1) * perPage.value,
-        sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
-        where: "customer(id=\"" + customerId + "\") and custom is not defined",
-      },
-      context: {
-        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-      },
-    }
+  const dispatch = useAsyncDispatch();
+  const atgPublicURL = useApplicationContext(
+    (context) => context.environment.atgPublicURL
   );
+  
 
-  return {
-    quotes : data?.quotes,
-    error,
-    loading,
-  };
+  const apiUrl = `https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/tickets/customer-quotes`;
+
+
+  const execute = async (customerId) => {
+    // const data= loginATG(apiUrl,headers, payload ,dispatch );
+
+    const header= {
+      'Content-Type': 'application/json',
+    }
+
+    const payload ={
+      "page":1,
+      "perPage":10,
+      customerId
+    }
+
+    const data =await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header
+        },
+      })
+    );
+
+
+    return data;
+  }
+
+  return {execute};
 };

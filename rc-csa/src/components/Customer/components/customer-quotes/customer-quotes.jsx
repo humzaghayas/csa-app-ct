@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   PageNotFound,
   FormModalPage,
@@ -65,6 +65,8 @@ const CustomerQuotes = (props) => {
   const tableSorting = useDataTableSortingState('createdAt desc');
   const customerId = params.id;
 
+  const [quotes,setQuotes] = useState(null);
+
   const {entryPointUriPath,projectKey} = useApplicationContext(
     (context) => ({
       entryPointUriPath:context.environment.entryPointUriPath,
@@ -72,15 +74,19 @@ const CustomerQuotes = (props) => {
   }));
 
 
-  const { quotes, error, loading } = useCustomersQuotesFetcher({
-    page,
-    perPage,
-    tableSorting,
-    customerId  
-  });
+  const { execute } = useCustomersQuotesFetcher();
 
   console.log('params.id',customerId);
-  console.log('Quotes',quotes);
+  
+
+  useEffect(async ()=>{
+      if(quotes == null){
+        const q = await execute(customerId);
+        setQuotes(q);
+
+        console.log('Quotes qqq',q);
+      }
+  } , []);
 
 
   return (
@@ -96,10 +102,10 @@ const CustomerQuotes = (props) => {
            maxHeight={600}
            onRowClick={(row) => {
             
-            const win = window.open(`/${projectKey}/orders/quotes/requests/${row.id}`, "_blank");
-            win.focus();
+            // const win = window.open(`/${projectKey}/orders/quotes/${row.id}`, "_blank");
+            // win.focus();
             
-            // push(`/${projectKey}/orders/quotes/${row.id}`)
+            push(`/${projectKey}/orders/quotes/${row.id}`)
           }}
          />
          <Pagination
