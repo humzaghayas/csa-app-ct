@@ -35,10 +35,10 @@ import styles from './order-create-module.css';
 import OrderDiscountCode from './order-discount-code';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
-const getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
-  label: key,
-  value: ORDER_STATE[key],
-}));
+// let getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
+//   label: key,
+//   value: ORDER_STATE[key],
+// }));
 
 const getPaymentStates = Object.keys(PAYMENT_STATUS).map((key) => ({
   label: key,
@@ -85,6 +85,8 @@ const OrderCreateForm = (props) => {
 
   // const [searchProducts,setSearchProducts] = useState([]);
   const [searchProductRows, setSearchProductRows] = useState([]);
+  const [orderStateOptions, setOrderStateOptions] = useState([]);
+
   const { projectKey } =useApplicationContext((context) => ({
     projectKey:context.project.key
   }));
@@ -118,8 +120,41 @@ const OrderCreateForm = (props) => {
       });
 
       setLineItems(lItems);
+
+      setOrderState(formik?.values?.orderState);
     }
   })
+
+  const setOrderState=(value)=>{
+
+    if(value === 'Confirmed'){
+      const getOrderStates = Object.keys(ORDER_STATE).map((key) => {
+        
+          if(key == 'Confirmed' || key == 'Completed'){
+          
+            return {
+              label: key,
+              value: ORDER_STATE[key]
+            }
+            
+        }else{
+          return null;
+        } 
+      }).filter(o => o!== null);
+      setOrderStateOptions(getOrderStates);
+
+      return;
+    }
+    
+    
+    const getOrderStates =Object.keys(ORDER_STATE).map((key) => ({
+        label: key,
+        value: ORDER_STATE[key],
+      }));
+
+      setOrderStateOptions(getOrderStates);
+    
+  }
 
   const itemRenderer = (item, column) => {
     switch (column.key) {
@@ -335,6 +370,7 @@ const OrderCreateForm = (props) => {
           version: version,
           orderId
         };
+        setOrderState(value);
         props.onChange(e);
         break;
       case 'paymentState':
@@ -382,10 +418,16 @@ const OrderCreateForm = (props) => {
       <Spacings.Stack scale="l">
         {/* <div className={styles.link}> */}
         <FlatButton
-          as={RouterLink}
-          to={`/${projectKey}/orders/${formik?.values?.id}/general/change-history`}
+          // as={RouterLink}
+          // to={`/${projectKey}/orders/${formik?.values?.id}/general/change-history`}
           label={"Open change history"}
           icon={<ListWithSearchIcon />}
+          onClick={() => {
+            const win = window.open(`/${projectKey}/orders/${formik?.values?.id}/general/change-history`, "_blank");
+            win.focus();
+            
+            // push(`/${projectKey}/orders/quotes/${row.id}`)
+          }}
         />
         {/* </div> */}
         <CollapsiblePanel
@@ -422,8 +464,10 @@ const OrderCreateForm = (props) => {
                   // touched={formik.touched.orderState}
                   onChange={onChange}
                   onBlur={formik.handleBlur}
-                  options={getOrderStates}
+                  options={orderStateOptions}
                   // isReadOnly={props.isReadOnly}
+                  isDisabled={formik.values.orderState === 'Complete' 
+                            || formik.values.orderState === 'Cancelled'}
                   horizontalConstraint={13}
                 />
               </Spacings.Stack>

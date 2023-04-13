@@ -34,7 +34,7 @@ import {
 import { gql } from '@apollo/client';
 
 export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
-  const { data, error, loading } = useMcQuery(
+  const { data, error, loading,refetch } = useMcQuery(
     gql`
       ${FETCH_CUSTOMERS_GRAPHQL}
     `,
@@ -54,6 +54,7 @@ export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
     customersPaginatedResult: data?.customers,
     error,
     loading,
+    refetch
   };
 };
 
@@ -507,10 +508,7 @@ export const useCustomerPromotionsAdder = () => {
 };
 
 export const useFetchPromotionsList = () => {
-  const { data, error, loading } = useMcQuery(
-    gql`
-      ${FETCH_PROMOTIONS_LIST}
-    `,
+  const { data, error, loading } = useMcQuery(gql`${FETCH_PROMOTIONS_LIST}`,
     {
       variables: {
         sort: [`createdAt`],
@@ -535,16 +533,14 @@ export const useCustomersQuotesFetcher = ({
   tableSorting,
   customerId,
 }) => {
-  const { data, error, loading } = useMcQuery(
-    gql`
-      ${FETCH_QUOTES_LIST}
-    `,
+
+  const { data, error, loading } = useMcQuery(gql`${FETCH_QUOTES_LIST}`,
     {
       variables: {
         limit: perPage.value,
         offset: (page.value - 1) * perPage.value,
         sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
-        where: 'customer(id="' + customerId + '") and custom is not defined',
+        where: "customer(id=\"" + customerId + "\") and custom is not defined",
       },
       context: {
         target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,

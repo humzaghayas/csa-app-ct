@@ -65,6 +65,13 @@ const CustomerQuotes = (props) => {
   const tableSorting = useDataTableSortingState('createdAt desc');
   const customerId = params.id;
 
+  const {entryPointUriPath,projectKey} = useApplicationContext(
+    (context) => ({
+      entryPointUriPath:context.environment.entryPointUriPath,
+      projectKey:context.project.key
+  }));
+
+
   const { quotes, error, loading } = useCustomersQuotesFetcher({
     page,
     perPage,
@@ -72,7 +79,7 @@ const CustomerQuotes = (props) => {
     customerId  
   });
 
-  console.log('params.id',params.id);
+  console.log('params.id',customerId);
   console.log('Quotes',quotes);
 
 
@@ -80,12 +87,20 @@ const CustomerQuotes = (props) => {
     <Spacings.Stack scale="xl">
     <Spacings.Stack scale="l">
          
+         {quotes ? <>
          <DataTable
            isCondensed
            columns={columns}
            rows={quotes?.results ? quotes?.results : []}
            itemRenderer={itemRenderer}
            maxHeight={600}
+           onRowClick={(row) => {
+            
+            const win = window.open(`/${projectKey}/orders/quotes/requests/${row.id}`, "_blank");
+            win.focus();
+            
+            // push(`/${projectKey}/orders/quotes/${row.id}`)
+          }}
          />
          <Pagination
            page={page.value}
@@ -94,7 +109,7 @@ const CustomerQuotes = (props) => {
            onPerPageChange={perPage.onChange}
            totalItems={quotes?.total}
          />
-         
+        </>: null}
        </Spacings.Stack>
     </Spacings.Stack>
   );
