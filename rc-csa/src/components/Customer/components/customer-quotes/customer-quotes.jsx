@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   PageNotFound,
   FormModalPage,
@@ -65,27 +65,48 @@ const CustomerQuotes = (props) => {
   const tableSorting = useDataTableSortingState('createdAt desc');
   const customerId = params.id;
 
-  const { quotes, error, loading } = useCustomersQuotesFetcher({
-    page,
-    perPage,
-    tableSorting,
-    customerId  
-  });
+  const [quotes,setQuotes] = useState(null);
 
-  console.log('params.id',params.id);
-  console.log('Quotes',quotes);
+  const {entryPointUriPath,projectKey} = useApplicationContext(
+    (context) => ({
+      entryPointUriPath:context.environment.entryPointUriPath,
+      projectKey:context.project.key
+  }));
+
+
+  const { execute } = useCustomersQuotesFetcher();
+
+  console.log('params.id',customerId);
+  
+
+  useEffect(async ()=>{
+      if(quotes == null){
+        const q = await execute(customerId);
+        setQuotes(q);
+
+        console.log('Quotes qqq',q);
+      }
+  } , []);
 
 
   return (
     <Spacings.Stack scale="xl">
     <Spacings.Stack scale="l">
          
+         {quotes ? <>
          <DataTable
            isCondensed
            columns={columns}
            rows={quotes?.results ? quotes?.results : []}
            itemRenderer={itemRenderer}
            maxHeight={600}
+           onRowClick={(row) => {
+            
+            // const win = window.open(`/${projectKey}/orders/quotes/${row.id}`, "_blank");
+            // win.focus();
+            
+            push(`/${projectKey}/orders/quotes/${row.id}`)
+          }}
          />
          <Pagination
            page={page.value}
@@ -94,7 +115,7 @@ const CustomerQuotes = (props) => {
            onPerPageChange={perPage.onChange}
            totalItems={quotes?.total}
          />
-         
+        </>: null}
        </Spacings.Stack>
     </Spacings.Stack>
   );

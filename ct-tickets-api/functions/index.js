@@ -3,6 +3,7 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 const customObjectsService = require('./services/tickets')();
+const quotesService = require('./services/quotes')();
 const customerService = require('./services/customer')();
 const {getTicketCategories,getTicketPriorityValues} = require('ct-tickets-helper-api');
 
@@ -36,6 +37,19 @@ app.post('/create-ticket', async(req, res) =>{
         res.status(400).json({result: result.errors});    
     }else{
         res.status(200).json({result:result});
+    }
+
+});
+
+app.post('/customer-quotes', async(req, res) =>{
+
+    const {page,perPage,customerId} = req.body;
+    const result =await quotesService.getQuotesByCustomer(page,perPage,customerId);
+
+    if(result.error){
+        res.status(400).json({result: result.errors});    
+    }else{
+        res.status(200).json(result);
     }
 
 });

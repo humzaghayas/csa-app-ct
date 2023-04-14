@@ -13,7 +13,6 @@ import {
   usePaginationState,
   useDataTableSortingState,
 } from '@commercetools-uikit/hooks';
-import { BackIcon } from '@commercetools-uikit/icons';
 import Constraints from '@commercetools-uikit/constraints';
 import FlatButton from '@commercetools-uikit/flat-button';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
@@ -28,9 +27,11 @@ import {
   transformLocalizedFieldToLocalizedString,
 } from '@commercetools-frontend/l10n';
 import messages from './messages';
+import Grid from '@commercetools-uikit/grid';
+import { SecondaryIconButton, } from '@commercetools-frontend/ui-kit';
 
 import SecondaryButton from '@commercetools-uikit/secondary-button';
-
+import { BackIcon, RefreshIcon } from '@commercetools-uikit/icons';
 import {
   // BinLinearIcon,
   // IconButton,
@@ -57,6 +58,7 @@ import CustomerAccount from '../customer-account/customer-account';
 // };
 
 import { useCustomersFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 // const rows = [
 //   { Customernumber: '00000001',ExternalId:'--',FirstName:'Lahari',LastName:'Ramurthi',Email:'lahari.r@royalcyber.com',Company:'--',CustomerGroup:'Company A',DateCreated:'Apr 11, 2022,2:54:47...',DateModified:'Apr 11, 2022,2:54:47...'},
@@ -123,7 +125,11 @@ const Customers = (props) => {
   const { page, perPage } = usePaginationState();
   const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
 
-  const { customersPaginatedResult, error, loading } = useCustomersFetcher({
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
+
+  const { customersPaginatedResult, error, loading ,refetch} = useCustomersFetcher({
     page,
     perPage,
     tableSorting,
@@ -142,15 +148,36 @@ const Customers = (props) => {
         <Text.Headline as="h2" intlMessage={messages.title} />
       </Spacings.Stack>
       {/* {loading && <LoadingSpinner />} */}
-      <Spacings.Inline>
-        <SecondaryButton
-          label="Add Customer"
-          data-track-event="click"
-          onClick={() => push(`Customer-create`)}
-          iconLeft={<PlusBoldIcon />}
-          size="medium"
-        />
-      </Spacings.Inline>
+      <Spacings.Stack>
+        <Grid gridGap="16px" gridAutoColumns="12fr" gridTemplateColumns="20% 70% 10%">
+            <Grid.Item >
+                <SecondaryButton
+                  label="Add Customer"
+                  data-track-event="click"
+                  onClick={() => push(`/${projectKey}/customers/new`)}
+                  // onClick={() => {
+                  //   const win = window.open(`/${projectKey}/customers/new`, "_blank");
+                  //   win.focus();
+                    
+                  //   // push(`/${projectKey}/orders/quotes/${row.id}`)
+                  // }}
+                  iconLeft={<PlusBoldIcon />}
+                  size="medium"
+                />
+            </Grid.Item>
+            <Grid.Item>&nbsp;</Grid.Item>
+            <Grid.Item>
+           
+                <SecondaryIconButton
+                  label="Refresh"
+                  data-track-event="click" 
+                  onClick={()=>{refetch()}}
+                  icon={<RefreshIcon />}
+                  size="medium"/>
+
+            </Grid.Item>
+        </Grid>
+      </Spacings.Stack>
       {/* {data ? ( */}
       <Spacings.Stack scale="l">
         {/* <DataTable

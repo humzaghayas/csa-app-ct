@@ -57,7 +57,12 @@ const CustomerCreateForm = (props) => {
         to={`/${projectKey}/customers/${props?.customer?.id}/general/change-history`}
         label={"Open change history"}
         icon={<ListWithSearchIcon />}
-
+        // onClick={() => {
+        //   const win = window.open(`/${projectKey}/customers/${props?.customer?.id}/general/change-history`, "_blank");
+        //   win.focus();
+          
+        //   // push(`/${projectKey}/orders/quotes/${row.id}`)
+        // }}
       />
       <Spacings.Stack scale="l">
         <Spacings.Inline>
