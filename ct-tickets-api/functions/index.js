@@ -54,6 +54,19 @@ app.post('/customer-quotes', async(req, res) =>{
 
 });
 
+app.post('/customer-quotes-requests', async(req, res) =>{
+
+    const {page,perPage,customerId} = req.body;
+    const result =await quotesService.getQuotesRequestsByCustomer(page,perPage,customerId);
+
+    if(result.error){
+        res.status(400).json({result: result.errors});    
+    }else{
+        res.status(200).json(result);
+    }
+
+});
+
 app.post('/create-ticket-chatbot', async(req, res) =>{
 
     const data = JSON.parse(req.body);
