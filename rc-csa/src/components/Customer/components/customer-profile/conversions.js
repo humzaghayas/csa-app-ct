@@ -9,7 +9,7 @@ export const docToFormValues = (customer,customeCustomerFields, languages) => {
       //email: customer?.email ?? '',
       dateOfBirth: customer?.dateOfBirth ?? '',
       customerNumber: customer?.customerNumber ?? '',
-      customerGroup:customer?.customerGroup?.name ?? '',
+      customerGroup:customer?.customerGroup?.id ?? '',
       companyName:customer?.companyName ?? '',
       externalId: customer?.externalId ?? '',
       occupation:customeCustomerFields?.occupation ?? '',
@@ -44,29 +44,45 @@ return profile;
 
 };
 
-export const formValuesToDoc = (formValues) => ({
-  firstName: !TextInput.isEmpty(formValues.firstName)
-  ? formValues.firstName
-  : undefined,
-  dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
-  ? formValues.dateOfBirth
-  : undefined,
-  companyName: !TextInput.isEmpty(formValues.companyName)
-  ? formValues.companyName
-  : undefined,
-  custom:{
-    type:{
-      key:"profileFields",
-      typeId:"type"
+export const formValuesToDoc = (formValues) => {
+  const data = {
+    firstName: !TextInput.isEmpty(formValues.firstName)
+    ? formValues.firstName
+    : undefined,
+    dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
+    ? formValues.dateOfBirth
+    : undefined,
+    companyName: !TextInput.isEmpty(formValues.companyName)
+    ? formValues.companyName
+    : undefined,
+    custom:{
+      type:{
+        key:"profileFields",
+        typeId:"type"
+      },
+      fields: getCustomFields(formValues)
     },
-    fields: getCustomFields(formValues)
-  },
-  // customerGroup:{
-  //   id:"",
-  //   typeId:"customer-group"
-  // }
+    }
 
-  });
+    if(formValues?.customerGroup){
+      data.customerGroup={
+        id:formValues?.customerGroup,
+        typeId:"customer-group"
+        }
+    }
+    
+    return data;
+};
+
+export const getCustomerGroupsOptions = (customerGroups)=>(
+  customerGroups?.map(customerGroup=>{
+    return{
+      value:customerGroup?.id,
+      label:customerGroup?.name,
+    }
+  }
+  )
+) 
 
   const getCustomFields = (formValues)=>{
     const fields = [];

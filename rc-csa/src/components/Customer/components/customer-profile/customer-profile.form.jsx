@@ -17,6 +17,8 @@ import {
   SecondaryButton,
 } from '@commercetools-frontend/ui-kit';
 import { BackIcon } from '@commercetools-uikit/icons';
+import { useCustomerGroupsFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
+import { getCustomerGroupsOptions } from './conversions';
 
 
 const getCustomerGroup = Object.keys(CUSTOMER_GROUP).map(
@@ -64,6 +66,12 @@ const CustomerProfileForm = (props) => {
     validate,
     enableReinitialize: true,
   });
+
+  const customerGroupsLists = useCustomerGroupsFetcher();
+  const options  = getCustomerGroupsOptions(customerGroupsLists?.customerGroups);
+
+  console.log("Options customer groups",options);
+
   console.log("formik", formik);
   const formElements = (
     <Spacings.Stack scale="l">
@@ -128,7 +136,6 @@ const CustomerProfileForm = (props) => {
           horizontalConstraint={13}
           onChange={(event) => alert(event.target.value)}
         /> */}
-
               <DateInput
                 name="dateOfBirth"
                 title="Date of Birth"
@@ -205,7 +212,7 @@ const CustomerProfileForm = (props) => {
                 errors={formik.errors.customerGroup}
                 touched={formik.touched.customerGroup}
                 onChange={formik.handleChange}
-                options={getCustomerGroup}
+                options={options}
                 onBlur={formik.handleBlur}
                 horizontalConstraint={13}
                 isRequired

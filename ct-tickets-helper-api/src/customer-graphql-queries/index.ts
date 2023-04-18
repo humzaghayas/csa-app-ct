@@ -175,6 +175,7 @@ export const FETCH_CUSTOMERS_DETAILS = `query FetchCustomerDetails($id: String!)
       companyName
       customerGroup{
         name
+        id
       }
       defaultBillingAddress {
         id
@@ -525,6 +526,7 @@ export const UPDATE_CUSTOMERS_DETAILS = `mutation UpdateCustomerDetails(
       companyName
       customerGroup{
         name
+        id
       }
       custom{
         customFieldsRaw{
@@ -1036,6 +1038,15 @@ export const FETCH_QUOTES_LIST = `query fetchAllQuotes($limit: Int
       createdAt
       lastModifiedAt
       validTo
+    }
+  }
+}`
+
+export const FETCH_CUSTOMER_GROUPS_LIST = `query fetchCustomerGroupList{
+  customerGroups{
+    results{
+      id
+      name
     }
   }
 }`
