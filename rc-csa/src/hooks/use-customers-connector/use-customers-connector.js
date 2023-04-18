@@ -92,6 +92,7 @@ export const useCustomerDetailsUpdater = () => {
       nextDraft,
       convertToActionData(originalDraft)
     );
+    console.log("Actions to update ",actions)
     try {
       return await updateCustomerDetails({
         context: {

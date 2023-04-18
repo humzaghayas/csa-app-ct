@@ -47,3 +47,36 @@
         }
     ]
 }
+
+
+///
+
+{
+  "key" : "promotionsList",
+  "name" : {
+    "en": "Promotions List"
+  },
+  "description" : {
+    "en": "List of promotions (eg. vouchers, gift cards) assigned to cusotmer."
+  },
+  "resourceTypeIds" : [ "customer" ],
+  "fieldDefinitions" : [ 
+    {
+        "name" : "promotions",
+        "label" : {
+            "en" : "Promotions"
+        },
+        "type":{
+            "name":"Set",
+            "elementType": {
+                "name":"Reference",
+                "referenceTypeId":"cart-discount"
+            }
+        },
+        "required":false,
+        "inputHint" : "SingleLine"
+    }
+   ]
+}
+
+///

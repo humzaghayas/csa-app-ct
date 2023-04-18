@@ -24,19 +24,19 @@ export const docToFormValues = (customer,customeCustomerFields, languages) => {
   }
 
   if(customeCustomerFields?.preferredLanguage && customeCustomerFields?.preferredLanguage.length > 0){
-    profile.preferredLanguage =customeCustomerFields?.preferredLanguage[0];
+    profile.preferredLanguage =customeCustomerFields?.preferredLanguage;
   
   }
   if(customeCustomerFields?.ageGroup && customeCustomerFields?.ageGroup.length > 0){
-    profile.ageGroup =customeCustomerFields?.ageGroup[0];
+    profile.ageGroup =customeCustomerFields?.ageGroup;
   
   }
   if(customeCustomerFields?.gender && customeCustomerFields?.gender.length > 0){
-    profile.gender =customeCustomerFields?.gender[0];
+    profile.gender =customeCustomerFields?.gender;
   
   }
   if(customeCustomerFields?.preferredCurrency && customeCustomerFields?.preferredCurrency.length > 0){
-    profile.preferredCurrency =customeCustomerFields?.preferredCurrency[0];
+    profile.preferredCurrency =customeCustomerFields?.preferredCurrency;
   
   }
 
@@ -54,19 +54,64 @@ export const formValuesToDoc = (formValues) => ({
   companyName: !TextInput.isEmpty(formValues.companyName)
   ? formValues.companyName
   : undefined,
-  occupation: !TextInput.isEmpty(formValues.occupation)
-  ? formValues.occupation
-  : undefined,
-  // dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
-  // ? formValues.dateOfBirth
-  // : undefined,
-  // dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
-  // ? formValues.dateOfBirth
-  // : undefined,
-  // dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
-  // ? formValues.dateOfBirth
-  // : undefined,
-  // dateOfBirth: !TextInput.isEmpty(formValues.dateOfBirth)
-  // ? formValues.dateOfBirth
-  // : undefined,
+  custom:{
+    type:{
+      key:"profileFields",
+      typeId:"type"
+    },
+    fields: getCustomFields(formValues)
+  },
+  // customerGroup:{
+  //   id:"",
+  //   typeId:"customer-group"
+  // }
+
   });
+
+  const getCustomFields = (formValues)=>{
+    const fields = [];
+    
+    if(formValues?.occupation){
+      fields.push(
+        {
+        name: "occupation",
+        value : JSON.stringify(formValues?.occupation)
+      }
+      )
+    }
+
+    if(formValues?.preferredLanguage){
+      fields.push(
+        {
+          name: "preferredLanguage",
+          value : JSON.stringify(formValues.preferredLanguage)
+        }
+      )
+    }
+    if(formValues?.ageGroup){
+      fields.push(
+        {
+          name:"ageGroup",
+          value : JSON.stringify(formValues?.ageGroup)
+        }
+      )
+    }
+    if(formValues?.gender){
+      fields.push(
+        {
+          name:"gender",
+          value: JSON.stringify(formValues?.gender)
+        }
+      )
+    }
+    if(formValues?.preferredCurrency){
+      fields.push(
+        {
+          name: "preferredCurrency",
+          value: JSON.stringify(formValues?.preferredCurrency)
+        }
+      )
+    }
+
+    return fields;
+  }
