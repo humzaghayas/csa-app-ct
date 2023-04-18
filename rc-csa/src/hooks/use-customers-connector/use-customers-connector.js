@@ -531,34 +531,42 @@ export const useFetchPromotionsList = () => {
   };
 };
 
-export const useCustomersQuotesFetcher = ({
-  page,
-  perPage,
-  tableSorting,
-  customerId,
-}) => {
-  const { data, error, loading } = useMcQuery(
-    gql`
-      ${FETCH_QUOTES_LIST}
-    `,
-    {
-      variables: {
-        limit: perPage.value,
-        offset: (page.value - 1) * perPage.value,
-        sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
-        where: 'customer(id="' + customerId + '") and custom is not defined',
-      },
-      context: {
-        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-      },
-    }
-  );
+export const useCustomersQuotesFetcher =() => {
 
-  return {
-    quotes : data?.quotes,
-    error,
-    loading,
-  };
+  const dispatch = useAsyncDispatch();
+  const atgPublicURL = useApplicationContext(
+    (context) => context.environment.atgPublicURL
+  );
+  
+
+ const execute = async (customerId,apiUrl) => {
+    // const data= loginATG(apiUrl,headers, payload ,dispatch );
+
+    const header= {
+      'Content-Type': 'application/json',
+    }
+
+    const payload ={
+      "page":1,
+      "perPage":10,
+      customerId
+    }
+
+    const data =await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header
+        },
+      })
+    );
+
+
+    return data;
+  }
+
+  return {execute};
 };
 
 export const useCustomerGroupsFetcher = () => {
