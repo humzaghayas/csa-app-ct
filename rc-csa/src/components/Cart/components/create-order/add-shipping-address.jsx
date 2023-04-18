@@ -77,7 +77,7 @@ const ShippingAddress = (props) => {
         text: intl.formatMessage(messages.CartUpdated),
       });
     } catch (graphQLErrors) {
-      console.log(graphQLErrors.message);
+      console.log('humza : '+graphQLErrors);
       const transformedErrors = transformErrors(graphQLErrors);
       if (transformedErrors.unmappedErrors.length > 0) {
         showApiErrorNotification({
@@ -106,21 +106,6 @@ const ShippingAddress = (props) => {
       {(formProps) => {
         return (
           <React.Fragment>{formProps.formElements}</React.Fragment>
-          // <FormModalPage
-          //   title={intl.formatMessage(messages.modalTitle)}
-          //   isOpen
-          //   onClose={props.onClose}
-          //   isPrimaryButtonDisabled={
-          //     formProps.isSubmitting || !formProps.isDirty || !canManage
-          //   }
-          //   isSecondaryButtonDisabled={!formProps.isDirty}
-          //   onSecondaryButtonClick={formProps.handleReset}
-          //   onPrimaryButtonClick={formProps.submitForm}
-          //   labelPrimaryButton={FormModalPage.Intl.save}
-          //   labelSecondaryButton={FormModalPage.Intl.revert}
-          // >
-          //   {formProps.formElements}
-          // </FormModalPage>
         );
       }}
     </ShippingAddressForm>

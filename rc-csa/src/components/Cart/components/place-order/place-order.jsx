@@ -51,9 +51,6 @@ const PlaceOrder = (props) => {
 
   const {getCustomerById} = useCustomerDetailsFetcherLazy();
 
-
-  const { execute: execSendEmail } = useSendOrderMail();
-
   const handleSubmit = useCallback(
     async (formikValues, formikHelpers) => {
       const data = formValuesToDoc(formikValues);
