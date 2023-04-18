@@ -336,19 +336,21 @@ const CartViewForm = (props) => {
   };
   const formElements = (
     <Spacings.Stack scale="l">
-      <Spacings.Stack scale="m">
-        <Spacings.Inline>
-          <SecondaryButton
-            label="Place Order"
-            data-track-event="click"
-            //onClick={() => push(`place-order`)}
-            onClick={() => push(`shipping-address`)}
-            iconLeft={<PlusBoldIcon />}
-            size="medium"
-          />
-        </Spacings.Inline>
-      </Spacings.Stack>
 
+      {(formik.values.cartState === "Active" || formik.values.cartState === "Merged") &&
+          <Spacings.Stack scale="m">
+            <Spacings.Inline>
+              <SecondaryButton
+                label="Place Order"
+                data-track-event="click"
+                //onClick={() => push(`place-order`)}
+                onClick={() => push(`shipping-address`)}
+                iconLeft={<PlusBoldIcon />}
+                size="medium"
+              />
+            </Spacings.Inline>
+          </Spacings.Stack> 
+      }
       <CollapsiblePanel
         data-testid="quote-summary-panel"
         header={
@@ -387,6 +389,7 @@ const CartViewForm = (props) => {
                 options={getCartStates}
                 // isReadOnly={props.isReadOnly}
                 // isRequired
+                isDisabled="true"
                 horizontalConstraint={13}
               />
             </Spacings.Stack>
