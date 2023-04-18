@@ -1041,3 +1041,30 @@ export const FETCH_QUOTES_LIST = ` query fetchAllQuotes($limit: Int,
   }
 }`
 
+
+export const FETCH_QUOTES_REQUEST_LIST = ` query fetchAllQuotesRequests($limit: Int,
+  $offset: Int,
+  $sort: [String!],
+  $where: String){
+  quoteRequests(limit: $limit, offset: $offset, sort: $sort, where: $where){
+    total
+    count
+    results{
+      id
+      customer{
+       email
+        id
+        customerGroup{
+          name
+        }
+      }
+      totalPrice{
+        centAmount
+        currencyCode
+        fractionDigits
+      }
+      createdAt
+      lastModifiedAt
+    }
+  }
+}`

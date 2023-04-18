@@ -536,10 +536,7 @@ export const useCustomersQuotesFetcher =() => {
   );
   
 
-  const apiUrl = `https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/tickets/customer-quotes`;
-
-
-  const execute = async (customerId) => {
+ const execute = async (customerId,apiUrl) => {
     // const data= loginATG(apiUrl,headers, payload ,dispatch );
 
     const header= {
