@@ -13,7 +13,7 @@ import {
 
 import Spacings from '@commercetools-uikit/spacings';
 import { CheckActiveIcon, CheckInactiveIcon, CloseIcon, MinimizeIcon } from '@commercetools-uikit/icons';
-import { CollapsiblePanel, Constraints, CreatableSelectField, DataTable, IconButton, PrimaryButton, SearchSelectField, SearchSelectInput, SecondaryButton, TextField, ToggleInput } from '@commercetools-frontend/ui-kit';
+import { AsyncSelectInput, CollapsiblePanel, Constraints, CreatableSelectField, DataTable, IconButton, PrimaryButton, SearchSelectField, SearchSelectInput, SecondaryButton, TextField, ToggleInput } from '@commercetools-frontend/ui-kit';
 import { useFormik } from 'formik';
 import { useFetchDiscountCodes } from '../../../../hooks/use-orders-connector/use-orders-connector';
 import { discountCodeOptions } from './conversions';
@@ -38,20 +38,21 @@ const OrderDiscountCode = (props) => {
    
   const formik = useFormik({
     initialValues: {discount: isMulti ? [] : undefined},
-    onSubmit:(values, formik) => {
-      console.log("On Submit",values);
+    onSubmit:(value, formik) => {
+      console.log("On Submit",value);
       
-      const e={
-        stagedActions : values?.discount?.map(value=>{
-          return{
+      if(value?.discount?.label){
+        const e={
+          stagedActions : {
             addDiscountCode:{
-              code:value?.label
+              code:value?.discount?.label
             }
           }
-        })
-      };
-    props.onSubmit(e);
-    formik.resetForm();
+        };
+      props.onSubmit(e);
+      formik.resetForm();
+      
+      }
     }
   });
 
@@ -69,7 +70,7 @@ const OrderDiscountCode = (props) => {
       >
       <Spacings.Stack scale="xl">
       <Spacings.Stack scale='l'>
-        <CreatableSelectField
+        <AsyncSelectInput
           horizontalConstraint={13}
           errors={formik.errors.discount}
           isRequired={true}
@@ -79,9 +80,9 @@ const OrderDiscountCode = (props) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           isDisabled={formik.isSubmitting}
-          isMulti={isMulti}
+          isMulti={false}
           hasWarning={false}
-          options={options}
+          defaultOptions={options}
           title="Discount codes"
           description="Add discount to orders"
           isClearable={true}
