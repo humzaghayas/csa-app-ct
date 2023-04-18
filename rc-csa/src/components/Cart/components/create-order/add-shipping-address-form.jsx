@@ -238,7 +238,7 @@ const ShippingAddressForm = (props) => {
                   horizontalConstraint={13}
                 />
               </Spacings.Inline>
-              <Spacings.Inline>
+              {/* <Spacings.Inline>
                 <TextField
                   id="state"
                   name="state"
@@ -250,7 +250,7 @@ const ShippingAddressForm = (props) => {
                   onBlur={formik.handleBlur}
                   horizontalConstraint={13}
                 />
-              </Spacings.Inline>
+              </Spacings.Inline> */}
               <Spacings.Inline>
                 <TextField
                   id="country"

@@ -33,7 +33,7 @@ export const formValuesToDoc = (formValues) => ({
           postalCode: formValues?.postalCode,
           country: formValues?.country,
           city: formValues?.city,
-          state: formValues?.state,
+          state: "",//formValues?.state,
           building: formValues?.building,
           additionalStreetInfo: formValues?.additionalStreetInfo,
           additionalAddressInfo: formValues?.additionalAddressInfo,
