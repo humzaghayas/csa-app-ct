@@ -41,6 +41,13 @@ const columns = [
   { key: 'state', label: "State" },
 ]
 
+const getStatesAvailable = [
+  {label:"All" , value:""},
+  {label:"California" , value:"California"},
+  {label:"Texas" , value:"Texas"},
+  {label:"Florida" , value:"Florida"},
+]
+
 const ShippingAddressForm = (props) => {
   const intl = useIntl();
   const { push } = useHistory();
@@ -238,19 +245,19 @@ const ShippingAddressForm = (props) => {
                   horizontalConstraint={13}
                 />
               </Spacings.Inline>
-              {/* <Spacings.Inline>
-                <TextField
-                  id="state"
-                  name="state"
-                  title="State"
-                  value={formik?.values?.state}
-                  errors={formik.errors.state}
-                  touched={formik.touched.state}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  horizontalConstraint={13}
-                />
-              </Spacings.Inline> */}
+              <Spacings.Inline>
+                  <SelectField
+                      name="state"
+                      title="State"
+                      value={formik.values.state}
+                      errors={formik.errors.state}
+                      touched={formik.touched.state}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      options={getStatesAvailable}
+                      horizontalConstraint={13}
+                    />  
+              </Spacings.Inline>
               <Spacings.Inline>
                 <TextField
                   id="country"

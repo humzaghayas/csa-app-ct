@@ -77,7 +77,7 @@ const ShippingAddress = (props) => {
         text: intl.formatMessage(messages.CartUpdated),
       });
     } catch (graphQLErrors) {
-      console.log(graphQLErrors.message);
+      console.log('humza : '+graphQLErrors);
       const transformedErrors = transformErrors(graphQLErrors);
       if (transformedErrors.unmappedErrors.length > 0) {
         showApiErrorNotification({
