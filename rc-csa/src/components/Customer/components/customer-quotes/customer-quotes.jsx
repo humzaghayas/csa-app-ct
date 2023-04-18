@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   PageNotFound,
   FormModalPage,
@@ -30,7 +30,6 @@ import DataTable from '@commercetools-uikit/data-table';
 
 import Spacings from '@commercetools-uikit/spacings';
 import { useCustomersQuotesFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
-import Text from '@commercetools-uikit/text';
 
 const columns = [
 
@@ -62,100 +61,41 @@ const CustomerQuotes = (props) => {
   const { push } = useHistory();
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
-
-  const { pageQR, perPageQR } = usePaginationState();
   const params = useParams();
   const tableSorting = useDataTableSortingState('createdAt desc');
   const customerId = params.id;
 
-  const [quotes,setQuotes] = useState(null);
-  const [quotesRequests,setQuotesRequests] = useState(null);
+  const { quotes, error, loading } = useCustomersQuotesFetcher({
+    page,
+    perPage,
+    tableSorting,
+    customerId  
+  });
 
-  const {entryPointUriPath,projectKey} = useApplicationContext(
-    (context) => ({
-      entryPointUriPath:context.environment.entryPointUriPath,
-      projectKey:context.project.key
-  }));
-
-
-  const { execute } = useCustomersQuotesFetcher();
-
-  console.log('params.id',customerId);
-  const apiUrlQuotes = `https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/tickets/customer-quotes`;
-  const apiUrlQuotesReq = `https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/tickets/customer-quotes-requests`;
-  
-  useEffect(async ()=>{
-      if(quotes == null){
-        const q = await execute(customerId,apiUrlQuotes);
-        setQuotes(q);
-
-        const qr = await execute(customerId,apiUrlQuotesReq);
-        setQuotesRequests(qr);
-        console.log('Quotes qqq',qr);
-      }
-  } , []);
+  console.log('params.id',params.id);
+  console.log('Quotes',quotes);
 
 
   return (
     <Spacings.Stack scale="xl">
-      <Spacings.Stack scale="l">
+    <Spacings.Stack scale="l">
          
-         {quotes ? <>
-
-         <Text.Headline as="h2"> Quotes</Text.Headline>
-            <DataTable
-              isCondensed
-              columns={columns}
-              rows={quotes?.results ? quotes?.results : []}
-              itemRenderer={itemRenderer}
-              maxHeight={600}
-              onRowClick={(row) => {
-                
-                // const win = window.open(`/${projectKey}/orders/quotes/${row.id}`, "_blank");
-                // win.focus();
-                
-                push(`/${projectKey}/orders/quotes/${row.id}`)
-              }}
-            />
-
-            {/* <Pagination
-              page={page.value}
-              onPageChange={page.onChange}
-              perPage={perPage.value}
-              onPerPageChange={perPage.onChange}
-              totalItems={quotes?.total}
-            /> */}
-            </>: null}
+         <DataTable
+           isCondensed
+           columns={columns}
+           rows={quotes?.results ? quotes?.results : []}
+           itemRenderer={itemRenderer}
+           maxHeight={600}
+         />
+         <Pagination
+           page={page.value}
+           onPageChange={page.onChange}
+           perPage={perPage.value}
+           onPerPageChange={perPage.onChange}
+           totalItems={quotes?.total}
+         />
+         
        </Spacings.Stack>
-
-       <Spacings.Stack scale="l">
-          
-          {quotesRequests ? <>
-            <Text.Headline as="h2"> Quote Requests</Text.Headline>
-
-              <DataTable
-                isCondensed
-                columns={columns}
-                rows={quotesRequests?.results ? quotesRequests?.results : []}
-                itemRenderer={itemRenderer}
-                maxHeight={600}
-                onRowClick={(row) => {
-                  
-                  // const win = window.open(`/${projectKey}/orders/quotes/${row.id}`, "_blank");
-                  // win.focus();
-                  
-                  push(`/${projectKey}/orders/quotes/requests/${row.id}`)
-                }}
-              /> 
-              {/* <Pagination
-                page={pageQR.value}
-                onPageChange={pageQR.onChange}
-                perPage={perPageQR.value}
-                onPerPageChange={perPageQR.onChange}
-                totalItems={quotesRequests?.total}
-              />  */}
-              </>: null }
-        </Spacings.Stack> 
     </Spacings.Stack>
   );
 };

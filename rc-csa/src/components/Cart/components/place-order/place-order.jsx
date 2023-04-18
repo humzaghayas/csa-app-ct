@@ -72,18 +72,18 @@ const PlaceOrder = (props) => {
         
         if (response?.data?.createOrderFromCart?.id && cart?.customerId) {
 
-          // const customer = await getCustomerById(cart?.customerId);
-          // console.log('customer ttt',customer)
-          // const order = await execSendEmail(
-          //   {},
-          //   {
-          //     to: customer?.data?.customer?.email,
-          //     subject: 'Your order is created',
-          //     html: `<p>Thanks for creating order.</p><p>Your order ID: ${orderId} </p>`,
-          //   }
-          // );
-          // console.log('Mail sent', order);
-          // console.log(orderId);
+          const customer = await getCustomerById(cart?.customerId);
+          console.log('customer ttt',customer)
+          const order = await execSendEmail(
+            {},
+            {
+              to: customer?.data?.customer?.email,
+              subject: 'Your order is created',
+              html: `<p>Thanks for creating order.</p><p>Your order ID: ${orderId} </p>`,
+            }
+          );
+          console.log('Mail sent', order);
+          console.log(orderId);
         }
       } catch (graphQLErrors) {
         const transformedErrors = transformErrors(graphQLErrors);

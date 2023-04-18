@@ -59,12 +59,13 @@ const customFieldsRaw1 = customer?.custom?.customFieldsRaw;
   );
 };
 const customeCustomerFields=transformCustomFieldsRawToCustomFields(customFieldsRaw1);
-//console.log("transformCustomFieldsRawToCustomFields",customeCustomerFields);
+console.log("transformCustomFieldsRawToCustomFields",customeCustomerFields);
   const customerDetailsUpdater = useCustomerDetailsUpdater();
   const handleSubmit = useCallback(
     
     async (formikValues, formikHelpers) => {
       const data = formValuesToDoc(formikValues);
+      console.log("Customer profile data to update",data);
       try {
         await customerDetailsUpdater.execute({
           originalDraft: customer,

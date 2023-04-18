@@ -11,7 +11,7 @@ import {
   extractErrorFromGraphQlResponse,
   convertToActionData,
 } from '../../helpers';
-import { useAsyncDispatch , actions } from '@commercetools-frontend/sdk';
+
 import {
   FETCH_CUSTOMERS_GRAPHQL,
   FETCH_CUSTOMERS_ADDRESS_DETAILS,
@@ -28,14 +28,14 @@ import {
   FETCH_PROMOTIONS_LIST,
   FETCH_CUSTOMERS_WISHLIST,
   FETCH_CUSTOMERS_SHOPPINGLIST,
-  FETCH_QUOTES_LIST
+  FETCH_QUOTES_LIST,
+  FETCH_CUSTOMER_GROUPS_LIST
 } from 'ct-tickets-helper-api';
 
 import { gql } from '@apollo/client';
-import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
-  const { data, error, loading,refetch } = useMcQuery(
+  const { data, error, loading } = useMcQuery(
     gql`
       ${FETCH_CUSTOMERS_GRAPHQL}
     `,
@@ -55,7 +55,6 @@ export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
     customersPaginatedResult: data?.customers,
     error,
     loading,
-    refetch
   };
 };
 
@@ -94,6 +93,7 @@ export const useCustomerDetailsUpdater = () => {
       nextDraft,
       convertToActionData(originalDraft)
     );
+    console.log("Actions to update ",actions)
     try {
       return await updateCustomerDetails({
         context: {
@@ -509,7 +509,10 @@ export const useCustomerPromotionsAdder = () => {
 };
 
 export const useFetchPromotionsList = () => {
-  const { data, error, loading } = useMcQuery(gql`${FETCH_PROMOTIONS_LIST}`,
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_PROMOTIONS_LIST}
+    `,
     {
       variables: {
         sort: [`createdAt`],
@@ -565,3 +568,25 @@ export const useCustomersQuotesFetcher =() => {
 
   return {execute};
 };
+
+export const useCustomerGroupsFetcher = () => {
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_CUSTOMER_GROUPS_LIST}
+    `,
+    {
+      variables: {
+        sort: [`createdAt`],
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
+
+  return {
+    customerGroups: data?.customerGroups?.results,
+    error,
+    loading,
+  };
+}

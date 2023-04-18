@@ -32,13 +32,12 @@ import { useState } from 'react';
 import { getSearchProductRows } from './conversions';
 import { TabularDetailPage } from '@commercetools-frontend/application-components';
 import styles from './order-create-module.css';
-import OrderDiscountCode from './order-discount-code';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
-// let getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
-//   label: key,
-//   value: ORDER_STATE[key],
-// }));
+const getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
+  label: key,
+  value: ORDER_STATE[key],
+}));
 
 const getPaymentStates = Object.keys(PAYMENT_STATUS).map((key) => ({
   label: key,
@@ -85,8 +84,6 @@ const OrderCreateForm = (props) => {
 
   // const [searchProducts,setSearchProducts] = useState([]);
   const [searchProductRows, setSearchProductRows] = useState([]);
-  const [orderStateOptions, setOrderStateOptions] = useState([]);
-
   const { projectKey } =useApplicationContext((context) => ({
     projectKey:context.project.key
   }));
@@ -120,41 +117,8 @@ const OrderCreateForm = (props) => {
       });
 
       setLineItems(lItems);
-
-      setOrderState(formik?.values?.orderState);
     }
   })
-
-  const setOrderState=(value)=>{
-
-    if(value === 'Confirmed'){
-      const getOrderStates = Object.keys(ORDER_STATE).map((key) => {
-        
-          if(key == 'Confirmed' || key == 'Completed'){
-          
-            return {
-              label: key,
-              value: ORDER_STATE[key]
-            }
-            
-        }else{
-          return null;
-        } 
-      }).filter(o => o!== null);
-      setOrderStateOptions(getOrderStates);
-
-      return;
-    }
-    
-    
-    const getOrderStates =Object.keys(ORDER_STATE).map((key) => ({
-        label: key,
-        value: ORDER_STATE[key],
-      }));
-
-      setOrderStateOptions(getOrderStates);
-    
-  }
 
   const itemRenderer = (item, column) => {
     switch (column.key) {
@@ -370,7 +334,6 @@ const OrderCreateForm = (props) => {
           version: version,
           orderId
         };
-        setOrderState(value);
         props.onChange(e);
         break;
       case 'paymentState':
@@ -411,8 +374,10 @@ const OrderCreateForm = (props) => {
     props.onSubmit(e);
   }
 
-  console.log(formik?.values);
 
+  // console.log("Order details LineItems");
+  // console.log(props.onSubmit);
+  // console.log(props);
   const formElements = (
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="l">
@@ -422,12 +387,6 @@ const OrderCreateForm = (props) => {
           to={`/${projectKey}/orders/${formik?.values?.id}/general/change-history`}
           label={"Open change history"}
           icon={<ListWithSearchIcon />}
-          // onClick={() => {
-          //   const win = window.open(`/${projectKey}/orders/${formik?.values?.id}/general/change-history`, "_blank");
-          //   win.focus();
-            
-          //   // push(`/${projectKey}/orders/quotes/${row.id}`)
-          // }}
         />
         {/* </div> */}
         <CollapsiblePanel
@@ -464,10 +423,8 @@ const OrderCreateForm = (props) => {
                   // touched={formik.touched.orderState}
                   onChange={onChange}
                   onBlur={formik.handleBlur}
-                  options={orderStateOptions}
+                  options={getOrderStates}
                   // isReadOnly={props.isReadOnly}
-                  isDisabled={formik.values.orderState === 'Complete' 
-                            || formik.values.orderState === 'Cancelled'}
                   horizontalConstraint={13}
                 />
               </Spacings.Stack>
@@ -521,36 +478,65 @@ const OrderCreateForm = (props) => {
             </CollapsiblePanel.Header>
           }
           scale="l">
-            <Constraints.Horizontal >
-              <Spacings.Stack scale="m">
-             <Spacings.Stack scale="s">
-            
-             {lineItems? 
-                <DataTable 
-                rows={lineItems} 
-                columns={columns} 
-                itemRenderer={itemRenderer}
-                />:null}
+          <Constraints.Horizontal >
+            <Spacings.Stack scale="m">
+              <Spacings.Stack scale="s">
+
+                {lineItems ?
+                  <DataTable
+                    rows={lineItems}
+                    columns={columns}
+                    itemRenderer={itemRenderer}
+                  //  onRowClick={(row) =>{ push(`${match.url}/${row.id}/order-item`);
+                  //   }
+                  // }
+                  /> : null}
               </Spacings.Stack>
+              {/* <Spacings.Stack scale="s">
+              <Spacings.Inline>
+            <SecondaryButton
+          label="Add Line Items"
+          isDisabled={true}
+          data-track-event="click"
+          onClick={() => push(`order-line-items`)}
+          iconLeft={<PlusBoldIcon />}
+          size="medium"
+        />
+        </Spacings.Inline>
+            </Spacings.Stack> */}
             </Spacings.Stack>
-        </Constraints.Horizontal>
-       
-      {/* </Spacings.Inline> */}
-     </CollapsiblePanel>
-     {/* Product search */}
-     <CollapsiblePanel
-       data-testid="quote-summary-panel"
-       header={
-         <CollapsiblePanel.Header>
-           {/* {formatMessage(messages.panelTitle)} */}
-           {'Add line items'}
-         </CollapsiblePanel.Header>
-       }
-       scale="l"
-     >
-      <Constraints.Horizontal>
-       <Spacings.Stack scale='m'>
-        <Spacings.Stack scale='s'>
+            <Switch>
+              <SuspendedRoute path={`${match.path}/:id/order-item`}>
+                <OrderItemDetails
+                  onClose={() => push(`${match.url}`)}
+                  orderId={formik?.values?.id}
+                  orderItems={formik?.values?.lineItems}
+                  onSubmit={onSubmit}
+                />
+              </SuspendedRoute>
+              <Route path={`${match.path}/order-line-items`}>
+                <OrderLineItems onClose={() => push(`${match.url}`)} />
+              </Route>
+            </Switch>
+
+          </Constraints.Horizontal>
+
+          {/* </Spacings.Inline> */}
+        </CollapsiblePanel>
+        {/* Product search */}
+        <CollapsiblePanel
+          data-testid="quote-summary-panel"
+          header={
+            <CollapsiblePanel.Header>
+              {/* {formatMessage(messages.panelTitle)} */}
+              {'Add line items'}
+            </CollapsiblePanel.Header>
+          }
+          scale="l"
+        >
+          <Constraints.Horizontal>
+            <Spacings.Stack scale='m'>
+              <Spacings.Stack scale='s'>
 
                 <SearchSelectInput
                   id='searchProduct'
@@ -589,14 +575,11 @@ const OrderCreateForm = (props) => {
                 /> : null}
 
 
-        </Spacings.Stack>
-       </Spacings.Stack>
-      </Constraints.Horizontal>
-     </CollapsiblePanel>
-     </Spacings.Stack>
-
-     <OrderDiscountCode onSubmit = {props.onSubmit} discountCodes = {formik?.values?.discountCodes} />
-
+              </Spacings.Stack>
+            </Spacings.Stack>
+          </Constraints.Horizontal>
+        </CollapsiblePanel>
+      </Spacings.Stack>
     </Spacings.Stack>
   );
 

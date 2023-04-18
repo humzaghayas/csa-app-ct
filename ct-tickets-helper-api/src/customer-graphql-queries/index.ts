@@ -175,6 +175,7 @@ export const FETCH_CUSTOMERS_DETAILS = `query FetchCustomerDetails($id: String!)
       companyName
       customerGroup{
         name
+        id
       }
       defaultBillingAddress {
         id
@@ -525,6 +526,7 @@ export const UPDATE_CUSTOMERS_DETAILS = `mutation UpdateCustomerDetails(
       companyName
       customerGroup{
         name
+        id
       }
       custom{
         customFieldsRaw{
@@ -536,7 +538,6 @@ export const UPDATE_CUSTOMERS_DETAILS = `mutation UpdateCustomerDetails(
     }
   
   `;
-
 export const GET_PASSWORD_RESET_TOKEN = `
   mutation GET_PASSWORD_RESET_TOKEN($email:String!){
     customerCreatePasswordResetToken(email:$email){
@@ -547,7 +548,6 @@ export const GET_PASSWORD_RESET_TOKEN = `
     }
   }
   `;
-
 export const RESET_PASSWORD_FOR_CUSTOMER = `
   mutation RESET_PASSWORD_FOR_CUSTOMER($version:Long,$tokenValue:String!,$newPassword:String!){
     customerResetPassword(version:$version,
@@ -667,16 +667,12 @@ export const FETCH_CUSTOMER_ADDRESSES = `query fetchCustomerAddresses($id:String
   }
 
 }`;
-
-
-
 export const FETCH_CUSTOMERS_EMAIL_BY_ID =`query CustomerEmailByID($id:String) {
   customer(id:$id) {
     version
     email
   }
 }`;
-
 export const FETCH_CUSTOMERS_WISHLIST = `query FetchWishlist($limit: Int, $offset: Int, $sort: [String!], $where: String) {
   shoppingLists( limit: $limit, offset: $offset, sort: $sort, where: $where) {
     total
@@ -753,7 +749,6 @@ export const FETCH_CUSTOMERS_WISHLIST = `query FetchWishlist($limit: Int, $offse
   }
 
 `;
-
 export const FETCH_CUSTOMERS_SHOPPINGLIST = `query FetchShoppinglist($limit: Int, $offset: Int, $sort: [String!], $where: String) {
   shoppingLists( limit: $limit, offset: $offset, sort: $sort, where: $where) {
     total
@@ -829,8 +824,6 @@ export const FETCH_CUSTOMERS_SHOPPINGLIST = `query FetchShoppinglist($limit: Int
     }
   }
 }`;
-
-
 export const FETCH_CUSTOMER_PROMOTIONS = `query FetchCustomerPromotions($id:String!) {
   customer(id:$id) {
       id
@@ -894,9 +887,7 @@ export const FETCH_CUSTOMER_PROMOTIONS = `query FetchCustomerPromotions($id:Stri
       lastModifiedAt
       
     }
-  }`;
-
-
+}`;
 export const FETCH_CUSTOMER_PROMOTIONS_LIST = `query FetchCustomerPromotionsList($sort:[String!],$where:String) {
   cartDiscounts(sort:$sort,where:$where) {
     count
@@ -1012,15 +1003,14 @@ export const FETCH_PROMOTIONS_LIST = `query FetchCustomerPromotionsList($sort:[S
   }
 
 }`;
-export const FETCH_QUOTES_LIST = ` query fetchAllQuotes($limit: Int,
-  $offset: Int,
-  $sort: [String!],
+export const FETCH_QUOTES_LIST = `query fetchAllQuotes($limit: Int
+  $offset: Int
+  $sort: [String!]
   $where: String){
   quotes(limit: $limit, offset: $offset, sort: $sort, where: $where){
     total
     count
     results{
-      id
       customer{
        email
         id
@@ -1040,31 +1030,12 @@ export const FETCH_QUOTES_LIST = ` query fetchAllQuotes($limit: Int,
     }
   }
 }`
-
-
-export const FETCH_QUOTES_REQUEST_LIST = ` query fetchAllQuotesRequests($limit: Int,
-  $offset: Int,
-  $sort: [String!],
-  $where: String){
-  quoteRequests(limit: $limit, offset: $offset, sort: $sort, where: $where){
-    total
-    count
+export const FETCH_CUSTOMER_GROUPS_LIST = `query fetchCustomerGroupList{
+  customerGroups{
     results{
       id
-      customer{
-       email
-        id
-        customerGroup{
-          name
-        }
-      }
-      totalPrice{
-        centAmount
-        currencyCode
-        fractionDigits
-      }
-      createdAt
-      lastModifiedAt
+      name
     }
   }
 }`
+

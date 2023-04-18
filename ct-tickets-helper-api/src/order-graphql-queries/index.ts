@@ -124,385 +124,326 @@ export const FETCH_ORDERS = `query FetchAllOrders($limit: Int!, $offset: Int!, $
   }
 }`
 export const FETCH_ORDER_BY_ID = `query($id:String!){
-  order(id:$id){
-      id
-      version
-      createdAt
-      lastModifiedAt
-        createdBy{
-        customerRef{
-          typeId
-          id
-        }
-      }
-      customerId
-      customerEmail
-      country
-      orderState
-      orderNumber
-      paymentState
-        shipmentState
-      origin
-      ...shippingInfo
-      ...shippingAddress
-      ...billingAddress
-      ...lineItems
-      ...cart
-      ...paymentInfo
-      ...totalPrice
-      ...taxedPrice
-      ...returnInfo
-      customLineItems{
-          __typename
-      }
-      discountCodes{
-        discountCode{
-          code
-          cartDiscounts{
-            value{
-              ... on AbsoluteDiscountValue{
-                type
-                money{
-                  centAmount
-                  currencyCode
-                  fractionDigits
-                }
-              }
-              ... on RelativeDiscountValue{
-                permyriad
-                type
-              }
-            }
-            name(locale:"en-Us")
+    order(id:$id){
+        id
+        version
+        createdAt
+        lastModifiedAt
+          createdBy{
+          customerRef{
+            typeId
+            id
           }
         }
-          __typename
-      }
-      directDiscounts{
-          __typename
-      }
+        customerId
+        customerEmail
+        country
+        orderState
+        orderNumber
+        paymentState
+          shipmentState
+        origin
+        ...shippingInfo
+        ...shippingAddress
+        ...billingAddress
+        ...lineItems
+        ...cart
+        ...paymentInfo
+        ...totalPrice
+        ...taxedPrice
+        ...returnInfo
+        customLineItems{
+            __typename
+        }
+        discountCodes{
+            __typename
+        }
+        directDiscounts{
+            __typename
+        }
+    }
   }
-}
-fragment totalPrice on Order{
-      totalPrice{
-          type
-          currencyCode
-          centAmount
-          fractionDigits
-      }            
-  }
-fragment taxedPrice on Order{
-      taxedPrice{
-         totalNet{
-              type
-              currencyCode
-              centAmount
-              fractionDigits
-         }
-         totalGross{
-              type
-              currencyCode
-              centAmount
-              fractionDigits
-         }
-         totalTax{
-              type
-              currencyCode
-              centAmount
-              fractionDigits
-         }
-         taxPortions{
-             rate
-             amount{
-                  type
-                  currencyCode
-                  centAmount
-                  fractionDigits
-             }
-             name
-         }
-      }            
-  }
-fragment shippingInfo on Order{
-  shippingInfo{
-      shippingMethodName
-      shippingMethodState
-      price{
-          type
-          currencyCode
-          centAmount
-          fractionDigits
-      }
-      shippingRate{
-          price{
-              type
-              currencyCode
-              centAmount
-              fractionDigits
-          }
-          freeAbove{
-              type
-              currencyCode
-              centAmount
-              fractionDigits
-          }
-          tiers{
-              type
-              __typename
-          }
-      }
-      taxRate{
-          name
-          amount
-          country
-          includedInPrice
-          id
-          subRates{
-              __typename
-          }
-      }
-      taxCategory{
-          id
-          name
-      }
-      shippingMethod{
-          id
-          name
-      }
-      taxedPrice{
-          totalNet{
-              type
-              currencyCode
-              centAmount
-              fractionDigits
-          }
-          totalGross{
-              type
-              currencyCode
-              centAmount
-              fractionDigits
-          }
-          totalTax{
-              type
-              currencyCode
-              centAmount
-              fractionDigits
-          }
-      }
-  }
-}
-fragment shippingAddress on Order{
-  shippingAddress{
-      id
-      streetName
-      streetNumber
-      postalCode
-        city
-        state
-        building
-      country
-  }
-}
-fragment lineItems on Order{
-  lineItems{
-      id
-      productId
-      productKey
-      name(locale:"en-US")
-      ...prioductType
-      ...variant
-      ...price
-      quantity
-      discountedPricePerQuantity{
-          __typename
-        quantity
-        discountedPrice{
-          value{
-            fractionDigits
+  fragment totalPrice on Order{
+        totalPrice{
+            type
             currencyCode
             centAmount
-          }
-          includedDiscounts{
-            discount{
+            fractionDigits
+        }            
+    }
+  fragment taxedPrice on Order{
+        taxedPrice{
+           totalNet{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+           }
+           totalGross{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+           }
+           totalTax{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+           }
+           taxPortions{
+               rate
+               amount{
+                    type
+                    currencyCode
+                    centAmount
+                    fractionDigits
+               }
+               name
+           }
+        }            
+    }
+  fragment shippingInfo on Order{
+    shippingInfo{
+        shippingMethodName
+        shippingMethodState
+        price{
+            type
+            currencyCode
+            centAmount
+            fractionDigits
+        }
+        shippingRate{
+            price{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+            freeAbove{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+            tiers{
+                type
+                __typename
+            }
+        }
+        taxRate{
+            name
+            amount
+            country
+            includedInPrice
+            id
+            subRates{
+                __typename
+            }
+        }
+        taxCategory{
+            id
+            name
+        }
+        shippingMethod{
+            id
+            name
+        }
+        taxedPrice{
+            totalNet{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+            totalGross{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+            totalTax{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+        }
+    }
+  }
+  fragment shippingAddress on Order{
+    shippingAddress{
+        id
+        streetName
+        streetNumber
+        postalCode
+          city
+          state
+          building
+        country
+    }
+  }
+  fragment lineItems on Order{
+    lineItems{
+        id
+        productId
+        productKey
+        name(locale:"en-US")
+        ...prioductType
+        ...variant
+        ...price
+        quantity
+        discountedPricePerQuantity{
+            __typename
+        }
+        ...taxRate
+        lastModifiedAt
+        ...state
+        priceMode
+        lineItemMode
+        ...totalPriceLineItem
+        ...taxedPriceLineItem
+    }
+  }
+  fragment cart on Order{
+    cart{
+        id        
+    }
+  }
+  fragment paymentInfo on Order{
+    paymentInfo{
+        payments{
+            id
+        }
+    }
+  }
+  fragment billingAddress on Order{
+    billingAddress{
+        id
+        streetName
+        streetNumber
+        postalCode
+          city
+          state
+          building
+        country
+    }
+  }
+  fragment state on LineItem{
+    state{
+        quantity
+        state{
+            id
               name(locale:"en-US")
-            }
-            discountedAmount{
-             fractionDigits
-              centAmount
-              currencyCode
-            }
-          }
+              description(locale:"en-US")
+              initial
+        }        
+    }
+  }
+  fragment prioductType on LineItem{
+    productType{
+            id
+            name
         }
-      }
-      ...taxRate
-      lastModifiedAt
-      ...state
-      priceMode
-      lineItemMode
-      ...totalPriceLineItem
-      ...taxedPriceLineItem
   }
-}
-fragment cart on Order{
-  cart{
-      id        
-  }
-}
-fragment paymentInfo on Order{
-  paymentInfo{
-      payments{
-          id
-      }
-  }
-}
-fragment billingAddress on Order{
-  billingAddress{
-      id
-      streetName
-      streetNumber
-      postalCode
-        city
-        state
-        building
-      country
-  }
-}
-fragment state on LineItem{
-  state{
-      quantity
-      state{
-          id
-            name(locale:"en-US")
-            description(locale:"en-US")
-            initial
-      }        
-  }
-}
-fragment prioductType on LineItem{
-  productType{
-          id
-          name
-      }
-}
-fragment variant on LineItem{
-  variant{
-      sku
-      key
-      prices{
-          id
-          value{
-              type
-              currencyCode
-              centAmount
-              fractionDigits
-          }
-        discounted{
-          value{
-            type
-              currencyCode
-              centAmount
-              fractionDigits
-          }
-          discount{
-            name(locale:"en-US")
-          }
-        }
-          country
-      }
-      images{
-          url
-      }
-      attributesRaw{
-          name
-          value
-      }
-      assets{
-          __typename
-      }
-  }
-}
-fragment price on LineItem{
-  price{
-      id
-          value{
-              type
-              currencyCode
-              centAmount
-              fractionDigits
-          }
-    discounted{
-          value{
-            type
-              currencyCode
-              centAmount
-              fractionDigits
-          }
-          discount{
-            name(locale:"en-US")
-          }
-        }
-          country
-  }
-}
-fragment taxRate on LineItem{
-  taxRate{
-      name
-      amount
-      includedInPrice
-      country
-      id
-      subRates{
-          __typename
-      }
-  }
-}
-fragment totalPriceLineItem on LineItem{
-  totalPrice{
-          type
-          currencyCode
-          centAmount
-          fractionDigits
-      }
-}
-fragment taxedPriceLineItem on LineItem{
-  taxedPrice{
-         totalNet{
-              type
-              currencyCode
-              centAmount
-              fractionDigits
-         }
-         totalGross{
-              type
-              currencyCode
-              centAmount
-              fractionDigits
-         }
-         totalTax{
-              type
-              currencyCode
-              centAmount
-              fractionDigits
-         }
-      } 
-}
+  fragment variant on LineItem{
+    variant{
 
-fragment returnInfo on Order{
-  returnInfo{
-        returnTrackingId
-        returnDate
-        items{
-          type
-          id
-          quantity
-          comment
-          shipmentState
-          paymentState
-          lastModifiedAt
-          createdAt
+        sku
+        key
+        prices{
+            id
+            value{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+            country
         }
-      }
-}`
+        images{
+            url
+        }
+        attributesRaw{
+            name
+            value
+        }
+        assets{
+            __typename
+        }
+    }
+  }
+  fragment price on LineItem{
+    price{
+        id
+            value{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+            }
+            country
+    }
+  }
+  fragment taxRate on LineItem{
+    taxRate{
+        name
+        amount
+        includedInPrice
+        country
+        id
+        subRates{
+            __typename
+        }
+    }
+  }
+  fragment totalPriceLineItem on LineItem{
+    totalPrice{
+            type
+            currencyCode
+            centAmount
+            fractionDigits
+        }
+  }
+  fragment taxedPriceLineItem on LineItem{
+    taxedPrice{
+           totalNet{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+           }
+           totalGross{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+           }
+           totalTax{
+                type
+                currencyCode
+                centAmount
+                fractionDigits
+           }
+        } 
+  }
+  
+  fragment returnInfo on Order{
+    returnInfo{
+          returnTrackingId
+          returnDate
+          items{
+            type
+            id
+            quantity
+            comment
+            shipmentState
+            paymentState
+            lastModifiedAt
+            createdAt
+          }
+        }
+  }`
 export const UPDATE_ORDER_BY_ID = `mutation updateOrderById($version:Long!,
     $actions:[OrderUpdateAction!]!,
     $id:String!){
@@ -791,15 +732,3 @@ fragment returnInfo on Order{
       }
 }
 `
-export const FETCH_DISCOUNT_CODES = `query{
-  discountCodes{
-    results{
-      id
-      validFrom
-      validUntil
-      isActive
-      name(locale:"en-US")
-      code
-    }
-  }
-}`

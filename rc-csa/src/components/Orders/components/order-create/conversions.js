@@ -16,8 +16,7 @@ export const docToFormValues = (order, languages) => ({
     totalNet:amountCalculator(order?.taxedPrice?.totalNet?.centAmount,order?.taxedPrice?.totalNet?.fractionDigits),
     totalTax:amountCalculator(order?.taxedPrice?.totalTax?.centAmount,order?.taxedPrice?.totalTax?.fractionDigits),
   },
-  totalItems:order?.lineItems?.length,
-  discountCodes: getDiscountCodes(order?.discountCodes)
+  totalItems:order?.lineItems?.length
 });
 
 export function getLineItems(lineItems){
@@ -69,25 +68,6 @@ function amountCalculator(centAmount,fractionDigits){
   centAmount = "$"+centAmount+".00";
   return centAmount;
 }
-
-const getDiscountCodes = (discountCodes)=>(
-  discountCodes?.map(discountCode=>{
-    return{
-      code: discountCode?.discountCode?.code,
-      name:discountCode?.discountCode?.cartDiscounts[0]?.name,
-      value: returnValue(discountCode?.discountCode?.cartDiscounts[0]?.value?.type,discountCode?.discountCode?.cartDiscounts[0]?.value) 
-    }
-  })
-)
-
-const returnValue = (type,value)=>{
-  switch(type){
-      case 'relative':
-          return value?.permyriad/100+'%';
-      case 'absolute':
-          return value?.money[0]?.centAmount/100+'$';
-  }
-};
 
 export const getSearchProductRows = (productProjectionSearchResults) =>{
   if(productProjectionSearchResults){
@@ -142,13 +122,3 @@ export const formValuesToDoc = (formValues) => ({
     }}
   ]
   });
-
-export const discountCodeOptions = (discountCodes,rows) =>(
-  discountCodes?.map((discountCode)=>{
-    return {
-        value:discountCode?.id,
-        label:discountCode?.code,
-        isDisabled:rows?.filter(e=>e.code==discountCode.code)[0]?.code ? true : false
-    }
-  })
-)
