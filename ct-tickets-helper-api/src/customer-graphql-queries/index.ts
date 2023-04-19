@@ -1078,3 +1078,36 @@ export const FETCH_CUSTOMER_GROUPS_LIST = `query fetchCustomerGroupList{
     }
   }
 }`
+
+export const CREATE_QUOTE_FOR_CUSTOMER = `mutation ($draft:QuoteRequestDraft!){
+  createQuoteRequest(draft:$draft){
+    id
+   customer{
+    id
+  }
+  }
+}`
+
+export const FETCH_STAGED_QUOTES_LIST = `query fetchStagedQuotes($limit: Int,
+  $offset: Int,
+  $sort: [String!],
+  $where: String){
+  stagedQuotes(limit: $limit, offset: $offset, sort: $sort, where: $where){
+    total
+    count
+    results{
+      id
+      customer{
+       email
+        id
+        customerGroup{
+          name
+        }
+      }
+
+      createdAt
+      lastModifiedAt
+      validTo
+    }
+  }
+}`

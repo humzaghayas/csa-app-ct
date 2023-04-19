@@ -28,8 +28,11 @@ export const docToFormValues = (carts, languages) => ({
       carts?.taxedPrice?.totalTax?.centAmount,
       carts?.taxedPrice?.totalTax?.fractionDigits
     ),
+    
   },
   totalItems: carts?.lineItems?.length,
+  discountCodes:carts?.discountCodes,
+  customerId:carts?.customerId
 });
 
 export function getLineItems(lineItems) {

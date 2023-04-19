@@ -40,6 +40,8 @@ const ShippingAddress = (props) => {
     demandedPermissions: [PERMISSIONS.Manage],
   });
 
+  const isQuoteRequest = props?.isQuoteRequest;
+
   //const {executeFetchOrder} = useFetchOrderById(match.params.id);
   const { executeUpdateCart } = useCartUpdateById();
   const showNotification = useShowNotification();
@@ -102,6 +104,7 @@ const ShippingAddress = (props) => {
       onClose={props?.onClose}
       cartId={cart?.id}
       cartVersion={cart?.version}
+      isQuoteRequest={isQuoteRequest}
     >
       {(formProps) => {
         return (

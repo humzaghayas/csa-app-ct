@@ -67,6 +67,33 @@ app.post('/customer-quotes-requests', async(req, res) =>{
 
 });
 
+app.post('/customer-quotes-staged', async(req, res) =>{
+
+    const {page,perPage,customerId} = req.body;
+    const result =await quotesService.getStagedQuotesByCustomer(page,perPage,customerId);
+
+    if(result.error){
+        res.status(400).json({result: result.errors});    
+    }else{
+        res.status(200).json(result);
+    }
+
+});
+app.post('/create-customer-quote', async(req, res) =>{
+
+    const draft = req.body;
+
+    console.log('draft',draft);
+    const result =await quotesService.createQuoteRequestForCustomer(draft);
+
+    if(result.error){
+        res.status(400).json({result: result.errors});    
+    }else{
+        res.status(200).json(result);
+    }
+
+});
+
 app.post('/create-ticket-chatbot', async(req, res) =>{
 
     const data = JSON.parse(req.body);

@@ -70,6 +70,7 @@ const CustomerQuotes = (props) => {
 
   const [quotes,setQuotes] = useState(null);
   const [quotesRequests,setQuotesRequests] = useState(null);
+  const [quotesStaged,setQuotesStaged] = useState(null);
 
   const {entryPointUriPath,projectKey} = useApplicationContext(
     (context) => ({
@@ -83,7 +84,7 @@ const CustomerQuotes = (props) => {
   console.log('params.id',customerId);
   const apiUrlQuotes = `https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/tickets/customer-quotes`;
   const apiUrlQuotesReq = `https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/tickets/customer-quotes-requests`;
-  
+  const apiUrlQuotesStaged = `https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/tickets/customer-quotes-staged`;  
   useEffect(async ()=>{
       if(quotes == null){
         const q = await execute(customerId,apiUrlQuotes);
@@ -92,6 +93,10 @@ const CustomerQuotes = (props) => {
         const qr = await execute(customerId,apiUrlQuotesReq);
         setQuotesRequests(qr);
         console.log('Quotes qqq',qr);
+
+        const sr = await execute(customerId,apiUrlQuotesStaged);
+        setQuotesStaged(sr);
+        console.log('Quotes qqq',sr);
       }
   } , []);
 
@@ -145,6 +150,35 @@ const CustomerQuotes = (props) => {
                   // win.focus();
                   
                   push(`/${projectKey}/orders/quotes/requests/${row.id}`)
+                }}
+              /> 
+              {/* <Pagination
+                page={pageQR.value}
+                onPageChange={pageQR.onChange}
+                perPage={perPageQR.value}
+                onPerPageChange={perPageQR.onChange}
+                totalItems={quotesRequests?.total}
+              />  */}
+              </>: null }
+        </Spacings.Stack> 
+
+        <Spacings.Stack scale="l">
+          
+          {quotesStaged ? <>
+            <Text.Headline as="h2">Staged Quote Requests</Text.Headline>
+
+              <DataTable
+                isCondensed
+                columns={columns}
+                rows={quotesStaged?.results ? quotesStaged?.results : []}
+                itemRenderer={itemRenderer}
+                maxHeight={600}
+                onRowClick={(row) => {
+                  
+                  // const win = window.open(`/${projectKey}/orders/quotes/${row.id}`, "_blank");
+                  // win.focus();
+                  
+                  push(`/${projectKey}/orders/quotes/drafts/${row.id}`)
                 }}
               /> 
               {/* <Pagination

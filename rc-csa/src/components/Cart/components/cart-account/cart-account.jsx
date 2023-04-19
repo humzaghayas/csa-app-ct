@@ -78,11 +78,19 @@ const CartAccount = (props) => {
         <Route path={`${match.path}/place-order`}>
           <PlaceOrder />
         </Route>
+
+        <Route path={`${match.path}/place-quote-request`}>
+          <PlaceOrder isQuoteRequest={true}/>
+        </Route>
         {/* <Route path={`${match.path}/cart-line-items`}>
           <CartLineItems onClose={() => push(`${match.url}`)} />
         </Route> */}
         <Route path={`${match.path}/shipping-address`}>
           <ShippingAddress onClose={() => push(`${match.url}/cart-general`)} />
+        </Route>
+
+        <Route path={`${match.path}/shipping-address-for-quotes`}>
+          <ShippingAddress onClose={() => push(`${match.url}/cart-general`) } isQuoteRequest={true}/>
         </Route>
         <Route path={`${match.path}/orders-general`}>
           <OrderCreate />

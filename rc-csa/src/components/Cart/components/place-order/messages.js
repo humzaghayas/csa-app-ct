@@ -9,6 +9,14 @@ export default defineMessages({
     id: 'EmployeeDetails.subTitle',
     defaultMessage: 'Click confirm to place the order. ',
   },
+  modalTitleQuote: {
+    id: 'EmployeeDetails.modalTitle',
+    defaultMessage: 'Quote Request Confimation',
+  },
+  subTitleQuote: {
+    id: 'EmployeeDetails.subTitle',
+    defaultMessage: 'Click confirm create Quote request. ',
+  },
   panelTitle: {
     id: 'EmployeeDetails.panelTitle',
     defaultMessage:
