@@ -1,1 +1,2 @@
+firebase use commerce-tools-b2b-services
 firebase deploy --only functions

@@ -58,6 +58,8 @@ const ShippingAddressForm = (props) => {
     validate,
     enableReinitialize: true,
   });
+
+  const isQuoteRequest = props?.isQuoteRequest;
   const onSubmit = (e) => {
     const updateData = formValuesToDoc(formik?.values);
     console.log("Update data", updateData);
@@ -317,13 +319,25 @@ const ShippingAddressForm = (props) => {
           </CollapsiblePanel>
           <Spacings.Stack scale="s">
             <Spacings.Inline>
-              <PrimaryButton
-                label="Next"
-                //onClick={onSubmit}
-                onClick={() => push(`place-order`)}
-                //onSubmit={onSubmit}
-                isDisabled={false}
-              />
+
+              {!isQuoteRequest && 
+                <PrimaryButton
+                  label="Next"
+                  //onClick={onSubmit}
+                  onClick={() => push(`place-order`)}
+                  //onSubmit={onSubmit}
+                  isDisabled={false}
+                />
+              }
+              {isQuoteRequest && 
+                <PrimaryButton
+                      label="Next"
+                      //onClick={onSubmit}
+                      onClick={() => push(`place-quote-request`)}
+                      //onSubmit={onSubmit}
+                      isDisabled={false}
+                    />
+              }    
             </Spacings.Inline>
           </Spacings.Stack>
         </Spacings.Stack>

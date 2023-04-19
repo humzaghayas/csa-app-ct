@@ -587,4 +587,32 @@ export const useCustomerGroupsFetcher = () => {
     error,
     loading,
   };
-}
+};
+
+export const useCustomersCreateQuote =() => {
+
+  const dispatch = useAsyncDispatch();
+
+ const execute = async (apiUrl,payload) => {
+    // const data= loginATG(apiUrl,headers, payload ,dispatch );
+
+    const header= {
+      'Content-Type': 'application/json',
+    }
+
+      const data =await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header
+        },
+      })
+    );
+
+
+    return data;
+  }
+
+  return {execute};
+};

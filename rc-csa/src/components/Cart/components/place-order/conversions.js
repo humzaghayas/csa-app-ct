@@ -3,11 +3,12 @@ import { transformLocalizedFieldToLocalizedString } from '@commercetools-fronten
 import { TextInput } from '@commercetools-frontend/ui-kit';
 import CartAccount from '../cart-account/cart-account';
 
-export const docToFormValues = (carts, order, languages) => ({
+export const docToFormValues = (carts, order, languages,isQuoteRequest) => ({
   id: carts?.id,
   cartState: carts?.cartState,
   orderNumber: order?.orderNumber,
   orderId: carts?.orderId,
+  isQuoteRequest:isQuoteRequest ?? false,
   lineItems: getLineItems(carts?.lineItems),
   //totalPrice:amountCalculator(carts?.totalPrice?.centAmount,carts?.totalPrice?.fractionDigits),
   taxedPrice: {
