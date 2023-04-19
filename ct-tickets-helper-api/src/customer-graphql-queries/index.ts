@@ -175,6 +175,7 @@ export const FETCH_CUSTOMERS_DETAILS = `query FetchCustomerDetails($id: String!)
       companyName
       customerGroup{
         name
+        id
       }
       defaultBillingAddress {
         id
@@ -1065,6 +1066,15 @@ export const FETCH_QUOTES_REQUEST_LIST = ` query fetchAllQuotesRequests($limit: 
       }
       createdAt
       lastModifiedAt
+    }
+  }
+}`
+
+export const FETCH_CUSTOMER_GROUPS_LIST = `query fetchCustomerGroupList{
+  customerGroups{
+    results{
+      id
+      name
     }
   }
 }`
