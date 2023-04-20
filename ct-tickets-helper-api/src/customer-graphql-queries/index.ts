@@ -1059,6 +1059,7 @@ export const FETCH_QUOTES_REQUEST_LIST = ` query fetchAllQuotesRequests($limit: 
           name
         }
       }
+      quoteRequestState
       totalPrice{
         centAmount
         currencyCode
@@ -1104,7 +1105,14 @@ export const FETCH_STAGED_QUOTES_LIST = `query fetchStagedQuotes($limit: Int,
           name
         }
       }
-
+      quotationCart{
+        totalPrice{
+          centAmount
+          currencyCode
+          fractionDigits
+        }
+      }
+      stagedQuoteState
       createdAt
       lastModifiedAt
       validTo
