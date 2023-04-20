@@ -85,7 +85,7 @@ module.exports = ()=>{
                             limit: perPage,
                             offset: (page - 1) * perPage,
                             //sort: [`${tableSorting.value.key} ${tableSorting.value.order}`],
-                            where: "customer(id=\"" + customerId + "\")",
+                            where: "customer(id=\"" + customerId + "\") AND stagedQuoteState in (\"InProgress\")",
                         },
                     }
                 })

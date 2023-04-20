@@ -42,6 +42,26 @@ const columns = [
   { key: 'validTo', label: 'Valid Until' }
 ];
 
+const columnsQR = [
+
+  { key: 'customer', label: 'Customer' },
+  { key: 'totalPrice', label: 'Total' },
+  { key: 'quoteRequestState', label: 'Status' },
+  { key: 'createdAt', label: 'Created At' },
+  { key: 'lastModifiedAt', label: 'Last Modified' },
+  { key: 'validTo', label: 'Valid Until' }
+];
+
+const columnsSQ = [
+
+  { key: 'customer', label: 'Customer' },
+  { key: 'totalPrice', label: 'Total' },
+  { key: 'stagedQuoteState', label: 'Status' },
+  { key: 'createdAt', label: 'Created At' },
+  { key: 'lastModifiedAt', label: 'Last Modified' },
+  { key: 'validTo', label: 'Valid Until' }
+];
+
 const itemRenderer = (item,column) => {
     switch(column.key){
         case 'validTo':
@@ -53,6 +73,20 @@ const itemRenderer = (item,column) => {
         default:
             return item[column.key];
     }
+}
+
+
+const itemRendererStaged = (item,column) => {
+  switch(column.key){
+      case 'validTo':
+          return item?.validTo ? item?.validTo : '--'
+      case 'customer':
+          return item?.customer?.email;
+      case 'totalPrice' :
+          return item?.quotationCart?.totalPrice?.centAmount/100+'$';
+      default:
+          return item[column.key];
+  }
 }
 
 
@@ -103,35 +137,7 @@ const CustomerQuotes = (props) => {
 
   return (
     <Spacings.Stack scale="xl">
-      <Spacings.Stack scale="l">
-         
-         {quotes ? <>
 
-         <Text.Headline as="h2"> Quotes</Text.Headline>
-            <DataTable
-              isCondensed
-              columns={columns}
-              rows={quotes?.results ? quotes?.results : []}
-              itemRenderer={itemRenderer}
-              maxHeight={600}
-              onRowClick={(row) => {
-                
-                // const win = window.open(`/${projectKey}/orders/quotes/${row.id}`, "_blank");
-                // win.focus();
-                
-                push(`/${projectKey}/orders/quotes/${row.id}`)
-              }}
-            />
-
-            {/* <Pagination
-              page={page.value}
-              onPageChange={page.onChange}
-              perPage={perPage.value}
-              onPerPageChange={perPage.onChange}
-              totalItems={quotes?.total}
-            /> */}
-            </>: null}
-       </Spacings.Stack>
 
        <Spacings.Stack scale="l">
           
@@ -140,7 +146,7 @@ const CustomerQuotes = (props) => {
 
               <DataTable
                 isCondensed
-                columns={columns}
+                columns={columnsQR}
                 rows={quotesRequests?.results ? quotesRequests?.results : []}
                 itemRenderer={itemRenderer}
                 maxHeight={600}
@@ -169,9 +175,9 @@ const CustomerQuotes = (props) => {
 
               <DataTable
                 isCondensed
-                columns={columns}
+                columns={columnsSQ}
                 rows={quotesStaged?.results ? quotesStaged?.results : []}
-                itemRenderer={itemRenderer}
+                itemRenderer={itemRendererStaged}
                 maxHeight={600}
                 onRowClick={(row) => {
                   
@@ -190,6 +196,36 @@ const CustomerQuotes = (props) => {
               />  */}
               </>: null }
         </Spacings.Stack> 
+
+        <Spacings.Stack scale="l">
+         
+         {quotes ? <>
+
+         <Text.Headline as="h2"> Quotes</Text.Headline>
+            <DataTable
+              isCondensed
+              columns={columns}
+              rows={quotes?.results ? quotes?.results : []}
+              itemRenderer={itemRenderer}
+              maxHeight={600}
+              onRowClick={(row) => {
+                
+                // const win = window.open(`/${projectKey}/orders/quotes/${row.id}`, "_blank");
+                // win.focus();
+                
+                push(`/${projectKey}/orders/quotes/${row.id}`)
+              }}
+            />
+
+            {/* <Pagination
+              page={page.value}
+              onPageChange={page.onChange}
+              perPage={perPage.value}
+              onPerPageChange={perPage.onChange}
+              totalItems={quotes?.total}
+            /> */}
+            </>: null}
+       </Spacings.Stack>
     </Spacings.Stack>
   );
 };
