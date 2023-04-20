@@ -9,6 +9,16 @@ import validate from './validate';
 import messages from './messages';
 import Constraints from '@commercetools-uikit/constraints';
 
+const getStatesAvailable = [
+  {label:"All" , value:""},
+  {label:"California" , value:"California"},
+  {label:"Texas" , value:"Texas"},
+  {label:"Florida" , value:"Florida"},
+]
+const getCountriesList = [
+  {label:"US" , value:"US"},
+]
+
 const AddressDetailsForm = (props) => {
   const intl = useIntl();
   const formik = useFormik({
@@ -109,28 +119,30 @@ const AddressDetailsForm = (props) => {
               />
             </Spacings.Stack>
             <Spacings.Stack scale="s">
-              <TextField
-                name="state"
-                title="State"
-                value={formik.values.state}
-                errors={formik.errors.state}
-                touched={formik.touched.state}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                horizontalConstraint={13}
-              />
+                <SelectField
+                      name="state"
+                      title="State"
+                      value={formik.values.state}
+                      errors={formik.errors.state}
+                      touched={formik.touched.state}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      options={getStatesAvailable}
+                      horizontalConstraint={13}
+                    /> 
             </Spacings.Stack>
             <Spacings.Stack scale="s">
-              <TextField
-                name="country"
-                title="Country"
-                value={formik.values.country}
-                errors={formik.errors.country}
-                touched={formik.touched.country}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                horizontalConstraint={13}
-              />
+                <SelectField
+                      name="country"
+                      title="Country"
+                      value={formik.values.country}
+                      errors={formik.errors.country}
+                      touched={formik.touched.country}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      options={getCountriesList}
+                      horizontalConstraint={13}
+                    /> 
             </Spacings.Stack>
           </Spacings.Stack>
         </Constraints.Horizontal>
