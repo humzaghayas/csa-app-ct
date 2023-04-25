@@ -11,7 +11,7 @@ import {
   extractErrorFromGraphQlResponse,
   convertToActionData,
 } from '../../helpers';
-
+import { useAsyncDispatch , actions } from '@commercetools-frontend/sdk';
 import {
   FETCH_CUSTOMERS_GRAPHQL,
   FETCH_CUSTOMERS_ADDRESS_DETAILS,
@@ -28,12 +28,15 @@ import {
   FETCH_PROMOTIONS_LIST,
   FETCH_CUSTOMERS_WISHLIST,
   FETCH_CUSTOMERS_SHOPPINGLIST,
+  FETCH_QUOTES_LIST,
+  FETCH_CUSTOMER_GROUPS_LIST
 } from 'ct-tickets-helper-api';
 
 import { gql } from '@apollo/client';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
-  const { data, error, loading } = useMcQuery(
+  const { data, error, loading,refetch } = useMcQuery(
     gql`
       ${FETCH_CUSTOMERS_GRAPHQL}
     `,
@@ -53,6 +56,7 @@ export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
     customersPaginatedResult: data?.customers,
     error,
     loading,
+    refetch
   };
 };
 
@@ -506,10 +510,7 @@ export const useCustomerPromotionsAdder = () => {
 };
 
 export const useFetchPromotionsList = () => {
-  const { data, error, loading } = useMcQuery(
-    gql`
-      ${FETCH_PROMOTIONS_LIST}
-    `,
+  const { data, error, loading } = useMcQuery(gql`${FETCH_PROMOTIONS_LIST}`,
     {
       variables: {
         sort: [`createdAt`],
@@ -526,4 +527,92 @@ export const useFetchPromotionsList = () => {
     error,
     loading,
   };
+};
+
+export const useCustomersQuotesFetcher =() => {
+
+  const dispatch = useAsyncDispatch();
+  const atgPublicURL = useApplicationContext(
+    (context) => context.environment.atgPublicURL
+  );
+  
+
+ const execute = async (customerId,apiUrl) => {
+    // const data= loginATG(apiUrl,headers, payload ,dispatch );
+
+    const header= {
+      'Content-Type': 'application/json',
+    }
+
+    const payload ={
+      "page":1,
+      "perPage":10,
+      customerId
+    }
+
+    const data =await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header
+        },
+      })
+    );
+
+
+    return data;
+  }
+
+  return {execute};
+};
+
+export const useCustomerGroupsFetcher = () => {
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_CUSTOMER_GROUPS_LIST}
+    `,
+    {
+      variables: {
+        sort: [`createdAt`],
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+    }
+  );
+
+  return {
+    customerGroups: data?.customerGroups?.results,
+    error,
+    loading,
+  };
+};
+
+export const useCustomersCreateQuote =() => {
+
+  const dispatch = useAsyncDispatch();
+
+ const execute = async (apiUrl,payload) => {
+    // const data= loginATG(apiUrl,headers, payload ,dispatch );
+
+    const header= {
+      'Content-Type': 'application/json',
+    }
+
+      const data =await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header
+        },
+      })
+    );
+
+
+    return data;
+  }
+
+  return {execute};
 };

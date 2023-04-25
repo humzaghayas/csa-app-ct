@@ -125,7 +125,7 @@ const PlaceOrderForm = (props) => {
         <CustomPopup
           onClose={popupCloseHandler}
           show={props.isShown}
-          title="Order Created"
+          title={props?.message}
         >
           <br />
           <h5>ID: {props.id}</h5>
@@ -133,15 +133,28 @@ const PlaceOrderForm = (props) => {
           <SecondaryIconButton onClick={formik.handleReset} label="Cancel" />
           <Spacings.Stack>
             <Spacings.Inline>
-              <PrimaryButton
-                label="View order"
-                onClick={() =>
-                  push(
-                    `/${projectKey}/${entryPointUriPath}/order-edit/${props.id}/orders-general`
-                  )
-                }
-                size="big"
-              />
+
+              {!props?.isQuoteRequest &&
+                  <PrimaryButton
+                    label="View order"
+                    onClick={() =>
+                      push(
+                        `/${projectKey}/${entryPointUriPath}/order-edit/${props.id}/orders-general`
+                      )
+                    }
+                    size="big"
+                  />
+              }
+
+            {props?.isQuoteRequest &&
+                  <PrimaryButton
+                    label="View Quote"
+                    onClick={() =>
+                      push(`/${projectKey}/orders/quotes/requests/${props.id}`)
+                    }
+                    size="big"
+                  />
+              }
             </Spacings.Inline>
           </Spacings.Stack>
 

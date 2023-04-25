@@ -84,6 +84,12 @@ const CartViewForm = (props) => {
   const params = useParams();
   const lineItemId = params.id;
 
+  const [showQuotes,setShowQuotes] = useState(null);
+
+  useEffect(() => {
+    
+  });
+
   useEffect(() => {
     if (lineItems == null) {
       const lItems = formik?.values?.lineItems?.map((li) => {
@@ -104,6 +110,21 @@ const CartViewForm = (props) => {
       });
 
       setLineItems(lItems);
+
+
+      let sQuotes= null;
+      sQuotes = (formik?.values?.cartState === 'Active' || formik?.values?.cartState === 'Merged') ;
+      console.log('cartState',formik?.values?.cartState);
+      if(sQuotes && formik?.values?.discountCodes){
+        sQuotes = formik?.values?.discountCodes.length <= 0;
+      }
+      if(sQuotes && formik?.values?.customerId){
+        sQuotes = true;
+      }else{
+        sQuotes = false;
+      }
+
+      setShowQuotes(sQuotes);
     }
   });
 
@@ -336,19 +357,33 @@ const CartViewForm = (props) => {
   };
   const formElements = (
     <Spacings.Stack scale="l">
-      <Spacings.Stack scale="m">
-        <Spacings.Inline>
-          <SecondaryButton
-            label="Place Order"
-            data-track-event="click"
-            //onClick={() => push(`place-order`)}
-            onClick={() => push(`shipping-address`)}
-            iconLeft={<PlusBoldIcon />}
-            size="medium"
-          />
-        </Spacings.Inline>
-      </Spacings.Stack>
 
+      {(formik.values.cartState === "Active" || formik.values.cartState === "Merged") &&
+          <Spacings.Stack scale="m">
+              <Spacings.Inline>
+                <SecondaryButton
+                  label="Place Order"
+                  data-track-event="click"
+                  //onClick={() => push(`place-order`)}
+                  onClick={() => push(`shipping-address`)}
+                  iconLeft={<PlusBoldIcon />}
+                  size="medium"
+                />
+                &nbsp;&nbsp;&nbsp;
+
+                {showQuotes && 
+                    <SecondaryButton
+                        label="Request For Quote"
+                        data-track-event="click"
+                        //onClick={() => push(`place-order`)}
+                        onClick={() => push(`shipping-address-for-quotes`)}
+                        iconLeft={<PlusBoldIcon />}
+                        size="medium"
+                      />
+                    }
+            </Spacings.Inline>
+          </Spacings.Stack> 
+      }
       <CollapsiblePanel
         data-testid="quote-summary-panel"
         header={
@@ -387,6 +422,7 @@ const CartViewForm = (props) => {
                 options={getCartStates}
                 // isReadOnly={props.isReadOnly}
                 // isRequired
+                isDisabled="true"
                 horizontalConstraint={13}
               />
             </Spacings.Stack>

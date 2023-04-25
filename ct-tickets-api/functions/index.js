@@ -3,6 +3,7 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 const customObjectsService = require('./services/tickets')();
+const quotesService = require('./services/quotes')();
 const customerService = require('./services/customer')();
 const jwtAuthenticationService = require('./services/ct-jwt-authentication')();
 
@@ -44,7 +45,58 @@ app.post('/create-ticket', async(req, res) =>{
 
 });
 
+app.post('/customer-quotes', async(req, res) =>{
 
+    const {page,perPage,customerId} = req.body;
+    const result =await quotesService.getQuotesByCustomer(page,perPage,customerId);
+
+    if(result.error){
+        res.status(400).json({result: result.errors});    
+    }else{
+        res.status(200).json(result);
+    }
+
+});
+
+app.post('/customer-quotes-requests', async(req, res) =>{
+
+    const {page,perPage,customerId} = req.body;
+    const result =await quotesService.getQuotesRequestsByCustomer(page,perPage,customerId);
+
+    if(result.error){
+        res.status(400).json({result: result.errors});    
+    }else{
+        res.status(200).json(result);
+    }
+
+});
+
+app.post('/customer-quotes-staged', async(req, res) =>{
+
+    const {page,perPage,customerId} = req.body;
+    const result =await quotesService.getStagedQuotesByCustomer(page,perPage,customerId);
+
+    if(result.error){
+        res.status(400).json({result: result.errors});    
+    }else{
+        res.status(200).json(result);
+    }
+
+});
+app.post('/create-customer-quote', async(req, res) =>{
+
+    const draft = req.body;
+
+    console.log('draft',draft);
+    const result =await quotesService.createQuoteRequestForCustomer(draft);
+
+    if(result.error){
+        res.status(400).json({result: result.errors});    
+    }else{
+        res.status(200).json(result);
+    }
+
+});
 
 app.post('/create-ticket-chatbot', async(req, res) =>{
 

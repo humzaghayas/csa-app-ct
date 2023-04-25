@@ -40,6 +40,8 @@ const ShippingAddress = (props) => {
     demandedPermissions: [PERMISSIONS.Manage],
   });
 
+  const isQuoteRequest = props?.isQuoteRequest;
+
   //const {executeFetchOrder} = useFetchOrderById(match.params.id);
   const { executeUpdateCart } = useCartUpdateById();
   const showNotification = useShowNotification();
@@ -77,7 +79,7 @@ const ShippingAddress = (props) => {
         text: intl.formatMessage(messages.CartUpdated),
       });
     } catch (graphQLErrors) {
-      console.log(graphQLErrors.message);
+      console.log('humza : '+graphQLErrors);
       const transformedErrors = transformErrors(graphQLErrors);
       if (transformedErrors.unmappedErrors.length > 0) {
         showApiErrorNotification({
@@ -102,25 +104,11 @@ const ShippingAddress = (props) => {
       onClose={props?.onClose}
       cartId={cart?.id}
       cartVersion={cart?.version}
+      isQuoteRequest={isQuoteRequest}
     >
       {(formProps) => {
         return (
           <React.Fragment>{formProps.formElements}</React.Fragment>
-          // <FormModalPage
-          //   title={intl.formatMessage(messages.modalTitle)}
-          //   isOpen
-          //   onClose={props.onClose}
-          //   isPrimaryButtonDisabled={
-          //     formProps.isSubmitting || !formProps.isDirty || !canManage
-          //   }
-          //   isSecondaryButtonDisabled={!formProps.isDirty}
-          //   onSecondaryButtonClick={formProps.handleReset}
-          //   onPrimaryButtonClick={formProps.submitForm}
-          //   labelPrimaryButton={FormModalPage.Intl.save}
-          //   labelSecondaryButton={FormModalPage.Intl.revert}
-          // >
-          //   {formProps.formElements}
-          // </FormModalPage>
         );
       }}
     </ShippingAddressForm>

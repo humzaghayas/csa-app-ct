@@ -60,11 +60,11 @@ const CartLineItemsForm = (props) => {
   const match = useRouteMatch();
   const history = useHistory();
 
-  const {entryPointUriPath,projectKey} = useApplicationContext(
+  const { entryPointUriPath, projectKey } = useApplicationContext(
     (context) => ({
-      entryPointUriPath:context.environment.entryPointUriPath,
-      projectKey:context.project.key
-  }));
+      entryPointUriPath: context.environment.entryPointUriPath,
+      projectKey: context.project.key
+    }));
   const formik = useFormik({
     // Pass initial values from the parent component.
     initialValues: props.initialValues,
@@ -106,9 +106,9 @@ const CartLineItemsForm = (props) => {
             noOptionsMessage="No exact match found"
             loadingMessage="loading exact matches"
             placeholder="Search By..."
-            loadOptions={() => {}}
+            loadOptions={() => { }}
             cacheOptions={false}
-            onChange={() => {}}
+            onChange={() => { }}
             className="select-input-search"
           />
         </Constraints.Horizontal>
@@ -123,7 +123,7 @@ const CartLineItemsForm = (props) => {
             data-track-event="click"
             onClick={() =>
               history.push(
-                `/${projectKey}/${entryPointUriPath}/order-edit/13d130e7-ebc8-41c4-838e-316e6a94202b/orders-general`
+                `/${projectKey}/${entryPointUriPath}/cart-edit/de55ae14-f24d-4e7f-b6ea-f61499016ad4/carts-general`
               )
             }
             size="medium"

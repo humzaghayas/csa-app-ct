@@ -48,8 +48,8 @@ const OrderAccount = (props) => {
   const { push } = useHistory();
   const [Order, setData] = useState();
 
-  const { projectKey } =useApplicationContext((context) => ({
-    projectKey:context.project.key
+  const { projectKey } = useApplicationContext((context) => ({
+    projectKey: context.project.key
   }));
 
   //const apiUrl ="http://localhost:4456";
@@ -72,12 +72,13 @@ const OrderAccount = (props) => {
               <TabHeader
                 to={`${match.url}/orders-general`}
                 label="General"
+
               />
-            <TabHeader
+              <TabHeader
                 to={`${match.url}/orders-shipping`}
                 label="Shipping & Delivery"
               />
-            <TabHeader
+              <TabHeader
                 to={`${match.url}/orders-returns`}
                 label="Returns"
               />
@@ -92,26 +93,26 @@ const OrderAccount = (props) => {
     >
       <Switch>
         <Route path={`${match.path}/orders-general`}>
-        
-         <OrderCreate />
+
+          <OrderCreate />
         </Route>
         <Route path={`${match.path}/orders-shipping`}>
           <OrderShipping />
-       </Route>
-       <Route path={`${match.path}/order-line-items`}>
-         <OrderLineItems />
-       </Route>
+        </Route>
+        <Route path={`${match.path}/order-line-items`}>
+          <OrderLineItems />
+        </Route>
         <Route path={`${match.path}/orders-returns`}>
-          <OrderReturns/>
+          <OrderReturns />
         </Route>
         <Route path={`${match.path}/new`}>
-          <OrderReturnsNew onClose={() => push(`${match.url}`)}/>
+          <OrderReturnsNew onClose={() => push(`${match.url}`)} />
         </Route>
         <Route path={`${match.path}/orders-payments`}>
-          <OrderPayments onClose={() => push(`${match.url}`)}/>
+          <OrderPayments onClose={() => push(`${match.url}`)} />
         </Route>
         <Route path={`${match.path}/details`}>
-          <OrderPayments onClose={() => push(`${match.url}`)}/>
+          <OrderPayments onClose={() => push(`${match.url}`)} />
         </Route>
       </Switch>
     </TabularDetailPage>
@@ -121,6 +122,6 @@ const OrderAccount = (props) => {
 OrderAccount.displayName = 'Companies';
 OrderAccount.propTypes = {
   linkToWelcome: PropTypes.string.isRequired,
-  
+
 };
 export default OrderAccount;

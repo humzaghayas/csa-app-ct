@@ -28,7 +28,7 @@ import {
 //import CustomPopup from './CustomPopup';
 import './custom-popup.module.css';
 import { useSendOrderMail } from '../../../../hooks/use-order-sendmail-connector';
-import { useCustomerDetailsFetcher, useCustomerDetailsFetcherLazy } from '../../../../hooks/use-customers-connector/use-customers-connector';
+import { useCustomerDetailsFetcher, useCustomerDetailsFetcherLazy, useCustomersCreateQuote } from '../../../../hooks/use-customers-connector/use-customers-connector';
 
 const PlaceOrder = (props) => {
   const intl = useIntl();
@@ -46,19 +46,36 @@ const PlaceOrder = (props) => {
   // });
   const showNotification = useShowNotification();
 
+  const {execute} = useCustomersCreateQuote();
+
   const showApiErrorNotification = useShowApiErrorNotification();
   const placeOrderFromCart = usePlaceOrderFromCart();
 
+  const isQuoteRequest = props?.isQuoteRequest ?? false; 
+  let title="";
+  let subtitle="";
+  let createMessage= "";
+
+  if(isQuoteRequest){
+    title=intl.formatMessage(messages.modalTitleQuote);
+    subtitle=intl.formatMessage(messages.subTitleQuote);
+    createMessage= "Quote Request Created"
+  }else{
+    title=intl.formatMessage(messages.modalTitle);
+    subtitle=intl.formatMessage(messages.subTitle);
+    createMessage= "Order Created"
+  }
+
   const {getCustomerById} = useCustomerDetailsFetcherLazy();
-
-
-  const { execute: execSendEmail } = useSendOrderMail();
+  const apiUrl = `https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/tickets/create-customer-quote`;
 
   const handleSubmit = useCallback(
     async (formikValues, formikHelpers) => {
       const data = formValuesToDoc(formikValues);
-      try {
-        const response = await placeOrderFromCart.execute({
+      let response = {};
+      
+      if(!isQuoteRequest){
+        response = await placeOrderFromCart.execute({
           originalDraft: cart,
           //draft: order,
           nextDraft: data,
@@ -68,33 +85,25 @@ const PlaceOrder = (props) => {
         setIsShown((current) => !current);
         console.log('response', response);
         const orderId = response?.data?.createOrderFromCart?.id;
+    }else{
 
-        
-        if (response?.data?.createOrderFromCart?.id && cart?.customerId) {
-
-          const customer = await getCustomerById(cart?.customerId);
-          console.log('customer ttt',customer)
-          const order = await execSendEmail(
-            {},
-            {
-              to: customer?.data?.customer?.email,
-              subject: 'Your order is created',
-              html: `<p>Thanks for creating order.</p><p>Your order ID: ${orderId} </p>`,
-            }
-          );
-          console.log('Mail sent', order);
-          console.log(orderId);
-        }
-      } catch (graphQLErrors) {
-        const transformedErrors = transformErrors(graphQLErrors);
-        if (transformedErrors.unmappedErrors.length > 0) {
-          showApiErrorNotification({
-            errors: transformedErrors.unmappedErrors,
-          });
-        }
-
-        //  formikHelpers.setErrors(transformedErrors.formErrors);
+      const payload = {
+          cart:{
+              id:cart?.id
+            },
+          cartVersion: cart?.version,
+          comment:" Creating Quote"
       }
+      response = await execute(apiUrl,payload);
+
+      console.log('response Quote', response);
+      setId(response?.id);
+      setIsShown((current) => !current);
+      console.log('response Quote', response);
+      const quoteId = response?.id;
+    }
+        
+        
       // console.log('response', response);
     },
 
@@ -110,10 +119,12 @@ const PlaceOrder = (props) => {
 
   return (
     <PlaceOrderForm
-      initialValues={docToFormValues(cart, projectLanguages)}
+      initialValues={docToFormValues(cart,{}, projectLanguages,isQuoteRequest)}
       onSubmit={handleSubmit}
       isShown={isShown}
       id={id}
+      message={createMessage}
+      isQuoteRequest={isQuoteRequest}
       //isReadOnly={!canManage}
       dataLocale={dataLocale}
     >
@@ -122,8 +133,8 @@ const PlaceOrder = (props) => {
           // <React.Fragment>{formProps.formElements}</React.Fragment>
           <div>
             <FormModalPage
-              title={intl.formatMessage(messages.modalTitle)}
-              subtitle={intl.formatMessage(messages.subTitle)}
+              title={title}
+              subtitle={subtitle}
               isOpen
               onClose={props.onClose}
               onPrimaryButtonClick={handleSubmit}

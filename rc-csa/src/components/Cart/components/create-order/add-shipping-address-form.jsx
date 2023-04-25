@@ -41,6 +41,13 @@ const columns = [
   { key: 'state', label: "State" },
 ]
 
+const getStatesAvailable = [
+  {label:"All" , value:""},
+  {label:"California" , value:"California"},
+  {label:"Texas" , value:"Texas"},
+  {label:"Florida" , value:"Florida"},
+]
+
 const ShippingAddressForm = (props) => {
   const intl = useIntl();
   const { push } = useHistory();
@@ -51,6 +58,8 @@ const ShippingAddressForm = (props) => {
     validate,
     enableReinitialize: true,
   });
+
+  const isQuoteRequest = props?.isQuoteRequest;
   const onSubmit = (e) => {
     const updateData = formValuesToDoc(formik?.values);
     console.log("Update data", updateData);
@@ -239,17 +248,17 @@ const ShippingAddressForm = (props) => {
                 />
               </Spacings.Inline>
               <Spacings.Inline>
-                <TextField
-                  id="state"
-                  name="state"
-                  title="State"
-                  value={formik?.values?.state}
-                  errors={formik.errors.state}
-                  touched={formik.touched.state}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  horizontalConstraint={13}
-                />
+                  <SelectField
+                      name="state"
+                      title="State"
+                      value={formik.values.state}
+                      errors={formik.errors.state}
+                      touched={formik.touched.state}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      options={getStatesAvailable}
+                      horizontalConstraint={13}
+                    />  
               </Spacings.Inline>
               <Spacings.Inline>
                 <TextField
@@ -310,13 +319,25 @@ const ShippingAddressForm = (props) => {
           </CollapsiblePanel>
           <Spacings.Stack scale="s">
             <Spacings.Inline>
-              <PrimaryButton
-                label="Next"
-                //onClick={onSubmit}
-                onClick={() => push(`place-order`)}
-                //onSubmit={onSubmit}
-                isDisabled={false}
-              />
+
+              {!isQuoteRequest && 
+                <PrimaryButton
+                  label="Next"
+                  //onClick={onSubmit}
+                  onClick={() => push(`place-order`)}
+                  //onSubmit={onSubmit}
+                  isDisabled={false}
+                />
+              }
+              {isQuoteRequest && 
+                <PrimaryButton
+                      label="Next"
+                      //onClick={onSubmit}
+                      onClick={() => push(`place-quote-request`)}
+                      //onSubmit={onSubmit}
+                      isDisabled={false}
+                    />
+              }    
             </Spacings.Inline>
           </Spacings.Stack>
         </Spacings.Stack>

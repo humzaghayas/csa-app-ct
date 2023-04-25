@@ -175,6 +175,7 @@ export const FETCH_CUSTOMERS_DETAILS = `query FetchCustomerDetails($id: String!)
       companyName
       customerGroup{
         name
+        id
       }
       defaultBillingAddress {
         id
@@ -1012,4 +1013,109 @@ export const FETCH_PROMOTIONS_LIST = `query FetchCustomerPromotionsList($sort:[S
   }
 
 }`;
+export const FETCH_QUOTES_LIST = ` query fetchAllQuotes($limit: Int,
+  $offset: Int,
+  $sort: [String!],
+  $where: String){
+  quotes(limit: $limit, offset: $offset, sort: $sort, where: $where){
+    total
+    count
+    results{
+      id
+      customer{
+       email
+        id
+        customerGroup{
+          name
+        }
+      }
+      totalPrice{
+        centAmount
+        currencyCode
+        fractionDigits
+      }
+      quoteState
+      createdAt
+      lastModifiedAt
+      validTo
+    }
+  }
+}`
 
+
+export const FETCH_QUOTES_REQUEST_LIST = ` query fetchAllQuotesRequests($limit: Int,
+  $offset: Int,
+  $sort: [String!],
+  $where: String){
+  quoteRequests(limit: $limit, offset: $offset, sort: $sort, where: $where){
+    total
+    count
+    results{
+      id
+      customer{
+       email
+        id
+        customerGroup{
+          name
+        }
+      }
+      quoteRequestState
+      totalPrice{
+        centAmount
+        currencyCode
+        fractionDigits
+      }
+      createdAt
+      lastModifiedAt
+    }
+  }
+}`
+
+export const FETCH_CUSTOMER_GROUPS_LIST = `query fetchCustomerGroupList{
+  customerGroups{
+    results{
+      id
+      name
+    }
+  }
+}`
+
+export const CREATE_QUOTE_FOR_CUSTOMER = `mutation ($draft:QuoteRequestDraft!){
+  createQuoteRequest(draft:$draft){
+    id
+   customer{
+    id
+  }
+  }
+}`
+
+export const FETCH_STAGED_QUOTES_LIST = `query fetchStagedQuotes($limit: Int,
+  $offset: Int,
+  $sort: [String!],
+  $where: String){
+  stagedQuotes(limit: $limit, offset: $offset, sort: $sort, where: $where){
+    total
+    count
+    results{
+      id
+      customer{
+       email
+        id
+        customerGroup{
+          name
+        }
+      }
+      quotationCart{
+        totalPrice{
+          centAmount
+          currencyCode
+          fractionDigits
+        }
+      }
+      stagedQuoteState
+      createdAt
+      lastModifiedAt
+      validTo
+    }
+  }
+}`

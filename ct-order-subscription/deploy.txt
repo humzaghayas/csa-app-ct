@@ -1,0 +1,5 @@
+firebase deploy --only functions
+
+gcloud pubsub topics create csa-order-topic
+
+gcloud pubsub topics set-iam-policy projects/commerce-tools-b2b-services/topics/csa-order-topic topic_policy1.json
