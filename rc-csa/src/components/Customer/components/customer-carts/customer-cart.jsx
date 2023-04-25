@@ -19,9 +19,12 @@ import DataTable from '@commercetools-uikit/data-table';
 import ToggleInput from '@commercetools-uikit/toggle-input';
 
 import Spacings from '@commercetools-uikit/spacings';
-import { MailIcon } from '@commercetools-uikit/icons';
+import { MailIcon, PlusBoldIcon } from '@commercetools-uikit/icons';
 
-import { useCustomersCartsFetcher, useCustomersOrdersFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
+import { useCustomersCartsFetcher, useCustomersCreateCart, useCustomersOrdersFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
+import { showNotification } from '@commercetools-frontend/actions-global';
+import { DOMAINS } from '@commercetools-frontend/constants';
+import { SecondaryButton } from '@commercetools-frontend/ui-kit';
 
 
 const CustomerCart = (props) => {
@@ -42,7 +45,7 @@ const CustomerCart = (props) => {
   const customerId = props.customer?.id;
   console.log("params", params);
   console.log("props", props);
-  const { customersCartPaginatedResult, error, loading } = useCustomersCartsFetcher({
+  const { customersCartPaginatedResult, error, loading ,refetch} = useCustomersCartsFetcher({
     page,
     perPage,
     tableSorting,
@@ -81,9 +84,33 @@ const CustomerCart = (props) => {
     centAmount = '$' + centAmount + '.00';
     return centAmount;
   }
+  const{createCart} =useCustomersCreateCart()
+  const createCartForCustomer =async () =>{
+    await createCart(customerId,"USD");
+
+    await refetch();
+
+    showNotification({
+      kind: 'success',
+      domain: DOMAINS.SIDE,
+      text: "Cart Created Successfully",
+    });
+  }
 
   return (
     <Spacings.Stack scale="xl">
+
+        <Spacings.Stack scale="l">
+          <Spacings.Inline>
+            <SecondaryButton
+                  label="Create Cart"
+                  data-track-event="click"
+                  onClick={createCartForCustomer}
+                  iconLeft={<PlusBoldIcon />}
+                  size="medium"
+                />
+            </Spacings.Inline>
+      </Spacings.Stack>
 
       {customersCartPaginatedResult ? (
         <Spacings.Stack scale="l">

@@ -324,7 +324,7 @@ export const useCustomersCartsFetcher = ({
   tableSorting,
   customerId,
 }) => {
-  const { data, error, loading } = useMcQuery(
+  const { data, error, loading ,refetch} = useMcQuery(
     gql`
       ${FETCH_CUSTOMER_CARTS}
     `,
@@ -345,6 +345,7 @@ export const useCustomersCartsFetcher = ({
     customersCartPaginatedResult: data?.carts,
     error,
     loading,
+    refetch
   };
 };
 
@@ -616,3 +617,41 @@ export const useCustomersCreateQuote =() => {
 
   return {execute};
 };
+
+
+export const useCustomersCreateCart =() => {
+
+  const dispatch = useAsyncDispatch();
+
+  const CREATE_CART_CUSTOMER = `mutation createCartCustomer($draft:CartDraft!){
+    createCart(draft:$draft){
+      customerId
+      id
+    }
+  }
+  `
+  const [createCartCustomer, {  loading }] = useMcMutation(gql`${CREATE_CART_CUSTOMER}`);
+
+  const header= {
+    'Content-Type': 'application/json',
+  }
+
+ const createCart = async (customerId,currency) => {
+      const draft = {
+      currency,
+      customerId
+      }
+      try {
+        return await createCartCustomer({ variables: {
+          draft
+        },
+        context: {
+          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+        } });
+      }catch (graphQlResponse) {
+        throw extractErrorFromGraphQlResponse(graphQlResponse);
+    }
+  }
+
+  return {createCart};
+}; 
