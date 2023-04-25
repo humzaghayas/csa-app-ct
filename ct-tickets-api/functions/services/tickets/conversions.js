@@ -4,7 +4,7 @@ const dataToFormValues = async(ticket,isEdit) => {
   data.files =ticket?.files ?? [];
   data.message= escapeQuotes(ticket?.message )?? '';
   data.comments =ticket?.comments ?? [];
-
+  data.history =ticket?.history ?? [];
 
   if(data.category && (data.category == CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
     || data.category == CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
@@ -12,13 +12,19 @@ const dataToFormValues = async(ticket,isEdit) => {
       data.orderNumber = ticket?.orderNumber ?? '';
     }
 
-  if(!isEdit){
+  if(!ticket?._id){
     data.status = CONSTANTS.TICKET_INITIAL_STATUS;
   }else{
     data.status = ticket.status;
   }
+
+  if(ticket?._id ){
+    data._id= ticket._id;
+  }
   return data;
 }
+
+
 
 const dataToFormCommonValues=(ticket,isEdit)=>(
   {

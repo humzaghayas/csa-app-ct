@@ -5,6 +5,8 @@ admin.initializeApp();
 const customObjectsService = require('./services/tickets')();
 const quotesService = require('./services/quotes')();
 const customerService = require('./services/customer')();
+const jwtAuthenticationService = require('./services/ct-jwt-authentication')();
+
 const {getTicketCategories,getTicketPriorityValues} = require('ct-tickets-helper-api');
 
 
@@ -12,6 +14,8 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
+
+require('./ct-routes-ticekets')(app);
 
 app.use(cors({ origin: true }));
 

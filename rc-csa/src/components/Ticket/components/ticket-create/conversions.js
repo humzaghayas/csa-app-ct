@@ -2,10 +2,10 @@ import { TextInput } from '@commercetools-frontend/ui-kit';
 import {CONSTANTS, escapeQuotes} from 'ct-tickets-helper-api'
 export const docToFormValues = (ticket, languages,isEdit) => {
   let doc = docToFormCommonValues(ticket,isEdit);
-  doc.message= ticket?.message ?? '';
-  doc.files =ticket?.files ?? [];
+  doc.message= ticket?.ticketData?.message ?? '';
+  doc.files =ticket?.ticketData?.files ?? [];
 
-  doc.comments =ticket?.comments ?? [];
+  doc.comments =ticket?.ticketData?.comments ?? [];
 
 
   if(doc.category && (doc.category == CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
@@ -25,6 +25,7 @@ export const docToFormValues = (ticket, languages,isEdit) => {
 const docToFormCommonValues=(ticket,isEdit)=>(
   {
     id: ticket?.id ?? '',
+    _id:ticket?._id ?? null,
     ticketNumber: ticket?.ticketNumber ?? '',
     key: ticket?.key ?? '',
     email : ticket?.email ?? '',
@@ -88,6 +89,7 @@ export const formValuesToDoc = (formValues) => {
 
   export const formValuesToDocCommonValues = (formValues) => ({
     id:formValues?.id ?? undefined,
+    _id:formValues?._id ?? undefined,
     key:formValues?.key ?? undefined,
     customerId:formValues?.customerId ?? undefined,
     createdBy:formValues?.createdBy ?? undefined,

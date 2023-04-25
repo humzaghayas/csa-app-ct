@@ -6,14 +6,14 @@ import { InvoiceNumber } from 'invoice-number';
 export function getTicketRows(customObjects){
 
 //
-    console.log("customObjects :: " +JSON.stringify(customObjects));
+    console.log("customObjects qwwewewe:: " ,customObjects);
     if(customObjects?.results){
         return customObjects?.results.map(co =>{
             return { id: co.id,
                 ticketNumber:co.value.ticketNumber,
                 Customer: co.value.email,
-                Created: co.createdAt,
-                Modified:co.lastModifiedAt,
+                Created: co.value.createdAt,
+                Modified:co.value.lastModifiedAt,
                 Source:co.value.source,
                 status:co.value.status,
                 Priority:co.value.priority,
@@ -132,6 +132,79 @@ export async function getCreateTicketDraft(ticketInfo){
     return ticketDraft;
 }
 
+export async function getCreateTicketDraftForDB(ticketInfo){
+    const email = ticketInfo.email;
+    const uuid = uuidv4(); 
+
+    if(!ticketInfo.key){
+        ticketDraft.key = uuid;
+    }else{
+        ticketDraft.key = ticketInfo.key;
+    }
+
+    const filesStr = ticketInfo.files.map((f) =>{
+        return {name:f.name,url:f.url}
+    });
+
+    const d = new Date().toISOString();
+    const commentsStr = ticketInfo?.comments?.map((c) =>{
+        if(c.createdAt){
+            return {comment:c.comment,createdAt:c.createdAt}
+        }else{
+            return {comment:c.comment,createdAt:d}
+        }
+    });
+
+    
+    let orderNumberVal = '';
+    if(ticketInfo.category && (ticketInfo.category == CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
+        || ticketInfo.category == CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
+        || ticketInfo.category == CONSTANTS.TICKET_TYPE_RETURNS)){
+        orderNumberVal = ticketInfo.orderNumber;
+    }
+    
+    let ticketData = {	
+        message: ticketInfo.message,
+        files: filesStr,
+        comments:commentsStr,
+        orderNumber:orderNumberVal};
+        
+
+        console.log('ticketInfo',ticketInfo);
+        
+    ticketDraft = getTicketValue(ticketInfo,uuid); 
+    
+    if(ticketInfo?._id){
+        ticketDraft._id =ticketInfo?._id;
+    }
+    ticketDraft.ticketData =ticketData;
+    return ticketDraft;
+}
+
+export async function createTicketHistoryForDB(ticketInfo,ticketDraft){
+
+    let history = ticketInfo.history;
+    if(!history){
+        history = [];
+    }
+
+    let h = {user:ticketInfo.email};
+    h[CONSTANTS.PRIORITY] = ticketInfo.priority;
+    h[CONSTANTS.STATUS] = ticketInfo.status;
+    h[CONSTANTS.ASSIGNED_TO] = ticketInfo.assignedTo;
+    h['operationDate']= new Date().toUTCString();
+    history.push(h);
+
+    const historyVal = history?.map((h) =>{
+        return {[CONSTANTS.PRIORITY]:h[CONSTANTS.PRIORITY],
+                [CONSTANTS.STATUS]:h[CONSTANTS.STATUS] ,
+                [CONSTANTS.ASSIGNED_TO]:h[CONSTANTS.ASSIGNED_TO],
+                user:h.user,operationDate:h.operationDate}
+    });
+
+    ticketDraft.history = historyVal;
+}
+
 export async function createTicketHistory(ticketInfo,ticketDraft){
 
     let history = ticketInfo.history;
@@ -179,12 +252,50 @@ function getTicketValueString( ticketInfo,uuid){
         \"subject\": \"${ticketInfo.subject}\",
         \"type\":\"${ticketInfo.category}\",
         \"createdAt\": \"${currentDate}\",
-        \"modifiedAt\": \"${currentDate}\",
+        \"lastModifiedAt\": \"${currentDate}\",
         \"createdBy\":\"${ticketInfo.createdBy}\",
         \"assignedTo\":\"${ticketInfo.assignedTo}\",
         ${CONSTANTS.TICKET_DATA},
         ${CONSTANTS.TICKET_HISTORY}
     }`
+}
+
+
+function getTicketValue( ticketInfo,uuid){
+
+    const currentDate = new Date().toUTCString();
+    const email = ticketInfo.email;
+    const customerId = ticketInfo.customerId;
+    let tNumber = ticketInfo.ticketNumber;
+
+    if(!tNumber){
+        tNumber = getInvoiceNumber();
+    }
+
+    let t= {
+        id: uuid,
+        ticketNumber:tNumber,
+        customerId: customerId,
+        email:email,
+        source: ticketInfo.contactType,
+        contactType: ticketInfo.contactType,
+        status: ticketInfo.status,
+        priority: ticketInfo.priority,
+        category: ticketInfo.category,
+        subject: ticketInfo.subject,
+        type:ticketInfo.category,
+        lastModifiedAt: currentDate,
+        createdBy:ticketInfo.createdBy,
+        assignedTo:ticketInfo.assignedTo,
+    }
+
+    if(ticketInfo.createdAt){
+        t['createdAt'] = ticketInfo.createdAt
+    }else{
+        t['createdAt'] = currentDate
+    }
+
+    return t;
 }
 
 function getRandomInt(min, max) {

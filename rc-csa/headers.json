@@ -16,7 +16,8 @@
       "${env:atgPublicURL}",
       "${env:SEND_EMAIL_API}",
       "${env:ALGOLIA_SEARCH}",
-      "${env:ALGOLIA_SEARCH_CSA}"
+      "${env:ALGOLIA_SEARCH_CSA}",
+      "${CT_CSA_BACKEND}"
     ],
     "style-src": [
       "commerce-tools-b2b-services.firebaseapp.com",

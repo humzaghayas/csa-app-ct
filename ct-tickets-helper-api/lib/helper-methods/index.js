@@ -36,21 +36,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createPassword = exports.getPaymentList = exports.getInvoiceNumber = exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.createTicketHistory = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getCartRows = exports.getOrderRows = exports.getTicketRows = void 0;
+exports.createPassword = exports.getPaymentList = exports.getInvoiceNumber = exports.isEmailValid = exports.escapeQuotes = exports.getTicketFromCustomObject = exports.getForKey = exports.createTicketHistory = exports.createTicketHistoryForDB = exports.getCreateTicketDraftForDB = exports.getCreateTicketDraft = exports.getCreateTicketMutaion = exports.getTicketContactTypes = exports.getTicketPriorityValues = exports.getTicketCategories = exports.getCartRows = exports.getOrderRows = exports.getTicketRows = void 0;
 var constants_1 = require("../constants");
 var graphql_queries_1 = require("../graphql-queries");
 var uuid_1 = require("uuid");
 var invoice_number_1 = require("invoice-number");
 function getTicketRows(customObjects) {
     //
-    console.log("customObjects :: " + JSON.stringify(customObjects));
+    console.log("customObjects qwwewewe:: ", customObjects);
     if (customObjects === null || customObjects === void 0 ? void 0 : customObjects.results) {
         return customObjects === null || customObjects === void 0 ? void 0 : customObjects.results.map(function (co) {
             return { id: co.id,
                 ticketNumber: co.value.ticketNumber,
                 Customer: co.value.email,
-                Created: co.createdAt,
-                Modified: co.lastModifiedAt,
+                Created: co.value.createdAt,
+                Modified: co.value.lastModifiedAt,
                 Source: co.value.source,
                 status: co.value.status,
                 Priority: co.value.priority,
@@ -161,6 +161,78 @@ function getCreateTicketDraft(ticketInfo) {
     });
 }
 exports.getCreateTicketDraft = getCreateTicketDraft;
+function getCreateTicketDraftForDB(ticketInfo) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function () {
+        var email, uuid, filesStr, d, commentsStr, orderNumberVal, ticketData;
+        return __generator(this, function (_b) {
+            email = ticketInfo.email;
+            uuid = (0, uuid_1.v4)();
+            if (!ticketInfo.key) {
+                ticketDraft.key = uuid;
+            }
+            else {
+                ticketDraft.key = ticketInfo.key;
+            }
+            filesStr = ticketInfo.files.map(function (f) {
+                return { name: f.name, url: f.url };
+            });
+            d = new Date().toISOString();
+            commentsStr = (_a = ticketInfo === null || ticketInfo === void 0 ? void 0 : ticketInfo.comments) === null || _a === void 0 ? void 0 : _a.map(function (c) {
+                if (c.createdAt) {
+                    return { comment: c.comment, createdAt: c.createdAt };
+                }
+                else {
+                    return { comment: c.comment, createdAt: d };
+                }
+            });
+            orderNumberVal = '';
+            if (ticketInfo.category && (ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_ORDER_INQUIRY
+                || ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_PAYMENT_METHODS
+                || ticketInfo.category == constants_1.CONSTANTS.TICKET_TYPE_RETURNS)) {
+                orderNumberVal = ticketInfo.orderNumber;
+            }
+            ticketData = {
+                message: ticketInfo.message,
+                files: filesStr,
+                comments: commentsStr,
+                orderNumber: orderNumberVal
+            };
+            console.log('ticketInfo', ticketInfo);
+            ticketDraft = getTicketValue(ticketInfo, uuid);
+            if (ticketInfo === null || ticketInfo === void 0 ? void 0 : ticketInfo._id) {
+                ticketDraft._id = ticketInfo === null || ticketInfo === void 0 ? void 0 : ticketInfo._id;
+            }
+            ticketDraft.ticketData = ticketData;
+            return [2 /*return*/, ticketDraft];
+        });
+    });
+}
+exports.getCreateTicketDraftForDB = getCreateTicketDraftForDB;
+function createTicketHistoryForDB(ticketInfo, ticketDraft) {
+    return __awaiter(this, void 0, void 0, function () {
+        var history, h, historyVal;
+        return __generator(this, function (_a) {
+            history = ticketInfo.history;
+            if (!history) {
+                history = [];
+            }
+            h = { user: ticketInfo.email };
+            h[constants_1.CONSTANTS.PRIORITY] = ticketInfo.priority;
+            h[constants_1.CONSTANTS.STATUS] = ticketInfo.status;
+            h[constants_1.CONSTANTS.ASSIGNED_TO] = ticketInfo.assignedTo;
+            h['operationDate'] = new Date().toUTCString();
+            history.push(h);
+            historyVal = history === null || history === void 0 ? void 0 : history.map(function (h) {
+                var _a;
+                return _a = {}, _a[constants_1.CONSTANTS.PRIORITY] = h[constants_1.CONSTANTS.PRIORITY], _a[constants_1.CONSTANTS.STATUS] = h[constants_1.CONSTANTS.STATUS], _a[constants_1.CONSTANTS.ASSIGNED_TO] = h[constants_1.CONSTANTS.ASSIGNED_TO], _a.user = h.user, _a.operationDate = h.operationDate, _a;
+            });
+            ticketDraft.history = historyVal;
+            return [2 /*return*/];
+        });
+    });
+}
+exports.createTicketHistoryForDB = createTicketHistoryForDB;
 function createTicketHistory(ticketInfo, ticketDraft) {
     return __awaiter(this, void 0, void 0, function () {
         var history, h, historyString;
@@ -192,7 +264,39 @@ function getTicketValueString(ticketInfo, uuid) {
     if (!tNumber) {
         tNumber = getInvoiceNumber();
     }
-    return "{\n        \"id\": \"".concat(uuid, "\",\n        \"ticketNumber\":\"").concat(tNumber, "\",\n        \"customerId\": \"").concat(customerId, "\",\n        \"email\":\"").concat(email, "\",\n        \"source\": \"").concat(ticketInfo.contactType, "\",\n        \"status\": \"").concat(ticketInfo.status, "\",\n        \"priority\": \"").concat(ticketInfo.priority, "\",\n        \"category\": \"").concat(ticketInfo.category, "\",\n        \"subject\": \"").concat(ticketInfo.subject, "\",\n        \"type\":\"").concat(ticketInfo.category, "\",\n        \"createdAt\": \"").concat(currentDate, "\",\n        \"modifiedAt\": \"").concat(currentDate, "\",\n        \"createdBy\":\"").concat(ticketInfo.createdBy, "\",\n        \"assignedTo\":\"").concat(ticketInfo.assignedTo, "\",\n        ").concat(constants_1.CONSTANTS.TICKET_DATA, ",\n        ").concat(constants_1.CONSTANTS.TICKET_HISTORY, "\n    }");
+    return "{\n        \"id\": \"".concat(uuid, "\",\n        \"ticketNumber\":\"").concat(tNumber, "\",\n        \"customerId\": \"").concat(customerId, "\",\n        \"email\":\"").concat(email, "\",\n        \"source\": \"").concat(ticketInfo.contactType, "\",\n        \"status\": \"").concat(ticketInfo.status, "\",\n        \"priority\": \"").concat(ticketInfo.priority, "\",\n        \"category\": \"").concat(ticketInfo.category, "\",\n        \"subject\": \"").concat(ticketInfo.subject, "\",\n        \"type\":\"").concat(ticketInfo.category, "\",\n        \"createdAt\": \"").concat(currentDate, "\",\n        \"lastModifiedAt\": \"").concat(currentDate, "\",\n        \"createdBy\":\"").concat(ticketInfo.createdBy, "\",\n        \"assignedTo\":\"").concat(ticketInfo.assignedTo, "\",\n        ").concat(constants_1.CONSTANTS.TICKET_DATA, ",\n        ").concat(constants_1.CONSTANTS.TICKET_HISTORY, "\n    }");
+}
+function getTicketValue(ticketInfo, uuid) {
+    var currentDate = new Date().toUTCString();
+    var email = ticketInfo.email;
+    var customerId = ticketInfo.customerId;
+    var tNumber = ticketInfo.ticketNumber;
+    if (!tNumber) {
+        tNumber = getInvoiceNumber();
+    }
+    var t = {
+        id: uuid,
+        ticketNumber: tNumber,
+        customerId: customerId,
+        email: email,
+        source: ticketInfo.contactType,
+        contactType: ticketInfo.contactType,
+        status: ticketInfo.status,
+        priority: ticketInfo.priority,
+        category: ticketInfo.category,
+        subject: ticketInfo.subject,
+        type: ticketInfo.category,
+        lastModifiedAt: currentDate,
+        createdBy: ticketInfo.createdBy,
+        assignedTo: ticketInfo.assignedTo,
+    };
+    if (ticketInfo.createdAt) {
+        t['createdAt'] = ticketInfo.createdAt;
+    }
+    else {
+        t['createdAt'] = currentDate;
+    }
+    return t;
 }
 function getRandomInt(min, max) {
     min = Math.ceil(min);

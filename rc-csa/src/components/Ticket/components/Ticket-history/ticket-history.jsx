@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 import { useParams, useRouteMatch } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCallback } from 'react';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useIsAuthorized } from '@commercetools-frontend/permissions';
@@ -35,12 +35,26 @@ const TicketHistory = (props) => {
   const intl = useIntl();
   const params = useParams();
   const match = useRouteMatch();
-  const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
+  const { projectKey,dataLocale, projectLanguages } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
+    projectKey:context.project.key,
   }));
 
-  const { ticket } = useGetTicketById(match.params.id);
+  const [ticket, setTicket] = useState(null);
+
+  const {getTicketById} = useGetTicketById();//();
+ 
+  
+  useEffect(async () => {
+    if(!ticket){
+      console.log('calling execute !');
+      const t = await getTicketById(projectKey,match.params.id);
+
+      console.log('ticket',t);
+      setTicket(t);
+    }
+  },[ticket]);
 
   return (
     <Spacings.Stack scale="xl">
@@ -108,12 +122,12 @@ const TicketHistory = (props) => {
               cacheOptions={false}
             />
 
-            {ticket.history ? (
+            {ticket?.history ? (
               <Spacings.Stack scale="l">
                 <DataTable
                   isCondensed
                   columns={columns}
-                  rows={ticket.history}
+                  rows={ticket?.history}
                   // itemRenderer={(item, column) => itemRenderer(item, column)}
                   maxHeight={600}
                   // sortedBy={tableSorting.value.key}

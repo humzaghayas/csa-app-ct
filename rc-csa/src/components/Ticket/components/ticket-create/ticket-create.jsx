@@ -34,9 +34,10 @@ const TicketCreate = (props) => {
   const params = useParams();
 
 
-  const { dataLocale, projectLanguages,user } = useApplicationContext((context) => ({
+  const { dataLocale, projectLanguages,user,projectKey } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
+    projectKey:context.project.key,
     user:context.user
   }));
   const canManage = useIsAuthorized({
@@ -65,7 +66,8 @@ const TicketCreate = (props) => {
 
       console.log("data");
       console.log(data);
-      let t = await execute(data,CONSTANTS.CREATE_OPERATION);
+      let t = await execute(projectKey
+        ,data,CONSTANTS.CREATE_OPERATION);
 
       console.log(t);
     },

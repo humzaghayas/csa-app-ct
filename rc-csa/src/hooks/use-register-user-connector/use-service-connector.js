@@ -10,6 +10,8 @@ import{getForKey,CONSTANTS,FETCH_USERS_INFO,FETCH_CUSTOMER_TICKETS,
   FETCH_USERS_LIST,FETCH_TICKETS_BY_ID, getCreateTicketDraft, 
   getTicketFromCustomObject ,createTicketHistory} from 'ct-tickets-helper-api'
 import { extractErrorFromGraphQlResponse } from '../../helpers';
+import { useAsyncDispatch , actions } from '@commercetools-frontend/sdk';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 export const useUserFetcher = (email) => {
   
@@ -63,27 +65,38 @@ export const useCreateEntry = (email) => {
 
 export const useCreateOrUpdateTicket = ()=>{
 
+  const dispatch = useAsyncDispatch();
+  const {ctCsaBackendURL} = useApplicationContext(
+    (context) => ({
+      ctCsaBackendURL:context.environment.CT_CSA_BACKEND,
+    })
+  );
 
-  const [createOrUpdateCustomObject, {  loading }] = useMcMutation(gql`${CREATE_CUSTOMOBJECT_MUTATION}`);
+  const apiUrl = ctCsaBackendURL+'/create-ticket-db';
 
-  const execute = async (data,operation) => {
+  const execute = async (projectKey,data,operation) => {
     console.log("createTicket");
 
-    let ticketDraft = await getCreateTicketDraft(data);
-
-    await createTicketHistory(data,ticketDraft,operation);
-    try {
-      return await createOrUpdateCustomObject({ variables: {
-        draft: ticketDraft,
-      },
-      context: {
-        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-      } });
-    }catch (graphQlResponse) {
-
-      console.error(graphQlResponse);
-      throw extractErrorFromGraphQlResponse(graphQlResponse);
+    const header= {
+      'Content-Type': 'application/json',
     }
+
+    const payload = {
+      projectKey,
+	    data
+    }
+
+    const result =await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header
+        },
+      })
+    );
+
+    return result;
   }
 
   return {
@@ -112,22 +125,37 @@ export const useUserListFetcher = () => {
 }
 
 
-export const useGetTicketById = (id) => {
-  const { data, error, loading } = useMcQuery(gql`${FETCH_TICKETS_BY_ID}`, {
-    variables: {
-      id
-    },
-    context: {
-      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-    },
-    fetchPolicy:"network-only"
-  });
+export const useGetTicketById = () => {
+  const dispatch = useAsyncDispatch();
+  const {ctCsaBackendURL} = useApplicationContext(
+    (context) => ({
+      ctCsaBackendURL:context.environment.CT_CSA_BACKEND,
+    })
+  );
 
-  const ticket = getTicketFromCustomObject(data);
+  const apiUrl = ctCsaBackendURL+'/ticket-db';
 
-  return{
-    ticket
+  const getTicketById = async (projectKey,id) => {
+    const header= {
+      'Content-Type': 'application/json',
+    };
+
+    const result =await dispatch(
+      actions.forwardTo.get({
+        uri: `${apiUrl}/${id}?projectKey=${projectKey}`,
+        headers: {
+          ...header
+        },
+      })
+    );
+
+    console.log('ticket update',result);
+    return result;
   }
+
+  return {
+    getTicketById
+  };
 }
 
 
@@ -154,3 +182,46 @@ export const useGetTicketByCustomerEmail= () => {
   };
 
 }
+
+
+export const useFetchTicketsList = ()=>{
+
+  const dispatch = useAsyncDispatch();
+  const {ctCsaBackendURL} = useApplicationContext(
+    (context) => ({
+      ctCsaBackendURL:context.environment.CT_CSA_BACKEND,
+    })
+  );
+
+  const apiUrl = ctCsaBackendURL+'/tickets-list'
+
+  const execute = async (projectKey,variables) => {
+
+    const header= {
+      'Content-Type': 'application/json',
+    }
+
+    const payload = {
+      projectKey,
+	    variables
+    }
+
+    console.log('apiUrl',apiUrl);
+
+    const data =await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header
+        },
+      })
+    );
+
+    return data;
+  }
+
+  return {
+    execute
+  };
+};

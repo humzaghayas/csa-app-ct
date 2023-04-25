@@ -24,6 +24,7 @@ const config = {
     SEND_EMAIL_API: '${env:atgProtocol}' + '${env:SEND_EMAIL_API}',
     STRIPE_SECRET_KEY: '${env:STRIPE_SECRET_KEY}',
     SEND_EMAIL_API: '${env:atgProtocol}' + '${env:SEND_EMAIL_API}',
+    CT_CSA_BACKEND: '${env:atgProtocol}' + '${env:CT_CSA_BACKEND}'+'/'+'${env:CT_CSA_BACKEND_ENDPOINT}',
   },
   oAuthScopes: {
     view: [
@@ -89,7 +90,8 @@ const config = {
         'https://api.stripe.com/',
         '${env:SEND_EMAIL_API}',
         '${env:ALGOLIA_SEARCH}',
-        '${env:ALGOLIA_SEARCH_CSA}'
+        '${env:ALGOLIA_SEARCH_CSA}',
+        '${env:CT_CSA_BACKEND}'
       ],
       'style-src': [
         'http://localhost:3001',

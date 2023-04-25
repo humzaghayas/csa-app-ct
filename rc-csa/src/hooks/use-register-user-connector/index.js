@@ -4,5 +4,6 @@ export {
   useCreateOrUpdateTicket,
   useUserListFetcher,
   useGetTicketById,
-  useGetTicketByCustomerEmail
+  useGetTicketByCustomerEmail,
+  useFetchTicketsList
 } from './use-service-connector';
