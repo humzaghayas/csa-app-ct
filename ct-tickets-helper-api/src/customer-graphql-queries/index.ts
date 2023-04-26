@@ -1022,6 +1022,7 @@ export const FETCH_QUOTES_LIST = ` query fetchAllQuotes($limit: Int,
     count
     results{
       id
+      version
       customer{
        email
         id
