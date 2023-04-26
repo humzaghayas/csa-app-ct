@@ -803,3 +803,9 @@ export const FETCH_DISCOUNT_CODES = `query{
     }
   }
 }`
+
+export const CREATE_ORDER_FROM_QUOTE = `mutation createOrderFromQuote($draft:OrderQuoteCommand!){
+  createOrderFromQuote(draft:$draft){
+    id
+  }
+}`
