@@ -5,15 +5,23 @@ admin.initializeApp();
 const customObjectsService = require('./services/tickets')();
 const quotesService = require('./services/quotes')();
 const customerService = require('./services/customer')();
-const jwtAuthenticationService = require('./services/ct-jwt-authentication')();
-
 const {getTicketCategories,getTicketPriorityValues} = require('ct-tickets-helper-api');
 
 
 const express = require('express');
 const cors = require('cors');
+const { createSessionMiddleware, CLOUD_IDENTIFIERS } = require('@commercetools-backend/express');
 
 const app = express();
+const {CT_MC_AUDIENCE_URL} = process.env;
+
+app.use(
+    createSessionMiddleware({
+      audience: CT_MC_AUDIENCE_URL,
+      issuer: CLOUD_IDENTIFIERS.GCP_US,
+      inferIssuer:true
+    })
+  );
 
 require('./ct-routes-ticekets')(app);
 
