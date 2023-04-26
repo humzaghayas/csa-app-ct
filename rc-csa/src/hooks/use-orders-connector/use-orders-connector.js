@@ -16,7 +16,8 @@ import {
   REPLICATE_ORDER,
   FETCH_ORDER_PAYMENTS_BY_ID,
   FETCH_ORDER_RETURNINFO_BY_ID,
-  FETCH_DISCOUNT_CODES} from 'ct-tickets-helper-api';
+  FETCH_DISCOUNT_CODES,
+  CREATE_ORDER_FROM_QUOTE} from 'ct-tickets-helper-api';
 
 export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
 
@@ -209,5 +210,30 @@ export const useFetchDiscountCodes = () =>{
     loading,
     error
   }
+
+}
+export const useCreateOrderFromQuote = () =>{
+
+  const [createOrder,{loading}] = useMcMutation(gql`${CREATE_ORDER_FROM_QUOTE}`);
+  
+   const executeCreateOrderFromQuote = async(draft) =>{
+    // console.log("In use orders connectors")
+    // console.log(draft);
+    return await createOrder(
+      {
+        variables: {
+          draft
+        },
+        context: {
+          target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+        }
+      }
+    )
+  }
+  
+  return {
+    executeCreateOrderFromQuote,
+    loading
+  };
 
 }

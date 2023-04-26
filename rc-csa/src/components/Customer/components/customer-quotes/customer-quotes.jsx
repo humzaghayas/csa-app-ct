@@ -31,6 +31,9 @@ import DataTable from '@commercetools-uikit/data-table';
 import Spacings from '@commercetools-uikit/spacings';
 import { useCustomersQuotesFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
 import Text from '@commercetools-uikit/text';
+import IconButton from '@commercetools-uikit/icon-button';
+import { ClipboardIcon } from '@commercetools-uikit/icons';
+import { useCreateOrderFromQuote } from '../../../../hooks/use-orders-connector/use-orders-connector';
 
 const columns = [
 
@@ -39,7 +42,8 @@ const columns = [
   { key: 'quoteState', label: 'Status' },
   { key: 'createdAt', label: 'Created At' },
   { key: 'lastModifiedAt', label: 'Last Modified' },
-  { key: 'validTo', label: 'Valid Until' }
+  { key: 'validTo', label: 'Valid Until' },
+  { key: 'createOrder', label: 'Create Order' },
 ];
 
 const columnsQR = [
@@ -59,21 +63,12 @@ const columnsSQ = [
   { key: 'stagedQuoteState', label: 'Status' },
   { key: 'createdAt', label: 'Created At' },
   { key: 'lastModifiedAt', label: 'Last Modified' },
-  { key: 'validTo', label: 'Valid Until' }
+  { key: 'validTo', label: 'Valid Until' },
 ];
 
-const itemRenderer = (item,column) => {
-    switch(column.key){
-        case 'validTo':
-            return item?.validTo ? item?.validTo : '--'
-        case 'customer':
-            return item?.customer?.email;
-        case 'totalPrice' :
-            return item?.totalPrice?.centAmount/100+'$';
-        default:
-            return item[column.key];
-    }
-}
+let createOrderButtonClicked = false;
+
+
 
 
 const itemRendererStaged = (item,column) => {
@@ -114,6 +109,49 @@ const CustomerQuotes = (props) => {
 
 
   const { execute } = useCustomersQuotesFetcher();
+  const { executeCreateOrderFromQuote } = useCreateOrderFromQuote();
+
+  const itemRenderer = (item,column) => {
+    switch(column.key){
+        case 'validTo':
+            return item?.validTo ? item?.validTo : '--'
+        case 'customer':
+            return item?.customer?.email;
+        case 'totalPrice' :
+            return item?.totalPrice?.centAmount/100+'$';
+        case 'createOrder' :
+            return <>
+            <IconButton
+              icon={<ClipboardIcon/>}
+              label='Create Order'
+              onClick={async ()=>{
+                console.log(item);
+                createOrderButtonClicked=true;
+
+                const draft = {
+                  quote:{
+                    typeId:"quote",
+                    id:item?.id
+                  },
+                  version:item?.version ? item?.version : 1  
+                }
+
+                try{
+                  const data = await executeCreateOrderFromQuote(draft);
+                  const orderId = data?.data?.createOrderFromQuote?.id;
+                  push(`/${projectKey}/csa-customer-tickets/order-edit/${orderId}/orders-general`)
+                }catch(ex){
+                  console.log(ex);
+                }
+              }}
+            />
+            </>;
+        default:
+            return item[column.key];
+    }
+}
+
+
 
   console.log('params.id',customerId);
   const apiUrlQuotes = `https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/tickets/customer-quotes`;
@@ -212,8 +250,11 @@ const CustomerQuotes = (props) => {
                 
                 // const win = window.open(`/${projectKey}/orders/quotes/${row.id}`, "_blank");
                 // win.focus();
-                
-                push(`/${projectKey}/orders/quotes/${row.id}`)
+                console.log("On click row",createOrderButtonClicked);
+                if(!createOrderButtonClicked){
+                  console.log("On click row in condition");
+                  push(`/${projectKey}/orders/quotes/${row.id}`)
+                }
               }}
             />
 
