@@ -46,19 +46,35 @@ import {
   useOrdersFetcher,
 } from '../../../../hooks/use-orders-connector';
 import { useCartsFetcher } from '../../../../hooks/use-cart-connector/use-cart-connector';
+import {
+  getSlaHighPercentage,
+  getSlaPercentage,
+  getSlaRow,
+} from './sla-percentage';
 
 //import { getOrderData } from './conversions';
 
 let rows = null;
 
 const columns = [
-  { key: 'Customer', label: 'Customer' },
+  { key: 'ticketNumber', label: 'Ticket ID' },
   { key: 'Created', label: 'Created' },
   { key: 'Source', label: 'Source' },
   { key: 'status', label: 'Status' },
   { key: 'Priority', label: 'Priority' },
   { key: 'Category', label: 'Category' },
   { key: 'Subject', label: 'Subject' },
+];
+
+let rowsSla = null;
+
+const columnsSla = [
+  { key: 'ticketNumber', label: 'Ticket ID' },
+  { key: 'Created', label: 'Created' },
+  { key: 'status', label: 'Status' },
+  { key: 'Priority', label: 'Priority' },
+  { key: 'Modified', label: 'Modified' },
+  { key: 'SLA', label: 'SLA' },
 ];
 
 const reportType = Object.keys(REPORT_TYPE).map((key) => ({
@@ -94,7 +110,13 @@ const TicketDisplayForm = (props) => {
   const inprogTickets = inProgressTickets(ticketData);
   const dataExcel = ExcelData;
 
+  //Assigning row values
   rows = getTicketRows(ticketData?.customObjects);
+  rowsSla = getSlaRow(ticketData?.customObjects);
+
+  //SLA Details
+  const slaPercentage = getSlaPercentage(ticketData?.customObjects);
+  const slaHighPercentage = getSlaHighPercentage(ticketData?.customObjects);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -693,6 +715,42 @@ const TicketDisplayForm = (props) => {
           </Spacings.Stack>
         </div>
       </Spacings.Inline>
+      <Constraints.Horizontal max={13}>
+        <div className={styles.tickets_component}>
+          <Card constraint="xl" theme="dark" insetScale="l">
+            <Text.Subheadline as="h4" isBold={true} tone="positive">
+              {'SLA Matrix'}
+            </Text.Subheadline>
+            <br />
+            {rows ? (
+              <Spacings.Stack scale="l">
+                <DataTable
+                  isCondensed
+                  columns={columnsSla}
+                  rows={rowsSla} // limit to first 5 rows
+                  maxHeight={300}
+                  // onRowClick={(row) =>
+                  //   push(`ticket-edit/${row.id}/tickets-general`)
+                  // }
+                />
+                <Switch>
+                  <SuspendedRoute path={`${match.path}/:id`}>
+                    <TicketAccount onClose={() => push(`${match.url}`)} />
+                  </SuspendedRoute>
+                </Switch>
+              </Spacings.Stack>
+            ) : (
+              <p>Loading...</p>
+            )}
+            <Text.Subheadline as="h4" isBold={true} tone="positive">
+              {'Total SLA = ' + slaPercentage + '%'}
+            </Text.Subheadline>
+            <Text.Subheadline as="h4" isBold={true} tone="positive">
+              {'High Priority SLA = ' + slaHighPercentage + '%'}
+            </Text.Subheadline>
+          </Card>
+        </div>
+      </Constraints.Horizontal>
       <br />
       <br />
       <div>
