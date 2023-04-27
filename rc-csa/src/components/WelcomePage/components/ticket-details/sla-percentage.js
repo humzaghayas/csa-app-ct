@@ -31,7 +31,7 @@ export function getSlaRow(customObjects) {
   return [];
 }
 
-function getSLARate(created, modified) {
+export function getSLARate(created, modified) {
   const createdAt = new Date(created);
   const modifiedAt = new Date(modified);
 

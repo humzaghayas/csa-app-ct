@@ -47,6 +47,7 @@ import {
 } from '../../../../hooks/use-orders-connector';
 import { useCartsFetcher } from '../../../../hooks/use-cart-connector/use-cart-connector';
 import {
+  getSLARate,
   getSlaHighPercentage,
   getSlaPercentage,
   getSlaRow,
@@ -96,8 +97,6 @@ const TicketDisplayForm = (props) => {
     enableReinitialize: true,
   });
 
-  console.log('product', props?.product);
-
   const ticketData = props?.ticket;
   const orderData = props?.order;
   const cartData = props?.cart;
@@ -116,6 +115,8 @@ const TicketDisplayForm = (props) => {
 
   //SLA Details
   const slaPercentage = getSlaPercentage(ticketData?.customObjects);
+  const slaMetPercentage = Number(slaPercentage);
+  const slaNotMetPercent = 100.0 - slaPercentage;
   const slaHighPercentage = getSlaHighPercentage(ticketData?.customObjects);
 
   const [startDate, setStartDate] = useState(null);
@@ -166,10 +167,15 @@ const TicketDisplayForm = (props) => {
     return createdAt >= startDate && createdAt <= endDate;
   });
 
+  const filterSlaData = ticketData?.customObjects?.results?.filter((obj) => {
+    const createdAt = new Date(obj.createdAt);
+
+    return createdAt >= startDate && createdAt <= endDate;
+  });
+
   const starttDate = moment(startDate).format('DD-MM-YYYY');
   const enddDate = moment(endDate).format('DD-MM-YYYY');
 
-  // console.log(filteredData);
   const ticketExcel = filteredTicketData?.map((obj) => {
     return {
       'Ticket Number': obj?.value?.ticketNumber,
@@ -311,8 +317,19 @@ const TicketDisplayForm = (props) => {
     };
   });
 
+  const SLA = filterSlaData?.map((obj) => {
+    return {
+      'Ticket Number': obj?.value?.ticketNumber,
+      'Customer Email': obj?.value?.email,
+      'Created Date': obj?.createdAt,
+      'Resolved Date': obj?.lastModifiedAt,
+      Status: obj?.value?.status,
+      Priority: obj?.value?.priority,
+      SLA: getSLARate(obj?.createdAt, obj?.lastModifiedAt),
+    };
+  });
+
   const exportData = () => {
-    console.log(selectedOption);
     switch (selectedOption) {
       case 'Tickets':
         return ticketExcel;
@@ -324,6 +341,8 @@ const TicketDisplayForm = (props) => {
         return Customers;
       case 'Product':
         return Products;
+      case 'SLA':
+        return SLA;
     }
   };
 
@@ -344,6 +363,13 @@ const TicketDisplayForm = (props) => {
       fill: 'orangered',
     },
     { name: 'inprogTickets', tickets: inprogTickets, fill: 'royalblue' },
+  ];
+
+  //PieChart SLA
+
+  const dataSla = [
+    { name: 'slaMet', tickets: slaMetPercentage, fill: 'teal' },
+    { name: 'slaNotMet', tickets: slaNotMetPercent, fill: 'gray' },
   ];
 
   // chat link
@@ -467,7 +493,7 @@ const TicketDisplayForm = (props) => {
                       isCondensed
                       columns={columns}
                       rows={rows.slice(0, 5)} // limit to first 5 rows
-                      maxHeight={600}
+                      maxHeight={400}
                       onRowClick={(row) =>
                         push(`ticket-edit/${row.id}/tickets-general`)
                       }
@@ -568,6 +594,7 @@ const TicketDisplayForm = (props) => {
                           <option value="Carts">Carts</option>
                           <option value="Customer">Customer</option>
                           <option value="Product">Product</option>
+                          <option value="SLA">SLA</option>
                         </select>
                       </div>
                       <br />
@@ -715,42 +742,88 @@ const TicketDisplayForm = (props) => {
           </Spacings.Stack>
         </div>
       </Spacings.Inline>
-      <Constraints.Horizontal max={13}>
-        <div className={styles.tickets_component}>
-          <Card constraint="xl" theme="dark" insetScale="l">
-            <Text.Subheadline as="h4" isBold={true} tone="positive">
-              {'SLA Matrix'}
-            </Text.Subheadline>
-            <br />
-            {rows ? (
-              <Spacings.Stack scale="l">
-                <DataTable
-                  isCondensed
-                  columns={columnsSla}
-                  rows={rowsSla} // limit to first 5 rows
-                  maxHeight={300}
-                  // onRowClick={(row) =>
-                  //   push(`ticket-edit/${row.id}/tickets-general`)
-                  // }
-                />
-                <Switch>
-                  <SuspendedRoute path={`${match.path}/:id`}>
-                    <TicketAccount onClose={() => push(`${match.url}`)} />
-                  </SuspendedRoute>
-                </Switch>
-              </Spacings.Stack>
-            ) : (
-              <p>Loading...</p>
-            )}
-            <Text.Subheadline as="h4" isBold={true} tone="positive">
-              {'Total SLA = ' + slaPercentage + '%'}
-            </Text.Subheadline>
-            <Text.Subheadline as="h4" isBold={true} tone="positive">
-              {'High Priority SLA = ' + slaHighPercentage + '%'}
-            </Text.Subheadline>
-          </Card>
+      <Spacings.Inline alignItems="stretch" justifyContent="space-between">
+        <Constraints.Horizontal max={13}>
+          <div className={styles.tickets_component}>
+            <Card constraint="xl" theme="dark" insetScale="l">
+              <Text.Subheadline as="h4" isBold={true} tone="positive">
+                {'SLA Matrix'}
+              </Text.Subheadline>
+              <br />
+              {rows ? (
+                <Spacings.Stack scale="l">
+                  <DataTable
+                    isCondensed
+                    columns={columnsSla}
+                    rows={rowsSla} // limit to first 5 rows
+                    maxHeight={300}
+                    // onRowClick={(row) =>
+                    //   push(`ticket-edit/${row.id}/tickets-general`)
+                    // }
+                  />
+                  <Switch>
+                    <SuspendedRoute path={`${match.path}/:id`}>
+                      <TicketAccount onClose={() => push(`${match.url}`)} />
+                    </SuspendedRoute>
+                  </Switch>
+                </Spacings.Stack>
+              ) : (
+                <p>Loading...</p>
+              )}
+            </Card>
+          </div>
+        </Constraints.Horizontal>
+        <div className={styles.ticdetails}>
+          <Spacings.Stack scale="xl" alignItems="flexEnd">
+            <Constraints.Horizontal constraint="l" max={8}>
+              <Card constraint="xl">
+                <br />
+                <div>
+                  <Text.Subheadline as="h4" isBold={true} tone="positive">
+                    {'SLA Graph'}
+                  </Text.Subheadline>
+                  <br />
+                  <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                    <PieChart width={200} height={200}>
+                      <Pie
+                        data={dataSla}
+                        dataKey="tickets"
+                        nameKey="name"
+                        outerRadius={100}
+                      >
+                        {dataSla?.map((entry, index) => (
+                          <>
+                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                            {/* <Label key={`label-${index}`} position="outside" offset={10}>
+                             {entry.name}
+                          </Label> */}
+                          </>
+                        ))}
+                      </Pie>
+                    </PieChart>
+                    <br />
+                  </div>
+                  <br />
+                  <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                    <Text.Subheadline as="h5" isBold={true} tone="primary">
+                      {'SLA Met (Overall) = '}
+                      {slaMetPercentage + '%'}
+                    </Text.Subheadline>
+                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                      {'SLA Not Met (Overall) = '}
+                      {slaNotMetPercent + '%'}
+                    </Text.Subheadline>
+                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                      {'SLA (High Priority) = '}
+                      {slaHighPercentage + '%'}
+                    </Text.Subheadline>
+                  </div>
+                </div>
+              </Card>
+            </Constraints.Horizontal>
+          </Spacings.Stack>
         </div>
-      </Constraints.Horizontal>
+      </Spacings.Inline>
       <br />
       <br />
       <div>
