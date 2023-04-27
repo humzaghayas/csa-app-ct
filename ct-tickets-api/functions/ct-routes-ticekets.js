@@ -1,7 +1,6 @@
 const ticketsService = require('./services/ticketsService')();
 const adminDBService = require('./services/adminDBService')();
 
-
 module.exports = function(app){
 
     app.post('/encrypt', async(req, res) =>{
@@ -21,14 +20,8 @@ module.exports = function(app){
 
     app.post('/tickets-list', async(req, res) =>{
 
-        // const isAuthenticate = jwtAuthenticationService.authenticate(req,res);
-    
-        // if(isAuthenticate &&  isAuthenticate.error){
-        //     res.status(400).json({isAuthenticate}); 
-        //     return;
-        // }
-    
-        const {projectKey,variables} = req.body;
+        const {variables} = req.body;
+        const{ projectKey} = req.session;
         const results = await ticketsService.getTickets({projectKey,variables});
     
         if(results.error){
@@ -41,15 +34,8 @@ module.exports = function(app){
 
     app.post('/create-ticket-db', async(req, res) =>{
 
-        // const isAuthenticate = jwtAuthenticationService.authenticate(req,res);
-    
-        // if(isAuthenticate &&  isAuthenticate.error){
-        //     res.status(400).json({isAuthenticate}); 
-        //     return;
-        // }
-    
-        const {projectKey,data} = req.body;
-
+        const {data} = req.body;
+        const{ projectKey} = req.session;
         console.log('create ticket:'+projectKey);
                     
         const tickets = await ticketsService.createTicket(projectKey,data);
@@ -72,7 +58,8 @@ module.exports = function(app){
         // }
     
         const {id} = req.params;
-        const projectKey = req.query.projectKey;
+        //const projectKey = req.query.projectKey;
+        const{ projectKey} = req.session;
 
         console.log('p',projectKey);
         const results = await ticketsService.getTicketById(projectKey,id);
