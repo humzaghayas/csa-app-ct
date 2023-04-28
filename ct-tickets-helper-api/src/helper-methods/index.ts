@@ -2,6 +2,7 @@ import { TICKET_TYPE,TICKET_PRIORITIY_VALUES,TICKET_SOURCE, CONSTANTS, TICKET_ST
 import { CREATE_CUSTOMOBJECT_MUTATION } from "../graphql-queries";
 import { v4 as uuidv4 } from 'uuid';
 import { InvoiceNumber } from 'invoice-number';
+import countryToCurrency  from 'country-to-currency' ;
 
 export function getTicketRows(customObjects){
 
@@ -458,4 +459,8 @@ const generatePassword = (length, chars) => {
         password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return password;
+};
+
+export const getDefaultCountryToCurrency = (countryCode) => {
+   return countryToCurrency[ countryCode ];
 };
