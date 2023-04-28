@@ -636,9 +636,10 @@ export const useCustomersCreateCart =() => {
     'Content-Type': 'application/json',
   }
 
- const createCart = async (customerId,currency) => {
+ const createCart = async (customerId,currency,country) => {
       const draft = {
       currency,
+      country,
       customerId
       }
       try {
