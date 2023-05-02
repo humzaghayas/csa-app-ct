@@ -83,6 +83,26 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
         directDiscounts{
             __typename
         }
+
+        paymentInfo{
+          payments{
+            id
+            amountPlanned{
+              currencyCode
+              centAmount
+            }
+            paymentMethodInfo{
+              method
+            }
+            transactions{
+              timestamp
+              amount{
+                centAmount
+              }
+              state
+            }
+          }
+        }
     }
   }
   

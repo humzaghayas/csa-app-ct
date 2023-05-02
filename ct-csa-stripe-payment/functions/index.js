@@ -7,6 +7,7 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 const paymentService = require('./services/paymentService')();
+const cartService = require('./services/cartService')();
 const app = express();
 
 
@@ -17,6 +18,22 @@ app.get('/:projectKey/:orderId', async(req, res) => {
     const {projectKey,orderId} =req.params;
 
     const session = await paymentService.createCheckoutSession({projectKey,orderId});
+
+    if(session){
+        res.redirect(303, session.url);
+    }else{
+        res.status(400).json({Error: "Error"});
+    }
+
+    return;
+    
+} );
+
+app.get('/cart/:projectKey/:cartId', async(req, res) => {
+
+    const {projectKey,cartId} =req.params;
+
+    const session = await paymentService.createCheckoutSessionForCart({projectKey,cartId});
 
     if(session){
         res.redirect(303, session.url);
@@ -47,5 +64,24 @@ app.get('/:response', async(req, res) => {
     return;
     
 } );
+
+
+app.post('/webhook', async (request, response) => {
+    const payload = request.body;
+
+    if(payload.type === 'checkout.session.completed'){
+
+        console.log("Got payload: " ,JSON.stringify (payload));
+        const data = payload.data.object;
+
+        const customerDetails = data.customer_details;
+
+        await paymentService.createPayment(payload.data.object);
+
+        console.log(customerDetails);
+    }
+  
+    response.status(200).end();
+  });
 
 exports.stripe_payment = functions.https.onRequest(app);

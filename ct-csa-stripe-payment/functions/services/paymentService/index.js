@@ -1,10 +1,12 @@
 const { clientDBConnection } = require('../../config/database');
-const {getApiRoot } = require('../../config/commercetools-client');
+const {PAYMENT_METHOD } = require('../../config/constants');
 
 const stripeInclude = require('stripe');
 
-const adminDBService = require('../adminDBService')();
+const { CREATE_PAYMENT,ADD_PAYMENT_TO_CART } = require('../../GraphQL');
+const graphQLService = require('../graphQLService')();
 const orderService = require('../orderService')();
+const cartService = require('../cartService')();
 
 const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
 
@@ -52,7 +54,11 @@ const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
       const session = await stripe.checkout.sessions.create({line_items,
         mode: 'payment',
         success_url: `${CT_STRIPE_URL}/success`,
-        cancel_url: `${CT_STRIPE_URL}/cancel`,}
+        cancel_url: `${CT_STRIPE_URL}/cancel`,
+        custom_text: {
+          "order_id": order.order.id
+        },
+      }
       );
 
       return session;
@@ -63,25 +69,135 @@ const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
     return null;
   }
 
-  paymentService.createTicket=async (projectKey,ticket) => {
+  paymentService.createCheckoutSessionForCart=async ({projectKey,cartId}) => {
+
+    let resultingValues = {};
+    try{
+      // const adminConf = await adminDBService.adminConfiguration(projectKey);
+      
+      // if(adminConf.error){
+      //   console.log('error',adminConf);
+      //   return adminConf;
+      // }
+
+      const cart =await cartService.getCartById(cartId,projectKey);
+      
+      // let apiRoot =adminConf[projectKey].apiRoot;
+      // if(!apiRoot){
+      //     apiRoot =  getApiRoot(adminConf[projectKey]);
+      //     await adminDBService.setApiRoot(projectKey,apiRoot)
+      // }
+      console.log('cart',cart);
+
+      if(!cart){
+        return null;
+      }
+      const line_items = cart.cart.lineItems.map(li => ({
+          // li.taxedPrice.totalNet.centAmount
+          price_data: {
+            currency:li.taxedPrice.totalNet.currencyCode,
+            unit_amount:li.taxedPrice.totalNet.centAmount,
+            product_data:{
+              name:li.variant.sku
+            }
+          },
+          quantity: li.quantity,
+        }
+      ));
+
+      const stripe = stripeInclude(CT_STRIPE_API_KEY);
+      const session = await stripe.checkout.sessions.create({line_items,
+        mode: 'payment',
+        success_url: `${CT_STRIPE_URL}/success`,
+        cancel_url: `${CT_STRIPE_URL}/cancel`,
+        client_reference_id:  `{"projectKey":"${projectKey}","cartId":"${cartId}"}`,
+      }
+      );
+
+      return session;
+    }catch(e){
+      console.error(e);
+    } 
+
+    return null;
+  }
+
+  paymentService.getPaymentIntenet=async (paymentIntent) => {
 
     try{
-        const adminConf = await adminDBService.adminConfiguration(projectKey);
+        const stripe = stripeInclude(CT_STRIPE_API_KEY);
+        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntent);
+      }catch(err){
+        console.log('error',err);
+      } 
 
-        if(adminConf.error){
-          console.log('error',adminConf);
-          return adminConf;
+  }
+
+  paymentService.createPayment=async (stripePayment) => {
+
+    try{
+
+        const paymentStatus = stripePayment.payment_status;
+
+
+        if(paymentStatus !== 'paid'){
+          return false;
         }
 
-        const conf = adminConf[projectKey];
+        console.log('stripePayment.client_reference_id',stripePayment.client_reference_id);
+       const {projectKey,cartId} = JSON.parse(stripePayment.client_reference_id);
+      //  const {projectKey,cartId} = stripePayment.client_reference_id;
+        const paymentIntent = stripePayment.payment_intent;
+        const amountTotal = stripePayment.amount_total;
+        const amountSubTotal = stripePayment.amount_subtotal;
+        const paymentMethodsType = stripePayment.payment_method_types[0];
+        const currency = stripePayment.currency.toUpperCase();
 
-        if(conf.isDatabase){
-          return await paymentService.createTicketMongo(conf,ticket);
-        
-        }else{
+        var currentDateTime = new Date();
 
-          return await paymentService.createTicketCO(ticket)
-        }
+        let paymentObject = {
+          "interfaceId" : paymentIntent,
+          "amountPlanned": {
+            "currencyCode": currency,
+            "centAmount": amountTotal
+          },
+          "paymentMethodInfo": {
+            "paymentInterface": "STRIPE",
+            "method": PAYMENT_METHOD[paymentMethodsType].method,
+            "name": PAYMENT_METHOD[paymentMethodsType].name
+          },
+          "transactions" : [ {
+            "timestamp" : currentDateTime,
+            "type" : "Charge",
+            "amount" : {
+              "currencyCode" : currency,
+              "centAmount" : amountTotal
+            },
+            "state" : "Success"
+            } ]
+        };
+
+        console.log('paymentObject',JSON.stringify(paymentObject));
+
+        const result = await graphQLService.execute(CREATE_PAYMENT,{draft:paymentObject},projectKey);
+        console.log('Payment Resutls: ',result);
+
+        const paymentToCartAction = [{ 
+          "addPayment":{
+            "payment" : {
+              "id" : result?.createPayment?.id,
+              "typeId" : "payment"
+            }
+          }
+        }];
+
+        const cart = await cartService.getCartById(cartId,projectKey);
+        console.log('paymentToCartAction ',paymentToCartAction);
+
+        const resultPC = await graphQLService.execute(ADD_PAYMENT_TO_CART,
+            {version:cart.cart.version,id:cartId,actions:paymentToCartAction},projectKey);
+
+        console.log('payment ',resultPC);
 
       }catch(err){
         console.log('error',err);
@@ -89,110 +205,5 @@ const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
 
   }
 
-  paymentService.createTicketMongo=async (conf,ticket) => {
-    const data = await dataToFormValues(ticket,false);
-
-    console.log('data kasnkasdkasd',data);
-    const isValid = await validateTicket.validate(data);
-
-
-    if(isValid.isError){
-        return {error:true,errors:isValid.errors};
-    }
-
-    const ticketDraft = await getCreateTicketDraftForDB(data);
-
-    await createTicketHistoryForDB(data,ticketDraft);
-
-    console.log('ticketDraft',ticketDraft);
-
-    const uri = conf.connectionUri.replace("{{USERNAME}}",conf.username)
-              .replace("{{PASSWORD}}",conf.password);
-
-    const Ticket =await clientDBConnection( uri);
-
-    if(ticketDraft._id){
-      let doc1 = new Ticket(ticketDraft);
-      return await Ticket.findOneAndUpdate({_id:ticketDraft._id}, ticketDraft, {
-          new: true,
-        });
-    }else{
-      let doc1 = new Ticket(ticketDraft);    
-      return await doc1.save();
-    }
-
-
-
-    return doc;
-  }
-
-
-
-  paymentService.createTicketCO=async (ticket)=>{
-
-        return{};
-        let data = ticket;
-        const ticketDraft = await getCreateTicketDraft(data);
-
-        await createTicketHistory(data,ticketDraft,'CREATED');
-
-        console.log('ticketDraft',ticketDraft);
-      
-        apiRoot =  conf.apiRoot;
-        
-        if(!conf.apiRoot){
-          apiRoot =getApiRoot(conf);
-          await adminDBService.setApiRoot(projectKey,apiRoot);
-        }
-
-        const result = await apiRoot.withProjectKey({projectKey}).graphql()
-            .post({
-                body : {
-                    query: CREATE_CUSTOMOBJECT_MUTATION,
-                    variables: {
-                        draft: ticketDraft,
-                      },
-                }
-            })
-            .execute();
-
-
-      console.log('resutls',result);
-
-      return result?.body?.data?.createOrUpdateCustomObject;
-  }
-
-
-  paymentService.getTicketById=async (projectKey,id) => {
-
-    let result = {};
-    try{
-      const adminConf = await adminDBService.adminConfiguration(projectKey);
-      
-      if(adminConf.error){
-        console.log('error',adminConf);
-        return adminConf;
-      }
-
-      
-      if(adminConf[projectKey].isDatabase){
-
-        const uri = adminConf[projectKey].connectionUri.replace("{{USERNAME}}",adminConf[projectKey].username)
-                .replace("{{PASSWORD}}",adminConf[projectKey].password);
-
-        const Tickets =await clientDBConnection( uri);
-        result=await Tickets.findById( id);
-
-        console.log('find by id',result);
-      }else{
-
-      }
-
-    }catch(e){
-      console.error(e);
-    } 
-
-    return result;
-  }
   return paymentService;
 }
