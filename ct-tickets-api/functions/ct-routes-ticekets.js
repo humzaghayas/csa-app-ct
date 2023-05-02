@@ -1,5 +1,6 @@
 const ticketsService = require('./services/ticketsService')();
 const adminDBService = require('./services/adminDBService')();
+const cartService = require('./services/cartService')();
 
 module.exports = function(app){
 
@@ -63,6 +64,39 @@ module.exports = function(app){
 
         console.log('p',projectKey);
         const results = await ticketsService.getTicketById(projectKey,id);
+    
+        if(results.error){
+            res.status(400).json( results);    
+        }else{
+            res.status(200).json(results);
+        }
+    
+    });
+
+    app.post('/cart-by-id', async(req, res) =>{
+
+        const {cartId,isQuoteRequest} = req.body;
+        const{ projectKey} = req.session;
+
+        console.log('p',projectKey);
+        const results = await cartService.getCartById(cartId,isQuoteRequest)
+    
+
+        if(results.error){
+            res.status(400).json( results);    
+        }else{
+            res.status(200).json(results);
+        }
+    
+    });
+    
+    app.post('/customer-by-cartid', async(req, res) =>{
+
+        const {cartId} = req.body;
+        const{ projectKey} = req.session;
+
+        console.log('p',projectKey);
+        const results = await cartService.getCustomerByCartId(cartId);
     
         if(results.error){
             res.status(400).json( results);    

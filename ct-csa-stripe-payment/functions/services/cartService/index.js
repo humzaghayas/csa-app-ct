@@ -1,16 +1,17 @@
 require('dotenv').config();
-const { FETCH_ORDER_BY_ID } = require('../../GraphQL');
+const { FETCH_CART_BY_ID } = require('../../GraphQL');
+const { projectKey } = require('../../config/commercetools-client');
 const graphQLService = require('../graphQLService')();
 
 module.exports = ()=>{
 
-    const orderService = {};
+    const cartService = {};
 
-    orderService.getOrderById = async(orderId,projectKey)=>{
+    cartService.getCartById = async(cartId,projectKey)=>{
 
         try {
 
-            const result = await graphQLService.execute(FETCH_ORDER_BY_ID,{id:orderId},projectKey);
+            const result = await graphQLService.execute(FETCH_CART_BY_ID,{id:cartId},projectKey);
 
             console.log(result);
 
@@ -22,6 +23,6 @@ module.exports = ()=>{
         }
     };
 
-    return orderService;
+    return cartService;
 
 }
