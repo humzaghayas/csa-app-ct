@@ -42,7 +42,7 @@ const PlaceOrder = (props) => {
   const [isShown, setIsShown] = useState(false);
   const [id, setId] = useState(null);
   const { dataLocale, projectLanguages,
-    ctCsaBackendURL,ctPaymentURL,projectKey } = useApplicationContext((context) => ({
+    ctCsaBackendURL,projectKey } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
     ctCsaBackendURL:context.environment.CT_CSA_BACKEND,
@@ -104,21 +104,27 @@ const PlaceOrder = (props) => {
   const {execute:execSendEmail} = useSendEmailConfig();
 
   const sendPaymenyLink = async () => {
-    const ctPaymentUrl = `${ctPaymentURL}/cart/${projectKey}/${params.id}`
+    //const ctPaymentUrl = `${ctPaymentURL}/cart/${projectKey}/${params.id}`
+    // const e = await execSendEmail({},{
+    //   to:customer.email,
+    //   subject:"Payment Link",
+    //   html:`<div>
+    //           <p>
+    //               <div>
+    //                 Please make your payment.
+    //               </div>
+    //               <div>
+    //                 Link : ${ctPaymentUrl}
+    //               </div>
+    //           </p>
+    //         </div>`
+    // });
+
     const e = await execSendEmail({},{
       to:customer.email,
-      subject:"Payment Link",
-      html:`<div>
-              <p>
-                  <div>
-                    Please make your payment.
-                  </div>
-                  <div>
-                    Link : ${ctPaymentUrl}
-                  </div>
-              </p>
-            </div>`
-  });
+      subject:"Payment Link",html:null,
+      orderSummary:true,cartId:params.id,locale:dataLocale,projectKey
+    });
   }
 
    const apiUrl = `${ctCsaBackendURL}/create-customer-quote`;

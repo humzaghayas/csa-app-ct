@@ -96,7 +96,7 @@ const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
           // li.taxedPrice.totalNet.centAmount
           price_data: {
             currency:li.taxedPrice.totalNet.currencyCode,
-            unit_amount:li.taxedPrice.totalNet.centAmount,
+            unit_amount:li.taxedPrice.totalNet.centAmount/li.quantity,
             product_data:{
               name:li.variant.sku
             }
