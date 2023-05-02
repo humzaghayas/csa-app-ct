@@ -217,11 +217,13 @@ const PlaceOrder = (props) => {
           </PlaceOrderForm>
           :<>
               <Spacings.Stack scale="s">
-                  <PrimaryButton
-                    label="Send payment remider!"
-                    onClick={sendPaymenyLink}
-                    size="small"
-                  />
+                  <div>
+                    <PrimaryButton
+                      label="Send payment remider!"
+                      onClick={sendPaymenyLink}
+                      size="small"
+                    />
+                  </div>
               </Spacings.Stack>
           </>
         }</>
