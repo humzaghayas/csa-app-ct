@@ -1,42 +1,48 @@
-const {transporter,imapConfig}= require('../config/node-mailer-config')
-require('dotenv').config();
-const Imap = require('imap');
-const {simpleParser} = require('mailparser');
+const { getApiRoot } = require("../../config/commercetools-client");
+
+const adminDBService = require("../adminDBService")();
 
 module.exports = ()=>{
 
-    const emailService = {};
+    const graphQLService = {};
 
-    emailService.sendEmail = async({to,subject,html,template,context})=>{
+    graphQLService.execute = async(graphQuery,variables,projectKey)=>{
 
-        try {
+        try{
 
-            if(template){
+            const adminConf = await adminDBService.adminConfiguration(projectKey);
 
-                await transporter.sendMail({
-                    from: '"CSA Support" <rc.csa.help@gmail.com>',//process.env.SMTP_USERNAME,
-                    to,
-                    subject,
-                    template,
-                    context
-                });
-
-            }else{
-                await transporter.sendMail({
-                    from: `"CSA Support" <rc.csa.help@gmail.com>`,//process.env.SMTP_USERNAME,
-                    to,
-                    subject,
-                    html
-                });
+            if(adminConf.error){
+              console.log('error',adminConf);
+              return adminConf;
             }
-            return {code:"Success",message:"Email Sent!"}
+
+            let apiRoot =adminConf[projectKey].apiRoot;
+            if(!apiRoot){
+                apiRoot =  getApiRoot(adminConf[projectKey]);
+                await adminDBService.setApiRoot(projectKey,apiRoot)
+            }
+
+            const result = await apiRoot.withProjectKey({projectKey}).graphql()
+            .post({
+                body : {
+                    query: graphQuery,
+                    variables,
+                }
+            })
+            .execute();
+
+            console.log('result',result?.body?.data)
+
+            return result?.body?.data;
+
         }catch(error){
             console.log(`Error: ${error}`);
-            return {code:"error",message:"Error Sending Email!"}
+            return {error:true,message:"Error !"}
         }
     };
 
-    emailService.readEmail =async ()=>{
+    graphQLService.readEmail =async ()=>{
         const imap = new Imap(imapConfig);
         imap.once('ready', () => {
                 imap.openBox('INBOX', false, () => {
@@ -67,6 +73,6 @@ module.exports = ()=>{
         });
     }
 
-    return emailService;
+    return graphQLService;
 
 }

@@ -105,4 +105,17 @@ module.exports = function(app){
         }
     
     });
+
+    app.get('/payment-link', async(req, res) =>{
+        const{ projectKey} = req.session;
+
+        const adminConf = await adminDBService.adminConfiguration(projectKey);
+      
+        if(adminConf.error){
+            res.status(400).json( {error:true,message:"Configuration not found!"});
+          return ;
+        }
+
+        res.status(200).json({paymentLink:adminConf.PAYMENT_LINK});
+    });
 }
