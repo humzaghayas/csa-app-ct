@@ -6,7 +6,7 @@ const {getApiRoot } = require('../../config/commercetools-client');
 const validateTicket = require('../tickets/validation')();
 
 //const adminDBService = require('../adminDBService')();
-const {adminDBService,clientDBConnection} =require('mongodb-connection-csa');
+const {adminDBService,clientDBConnection} =require('ct-external-connections');
 
   module.exports = ()=>{
 

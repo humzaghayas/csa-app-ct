@@ -1,6 +1,6 @@
 {
   "name": "ct-tickets-helper-api",
-  "version": "1.0.32",
+  "version": "1.0.38",
   "description": "helper api for tickets module",
   "main": "lib/index.js",
   "module": "./lib/index.js",
