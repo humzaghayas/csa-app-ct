@@ -1,7 +1,6 @@
 require('dotenv').config();
 const { FETCH_CUSTOMER_BY_ID } = require('../../GraphQL');
-const { projectKey } = require('../../config/commercetools-client');
-const graphQLService = require('../graphQLService')();
+const {graphQLService} =require('ct-external-connections');
 
 module.exports = ()=>{
 
