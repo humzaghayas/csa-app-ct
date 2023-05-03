@@ -63,6 +63,7 @@ const columns = [
   { key: 'Subject', label: 'Subject' },
   { key: 'assignedTo', label: 'Assignee' },
   { key: 'createdBy', label: 'Created By' },
+  { key: 'resolutionDate', label: 'Resolution Date' },
 ];
 
 

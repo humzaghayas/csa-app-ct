@@ -39,6 +39,7 @@ const ticketSchema = new mongoose.Schema( {
     "subject": { type: String, required: true },
     "type": String,
     "createdAt": { type: Date, default: Date.now },
+    "resolutionDate": Date,
     "lastModifiedAt": { type: Date, default: Date.now },
     "createdBy": String,
     "assignedTo": String,

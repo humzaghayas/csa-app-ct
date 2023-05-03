@@ -18,14 +18,13 @@
     "@commercetools/sdk-client-v2": "^2.1.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
-    "ct-external-connections": "^1.0.6",
-    "ct-tickets-helper-api": "^1.0.32",
+    "ct-external-connections": "^1.0.8",
+    "ct-tickets-helper-api": "^1.0.38",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.0",
     "mongodb": "^5.2.0",
-    "mongodb-connection-csa": "^1.0.5",
     "mongoose": "^7.0.3"
   },
   "devDependencies": {
