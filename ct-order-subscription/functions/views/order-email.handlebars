@@ -40,7 +40,7 @@
 </head>
 <body>
   <h2>Hello ! </h2>
-  <p>{{orderConfirmation}}. </p>
+  <p>Order Summary </p>
   <br/>
   <br/>
   <table class="styled-table">
@@ -48,7 +48,8 @@
       <tr>
         <th>Name</th>
         <th>Quantity</th>
-        <th>Price</th>
+        <th>Price Per Unit</th>
+        <th>Total Taxed Price</th>
       </tr>
     </thead>
     <tbody>
@@ -62,34 +63,18 @@
           </td>
           <td>
             {{price}}
+          </td>
+          <td>
+            {{totalPrice}}
           </td>                
         </tr>
       {{/each}}
+      <tr>
+        <td colspan="3"> Total Net Price</td>
+        <td>{{priceSummary.totalNetPrice}}</td>
+      </tr>
     </tbody>
   </table>
 
-  <br/>
-  <table class="styled-table">
-     <thead>
-      <tr>
-        <th>Total Net Price</th>
-        <th>Total Tax Price</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          {{priceSummary.netPrice}}
-        </td>
-        <td>
-          {{priceSummary.taxedPrice}}
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  <br/><br/>
-  <p>
-    Payment Link : {{paymentLink}}
-  </p>
 </body>
 </html>
