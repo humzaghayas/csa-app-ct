@@ -1,33 +1,36 @@
-const {getApiRoot,projectKey } = require('../../config/commercetools-client');
+const {getApiRoot } = require('../../config/commercetools-client');
 const {FETCH_CART_BY_CARTNUMBER,FETCH_CUSTOMERS_DETAILS} =require ('ct-tickets-helper-api');
+const {graphQLService} =require('ct-external-connections');
 
 module.exports = ()=>{
 
     const cartService = {};
 
-    cartService.getCartById = async(cartId,isQuoteRequest)=>{
+    cartService.getCartById = async(cartId,isQuoteRequest,projectKey)=>{
 
         try {
-            const apiRoot =  getApiRoot();
+            // const apiRoot =  getApiRoot();
 
-            const result = await apiRoot.withProjectKey({projectKey}).graphql()
-                .post({
-                    body : {
-                        query: FETCH_CART_BY_CARTNUMBER,
-                        variables: {
-                            id: cartId,
-                        },
-                    }
-                })
-                .execute();
+            // const result = await apiRoot.withProjectKey({projectKey}).graphql()
+            //     .post({
+            //         body : {
+            //             query: FETCH_CART_BY_CARTNUMBER,
+            //             variables: {
+            //                 id: cartId,
+            //             },
+            //         }
+            //     })
+            //     .execute();
+
+            const result = await graphQLService.execute(FETCH_CART_BY_CARTNUMBER, {id: cartId},projectKey);
             
             console.log('cart',result);
 
             if(isQuoteRequest){
-                return {payment:true,data:result.body.data};
+                return {payment:true,data:result};
             }
 
-            const cart = result.body?.data?.cart;
+            const cart = result?.cart;
 
             const paymentInfo = cart?.paymentInfo;
 
@@ -51,7 +54,7 @@ module.exports = ()=>{
                         console.log('cart?.taxedPrice?.totalNet?.centAmount : ',cart?.taxedPrice?.totalNet?.centAmount);
 
                         if(sum === cart?.taxedPrice?.totalNet?.centAmount){
-                            return {payment:true,data:result.body.data}
+                            return {payment:true,data:result}
                         }else{
                             return {payment:false,message_code:"PAYMENT_INCOMPLETE"}
                         }
@@ -66,39 +69,41 @@ module.exports = ()=>{
     };
 
 
-    cartService.getCustomerByCartId = async(cartId)=>{
+    cartService.getCustomerByCartId = async(cartId,projectKey)=>{
 
         try {
             const apiRoot =  getApiRoot();
 
-            const result = await apiRoot.withProjectKey({projectKey}).graphql()
-                .post({
-                    body : {
-                        query: FETCH_CART_BY_CARTNUMBER,
-                        variables: {
-                            id: cartId,
-                        },
-                    }
-                })
-                .execute();
+            // const result = await apiRoot.withProjectKey({projectKey}).graphql()
+            //     .post({
+            //         body : {
+            //             query: FETCH_CART_BY_CARTNUMBER,
+            //             variables: {
+            //                 id: cartId,
+            //             },
+            //         }
+            //     })
+            //     .execute();
+            const result = await graphQLService.execute(FETCH_CART_BY_CARTNUMBER, {id: cartId},projectKey);
             
             console.log('cart',result);
 
-           const cart = result.body?.data?.cart;
+           const cart = result?.cart;
 
             if(cart?.customerId){
-                const resultCust = await apiRoot.withProjectKey({projectKey}).graphql()
-                    .post({
-                        body : {
-                            query: FETCH_CUSTOMERS_DETAILS,
-                            variables: {
-                                id: cart.customerId,
-                            },
-                        }
-                    })
-                    .execute();
+                // const resultCust = await apiRoot.withProjectKey({projectKey}).graphql()
+                //     .post({
+                //         body : {
+                //             query: FETCH_CUSTOMERS_DETAILS,
+                //             variables: {
+                //                 id: cart.customerId,
+                //             },
+                //         }
+                //     })
+                //     .execute();
+                const resultCust = await graphQLService.execute(FETCH_CUSTOMERS_DETAILS, {id: cart.customerId},projectKey);
 
-                    return resultCust?.body?.data?.customer;
+                return resultCust?.customer;
             }
             return null
         }catch(error){

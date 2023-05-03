@@ -1,4 +1,3 @@
-const { clientDBConnection } = require('../../config/database');
 const {CREATE_CUSTOMOBJECT_MUTATION,getCreateTicketDraftForDB,createTicketHistoryForDB,
   getCreateTicketDraft,createTicketHistory} =require ('ct-tickets-helper-api');
 const { dataToFormValues } = require('../tickets/conversions');
@@ -6,8 +5,8 @@ const {getApiRoot } = require('../../config/commercetools-client');
 
 const validateTicket = require('../tickets/validation')();
 
-const adminDBService = require('../adminDBService')();
-const {MONGO_TICKETS_COLLECTION} = process.env;
+//const adminDBService = require('../adminDBService')();
+const {adminDBService,clientDBConnection} =require('mongodb-connection-csa');
 
   module.exports = ()=>{
 

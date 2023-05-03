@@ -1,10 +1,9 @@
-const { clientDBConnection } = require('../../config/database');
 const {PAYMENT_METHOD } = require('../../config/constants');
 
 const stripeInclude = require('stripe');
 
 const { CREATE_PAYMENT,ADD_PAYMENT_TO_CART } = require('../../GraphQL');
-const graphQLService = require('../graphQLService')();
+const {graphQLService} =require('ct-external-connections');
 const orderService = require('../orderService')();
 const cartService = require('../cartService')();
 
