@@ -1,5 +1,5 @@
 const ticketsService = require('./services/ticketsService')();
-const adminDBService = require('./services/adminDBService')();
+const {adminDBService} =require('ct-external-connections');
 const cartService = require('./services/cartService')();
 
 module.exports = function(app){
@@ -79,7 +79,7 @@ module.exports = function(app){
         const{ projectKey} = req.session;
 
         console.log('p',projectKey);
-        const results = await cartService.getCartById(cartId,isQuoteRequest)
+        const results = await cartService.getCartById(cartId,isQuoteRequest,projectKey)
     
 
         if(results.error){
@@ -96,7 +96,7 @@ module.exports = function(app){
         const{ projectKey} = req.session;
 
         console.log('p',projectKey);
-        const results = await cartService.getCustomerByCartId(cartId);
+        const results = await cartService.getCustomerByCartId(cartId,projectKey);
     
         if(results.error){
             res.status(400).json( results);    

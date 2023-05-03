@@ -3,8 +3,7 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 const emailService = require('./services')();
-const graphQLService = require("./services/graphQLService")();
-const adminDBService = require("./services/adminDBService")();
+const {adminDBService,graphQLService} =require('ct-external-connections');
 const {FETCH_CART_BY_ID} = require('./GraphQL')
 const express = require('express');
 const cors = require('cors');

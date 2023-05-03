@@ -1,8 +1,9 @@
 
 const {adminConnection} = require("../../config/database");
+var crypto = require('crypto');
+
 const SECRET_KEY = "csa-royalcyber12";
 const iv = "csa-royalcyber12";
-var crypto = require('crypto');
 
 let adminConnections={};
   module.exports = ()=>{
@@ -25,13 +26,9 @@ let adminConnections={};
 
       console.log('adminDBService.adminConf1 ');
       if(!adminConnections[projectKey]){
-        console.log('adminDBService.adminConf1 34');
-        const Client = adminConnection();
-
-        console.log('adminDBService.adminConf1 ',Client);
+        const Client = await adminConnection();
         const c= await Client.findOne({projectKey});
 
-        console.log('adminDBService.adminConf1 '+projectKey,c);
         if(!c){
           return {error:true,message:"Project Key not configured!"}
         }
@@ -67,6 +64,7 @@ let adminConnections={};
     return adminConnections;
   }
 
+
   adminDBService.decryptValue=async(text)=>{
     // const iv = crypto.randomBytes(16);
     var decipher = crypto.createDecipheriv('aes-128-cbc',SECRET_KEY,iv)
@@ -77,5 +75,14 @@ let adminConnections={};
 
    }
 
+  adminDBService.encryptValue=async(text)=>{
+    // const iv = crypto.randomBytes(16);
+    var cipher = crypto.createCipheriv('aes-128-cbc', SECRET_KEY,iv)
+    var encryptVal = cipher.update(text,'utf8','hex')
+    encryptVal += cipher.final('hex');
+
+    return encryptVal;
+
+  }
   return adminDBService;
 }
