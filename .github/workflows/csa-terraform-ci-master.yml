@@ -55,7 +55,7 @@ on:
 
 env:
   COMMERCETOOLS_URL: 'https://github.com/labd/terraform-provider-commercetools/releases/download/v1.6.9/terraform-provider-commercetools_1.6.9_linux_amd64.zip'
-  TERRAFORM_VERSION: '1.4.6'
+  TERRAFORM_VERSION: '0.12.17'
   CTP_PROJECT_KEY: ${{ secrets.CT_PROJECT_KEY }}
   CTP_CLIENT_SECRET: ${{ secrets.CT_CLIENT_SECRET }}
   CTP_CLIENT_ID: ${{ secrets.CT_CLIENT_ID }}
