@@ -54,8 +54,8 @@ on:
       - 'ct-csa-terraforms/packages/csa-terraform/**'
 
 env:
-  COMMERCETOOLS_URL: 'https://github.com/labd/terraform-provider-commercetools/releases/download/1.4.0/terraform-provider-commercetools-0.19.0-linux-amd64.tar.gz'
-  TERRAFORM_VERSION: '0.12.17'
+  COMMERCETOOLS_URL: 'https://github.com/labd/terraform-provider-commercetools/releases/download/0.19.0/terraform-provider-commercetools-1.4.6-linux-amd64.tar.gz'
+  TERRAFORM_VERSION: '1.4.6'
   CTP_PROJECT_KEY: ${{ secrets.CT_PROJECT_KEY }}
   CTP_CLIENT_SECRET: ${{ secrets.CT_CLIENT_SECRET }}
   CTP_CLIENT_ID: ${{ secrets.CT_CLIENT_ID }}
