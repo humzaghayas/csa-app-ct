@@ -24,6 +24,7 @@ variable "region_functions" {
 
 variable "add_monthly_spent_topic" {
   type = string
+  default     = "australia"
 }
 
 variable "ct_countries" {
