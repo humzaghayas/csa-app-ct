@@ -38,6 +38,7 @@ import OrderReturnsNew from '../order-returns/order-returns-details';
 import { entryPointUriPath } from '../../../../constants';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import OrderPayments from '../order-payments/order-payments';
+import OrderComment from '../order-comments/order-comments';
 
 
 const OrderAccount = (props) => {
@@ -86,6 +87,10 @@ const OrderAccount = (props) => {
                 to={`${match.url}/orders-payments`}
                 label="Payments"
               />
+              <TabHeader
+                to={`${match.url}/orders-comments`}
+                label="Comments"
+              />
             </Spacings.Inline>
           </Spacings.Stack>
         </>
@@ -104,6 +109,9 @@ const OrderAccount = (props) => {
         </Route>
         <Route path={`${match.path}/orders-returns`}>
           <OrderReturns />
+        </Route>
+        <Route path={`${match.path}/orders-comments`}>
+          <OrderComment />
         </Route>
         <Route path={`${match.path}/new`}>
           <OrderReturnsNew onClose={() => push(`${match.url}`)} />
