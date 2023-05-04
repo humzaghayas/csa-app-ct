@@ -34,6 +34,7 @@ import {
 
 import { gql } from '@apollo/client';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { useState } from 'react';
 
 export const useCustomersFetcher = ({ page, perPage, tableSorting }) => {
   const { data, error, loading,refetch } = useMcQuery(
@@ -590,12 +591,16 @@ export const useCustomerGroupsFetcher = () => {
   };
 };
 
-export const useCustomersCreateQuote =() => {
 
+export const useApiFetchPostRequest =() => {
   const dispatch = useAsyncDispatch();
+
+  const [loading,setLoading] = useState(true);
 
  const execute = async (apiUrl,payload) => {
     // const data= loginATG(apiUrl,headers, payload ,dispatch );
+
+    setLoading(true);
 
     const header= {
       'Content-Type': 'application/json',
@@ -611,11 +616,11 @@ export const useCustomersCreateQuote =() => {
       })
     );
 
-
+    setLoading(false);
     return data;
   }
 
-  return {execute};
+  return {execute,loading};
 };
 
 
@@ -636,9 +641,10 @@ export const useCustomersCreateCart =() => {
     'Content-Type': 'application/json',
   }
 
- const createCart = async (customerId,currency) => {
+ const createCart = async (customerId,currency,country) => {
       const draft = {
       currency,
+      country,
       customerId
       }
       try {

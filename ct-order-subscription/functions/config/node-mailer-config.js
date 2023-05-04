@@ -1,4 +1,6 @@
 const nodemailer = require('nodemailer');
+const hbs = require('nodemailer-express-handlebars');
+const path = require('path');
 require('dotenv').config();
 
 const imapConfig = {
@@ -19,5 +21,17 @@ let transporter = nodemailer.createTransport({
         pass:process.env.EMAIL_PASSWORD,//process.env.SMTP_PASSWORD
     }
 });
+
+
+const handlebarOptions = {
+  viewEngine: {
+      partialsDir: path.resolve('./views/'),
+      defaultLayout: false,
+  },
+  viewPath: path.resolve('./views/'),
+};
+
+// use a template file with nodemailer
+transporter.use('compile', hbs(handlebarOptions))
 
 module.exports ={transporter,imapConfig}

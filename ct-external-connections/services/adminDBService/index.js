@@ -1,7 +1,6 @@
 
 const {adminConnection} = require("../../config/database");
 var crypto = require('crypto');
-const {MONGO_ADMIN_COLLECTION} = process.env;
 
 const SECRET_KEY = "csa-royalcyber12";
 const iv = "csa-royalcyber12";
@@ -27,13 +26,9 @@ let adminConnections={};
 
       console.log('adminDBService.adminConf1 ');
       if(!adminConnections[projectKey]){
-        console.log('adminDBService.adminConf1 34');
-        const Client = adminConnection();
-
-        console.log('adminDBService.adminConf1 ',Client);
+        const Client = await adminConnection();
         const c= await Client.findOne({projectKey});
 
-        console.log('adminDBService.adminConf1 '+projectKey,c);
         if(!c){
           return {error:true,message:"Project Key not configured!"}
         }

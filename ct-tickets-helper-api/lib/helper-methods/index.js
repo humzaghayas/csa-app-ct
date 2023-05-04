@@ -62,6 +62,7 @@ var __generator =
       };
     }
     function step(op) {
+
       if (f) throw new TypeError("Generator is already executing.");
       while ((g && ((g = 0), op[0] && (_ = 0)), _))
         try {
@@ -152,11 +153,14 @@ exports.createPassword =
   exports.getOrderRows =
   exports.getTicketRows =
     void 0;
+
 var constants_1 = require("../constants");
 var graphql_queries_1 = require("../graphql-queries");
 var uuid_1 = require("uuid");
 var invoice_number_1 = require("invoice-number");
+var country_to_currency_1 = __importDefault(require("country-to-currency"));
 function getTicketRows(customObjects) {
+
   //
   console.log("customObjects qwwewewe:: ", customObjects);
   if (
@@ -187,6 +191,7 @@ function getTicketRows(customObjects) {
             assignedTo: co?.value?.assignedTo,
             createdBy: co?.value?.createdBy,
           };
+
         });
   }
   // return {};
@@ -550,6 +555,7 @@ function getTicketValueString(ticketInfo, uuid) {
     .concat(constants_1.CONSTANTS.TICKET_HISTORY, "\n    }");
 }
 function getTicketValue(ticketInfo, uuid) {
+
   var currentDate = new Date().toUTCString();
   var email = ticketInfo.email;
   var customerId = ticketInfo.customerId;
@@ -579,6 +585,7 @@ function getTicketValue(ticketInfo, uuid) {
     t["createdAt"] = currentDate;
   }
   return t;
+
 }
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -1004,3 +1011,7 @@ var generatePassword = function (length, chars) {
   }
   return password;
 };
+var getDefaultCountryToCurrency = function (countryCode) {
+    return country_to_currency_1.default[countryCode];
+};
+exports.getDefaultCountryToCurrency = getDefaultCountryToCurrency;

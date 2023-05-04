@@ -57,7 +57,7 @@ export const useResetPassword = () => {
   };
 };
 
-export const useSendResetPasswordEmail = () =>{
+export const useSendEmailConfig = () =>{
   const sendEmailAPI = useApplicationContext(
     (context) => context.environment.SEND_EMAIL_API
   );

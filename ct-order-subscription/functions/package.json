@@ -17,7 +17,7 @@
     "@commercetools/sdk-client-v2": "^2.1.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
-    "ct-tickets-helper-api": "^1.0.0",
+    "ct-external-connections": "^1.0.6",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "firebase-admin": "^11.6.0",
@@ -26,7 +26,9 @@
     "mailparser": "^3.6.3",
     "mongodb": "^5.2.0",
     "mongoose": "^7.0.3",
-    "nodemailer": "^6.9.1"
+    "nodemailer": "^6.9.1",
+    "nodemailer-express-handlebars": "^6.1.0",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"

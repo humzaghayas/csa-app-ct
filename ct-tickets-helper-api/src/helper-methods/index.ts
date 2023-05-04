@@ -2,6 +2,7 @@ import { TICKET_TYPE,TICKET_PRIORITIY_VALUES,TICKET_SOURCE, CONSTANTS, TICKET_ST
 import { CREATE_CUSTOMOBJECT_MUTATION } from "../graphql-queries";
 import { v4 as uuidv4 } from 'uuid';
 import { InvoiceNumber } from 'invoice-number';
+import countryToCurrency  from 'country-to-currency' ;
 
 export function getTicketRows(customObjects){
 
@@ -20,7 +21,8 @@ export function getTicketRows(customObjects){
                 Category:co.value.category,
                 Subject:co.value.subject,
                 assignedTo:co.value.assignedTo,
-                createdBy:co.value.createdBy}
+                createdBy:co.value.createdBy,
+                resolutionDate:co.value.resolutionDate}
         });
     }
 
@@ -295,6 +297,12 @@ function getTicketValue( ticketInfo,uuid){
         t['createdAt'] = currentDate
     }
 
+    if(ticketInfo.status === TICKET_STATUS.done.name){
+        t['resolutionDate'] = currentDate;
+    }else{
+        t['resolutionDate'] = ticketInfo.resolutionDate;
+    }
+
     return t;
 }
 
@@ -458,4 +466,8 @@ const generatePassword = (length, chars) => {
         password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return password;
+};
+
+export const getDefaultCountryToCurrency = (countryCode) => {
+   return countryToCurrency[ countryCode ];
 };

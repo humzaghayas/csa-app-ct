@@ -7,8 +7,10 @@ const { CONSTANTS } = require('./config/Constants');
 const customerService = require('./services/customerService')();
 const orderService = require('./services/orderService')();
 
+const {CT_PAYMENT_URL} = process.env;
 
-exports.orderSbscription = functions.pubsub.topic('csa-order-topic').onPublish(
+
+exports.orderSubscription = functions.pubsub.topic('csa-order-topic').onPublish(
 // exports.orderSbscription = functions.https.onRequest(
     async(message, context) => {
         console.log('humza at ', context.timestamp);
@@ -22,8 +24,6 @@ exports.orderSbscription = functions.pubsub.topic('csa-order-topic').onPublish(
 
 
         messageBody = JSON.parse(messageBody);
-        console.log('mwessage', message);
-        console.log('mwessage', messageBody);
         if(messageBody?.type === "OrderCreated"){
 
             const order = messageBody.order;
@@ -36,43 +36,40 @@ exports.orderSbscription = functions.pubsub.topic('csa-order-topic').onPublish(
             let orderConfirmation = "";
             if(order?.order?.orderNumber){
                 orderConfirmation =CONSTANTS.ORDER_CREATION_EMAIL.replaceAll("{{ORDER_INFORMATION}}"
-                    ,` number ${order?.order?.orderNumber} and id ${order?.order?.id} `);
+                    ,` number ${order?.orderNumber} and id ${order?.order?.id} `);
             }else{
                 orderConfirmation =CONSTANTS.ORDER_CREATION_EMAIL.replaceAll("{{ORDER_INFORMATION}}"
-                    ,` id ${order?.order?.id} `);
+                    ,` id ${order?.id} `);
             }
 
-            orderConfirmation = orderConfirmation + CONSTANTS.ORDER_CREATION_EMAIL;
+            let priceSummary ={
+                totalNetPrice:order.taxedPrice.totalNet.centAmount/100
+            }
 
-            let LINE_ITEMS = `<tr><th>Name</th><th>Quantity</th><th>Price</th></tr>`;
-            
-            LINE_ITEMS = LINE_ITEMS + order.lineItems.map(l =>{
-                return `<tr>
-                                <th>${l.name['en-US']}</th>
-                                <td>${l.quantity}</td>
-                                <td>${l.price.value.centAmount/100}</td>
-                            </tr>`
-            }).toString();
 
-            let priceSummary =`<table><tr><th>Total Net Price</th>
-                            <th>Total Gross Price</th>
-                            <th>Total Tax Price</th>
-                            </tr>
-                            <tr><td>${order.taxedPrice.totalNet.centAmount/100}</td>
-                            <td>${order.taxedPrice.totalGross.centAmount/100}</td>
-                            <td>${order.taxedPrice.totalTax.centAmount/100}</td>
-                            </tr></table>`
-
-            let summary = `<table>${LINE_ITEMS}</table><br><br>` + priceSummary
-
-            console.log('summary',summary);
-  
             const to =email;
-            const result =await emailService.sendEmail({to,
-                subject:"Order Created",html:summary});
-            
-            console.log('result',result);
+            // const result =await emailService.sendEmail({to,
+            //     subject:"Order Created",html:summary});
 
+            const lItems = order.lineItems.map(l =>{
+                return{
+                    name:l.name['en-US'],
+                    quantity:l.quantity,
+                    price:l.price.value.centAmount/100,
+                    totalPrice:l.taxedPrice.totalNet.centAmount/100
+                }
+            })
+
+            const template = "order-email"
+            const context ={
+                orderConfirmation,
+                lineItems:lItems,
+                priceSummary
+            }
+
+            const result =await emailService.sendEmail({to,
+                subject:"Order Created",template,context});
+            
         } 
         else if(messageBody?.type === "OrderStateChanged" && messageBody?.orderState === "Confirmed"){
             const projectKey = messageBody.projectKey;

@@ -1,0 +1,30 @@
+{
+  "name": "ct-external-connections",
+  "version": "1.0.8",
+  "description": "Mongo DB connections for CSA",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "16"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "@commercetools/platform-sdk": "^4.7.1",
+    "crypto": "^1.0.1",
+    "ct-tickets-helper-api": "^1.0.32",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "firebase-admin": "^10.0.2",
+    "firebase-functions": "^3.18.0",
+    "mongodb": "^5.2.0",
+    "mongoose": "^7.0.3"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^0.2.0"
+  }
+}
