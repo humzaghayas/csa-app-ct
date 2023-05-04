@@ -30,3 +30,9 @@ variable "ct_countries" {
   type    = list(string)
   default = ["US"]
 }
+
+variable "gcp_topic" {
+  type        = string
+  description = "topic in gcp"
+  default     = "csa-order-topic"
+}
