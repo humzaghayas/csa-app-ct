@@ -152,6 +152,7 @@ export const FETCH_ORDER_BY_ID = `query($id:String!){
       ...totalPrice
       ...taxedPrice
       ...returnInfo
+      ...custom
       customLineItems{
           __typename
       }
@@ -500,6 +501,14 @@ fragment returnInfo on Order{
           paymentState
           lastModifiedAt
           createdAt
+        }
+      }
+}
+fragment custom on Order{
+  custom{
+        customFieldsRaw{
+          name
+          value
         }
       }
 }`
