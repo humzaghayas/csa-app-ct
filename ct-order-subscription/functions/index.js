@@ -24,8 +24,6 @@ exports.orderSubscription = functions.pubsub.topic('csa-order-topic').onPublish(
 
 
         messageBody = JSON.parse(messageBody);
-        console.log('mwessage', message);
-        console.log('mwessage', messageBody);
         if(messageBody?.type === "OrderCreated"){
 
             const order = messageBody.order;
@@ -45,8 +43,7 @@ exports.orderSubscription = functions.pubsub.topic('csa-order-topic').onPublish(
             }
 
             let priceSummary ={
-                netPrice:order.taxedPrice.totalNet.centAmount/100,
-                taxedPrice:order.taxedPrice.totalTax.centAmount/100
+                totalNetPrice:order.taxedPrice.totalNet.centAmount/100
             }
 
 
@@ -58,7 +55,8 @@ exports.orderSubscription = functions.pubsub.topic('csa-order-topic').onPublish(
                 return{
                     name:l.name['en-US'],
                     quantity:l.quantity,
-                    price:l.price.value.centAmount/100
+                    price:l.price.value.centAmount/100,
+                    totalPrice:l.taxedPrice.totalNet.centAmount/100
                 }
             })
 
@@ -66,15 +64,12 @@ exports.orderSubscription = functions.pubsub.topic('csa-order-topic').onPublish(
             const context ={
                 orderConfirmation,
                 lineItems:lItems,
-                priceSummary,
-                paymentLink : `${CT_PAYMENT_URL}/${projectKey}/${order?.id}`
+                priceSummary
             }
 
             const result =await emailService.sendEmail({to,
                 subject:"Order Created",template,context});
             
-            console.log('result',result);
-
         } 
         else if(messageBody?.type === "OrderStateChanged" && messageBody?.orderState === "Confirmed"){
             const projectKey = messageBody.projectKey;

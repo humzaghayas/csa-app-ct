@@ -21,7 +21,8 @@ export function getTicketRows(customObjects){
                 Category:co.value.category,
                 Subject:co.value.subject,
                 assignedTo:co.value.assignedTo,
-                createdBy:co.value.createdBy}
+                createdBy:co.value.createdBy,
+                resolutionDate:co.value.resolutionDate}
         });
     }
 
@@ -294,6 +295,12 @@ function getTicketValue( ticketInfo,uuid){
         t['createdAt'] = ticketInfo.createdAt
     }else{
         t['createdAt'] = currentDate
+    }
+
+    if(ticketInfo.status === TICKET_STATUS.done.name){
+        t['resolutionDate'] = currentDate;
+    }else{
+        t['resolutionDate'] = ticketInfo.resolutionDate;
     }
 
     return t;

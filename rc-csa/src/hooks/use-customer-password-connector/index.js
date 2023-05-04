@@ -1,5 +1,5 @@
 export {
   usePasswordGetToken,
   useResetPassword,
-  useSendResetPasswordEmail
+  useSendEmailConfig
 } from './use-pwd-service-connector';

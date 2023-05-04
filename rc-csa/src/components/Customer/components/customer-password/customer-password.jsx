@@ -13,7 +13,7 @@ import PrimaryButton from '@commercetools-uikit/primary-button';
 import { ContentNotification } from '@commercetools-uikit/notifications';
 import { useState } from 'react';
 import DataTable from '@commercetools-uikit/data-table';
-import { usePasswordGetToken,useResetPassword,useSendResetPasswordEmail } from '../../../../hooks/use-customer-password-connector';
+import { usePasswordGetToken,useResetPassword,useSendEmailConfig } from '../../../../hooks/use-customer-password-connector';
 import { createPassword } from 'ct-tickets-helper-api';
 import { useFindCustomerService } from '../../../../hooks/use-customer-connector/use-customer-connector';
 import { useShowApiErrorNotification, useShowNotification } from '@commercetools-frontend/actions-global';
@@ -27,7 +27,7 @@ const CustomerPassword = (props) => {
 
   const {execute} = usePasswordGetToken();
   const {execute:execReserPassword} = useResetPassword();
-  const {execute:execSendEmail} = useSendResetPasswordEmail();
+  const {execute:execSendEmail} = useSendEmailConfig();
   const {getCustomerByEmail} = useFindCustomerService();
 
   const showNotification = useShowNotification();
