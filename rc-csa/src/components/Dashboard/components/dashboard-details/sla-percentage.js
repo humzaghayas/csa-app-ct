@@ -1,5 +1,5 @@
 export function getSlaPercentage(customObjects) {
-  if (customObjects && customObjects.results) {
+  if (customObjects && customObjects) {
     const slaRows = getSlaRow(customObjects);
     const totalRows = slaRows.length;
     const slaMetRows = slaRows.filter((row) => row.SLA === 'SLA met');
@@ -11,57 +11,59 @@ export function getSlaPercentage(customObjects) {
 }
 
 export function getSlaRow(customObjects) {
-  if (customObjects && customObjects.results) {
-    return customObjects.results.map((co) => {
-      const created = co?.createdAt;
-      const modified = co?.lastModifiedAt;
-      const slaStatus = getSLARate(created, modified);
+  if (customObjects && customObjects) {
+    return customObjects
+      .map((co) => {
+        const created = co?.Created;
+        const resolution = co?.Resolution;
+        const slaStatus = getSLARate(created, resolution);
 
-      return {
-        ticketNumber: co?.value?.ticketNumber,
-        Customer: co?.value?.email,
-        Created: co?.createdAt,
-        Modified: co?.lastModifiedAt,
-        status: co?.value?.status,
-        Priority: co?.value?.priority,
-        SLA: slaStatus,
-      };
-    });
+        return {
+          ticketNumber: co?.ticketNumber,
+          Customer: co?.Customer,
+          Created: co?.Created,
+          Resolution: co?.Resolution,
+          status: co?.status,
+          Priority: co?.Priority,
+          SLA: slaStatus,
+        };
+      })
+      .filter((co) => co.Resolution !== null && co.Resolution !== undefined);
   }
   return [];
 }
 
-export function getSLARate(created, modified) {
+export function getSLARate(created, resolution) {
   const createdAt = new Date(created);
-  const modifiedAt = new Date(modified);
+  const resolutionAt = new Date(resolution);
 
   const timeDiffInMinutes = Math.round(
-    (modifiedAt.getTime() - createdAt.getTime()) / 60000
+    (resolutionAt.getTime() - createdAt.getTime()) / 60000
   );
   return timeDiffInMinutes < 30 ? 'SLA met' : 'SLA not met';
 }
 
-function getSLAHighRate(created, modified) {
+function getSLAHighRate(created, resolution) {
   const createdAt = new Date(created);
-  const modifiedAt = new Date(modified);
+  const resolutionAt = new Date(resolution);
 
   const timeDiffInMinutes = Math.round(
-    (modifiedAt.getTime() - createdAt.getTime()) / 60000
+    (resolutionAt.getTime() - createdAt.getTime()) / 60000
   );
   return timeDiffInMinutes < 20 ? 'SLA met' : 'SLA not met';
 }
 
 export function getSlaHighPercentage(customObjects) {
-  if (customObjects && customObjects.results) {
+  if (customObjects && customObjects) {
     let highPriorityTickets = 0;
     let highPrioritySlaMetTickets = 0;
 
-    customObjects.results.forEach((co) => {
-      const created = co?.createdAt;
-      const modified = co?.lastModifiedAt;
-      const slaStatus = getSLAHighRate(created, modified);
+    customObjects.forEach((co) => {
+      const created = co?.Created;
+      const resolution = co?.Resolution;
+      const slaStatus = getSLAHighRate(created, resolution);
 
-      if (co.value.priority === 'high') {
+      if (co?.Priority === 'high') {
         highPriorityTickets++;
         if (slaStatus === 'SLA met') {
           highPrioritySlaMetTickets++;

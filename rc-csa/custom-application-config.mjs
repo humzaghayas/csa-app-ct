@@ -24,7 +24,11 @@ const config = {
     SEND_EMAIL_API: '${env:atgProtocol}' + '${env:SEND_EMAIL_API}',
     STRIPE_SECRET_KEY: '${env:STRIPE_SECRET_KEY}',
     SEND_EMAIL_API: '${env:atgProtocol}' + '${env:SEND_EMAIL_API}',
-    CT_CSA_BACKEND: '${env:atgProtocol}' + '${env:CT_CSA_BACKEND}'+'/'+'${env:CT_CSA_BACKEND_ENDPOINT}',
+    CT_CSA_BACKEND:
+      '${env:atgProtocol}' +
+      '${env:CT_CSA_BACKEND}' +
+      '/' +
+      '${env:CT_CSA_BACKEND_ENDPOINT}',
   },
   oAuthScopes: {
     view: [
@@ -40,36 +44,36 @@ const config = {
       'manage_project',
     ],
   },
-  "additionalOAuthScopes": [
+  additionalOAuthScopes: [
     {
-      "name": "csa-customer",
-      "view": ["view_customers"],
-      "manage": ["manage_customers"]
+      name: 'csa-customer',
+      view: ['view_customers'],
+      manage: ['manage_customers'],
     },
     {
-      "name": "csa-tickets",
-      "view": ["view_products"],
-      "manage":[]
+      name: 'csa-tickets',
+      view: ['view_products'],
+      manage: [],
     },
     {
-      "name": "csa-dashboard",
-      "view": ["view_customers"],
-      "manage":[]
+      name: 'csa-dashboard',
+      view: ['view_customers'],
+      manage: [],
     },
     {
-      "name": "customer-carts",
-      "view": ["view_orders"],
-      "manage": ["manage_orders"]
+      name: 'customer-carts',
+      view: ['view_orders'],
+      manage: ['manage_orders'],
     },
     {
-      "name": "customer-orders",
-      "view": ["view_orders"]
+      name: 'customer-orders',
+      view: ['view_orders'],
     },
     {
-      "name": "product-search",
-      "view": ["view_products"],
-      "manage":[]
-    }
+      name: 'product-search',
+      view: ['view_products'],
+      manage: [],
+    },
   ],
   headers: {
     csp: {
@@ -79,7 +83,7 @@ const config = {
         'csa-project-1d161.firebaseapp.com',
         'https://firebasestorage.googleapis.com/',
         '${env:ALGOLIA_SEARCH}',
-        '${env:ALGOLIA_SEARCH_CSA}'
+        '${env:ALGOLIA_SEARCH_CSA}',
       ],
       'connect-src': [
         'http://localhost:3001',
@@ -91,7 +95,7 @@ const config = {
         '${env:SEND_EMAIL_API}',
         '${env:ALGOLIA_SEARCH}',
         '${env:ALGOLIA_SEARCH_CSA}',
-        '${env:CT_CSA_BACKEND}'
+        '${env:CT_CSA_BACKEND}',
       ],
       'style-src': [
         'http://localhost:3001',
