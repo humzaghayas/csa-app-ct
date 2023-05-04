@@ -15,14 +15,14 @@ export function getSlaRow(customObjects) {
     return customObjects
       .map((co) => {
         const created = co?.Created;
-        const resolution = co?.Resolution;
+        const resolution = co?.resolutionDate;
         const slaStatus = getSLARate(created, resolution);
 
         return {
           ticketNumber: co?.ticketNumber,
           Customer: co?.Customer,
           Created: co?.Created,
-          Resolution: co?.Resolution,
+          Resolution: co?.resolutionDate,
           status: co?.status,
           Priority: co?.Priority,
           SLA: slaStatus,

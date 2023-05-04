@@ -149,11 +149,6 @@ const DashboardDisplayForm = (props) => {
   const dataPie = [
     { name: 'newTickets', tickets: newTickets, fill: 'teal' },
     { name: 'openTickets', tickets: openTickets, fill: 'gray' },
-    {
-      name: 'openTickets',
-      tickets: openTickets,
-      fill: 'orangered',
-    },
     { name: 'inprogTickets', tickets: inprogTickets, fill: 'royalblue' },
   ];
 
