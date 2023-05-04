@@ -1,0 +1,13 @@
+{
+  "destination" : {
+    "type" : "GoogleCloudPubSub",
+    "projectId" : "commerce-tools-b2b-services",
+    "topic":"csa-order-topic",
+    "region":"us-east-1"
+  },
+  "messages" : [ {
+    "resourceTypeId" : "order",
+    "types" : [ "OrderCreated","OrderStateChanged"]
+  } ],
+  "key" : "csa-order-sync"
+}

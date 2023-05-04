@@ -1,0 +1,52 @@
+.imageContainer {
+    /* max-width: 65%; */
+    /* margin: 0 auto; */ 
+     min-width: 80px;
+     text-align: left;
+    /* margin-left: 100px; */
+  }
+  .changePricesLabel {
+    font-weight: bold;
+    font-size: 18px;
+    /* color: blue; */
+    /* width: 100px;
+    height: 200px; */
+  }
+  .FieldLabel {
+    /* font-weight: bold; */
+    font-size: 16px;
+    color: slategray;
+    /* color :rgba(192, 192, 192, 0); */
+    /* color: rgb(19, 85, 110) */
+    /* width: 100px;
+    height: 200px; */
+  }
+  .amountCard{
+    margin-right: 50px;
+  }
+  .dateTable{
+      margin-top: 30px;
+  }
+  .header{
+    text-align: center;
+    font-weight: bolder;
+    font-size: large;
+    
+  }
+.header>.css-1juivf6-MuiTypography-root{
+  font-weight: bold !important;
+}
+  .tickets_component{
+    width: 100%;
+
+  }
+  
+  .ticdetails{
+    width: 300px;
+    height: 200px;
+  }
+
+
+.css-1juivf6-MuiTypography-root{
+  font-weight: bold;
+}

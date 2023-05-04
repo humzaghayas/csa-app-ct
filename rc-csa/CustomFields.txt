@@ -1,0 +1,166 @@
+{
+    "id": "02c6f54f-61fb-446a-abea-283eca72c4bf",
+    "version": 2,
+    "versionModifiedAt": "2023-02-27T10:54:55.210Z",
+    "createdAt": "2023-02-24T11:07:11.833Z",
+    "lastModifiedAt": "2023-02-27T10:54:55.210Z",
+    "lastModifiedBy": {
+        "clientId": "9JVJc5xVV0vrnXzIlqgLe0vY",
+        "isPlatformClient": false
+    },
+    "createdBy": {
+        "clientId": "9JVJc5xVV0vrnXzIlqgLe0vY",
+        "isPlatformClient": false
+    },
+    "key": "paymentFields",
+    "name": {
+        "en": "Payment Fields"
+    },
+    "description": {
+        "en": "Payment url field and Payment PSP Status Field to save the url of payment link of PSP."
+    },
+    "resourceTypeIds": [
+        "payment"
+    ],
+    "fieldDefinitions": [
+        {
+            "name": "paymentLink",
+            "label": {
+                "en": "PaymentLink"
+            },
+            "required": false,
+            "type": {
+                "name": "String"
+            },
+            "inputHint": "SingleLine"
+        },
+        {
+            "name": "pspPaymentStatus",
+            "label": {
+                "en": "PspPaymentStatus"
+            },
+            "required": false,
+            "type": {
+                "name": "String"
+            },
+            "inputHint": "SingleLine"
+        }
+    ]
+}
+
+
+///
+
+{
+  "key" : "promotionsList",
+  "name" : {
+    "en": "Promotions List"
+  },
+  "description" : {
+    "en": "List of promotions (eg. vouchers, gift cards) assigned to cusotmer."
+  },
+  "resourceTypeIds" : [ "customer" ],
+  "fieldDefinitions" : [ 
+    {
+        "name" : "promotions",
+        "label" : {
+            "en" : "Promotions"
+        },
+        "type":{
+            "name":"Set",
+            "elementType": {
+                "name":"Reference",
+                "referenceTypeId":"cart-discount"
+            }
+        },
+        "required":false,
+        "inputHint" : "SingleLine"
+    }
+   ]
+}
+
+///
+
+
+{
+    "id": "faff9544-f8fe-49dc-bf8c-f92de737728c",
+    "version": 1,
+    "versionModifiedAt": "2023-04-18T08:35:31.033Z",
+    "createdAt": "2023-04-18T08:35:31.033Z",
+    "lastModifiedAt": "2023-04-18T08:35:31.033Z",
+    "lastModifiedBy": {
+        "clientId": "vA2bgdBVijSq3h-fmMy-eoWF",
+        "isPlatformClient": false
+    },
+    "createdBy": {
+        "clientId": "vA2bgdBVijSq3h-fmMy-eoWF",
+        "isPlatformClient": false
+    },
+    "key": "profileFields",
+    "name": {
+        "en": "Profile custom fields"
+    },
+    "description": {
+        "en": "List of customer custom profile fields"
+    },
+    "resourceTypeIds": [
+        "customer"
+    ],
+    "fieldDefinitions": [
+        {
+            "name": "occupation",
+            "label": {
+                "en": "Occupation"
+            },
+            "required": false,
+            "type": {
+                "name": "String"
+            },
+            "inputHint": "SingleLine"
+        },
+        {
+            "name": "preferredLanguage",
+            "label": {
+                "en": "Preferred Language"
+            },
+            "required": false,
+            "type": {
+                "name": "String"
+            },
+            "inputHint": "SingleLine"
+        },
+        {
+            "name": "ageGroup",
+            "label": {
+                "en": "Age Group"
+            },
+            "required": false,
+            "type": {
+                "name": "String"
+            },
+            "inputHint": "SingleLine"
+        },
+        {
+            "name": "gender",
+            "label": {
+                "en": "Gender"
+            },
+            "required": false,
+            "type": {
+                "name": "String"
+            },
+            "inputHint": "SingleLine"
+        },
+        {
+            "name": "preferredCurrency",
+            "label": {
+                "en": "Preferred Currency"
+            },
+            "required": false,
+            "type": {
+                "name": "String"
+            },
+            "inputHint": "SingleLine"
+        }
+    ]
+}
