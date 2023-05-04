@@ -51,7 +51,7 @@ on:
     branches:
       - feature/csa-mongo
     paths:
-      - 'ct-csa-terraforms/packages/tcs-terraform/**'
+      - 'ct-csa-terraforms/packages/csa-terraform/**'
 
 env:
   COMMERCETOOLS_URL: 'https://github.com/labd/terraform-provider-commercetools/releases/download/0.19.0/terraform-provider-commercetools-0.19.0-linux-amd64.tar.gz'
@@ -95,8 +95,8 @@ jobs:
         tar xzf commercetools.tar.gz -C ~/.terraform.d/plugins      
     - name: 'Terraform Lint'
       run: |
-        sed -i "s/'/\"/g" ct-csa-terraforms/packages/tcs-terraform/default/dev.tfvars
-        cd ct-csa-terraforms/packages/tcs-terraform/default
+        sed -i "s/'/\"/g" ct-csa-terraforms/packages/csa-terraform/default/dev.tfvars
+        cd ct-csa-terraforms/packages/csa-terraform/default
         echo ${{ secrets.GOOGLE_CLIENT_SECRET_base64 }} | base64 -d > serviceaccount.json
         terraform init -input=false
         terraform fmt -check=true -diff=true || ( echo >&2 "Canonical format and style doesn't match convention. Please fix (try running 'terraform fmt' locally)."; exit 3; )
@@ -119,13 +119,13 @@ jobs:
           tar xzf commercetools.tar.gz -C ~/.terraform.d/plugins      
       - name: 'Terraform Plan'
         run: |
-          sed -i "s/'/\"/g" ct-csa-terraforms/packages/tcs-terraform/default/dev.tfvars
-          cd ct-csa-terraforms/packages/tcs-terraform/default
+          sed -i "s/'/\"/g" ct-csa-terraforms/packages/csa-terraform/default/dev.tfvars
+          cd ct-csa-terraforms/packages/csa-terraform/default
           echo ${{ secrets.GOOGLE_CLIENT_SECRET_base64 }} | base64 -d > serviceaccount.json
           terraform init -input=false
           terraform plan -var-file="dev.tfvars" -out=default_plan.tfplan -input=false
       - name: 'Terraform Apply'
         run: |
-          sed -i "s/'/\"/g" ct-csa-terraforms/packages/tcs-terraform/default/dev.tfvars
-          cd ct-csa-terraforms/packages/tcs-terraform/default
+          sed -i "s/'/\"/g" ct-csa-terraforms/packages/csa-terraform/default/dev.tfvars
+          cd ct-csa-terraforms/packages/csa-terraform/default
           terraform apply -input=false default_plan.tfplan
