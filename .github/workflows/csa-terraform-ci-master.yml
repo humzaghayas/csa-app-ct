@@ -62,7 +62,11 @@ env:
   CTP_SCOPES: ${{ secrets.CT_SCOPE }}
   CTP_AUTH_URL: ${{ secrets.CT_AUTH_URL }}
   CTP_API_URL: ${{ secrets.CT_API_URL }}
-  
+  TF_VAR_gcp_project_id: ${{ secrets.GC_PROJECT_ID }}
+  TF_VAR_ct_project_key: ${{ secrets.CT_PROJECT_KEY }}
+  TF_VAR_region: ${{ secrets.GC_PROJECT_REGION }}
+  TF_VAR_region_functions: ${{ secrets.FIREBASE_FUNCTIONS_REGION }}
+  TF_VAR_add_monthly_spent_topic: ${{ secrets.ADD_MONTHLY_SPENT_TOPIC }}
 
 jobs:
   terraform:
