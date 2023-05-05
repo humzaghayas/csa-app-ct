@@ -91,8 +91,8 @@ jobs:
         unzip terraform_"$tf_version"_linux_amd64.zip
         sudo mv terraform /usr/local/bin/
         mkdir -p ~/.terraform.d/plugins
-        wget -qO commercetools.tar.gz $COMMERCETOOLS_URL
-        tar xzf commercetools.tar.gz -C ~/.terraform.d/plugins      
+        wget -qO commercetools.zip $COMMERCETOOLS_URL
+        unzip commercetools.zip -d ~/.terraform.d/plugins      
     - name: 'Terraform Lint'
       run: |
         sed -i "s/'/\"/g" ct-csa-terraforms/packages/csa-terraform/default/dev.tfvars
@@ -115,8 +115,8 @@ jobs:
           unzip terraform_"$tf_version"_linux_amd64.zip
           sudo mv terraform /usr/local/bin/
           mkdir -p ~/.terraform.d/plugins
-          wget -qO commercetools.tar.gz $COMMERCETOOLS_URL
-          tar xzf commercetools.tar.gz -C ~/.terraform.d/plugins      
+          wget -qO commercetools.zip $COMMERCETOOLS_URL
+          unzip commercetools.zip -d ~/.terraform.d/plugins      
       - name: 'Terraform Plan'
         run: |
           sed -i "s/'/\"/g" ct-csa-terraforms/packages/csa-terraform/default/dev.tfvars

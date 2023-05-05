@@ -1,5 +1,6 @@
-resource "commercetools_subscription" "csa-order-subscription" {
-  key = "csa-order-subscription"
+
+resource "commercetools_subscription" "subscribe" {
+  key = "my-subscription"
 
   destination {
     type          = "GoogleCloudPubSub"
