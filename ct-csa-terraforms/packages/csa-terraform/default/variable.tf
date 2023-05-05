@@ -10,6 +10,12 @@ variable "ct_project_key" {
   default     = "tcs-test-project"
 }
 
+variable "gcp_topic" {
+  type        = string
+  description = "region for the gcp resources"
+  default     = "us-east1"
+}
+
 variable "gcp_region" {
   type        = string
   description = "region for the gcp resources"
@@ -32,8 +38,27 @@ variable "ct_countries" {
   default = ["US"]
 }
 
-variable "gcp_topic" {
+variable "client_id" {
   type        = string
-  description = "topic in gcp"
-  default     = "csa-order-topic"
+  description = "The Commerce Tools client id"
+}
+
+variable "client_secret" {
+  type        = string
+  description = "The Commerce Tools secret key"
+}
+
+variable "scopes" {
+  type        = string
+  description = "The Commerce Tools client scope"
+}
+
+variable "token_url" {
+  type        = string
+  description = "The Commerce Tools client url"
+}
+
+variable "api_url" {
+  type        = string
+  description = "The Commerce Tools client auth url"
 }
