@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   PageNotFound,
   FormModalPage,
@@ -23,7 +23,7 @@ import { PERMISSIONS } from '../../../../constants';
 //   useCustomerDetailsCreator,
 // } from '../../../../hooks/use-Customer-connector/use-Customere-graphql-connector';
 import { docToFormValues, formValuesToDoc } from './conversions';
-import TicketDisplayForm from './ticket-details-form';
+import DashboardDisplayForm from './dashboard-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
 import { useMcQuery } from '@commercetools-frontend/application-shell';
@@ -38,8 +38,14 @@ import { useOrdersFetcher } from '../../../../hooks/use-orders-connector';
 import { useCartsFetcher } from '../../../../hooks/use-cart-connector/use-cart-connector';
 import { useCustomersFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
 import { useProductsFetcher } from '../../../../hooks/use-product-search-connector/use-product-search-connector';
+import {
+  useCreateEntry,
+  useFetchTicketsList,
+  useUserFetcher,
+} from '../../../../hooks/use-register-user-connector';
+import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
 
-const TicketDisplay = (props) => {
+const DashboardDisplay = (props) => {
   const intl = useIntl();
   const params = useParams();
   const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
@@ -49,26 +55,36 @@ const TicketDisplay = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.ManageCsaTickets],
   });
-
   const { page, perPage } = usePaginationState();
-  const { data, error, loading, refetch } = useMcQuery(
-    gql`
-      ${FETCH_TICKETS}
-    `,
-    {
-      variables: {
-        container: CONSTANTS.containerKey,
+  const [rowsTick, setRows] = useState(null);
+  const [resData, setResData] = useState(null);
+  const { user } = useApplicationContext((context) => ({
+    user: context.user ?? '',
+  }));
+  const { projectKey } = useApplicationContext((context) => ({
+    projectKey: context.project.key,
+  }));
+  const { foundUser } = useUserFetcher(user.email);
+  const { execute } = useCreateEntry(user.email);
+  const { execute: fetchTickets } = useFetchTicketsList();
+
+  useEffect(async () => {
+    if (canManage && foundUser == false) {
+      await execute();
+    }
+
+    if (!rowsTick) {
+      const data = await fetchTickets(projectKey, {
         limit: perPage.value,
         offset: (page.value - 1) * perPage.value,
-        sort: ['createdAt desc'],
-      },
-      context: {
-        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
-      },
-      fetchPolicy: 'network-only',
+        sort: { lastModifiedAt: -1 },
+      });
+
+      const r = await getTicketRows(data);
+      setRows(r);
+      setResData(data);
     }
-  );
-  console.log('test');
+  }, [foundUser]);
 
   const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
   const orderData = useOrdersFetcher({
@@ -97,18 +113,18 @@ const TicketDisplay = (props) => {
   const handleSubmit = useCallback();
 
   return (
-    <TicketDisplayForm
+    <DashboardDisplayForm
       initialValues={docToFormValues(
         orderData,
         cartData,
-        data,
+        rowsTick,
         customerData,
         productData,
         null,
         projectLanguages
       )}
       onSubmit={handleSubmit}
-      ticket={data}
+      ticket={rowsTick}
       order={orderData}
       cart={cartData}
       customer={customerData}
@@ -136,11 +152,9 @@ const TicketDisplay = (props) => {
           // </FormModalPage>
         );
       }}
-    </TicketDisplayForm>
+    </DashboardDisplayForm>
   );
 };
-TicketDisplay.displayName = 'TicketDisplay';
-// TicketDisplay.propTypes = {
-//   onClose: PropTypes.func.isRequired,
-// };
-export default TicketDisplay;
+DashboardDisplay.displayName = 'DashboardDisplay';
+
+export default DashboardDisplay;
