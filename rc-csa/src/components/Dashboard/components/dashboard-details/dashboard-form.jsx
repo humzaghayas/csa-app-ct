@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import { useIntl } from 'react-intl';
@@ -10,49 +10,46 @@ import {
   Card,
   Constraints,
   PrimaryButton,
-  SelectField,
 } from '@commercetools-frontend/ui-kit';
 import { Switch, useHistory, useRouteMatch } from 'react-router-dom';
-import {
-  useDataTableSortingState,
-  usePaginationState,
-} from '@commercetools-uikit/hooks';
+import { usePaginationState } from '@commercetools-uikit/hooks';
 import DataTable from '@commercetools-uikit/data-table';
-import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
 import TicketAccount from '../../../Ticket/components/ticket-account/ticket-account';
-// import { Pie } from 'react-chartjs-2';
 import { SuspendedRoute } from '@commercetools-frontend/application-shell';
-// import SelectField from 'material-ui/SelectField';
-// import MenuItem from 'material-ui/MenuItem';
-import ExportExcel from './excelexport';
-import ExcelData from './values';
-import TicketDisplay from './ticket-details';
+import ExportExcel from './Excelexport';
 import {
+  countActiveTickets,
   highProirityTickets,
   inProgressTickets,
   newFunctionTickets,
-  resolvedTickets,
+  openStatusTickets,
 } from './function';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import * as moment from 'moment';
 import { PieChart, Pie, Cell, Label } from 'recharts';
-import { CART_STATE, REPORT_TYPE } from './constants';
 import TawkTo from './chat';
-import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
-import styles from './ticket-details.module.css';
+import styles from './dashboard.module.css';
 import {
-  useFetchOrderById,
-  useOrdersFetcher,
-} from '../../../../hooks/use-orders-connector';
-import { useCartsFetcher } from '../../../../hooks/use-cart-connector/use-cart-connector';
-
+  getSLARate,
+  getSlaHighPercentage,
+  getSlaPercentage,
+  getSlaRow,
+} from './sla-percentage';
+import {
+  generateCartExcel,
+  generateCustomerExcel,
+  generateOrderExcel,
+  generateProductExcel,
+  generateSLAExcel,
+  generateTicketExcel,
+} from './generateExcelData';
 //import { getOrderData } from './conversions';
 
 let rows = null;
 
 const columns = [
-  { key: 'Customer', label: 'Customer' },
+  { key: 'ticketNumber', label: 'Ticket ID' },
   { key: 'Created', label: 'Created' },
   { key: 'Source', label: 'Source' },
   { key: 'status', label: 'Status' },
@@ -61,12 +58,18 @@ const columns = [
   { key: 'Subject', label: 'Subject' },
 ];
 
-const reportType = Object.keys(REPORT_TYPE).map((key) => ({
-  label: key,
-  value: REPORT_TYPE[key],
-}));
+let rowsSla = null;
 
-const TicketDisplayForm = (props) => {
+const columnsSla = [
+  { key: 'ticketNumber', label: 'Ticket ID' },
+  { key: 'Created', label: 'Created' },
+  { key: 'status', label: 'Status' },
+  { key: 'Priority', label: 'Priority' },
+  { key: 'Resolution', label: 'Resolution' },
+  { key: 'SLA', label: 'SLA' },
+];
+
+const DashboardDisplayForm = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
   const { push } = useHistory();
@@ -80,21 +83,28 @@ const TicketDisplayForm = (props) => {
     enableReinitialize: true,
   });
 
-  console.log('product', props?.product);
-
   const ticketData = props?.ticket;
   const orderData = props?.order;
   const cartData = props?.cart;
   const customerData = props?.customer;
   const productData = props?.product;
-  const totalTicket = ticketData?.customObjects?.count;
+  const totalTicket = ticketData?.length || 0;
+  const activeTicket = countActiveTickets(ticketData);
   const newTickets = newFunctionTickets(ticketData);
   const highTickets = highProirityTickets(ticketData);
-  const resolvedstatusTickets = resolvedTickets(ticketData);
+  const openTickets = openStatusTickets(ticketData);
   const inprogTickets = inProgressTickets(ticketData);
-  const dataExcel = ExcelData;
+  console.log('print', ticketData);
 
-  rows = getTicketRows(ticketData?.customObjects);
+  //Assigning row values
+  rows = ticketData;
+  rowsSla = getSlaRow(ticketData);
+
+  //SLA Details
+  const slaPercentage = getSlaPercentage(ticketData);
+  const slaMetPercentage = Number(slaPercentage);
+  const slaNotMetPercent = 100.0 - slaPercentage;
+  const slaHighPercentage = getSlaHighPercentage(ticketData);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -108,200 +118,23 @@ const TicketDisplayForm = (props) => {
   };
 
   // Export to excel
-  const filteredTicketData = ticketData?.customObjects?.results?.filter(
-    (obj) => {
-      const createdAt = new Date(obj.createdAt);
-      return createdAt >= startDate && createdAt <= endDate;
-    }
-  );
-
-  const filtereOrderData = orderData?.ordersPaginatedResult?.results?.filter(
-    (obj) => {
-      const createdAt = new Date(obj.createdAt);
-
-      return createdAt >= startDate && createdAt <= endDate;
-    }
-  );
-
-  const filterCartData = cartData?.cartPaginatedResult?.results?.filter(
-    (obj) => {
-      const createdAt = new Date(obj.createdAt);
-
-      return createdAt >= startDate && createdAt <= endDate;
-    }
-  );
-
-  const filterCustomerData =
-    customerData?.customersPaginatedResult?.results?.filter((obj) => {
-      const createdAt = new Date(obj.createdAt);
-
-      return createdAt >= startDate && createdAt <= endDate;
-    });
-
-  const filterProductData = productData?.ProductListItems?.filter((obj) => {
-    const createdAt = new Date(obj.createdAt);
-
-    return createdAt >= startDate && createdAt <= endDate;
-  });
-
   const starttDate = moment(startDate).format('DD-MM-YYYY');
   const enddDate = moment(endDate).format('DD-MM-YYYY');
 
-  // console.log(filteredData);
-  const ticketExcel = filteredTicketData?.map((obj) => {
-    return {
-      'Ticket Number': obj?.value?.ticketNumber,
-      Customer: obj?.value?.email,
-      // CreatedAt: obj?.createdAt,
-      Created: moment(obj?.value?.createdAt).format('YYYY-MM-DD HH:mm:ss'),
-      // LastModifiedAt: obj?.lastModifiedAt
-      Modified: moment(obj?.value?.lastModifiedAt).format(
-        'YYYY-MM-DD HH:mm:ss'
-      ),
-      Source: obj?.value?.source,
-      Status: obj?.value?.status,
-      Priority: obj?.value?.priority,
-      Category: obj?.value?.category,
-      Subject: obj?.value?.subject,
-      Assignee: obj?.value?.assignedTo,
-      'Created by': obj?.value?.createdBy,
-      Message: obj?.value?.ticketData?.message,
-      Worklog: obj?.value?.ticketData?.comments?.comment ?? '--',
-    };
-  });
-
-  const Orders = filtereOrderData?.map((obj) => {
-    return {
-      'Order Number': obj?.id,
-      Customer: fullName(
-        obj?.customer?.firstName ?? '--',
-        obj?.customer?.lastName
-      ),
-      'Order Total': amountCalculator(
-        obj?.totalPrice?.centAmount,
-        obj?.totalPrice?.fractionDigits
-      ),
-      'No.of Order Items': obj?.lineItems?.length,
-      'Total Items': obj?.lineItems
-        .map((item) => item.quantity)
-        .reduce((a, b) => a + b, 0),
-      'Order Status': obj?.orderState ?? '--',
-      'Shipment Status': obj?.shipmentState ?? '--',
-      'Payment Status': obj?.paymentState ?? '--',
-      'Created At': moment(obj?.createdAt).format('YYYY-MM-DD HH:mm:ss'),
-      'Last ModifiedAt': moment(obj?.lastModifiedAt).format(
-        'YYYY-MM-DD HH:mm:ss'
-      ),
-      // 'Product Name': obj?.lineItems?.nameAllLocales?.value ?? '--',
-      // 'SKU': obj?.lineItems?.variants?.sku ?? '--',
-      // 'Unit Price': amountCalculator(obj?.lineItems?.price?.value?.centAmount, obj?.lineItems?.price?.value?.fractionDigits),
-      // 'Quantity': obj?.lineItems?.quantity ?? '--',
-      'Shipping ID': obj?.shippingAddress?.id ?? '--',
-      'Shipped Quantity': obj?.lineItems
-        .map((item) => item.quantity)
-        .reduce((a, b) => a + b, 0),
-      'Street Number': obj?.shippingAddress?.streetNumber ?? '--',
-      'Street Name': obj?.shippingAddress?.streetName,
-      Building: obj?.shippingAddress?.building ?? '--',
-      City: obj?.shippingAddress?.city ?? '--',
-      'Postal Code': obj?.shippingAddress?.postalCode ?? '--',
-      State: obj?.shippingAddress?.state ?? '--',
-      Country: obj?.shippingAddress?.country ?? '--',
-      'Return Tracking ID': obj?.returninfo?.returnTrackingId ?? '--',
-      'Return Date': obj?.returninfo?.returnDate ?? '--',
-      'Payment ID': obj?.paymentInfo?.payments?.id ?? '--',
-      'Interface ID': obj?.paymentInfo?.payments?.interfaceId ?? '--',
-    };
-  });
-
-  function amountCalculator(centAmount, fractionDigits) {
-    centAmount = centAmount / 100;
-    centAmount = '$' + centAmount + '.00';
-    return centAmount;
-  }
-  function fullName(firstName, lastName) {
-    const f1 = firstName ? firstName : '';
-    const f2 = lastName ? lastName : '';
-    return f1 + ' ' + f2;
-  }
-
-  const Carts = filterCartData?.map((obj) => {
-    return {
-      'Cart Number': obj?.id,
-      'Order Number': obj?.orderId,
-      Customer: fullName(
-        obj?.customer?.firstName ?? '--',
-        obj?.customer?.lastName
-      ),
-      'Cart Total': amountCalculator(
-        obj?.totalPrice?.centAmount,
-        obj?.totalPrice?.fractionDigits
-      ),
-      'No.of Order Items': obj?.lineItems?.length,
-      'Total Items': obj?.lineItems
-        .map((item) => item.quantity)
-        .reduce((a, b) => a + b, 0),
-      'Cart Status': obj?.cartState ?? '--',
-      'Created At': moment(obj?.createdAt).format('YYYY-MM-DD HH:mm:ss'),
-      'Last ModifiedAt': moment(obj?.lastModifiedAt).format(
-        'YYYY-MM-DD HH:mm:ss'
-      ),
-    };
-  });
-  function amountCalculator(centAmount, fractionDigits) {
-    centAmount = centAmount / 100;
-    centAmount = '$' + centAmount + '.00';
-    return centAmount;
-  }
-  function fullName(firstName, lastName) {
-    const f1 = firstName ? firstName : '';
-    const f2 = lastName ? lastName : '';
-    return f1 + ' ' + f2;
-  }
-
-  const Customers = filterCustomerData?.map((obj) => {
-    return {
-      'Customer number': obj?.customerNumber,
-      'External Id': obj?.externalId,
-      'First Name': obj?.firstName,
-      'Last Name': obj?.lastName,
-      Company: obj?.companyName,
-      Email: obj?.email,
-      'Date Created': obj?.createdAt,
-      'Last Modified': obj?.lastModifiedAt,
-    };
-  });
-
-  const Products = filterProductData?.map((obj) => {
-    return {
-      'Product Name': obj?.masterData?.current?.name,
-      'Product Description': obj?.masterData?.current?.__typename,
-      'Product Type': obj?.productType?.name,
-      'Product Key': obj?.productType?.key,
-      Price: amountCalculator(
-        obj?.masterData?.current?.masterVariant?.prices[0]?.value?.centAmount,
-        obj?.masterData?.current?.masterVariant?.prices[0]?.value
-          ?.fractionDigits
-      ),
-      SKU: obj?.masterData?.current?.masterVariant?.sku,
-      Created: obj?.createdAt,
-      Modified: obj?.lastModifiedAt,
-    };
-  });
-
   const exportData = () => {
-    console.log(selectedOption);
     switch (selectedOption) {
       case 'Tickets':
-        return ticketExcel;
+        return generateTicketExcel(ticketData, startDate, endDate);
       case 'Orders':
-        return Orders;
+        return generateOrderExcel(orderData, startDate, endDate);
       case 'Carts':
-        return Carts;
+        return generateCartExcel(cartData, startDate, endDate);
       case 'Customer':
-        return Customers;
+        return generateCustomerExcel(customerData, startDate, endDate);
       case 'Product':
-        return Products;
+        return generateProductExcel(productData, startDate, endDate);
+      case 'SLA':
+        return generateSLAExcel(ticketData, startDate, endDate);
     }
   };
 
@@ -313,15 +146,17 @@ const TicketDisplayForm = (props) => {
   };
 
   //PieChart
-  const data = [
+  const dataPie = [
     { name: 'newTickets', tickets: newTickets, fill: 'teal' },
-    { name: 'highTickets', tickets: highTickets, fill: 'gray' },
-    {
-      name: 'resolvedstatusTickets',
-      tickets: resolvedstatusTickets,
-      fill: 'orangered',
-    },
+    { name: 'openTickets', tickets: openTickets, fill: 'gray' },
     { name: 'inprogTickets', tickets: inprogTickets, fill: 'royalblue' },
+  ];
+
+  // //PieChart SLA
+
+  const dataSla = [
+    { name: 'slaMet', tickets: slaMetPercentage, fill: 'teal' },
+    { name: 'slaNotMet', tickets: slaNotMetPercent, fill: 'gray' },
   ];
 
   // chat link
@@ -383,12 +218,12 @@ const TicketDisplayForm = (props) => {
                   <div style={{ display: 'inline-block', marginRight: '20px' }}>
                     <PieChart width={200} height={200}>
                       <Pie
-                        data={data}
+                        data={dataPie}
                         dataKey="tickets"
                         nameKey="name"
                         outerRadius={100}
                       >
-                        {data.map((entry, index) => (
+                        {dataPie.map((entry, index) => (
                           <>
                             <Cell key={`cell-${index}`} fill={entry.fill} />
                             {/* <Label key={`label-${index}`} position="outside" offset={10}>
@@ -399,14 +234,18 @@ const TicketDisplayForm = (props) => {
                       </Pie>
                     </PieChart>
                     <br />
-                    <Text.Subheadline as="h5" isBold={true} tone="primary">
+                    <Text.Subheadline as="h5" isBold={true} tone="positive">
                       {'Total tickets = '}
                       {totalTicket}
+                    </Text.Subheadline>
+                    <Text.Subheadline as="h5" isBold={true} tone="primary">
+                      {'Active tickets = '}
+                      {activeTicket}
                     </Text.Subheadline>
                   </div>
                   <br />
                   <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                    <Text.Subheadline as="h5" isBold={true} tone="negative">
                       {'High Priority = '}
                       {highTickets}
                     </Text.Subheadline>
@@ -415,12 +254,12 @@ const TicketDisplayForm = (props) => {
                       {newTickets}
                     </Text.Subheadline>
                     <Text.Subheadline as="h5" isBold={true} tone="information">
-                      {'In-progress = '}
-                      {inprogTickets}
+                      {'Open = '}
+                      {openTickets}
                     </Text.Subheadline>
                     <Text.Subheadline as="h5" isBold={true} tone="information">
-                      {'Resloved = '}
-                      {resolvedstatusTickets}
+                      {'In-progress = '}
+                      {inprogTickets}
                     </Text.Subheadline>
                   </div>
                 </div>
@@ -445,7 +284,7 @@ const TicketDisplayForm = (props) => {
                       isCondensed
                       columns={columns}
                       rows={rows.slice(0, 5)} // limit to first 5 rows
-                      maxHeight={600}
+                      maxHeight={400}
                       onRowClick={(row) =>
                         push(`ticket-edit/${row.id}/tickets-general`)
                       }
@@ -546,6 +385,7 @@ const TicketDisplayForm = (props) => {
                           <option value="Carts">Carts</option>
                           <option value="Customer">Customer</option>
                           <option value="Product">Product</option>
+                          <option value="SLA">SLA</option>
                         </select>
                       </div>
                       <br />
@@ -693,6 +533,92 @@ const TicketDisplayForm = (props) => {
           </Spacings.Stack>
         </div>
       </Spacings.Inline>
+      <Spacings.Inline alignItems="stretch" justifyContent="space-between">
+        <Constraints.Horizontal max={13}>
+          <div className={styles.tickets_component}>
+            <Card constraint="xl" theme="dark" insetScale="l">
+              <Text.Subheadline as="h4" isBold={true} tone="positive">
+                {'SLA Matrix'}
+              </Text.Subheadline>
+              <br />
+              {rows ? (
+                <Spacings.Stack scale="l">
+                  <DataTable
+                    isCondensed
+                    columns={columnsSla}
+                    rows={rowsSla} // limit to first 5 rows
+                    maxHeight={300}
+                    // onRowClick={(row) =>
+                    //   push(`ticket-edit/${row.id}/tickets-general`)
+                    // }
+                  />
+                  <Switch>
+                    <SuspendedRoute path={`${match.path}/:id`}>
+                      <TicketAccount onClose={() => push(`${match.url}`)} />
+                    </SuspendedRoute>
+                  </Switch>
+                </Spacings.Stack>
+              ) : (
+                <p>Loading...</p>
+              )}
+            </Card>
+          </div>
+        </Constraints.Horizontal>
+        <div className={styles.ticdetails}>
+          <Spacings.Stack scale="xl" alignItems="flexEnd">
+            <Constraints.Horizontal constraint="l" max={8}>
+              <Card constraint="xl">
+                <br />
+                <div>
+                  <Text.Subheadline as="h4" isBold={true} tone="positive">
+                    {'SLA Graph'}
+                  </Text.Subheadline>
+                  <br />
+                  <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                    <PieChart width={200} height={200}>
+                      <Pie
+                        data={dataSla}
+                        dataKey="tickets"
+                        nameKey="name"
+                        outerRadius={100}
+                      >
+                        {dataSla?.map((entry, index) => (
+                          <>
+                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                            <Label
+                              key={`label-${index}`}
+                              position="outside"
+                              offset={10}
+                            >
+                              {entry.name}
+                            </Label>
+                          </>
+                        ))}
+                      </Pie>
+                    </PieChart>
+                    <br />
+                  </div>
+                  <br />
+                  <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                    <Text.Subheadline as="h5" isBold={true} tone="primary">
+                      {'SLA Met (Overall) = '}
+                      {slaMetPercentage + '%'}
+                    </Text.Subheadline>
+                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                      {'SLA Not Met (Overall) = '}
+                      {slaNotMetPercent + '%'}
+                    </Text.Subheadline>
+                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                      {'SLA (High Priority) = '}
+                      {slaHighPercentage + '%'}
+                    </Text.Subheadline>
+                  </div>
+                </div>
+              </Card>
+            </Constraints.Horizontal>
+          </Spacings.Stack>
+        </div>
+      </Spacings.Inline>
       <br />
       <br />
       <div>
@@ -719,8 +645,8 @@ const TicketDisplayForm = (props) => {
     handleReset: formik.handleReset,
   });
 };
-TicketDisplayForm.displayName = 'TicketDisplayForm';
-TicketDisplayForm.propTypes = {
+DashboardDisplayForm.displayName = 'DashboardDisplayForm';
+DashboardDisplayForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   initialValues: PropTypes.shape({
     id: PropTypes.string,
@@ -729,4 +655,4 @@ TicketDisplayForm.propTypes = {
   dataLocale: PropTypes.string.isRequired,
 };
 
-export default TicketDisplayForm;
+export default DashboardDisplayForm;

@@ -18,10 +18,10 @@ import CustomerMessagesForm from './components/Customer/components/customer-mess
 import CustomerMessages from './components/Customer/components/customer-messages/customer-messages';
 import CustomerReply from './components/Customer/components/customer-messages/customer-reply';
 import AtgAccount from './components/ATG-Poc/components/atg-account/atg-account';
-import TicketDisplay from './components/WelcomePage/components/ticket-details/ticket-details';
 import ProductAccount from './components/Products/components/product-account/product-account';
 import ProductDetails from './components/Products/components/product-details';
 import { getPermission } from './utils';
+import DashboardDisplay from './components/Dashboard/components/dashboard-details/dashboard';
 
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
@@ -153,7 +153,7 @@ const ApplicationRoutes = () => {
         </Route>
         <Route path={`${match.path}/dashboard`}>
         {canViewDashboard ? (
-          <TicketDisplay linkToWelcome={match.url} />
+          <DashboardDisplay linkToWelcome={match.url} />
           ):(
             <PageUnauthorized />
           )}

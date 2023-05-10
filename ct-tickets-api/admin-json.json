@@ -26,6 +26,20 @@
 		"CTP_API_URL":"https://api.us-central1.gcp.commercetools.com"
 		"CTP_SCOPES":"manage_project:humza",
 		"PAYMENT_LINK":"https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/stripe_payment/cart/"
+	},
+		{
+		"projectKey":"csa-project-4",
+		"isDatabase": true,
+		"connectionUri": "mongodb+srv://{{USERNAME}}:{{PASSWORD}}@clusterrc.on7emnm.mongodb.net/?retryWrites=true&w=majority",
+		"username":"dc17586c740666174ecda77905858e9a",
+		"password":"02cce1dbf794099fb2206fd4d6634b38",
+		"CTP_PROJECT_KEY":"csa-project-4",
+		"CTP_CLIENT_SECRET":"ae97b6601ae99c1bb12639b1ed526d33acae48fce6a1a4cf237706ca7b9d18fa36f32ad792663e0624e0700a9d65a497",
+		"CTP_CLIENT_ID":"7a2fa7c7fcba6dbcab778d67628faef0c54bf325e97baf0fd3c63f49cb4c7b84",
+		"CTP_AUTH_URL":"https://auth.us-central1.gcp.commercetools.com",
+		"CTP_API_URL":"https://api.us-central1.gcp.commercetools.com",
+		"CTP_SCOPES":"manage_project:humza",
+		"PAYMENT_LINK":"https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/stripe_payment/cart/"
 	}
 	
 	

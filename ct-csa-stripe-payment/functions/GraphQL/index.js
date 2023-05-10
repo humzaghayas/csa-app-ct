@@ -59,6 +59,27 @@ module.exports.FETCH_CUSTOMER_BY_ID = `query FetchCustomer($id:String){
           }
         }
       }
+
+      paymentInfo{
+        payments{
+          interfaceId
+          id
+          amountPlanned{
+            currencyCode
+            centAmount
+          }
+          paymentMethodInfo{
+            method
+          }
+          transactions{
+            timestamp
+            amount{
+              centAmount
+            }
+            state
+          }
+        }
+      }
     }
   }`
 
