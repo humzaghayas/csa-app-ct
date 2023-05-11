@@ -31,6 +31,8 @@ import { useSendOrderMail } from '../../../../hooks/use-order-sendmail-connector
 import { useCustomerDetailsFetcher, useCustomerDetailsFetcherLazy, useApiFetchPostRequest } from '../../../../hooks/use-customers-connector/use-customers-connector';
 import { PrimaryButton, Spacings } from '@commercetools-frontend/ui-kit';
 import { useSendEmailConfig } from '../../../../hooks/use-customer-password-connector';
+import Text from '@commercetools-uikit/text';
+import TextField from '@commercetools-uikit/text-field';
 
 const PlaceOrder = (props) => {
   const intl = useIntl();
@@ -64,6 +66,7 @@ const PlaceOrder = (props) => {
   const custApiUrl = `${ctCsaBackendURL}/customer-by-cartid`
 
   const [customer,setCustomer] = useState(null);
+  const[altEmailAddress,setAltEmailAddress] = useState("");
 
   useEffect(async()=>{
     if(cart === null){
@@ -78,6 +81,8 @@ const PlaceOrder = (props) => {
 
           console.log('cart Cust',cust);
           setCustomer(cust);
+
+          setAltEmailAddress(cust.email);
         }
       }else{
         const c = await fetchByUrl(cartApiUrl,{cartId:params.id,isQuoteRequest:true})
@@ -103,27 +108,22 @@ const PlaceOrder = (props) => {
 
   const {execute:execSendEmail} = useSendEmailConfig();
 
-  const sendPaymenyLink = async () => {
-    //const ctPaymentUrl = `${ctPaymentURL}/cart/${projectKey}/${params.id}`
-    // const e = await execSendEmail({},{
-    //   to:customer.email,
-    //   subject:"Payment Link",
-    //   html:`<div>
-    //           <p>
-    //               <div>
-    //                 Please make your payment.
-    //               </div>
-    //               <div>
-    //                 Link : ${ctPaymentUrl}
-    //               </div>
-    //           </p>
-    //         </div>`
-    // });
+  const[paymentLinkEnabled,setPaymentLinkEnabled] = useState(true);
 
+
+  const sendPaymenyLink = async () => {
+
+    setPaymentLinkEnabled(false);
     const e = await execSendEmail({},{
-      to:customer.email,
+      to:`${customer.email},${altEmailAddress}`,
       subject:"Payment Link",html:null,
       orderSummary:true,cartId:params.id,locale:dataLocale,projectKey
+    });
+
+    showNotification({
+      kind: 'success',
+      domain: DOMAINS.SIDE,
+      text: intl.formatMessage(messages.PaymentLinkSent),
     });
   }
 
@@ -222,12 +222,25 @@ const PlaceOrder = (props) => {
             }}
           </PlaceOrderForm>
           :<>
-              <Spacings.Stack scale="s">
+              <Spacings.Stack scale="l">
+
+                <Spacings.Stack scale="s">
+                    <Text.Headline as="h2" intlMessage={messages.PaymentLinkMessage} />
+                    <TextField name="altEmail"
+                      title="Alternate Email"
+                      value={altEmailAddress}
+                      horizontalConstraint={13}
+                      onChange={(e) => {
+                        setAltEmailAddress(e.target.value)
+                      }}/>
+                  </Spacings.Stack>
                   <div>
+                    
                     <PrimaryButton
                       label="Send payment remider!"
                       onClick={sendPaymenyLink}
                       size="small"
+                      isDisabled={!paymentLinkEnabled}
                     />
                   </div>
               </Spacings.Stack>
