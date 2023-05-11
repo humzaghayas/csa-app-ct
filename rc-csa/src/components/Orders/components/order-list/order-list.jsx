@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { lazy, useState } from 'react';
+import { lazy, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import {
   Link as RouterLink,
@@ -31,7 +31,7 @@ import {
 import messages from './messages';
 // import toggleFeature from '@commercetools-frontend/application-shell/node_modules/@flopflip/react-broadcast/dist/declarations/src/components/toggle-feature';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
-import { useOrdersFetcher, useReplicateOrderById } from '../../../../hooks/use-orders-connector/use-orders-connector';
+import { useOrderSearch, useOrdersFetcher, useReplicateOrderById } from '../../../../hooks/use-orders-connector/use-orders-connector';
 import {
   // BinLinearIcon,
   // IconButton,
@@ -46,6 +46,8 @@ import { getOrderRows } from './rows';
 import MoneyField from '@commercetools-uikit/money-field';
 import { IconButton } from '@commercetools-frontend/ui-kit';
 import { useCallback } from 'react';
+import SelectableSearchInput from '@commercetools-uikit/selectable-search-input';
+import { orderSearchOptions, queryBuilderHelper } from './helper';
 // import { getCompanies } from '../../api';
 // import { useEffect } from 'react';
 
@@ -113,6 +115,63 @@ const Orders = (props) => {
     tableSorting,
   });
 
+  const {executeOrderSearch} = useOrderSearch();
+
+  const [dropdownValue, setDropdownValue] = useState("all");
+  const [textInputValue, setTextInputValue] = useState();
+  const [orders, setOrders] = useState();
+
+  useEffect(
+    ()=>{
+      console.log("Set orders")
+      setOrders(getOrderRows(ordersPaginatedResult));
+    },
+    [orders]
+  );
+  
+  const value = {
+      text: textInputValue,
+      option: dropdownValue,
+  };
+  
+  const onSearchButtonReset = useCallback(
+    async () =>{
+      setOrders(getOrderRows(ordersPaginatedResult))
+    },[orders]
+  )
+  const onSubmitOrdersSerach = useCallback(
+    async (val) =>{
+
+      const payload = {
+        query:queryBuilderHelper(value.option,value.text),
+        sort:[
+          {
+            "field":"createdAt",
+            "order":"asc"
+          }
+        ],
+        limit: perPage.value,
+        offset: (page.value-1)*perPage.value,
+      }
+
+      console.log(JSON.stringify(payload));
+
+      try{
+        const searchResults =  await executeOrderSearch(payload);
+        const orderHits = searchResults?.hits;
+        
+        console.log(searchResults?.hits); 
+      }catch(e){
+        console.log(e?.message)
+      }
+
+      alert(JSON.stringify(val))
+      
+    },
+    [executeOrderSearch]
+  );
+  
+
   const onClickDuplicateButton = useCallback(
     async (e) => {
 
@@ -157,6 +216,8 @@ const Orders = (props) => {
     }
   }
 
+  console.log("Orders List : ",orders);
+
   return (
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="xs">
@@ -167,15 +228,32 @@ const Orders = (props) => {
           icon={<BackIcon />}
         />
         <Text.Headline as="h2" intlMessage={messages.title} />
+        {/* order search */}
+        <SelectableSearchInput
+          value={value}
+          placeholder='Search by e.g. customer email address, first name, last name, order number, sku, store, city etc.'
+          onChange={(event) => {
+            if (event.target.id.endsWith('.textInput')) {
+              setTextInputValue(event.target.value);
+            }
+            if (event.target.id.endsWith('.dropdown')) {
+              setDropdownValue(event.target.value);
+            }
+          }}
+          onSubmit={onSubmitOrdersSerach}
+          onReset={onSearchButtonReset}
+          horizontalConstraint={13}
+          options={orderSearchOptions}
+        />
 
       </Spacings.Stack>
-      {ordersPaginatedResult ? (
+      {orders ? (
         <Spacings.Stack scale="l">
 
           <DataTable
             isCondensed
             columns={columns}
-            rows={getOrderRows(ordersPaginatedResult)}
+            rows={orders}
             itemRenderer={itemRendererSearch}
             maxHeight={600}
             // sortedBy={tableSorting.value.key}
