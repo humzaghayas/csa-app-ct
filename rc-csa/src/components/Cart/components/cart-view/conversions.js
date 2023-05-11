@@ -70,6 +70,7 @@ export function getLineItems(lineItems) {
           lineItem?.totalPrice?.centAmount,
           lineItem?.totalPrice?.fractionDigits
         ),
+        custom:lineItem?.custom
       };
     });
   }

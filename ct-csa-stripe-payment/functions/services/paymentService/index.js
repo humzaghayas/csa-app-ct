@@ -91,18 +91,31 @@ const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
       if(!cart){
         return null;
       }
-      const line_items = cart.cart.lineItems.map(li => ({
-          // li.taxedPrice.totalNet.centAmount
-          price_data: {
-            currency:li.taxedPrice.totalNet.currencyCode,
-            unit_amount:li.taxedPrice.totalNet.centAmount/li.quantity,
-            product_data:{
-              name:li.variant.sku
-            }
-          },
-          quantity: li.quantity,
+      const line_items = cart.cart.lineItems.map(li => {
+        
+        let quantityAlreadyCharged = 0;
+        if(li?.custom?.customFieldsRaw){
+
+          quantityAlreadyCharged = li?.custom?.customFieldsRaw?.find(c => c.name==="quantity_charged");
+          quantityAlreadyCharged =quantityAlreadyCharged.value;
         }
-      ));
+
+        if(li.quantity > quantityAlreadyCharged){
+          return {
+            // li.taxedPrice.totalNet.centAmount
+            price_data: {
+              currency:li.taxedPrice.totalNet.currencyCode,
+              unit_amount:li.taxedPrice.totalNet.centAmount/li.quantity,
+              product_data:{
+                name:li.variant.sku
+              }
+            },
+            quantity: li.quantity - quantityAlreadyCharged,
+          }
+        }else {
+          return null;
+        }
+      }).filter(l => l !== null);
 
       const stripe = stripeInclude(CT_STRIPE_API_KEY);
       const session = await stripe.checkout.sessions.create({line_items,
@@ -143,6 +156,7 @@ const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
           return false;
         }
 
+        const sessionId = stripePayment.id;
         console.log('stripePayment.client_reference_id',stripePayment.client_reference_id);
        const {projectKey,cartId} = JSON.parse(stripePayment.client_reference_id);
       //  const {projectKey,cartId} = stripePayment.client_reference_id;
@@ -181,7 +195,10 @@ const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
         const result = await graphQLService.execute(CREATE_PAYMENT,{draft:paymentObject},projectKey);
         console.log('Payment Resutls: ',result);
 
-        const paymentToCartAction = [{ 
+        const cart = await cartService.getCartById(cartId,projectKey);
+       
+
+        let paymentToCartAction = [{ 
           "addPayment":{
             "payment" : {
               "id" : result?.createPayment?.id,
@@ -190,8 +207,10 @@ const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
           }
         }];
 
-        const cart = await cartService.getCartById(cartId,projectKey);
-        console.log('paymentToCartAction ',paymentToCartAction);
+        paymentToCartAction = paymentToCartAction.concat (attachCustomTypesToLineitems(cart.cart,sessionId));
+
+        
+        console.log('paymentToCartAction 121212: ',JSON.stringify(paymentToCartAction));
 
         const resultPC = await graphQLService.execute(ADD_PAYMENT_TO_CART,
             {version:cart.cart.version,id:cartId,actions:paymentToCartAction},projectKey);
@@ -202,6 +221,47 @@ const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
         console.log('error',err);
       } 
 
+  }
+
+  const attachCustomTypesToLineitems = (cart,sessionId) => {
+    let sessionIds = cart.lineItems.map(l => ({
+          stripeSessionIdList :l.custom?.customFieldsRaw?.find(c => c.name === 'stripe_session_ids')?.value,
+          lineItemId : l.id,
+          quantity_charged:l.quantity
+          }));
+    //       console.log('session ids ',sessionIds);
+    // sessionIds =JSON.parse(sessionIds);
+
+    console.log('session ids ',sessionIds);
+
+    return sessionIds.map(s =>{
+        let stripeSessionIdList;
+        if(s.stripeSessionIdList){
+          stripeSessionIdList =s.stripeSessionIdList;
+        }else{
+          stripeSessionIdList=[];
+        }
+
+        stripeSessionIdList.push(sessionId);
+      return {
+        setLineItemCustomType:{
+          lineItemId:s.lineItemId,
+          type:{
+            key:"line-item-custom-type",
+            typeId:"type"
+          },
+          fields:[
+            {
+              name:"stripe_session_ids",
+              value:JSON.stringify(stripeSessionIdList)
+            },
+            {
+              name:"quantity_charged",
+              value:`${s.quantity_charged}`
+            }
+          ]
+        }}
+    });
   }
 
   return paymentService;
