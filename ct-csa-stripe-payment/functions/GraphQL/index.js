@@ -38,8 +38,15 @@ module.exports.FETCH_CUSTOMER_BY_ID = `query FetchCustomer($id:String){
     cart(id:$id){
       version
       lineItems{
+        id
         variant{
           sku
+        }
+        custom{
+          customFieldsRaw{
+            name
+            value
+          }
         }
         quantity
         price{

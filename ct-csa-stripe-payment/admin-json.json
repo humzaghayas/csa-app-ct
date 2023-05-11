@@ -1,16 +1,17 @@
-
-	{
-		"projectKey":"csa-project-2",
+{
+	"a":[{
+		"projectKey":"csa-project-4",
 		"isDatabase": true,
 		"connectionUri": "mongodb+srv://{{USERNAME}}:{{PASSWORD}}@clusterrc.on7emnm.mongodb.net/?retryWrites=true&w=majority",
 		"username":"242f985187c52dcc2f3e9322e0873878",
 		"password":"1336f06bed25fcdbd198d18da5e8085e",
-		"CTP_PROJECT_KEY":"csa-project-3"
-		"CTP_CLIENT_SECRET":"ea2d28b67247ea77231a876d781ca9a616623e541ed8211aea16dd1b16bc7eca0c700e1367c5c79c44fdac49b8fc3795"
-		"CTP_CLIENT_ID":"f05f17eedd8b7aed45f270ee0c6aa78d9061e52c7d7b19ed7b22beb222e2d48d"
-		"CTP_AUTH_URL":"https://auth.us-central1.gcp.commercetools.com"
-		"CTP_API_URL":"https://api.us-central1.gcp.commercetools.com"
-		"CTP_SCOPES":"manage_project:csa-project-3"
+		"CTP_PROJECT_KEY":"csa-project-4",
+		"CTP_CLIENT_SECRET":"ae97b6601ae99c1bb12639b1ed526d33acae48fce6a1a4cf237706ca7b9d18fa36f32ad792663e0624e0700a9d65a497",
+		"CTP_CLIENT_ID":"7a2fa7c7fcba6dbcab778d67628faef0c54bf325e97baf0fd3c63f49cb4c7b84",
+		"CTP_AUTH_URL":"https://auth.us-central1.gcp.commercetools.com",
+		"CTP_API_URL":"https://api.us-central1.gcp.commercetools.com",
+		"CTP_SCOPES":"manage_project:csa-project-4",
+		"PAYMENT_LINK":"https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/stripe_payment/cart"
 	},
 	{
 		"projectKey":"humza",
@@ -18,13 +19,13 @@
 		"connectionUri": "mongodb+srv://{{USERNAME}}:{{PASSWORD}}@cluster0.vsgtgxh.mongodb.net/?retryWrites=true&w=majority",
 		"username":"dc17586c740666174ecda77905858e9a",
 		"password":"02cce1dbf794099fb2206fd4d6634b38",
-		"CTP_PROJECT_KEY":"humza"
-		"CTP_CLIENT_SECRET":"77c44ba1966396ed99669e77bc14739b8624339909aa5fa9889091a9212a85b23c9de725eb8e7fd0f13c565376d9efa4"
-		"CTP_CLIENT_ID":"24bd22f4df11011a2fb37fd6c4bb499bb53efd13ac7eb2240363670f81eb366e"
-		"CTP_AUTH_URL":"https://auth.us-central1.gcp.commercetools.com"
-		"CTP_API_URL":"https://api.us-central1.gcp.commercetools.com"
+		"CTP_PROJECT_KEY":"humza",
+		"CTP_CLIENT_SECRET":"77c44ba1966396ed99669e77bc14739b8624339909aa5fa9889091a9212a85b23c9de725eb8e7fd0f13c565376d9efa4",
+		"CTP_CLIENT_ID":"24bd22f4df11011a2fb37fd6c4bb499bb53efd13ac7eb2240363670f81eb366e",
+		"CTP_AUTH_URL":"https://auth.us-central1.gcp.commercetools.com",
+		"CTP_API_URL":"https://api.us-central1.gcp.commercetools.com",
 		"CTP_SCOPES":"manage_project:humza"
-	}
+	}],
 	
 	
-	"encryptionkey":"csa-royalcyber12"
+	"encryptionkey":"csa-royalcyber12"}
