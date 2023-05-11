@@ -106,6 +106,7 @@ const CartViewForm = (props) => {
           subTotalPrice: li?.subTotalPrice,
           tax: li?.tax,
           totalPrice: li?.totalPrice,
+          custom:li.custom?.customFieldsRaw
         };
       });
 
@@ -170,6 +171,15 @@ const CartViewForm = (props) => {
                         (sr) => sr.lineItemId === item.lineItemId
                       );
 
+                      let quantityCharged = r.custom?.find(c => c.name==="quantity_charged");
+
+                      console.log('quantityCharged',quantityCharged);
+                      if(quantityCharged){
+                        if(newVal < quantityCharged.value){
+                          return;
+                        }
+                      }
+
                       const row = {
                         lineItemId: r.lineItemId,
                         name: r.name,
@@ -179,6 +189,7 @@ const CartViewForm = (props) => {
                         startValue: r.startValue,
                         isEditQuantity: r.isEditQuantity,
                         image: r.image,
+                        custom:r.custom
                       };
 
                       // rows.push(row);

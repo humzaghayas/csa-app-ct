@@ -21,4 +21,10 @@ app.post('/encrypt', async(req, res) =>{
     res.status(200).json({[value]:encryptVal});
 });
 
+app.get('/reset-conf', async(req, res) =>{
+
+    await adminDBService.resetConfiguration();
+    res.status(200).json({message:"Successful!"});
+});
+
 exports.ct_csa_api = functions.https.onRequest(app);
