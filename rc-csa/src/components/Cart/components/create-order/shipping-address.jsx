@@ -15,16 +15,17 @@ import {
 } from '@commercetools-frontend/actions-global';
 import { PERMISSIONS } from '../../../../constants';
 import { docToFormValues, formValuesToDoc } from './conversions';
-import ShippingAddressForm from './add-shipping-address-form';
+import ShippingAddressForm from './shipping-address-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
-import validate from './validate';
+//import validate from './validate';
 import {
   useCartsFetcher,
   useShippingAddressCreator,
   useAddLineItem,
   useFetchCartById,
   useCartUpdateById,
+  useFetchAddressByCartId,
 } from '../../../../hooks/use-cart-connector/use-cart-connector';
 import { useCustomerAddressesFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
 
@@ -53,25 +54,22 @@ const ShippingAddress = (props) => {
 
   const [reducerValue, forceUpdate] = useReducer((x) => x + 1, 0);
 
-  // useEffect(async()=>{
-  //   if(order == null){
-  //     const result  = await executeFetchOrder(match.params.id);
-  //     setOrder(result);
-  //   }
-  // },[reducerValue]);
 
-  let { cart } = useFetchCartById(match.params.id);
+  let { cart } = useFetchAddressByCartId(match.params.id);
   const handleSubmit = useCallback(async (payload) => {
     console.log('In Handle Submit');
-    payload.cartId=cart?.id;
-    payload.version=cart?.version;
+    payload.cartId = cart?.id;
+    payload.version = cart?.version;
+    //payload.actions = cart?.setBillingAddress || cart?.setShippingAddress;
     console.log(payload);
     try {
+      //if(cart?.shippingAddress){
       const result = await executeUpdateCart(payload);
       cart = result?.data?.updateCart?.version
         ? result?.data?.updateCart?.version
         : cart;
       console.log(result);
+      console.log(cart);
       forceUpdate();
       showNotification({
         kind: 'success',
@@ -79,7 +77,7 @@ const ShippingAddress = (props) => {
         text: intl.formatMessage(messages.CartUpdated),
       });
     } catch (graphQLErrors) {
-      console.log('humza : '+graphQLErrors);
+      console.log('humza : ' + graphQLErrors);
       const transformedErrors = transformErrors(graphQLErrors);
       if (transformedErrors.unmappedErrors.length > 0) {
         showApiErrorNotification({
@@ -89,16 +87,19 @@ const ShippingAddress = (props) => {
     }
   });
 
-  console.log("Cart in shipping address",cart)
+  const handleChange = useCallback(async (e) => {
+  });
+  //console.log("Cart in shipping address", cart)
 
-  const {customer} = useCustomerAddressesFetcher(cart?.customerId);
+  const { customer } = useCustomerAddressesFetcher(cart?.customerId);
 
 
   return (
     <ShippingAddressForm
       initialValues={docToFormValues(cart?.shippingAddress, projectLanguages)}
-      addresses = {customer?.addresses}
+      addresses={customer?.addresses}
       onSubmit={handleSubmit}
+      onChange={handleChange}
       isReadOnly={!canManage}
       dataLocale={dataLocale}
       onClose={props?.onClose}
@@ -115,5 +116,7 @@ const ShippingAddress = (props) => {
   );
 };
 ShippingAddress.displayName = 'ShippingAddress';
-
+ShippingAddress.propTypes = {
+  linkToWelcome: PropTypes.string.isRequired,
+};
 export default ShippingAddress;
