@@ -1,8 +1,5 @@
-import MoneyField from '@commercetools-uikit/money-field';
-import { func } from 'prop-types';
-
 export function getOrderRows(orderPaginationResult) {
-  console.log(orderPaginationResult.results);
+  console.log(orderPaginationResult?.results);
   if (orderPaginationResult?.results) {
     return orderPaginationResult?.results.map((order) => {
       return {

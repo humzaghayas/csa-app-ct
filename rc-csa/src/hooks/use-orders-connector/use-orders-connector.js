@@ -237,3 +237,25 @@ export const useCreateOrderFromQuote = () =>{
   };
 
 }
+export const useOrderSearch = () =>{
+
+  const { projectKey } =useApplicationContext((context) => ({
+    projectKey:context.project.key
+  }));
+
+    const dispatch = useAsyncDispatch();
+    const executeOrderSearch = async(payload) =>{
+      const result = await dispatch(
+        actions.post({
+          mcApiProxyTarget: MC_API_PROXY_TARGETS.COMMERCETOOLS_PLATFORM,
+          uri : projectKey+"/orders/search",
+          payload
+        })
+      )
+       return result;
+    }
+  
+  return {
+    executeOrderSearch,
+  };
+}
