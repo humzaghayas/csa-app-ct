@@ -35,6 +35,7 @@ import { useProductSearchByText } from '../../../../hooks/use-product-search-con
 import { NumberInput, SearchSelectInput } from '@commercetools-frontend/ui-kit';
 
 import { SuspendedRoute } from '@commercetools-frontend/application-shell';
+import CartDiscounts from './cart-discounts';
 
 const getCartStates = Object.keys(CART_STATE).map((key) => ({
   label: key,
@@ -51,7 +52,8 @@ const columns = [
   // { key: 'lineItemState', label: 'LineItemState' },
   { key: 'subTotalPrice', label: 'Sub Total' },
   { key: 'tax', label: 'Tax' },
-  { key: 'totalPrice', label: 'Total' },
+  { key: 'totalPrice', label: 'Total Price' },
+  { key: 'totalGross', label: 'Total Gross' },
 ];
 
 const searchColumns = [
@@ -84,10 +86,10 @@ const CartViewForm = (props) => {
   const params = useParams();
   const lineItemId = params.id;
 
-  const [showQuotes,setShowQuotes] = useState(null);
+  const [showQuotes, setShowQuotes] = useState(null);
 
   useEffect(() => {
-    
+
   });
 
   useEffect(() => {
@@ -106,22 +108,23 @@ const CartViewForm = (props) => {
           subTotalPrice: li?.subTotalPrice,
           tax: li?.tax,
           totalPrice: li?.totalPrice,
-          custom:li.custom?.customFieldsRaw
+          totalGross: li?.taxedPrice?.totalGross,
+          custom: li.custom?.customFieldsRaw
         };
       });
 
       setLineItems(lItems);
 
 
-      let sQuotes= null;
-      sQuotes = (formik?.values?.cartState === 'Active' || formik?.values?.cartState === 'Merged') ;
-      console.log('cartState',formik?.values?.cartState);
-      if(sQuotes && formik?.values?.discountCodes){
+      let sQuotes = null;
+      sQuotes = (formik?.values?.cartState === 'Active' || formik?.values?.cartState === 'Merged');
+      console.log('cartState', formik?.values?.cartState);
+      if (sQuotes && formik?.values?.discountCodes) {
         sQuotes = formik?.values?.discountCodes.length <= 0;
       }
-      if(sQuotes && formik?.values?.customerId){
+      if (sQuotes && formik?.values?.customerId) {
         sQuotes = true;
-      }else{
+      } else {
         sQuotes = false;
       }
 
@@ -171,11 +174,11 @@ const CartViewForm = (props) => {
                         (sr) => sr.lineItemId === item.lineItemId
                       );
 
-                      let quantityCharged = r.custom?.find(c => c.name==="quantity_charged");
+                      let quantityCharged = r.custom?.find(c => c.name === "quantity_charged");
 
-                      console.log('quantityCharged',quantityCharged);
-                      if(quantityCharged){
-                        if(newVal < quantityCharged.value){
+                      console.log('quantityCharged', quantityCharged);
+                      if (quantityCharged) {
+                        if (newVal < quantityCharged.value) {
                           return;
                         }
                       }
@@ -189,7 +192,7 @@ const CartViewForm = (props) => {
                         startValue: r.startValue,
                         isEditQuantity: r.isEditQuantity,
                         image: r.image,
-                        custom:r.custom
+                        custom: r.custom
                       };
 
                       // rows.push(row);
@@ -370,30 +373,30 @@ const CartViewForm = (props) => {
     <Spacings.Stack scale="l">
 
       {(formik.values.cartState === "Active" || formik.values.cartState === "Merged") &&
-          <Spacings.Stack scale="m">
-              <Spacings.Inline>
-                <SecondaryButton
-                  label="Place Order"
-                  data-track-event="click"
-                  //onClick={() => push(`place-order`)}
-                  onClick={() => push(`shipping-address`)}
-                  iconLeft={<PlusBoldIcon />}
-                  size="medium"
-                />
-                &nbsp;&nbsp;&nbsp;
+        <Spacings.Stack scale="m">
+          <Spacings.Inline>
+            <SecondaryButton
+              label="Place Order"
+              data-track-event="click"
+              //onClick={() => push(`place-order`)}
+              onClick={() => push(`address-details`)}
+              iconLeft={<PlusBoldIcon />}
+              size="medium"
+            />
+            &nbsp;&nbsp;&nbsp;
 
-                {showQuotes && 
-                    <SecondaryButton
-                        label="Request For Quote"
-                        data-track-event="click"
-                        //onClick={() => push(`place-order`)}
-                        onClick={() => push(`shipping-address-for-quotes`)}
-                        iconLeft={<PlusBoldIcon />}
-                        size="medium"
-                      />
-                    }
-            </Spacings.Inline>
-          </Spacings.Stack> 
+            {showQuotes &&
+              <SecondaryButton
+                label="Request For Quote"
+                data-track-event="click"
+                //onClick={() => push(`place-order`)}
+                onClick={() => push(`address-details-for-quotes`)}
+                iconLeft={<PlusBoldIcon />}
+                size="medium"
+              />
+            }
+          </Spacings.Inline>
+        </Spacings.Stack>
       }
       <CollapsiblePanel
         data-testid="quote-summary-panel"
@@ -494,7 +497,7 @@ const CartViewForm = (props) => {
                 isDisabled={false}
                 isReadOnly={false}
                 isMulti={false}
-                onChange={() => {}}
+                onChange={() => { }}
                 placeholder="Search products by name"
                 loadOptions={async (s) => {
                   console.log(s);
@@ -509,12 +512,12 @@ const CartViewForm = (props) => {
                   console.log('setSearchProductRows', searchProductRows);
                   // return s;
                 }}
-                // noOptionsMessage="No exact match found"
-                // loadingMessage="loading exact matches"
-                // placeholder="Select customers"
-                // eslint-disable-next-line no-undef
-                // loadOptions={customLoadOptionsFunction}
-                // cacheOptions={false}
+              // noOptionsMessage="No exact match found"
+              // loadingMessage="loading exact matches"
+              // placeholder="Select customers"
+              // eslint-disable-next-line no-undef
+              // loadOptions={customLoadOptionsFunction}
+              // cacheOptions={false}
               />
 
               {searchProductRows.length > 0 ? (
@@ -528,6 +531,7 @@ const CartViewForm = (props) => {
           </Spacings.Stack>
         </Constraints.Horizontal>
       </CollapsiblePanel>
+      <CartDiscounts onSubmit={props.onSubmit} discountCodes={formik?.values?.discountCodes} />
     </Spacings.Stack>
   );
 

@@ -30,7 +30,8 @@ const validate = (formikValues) => {
   )
     errors.confirmedPassword.notMatch = true;
 
-  if (TextInput.isEmpty(formikValues.customerGroup)) errors.customerGroup.missing = true;
+  if (TextInput.isEmpty(formikValues.customerGroup))
+    errors.customerGroup.missing = true;
   if (!formikValues.roles || formikValues.roles.length === 0)
     errors.roles.missing = true;
 

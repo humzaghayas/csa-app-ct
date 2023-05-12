@@ -15,7 +15,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import {
   CheckboxInput,
-  DataTable,
+  CreatableSelectField,
   PrimaryButton,
   RadioField,
   RadioInput,
@@ -23,56 +23,90 @@ import {
 } from '@commercetools-frontend/ui-kit';
 //  import EmployeeAddressDetail from '../employee-address-details';
 //  import EmployeeAddAddress from '../employee-add-address';
-import { docToFormValues, formValuesToDoc } from './conversions';
-import { useCustomerAddressesFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
-import { useState } from 'react';
+import { docToFormValues, docToFormValuess, formValuesToDoc, formValuesToDocc } from './conversions';
+import { useCallback, useState } from 'react';
+import CartDiscounts from '../cart-view/cart-discounts';
+import { useFetchCartById } from '../../../../hooks/use-cart-connector/use-cart-connector';
+import BillingAddress from './billing-address';
+
 
 const getCountryOptions = Object.keys(COUNTRY).map((key) => ({
   label: COUNTRY[key],
   value: COUNTRY[key],
 }));
+const rows = [
+]
 const columns = [
-  { key: 'id', label: "Id" },
-  { key: 'streetName', label: "Street Name" },
-  { key: 'streetNumber', label: "Street Number" },
-  { key: 'city', label: "City" },
-  { key: 'region', label: "Region" },
-  { key: 'country', label: "Country" },
-  { key: 'state', label: "State" },
+  { key: 'name', label: 'Discount Name' },
+  { key: 'value', label: 'Amount' },
+  { key: 'code', label: 'Discount Codes' },
+
 ]
 
 const getStatesAvailable = [
-  {label:"All" , value:""},
-  {label:"California" , value:"California"},
-  {label:"Texas" , value:"Texas"},
-  {label:"Florida" , value:"Florida"},
+  { label: "All", value: "" },
+  { label: "California", value: "California" },
+  { label: "Texas", value: "Texas" },
+  { label: "Florida", value: "Florida" },
 ]
 
 const ShippingAddressForm = (props) => {
   const intl = useIntl();
   const { push } = useHistory();
+  const match = useRouteMatch();
   const [addressId, setAddressId] = useState("cartAddress");
-
+  const [isBillingSameAsShipping, setIsBillingSameAsShipping] = useState(true);
+  //const [isBillingSameAsShipping]
   const formik = useFormik({
     initialValues: props.initialValues,
+    onSubmit: props.onSubmit,
     validate,
     enableReinitialize: true,
   });
-
+  let { cart } = useFetchCartById(match.params.id);
   const isQuoteRequest = props?.isQuoteRequest;
   const onSubmit = (e) => {
+    // if (cart?.shippingAddress) {
     const updateData = formValuesToDoc(formik?.values);
     console.log("Update data", updateData);
     props.onSubmit(updateData);
+    // }
+    // else {
+    //   const updateDataa = formValuesToDocc(formik?.values);
+    //   console.log("Update data", updateDataa);
+    //   props.onSubmit(updateDataa);
+    // }
   };
-  const [address, setAddress] = useState(formik?.values)
+  const onClickCheckBox = useCallback(
+    async (event) => {
+      console.log(event)
+    }
+  );
+
+  // const hadnleSubmit = (event) =>{
+  //     if(isBillingSameAsShipping){
+  //       props.onSubmitShipping(formik?.values)
+  //       props.onSubmitBilling( value)
+  //     }else{
+  //       props.onSubmitShipping( value)
+  //     }
+  // }
+
+
+  // const onSubmitt = (e) => {
+  //   const updateDataa = formValuesToDocc(formik?.values);
+  //   console.log("Update data", updateDataa);
+  //   props.onSubmitt(updateDataa);
+  // };
+  const [address, setAddress] = useState(formik?.values);
+
 
   // console.log("Customer Addresses",props?.addresses);
   // console.log("Address Id",addressId);
   // console.log("Selected Address",address);
   // console.log("formik values",formik.values);
 
-  return (
+  const formElements = (
     <form onSubmit={onSubmit}>
       <Spacings.Stack scale="xl">
         <Spacings.Stack scale="l">
@@ -95,6 +129,7 @@ const ShippingAddressForm = (props) => {
                   errors={formik.errors.shippingMethodName}
                   touched={formik.touched.shippingMethodName}
                   onChange={(event) => console.log(event)}
+                  //onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   horizontalConstraint={13}
                 />
@@ -118,9 +153,11 @@ const ShippingAddressForm = (props) => {
                   formik.setValues(props.initialValues);
                 } else {
                   console.log("Update on change")
+                  console.log(props);
                   console.log(props?.addresses.filter(e => e.id == event.target.value)[0])
                   const customerAddress = props?.addresses.filter(e => e.id == event.target.value)[0];
                   formik.setValues(docToFormValues(customerAddress, null));
+                  //console.log(customerAddress);
                 }
               }
               }
@@ -132,14 +169,13 @@ const ShippingAddressForm = (props) => {
             </RadioField>
           </CollapsiblePanel>
         </Spacings.Stack>
-
-        <Spacings.Stack scale="l">
+        <Spacings.Stack scale='l'>
           <CollapsiblePanel
             data-testid="address-summary-panel"
             header={
               <CollapsiblePanel.Header>
                 {/* {formatMessage(messages.panelTitle)} */}
-                {'Shipping Details'}
+                {'Shipping Address'}
               </CollapsiblePanel.Header>
             }
             scale="l"
@@ -197,12 +233,12 @@ const ShippingAddressForm = (props) => {
               </Spacings.Inline>
               <Spacings.Inline>
                 <TextField
-                  id="pobox"
-                  name="pobox"
+                  id="pOBox"
+                  name="pOBox"
                   title="PO Box"
-                  value={formik?.values?.pobox}
-                  errors={formik.errors.pobox}
-                  touched={formik.touched.pobox}
+                  value={formik?.values?.pOBox}
+                  errors={formik.errors.pOBox}
+                  touched={formik.touched.pOBox}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   horizontalConstraint={13}
@@ -248,17 +284,17 @@ const ShippingAddressForm = (props) => {
                 />
               </Spacings.Inline>
               <Spacings.Inline>
-                  <SelectField
-                      name="state"
-                      title="State"
-                      value={formik.values.state}
-                      errors={formik.errors.state}
-                      touched={formik.touched.state}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      options={getStatesAvailable}
-                      horizontalConstraint={13}
-                    />  
+                <SelectField
+                  name="state"
+                  title="State"
+                  value={formik.values.state}
+                  errors={formik.errors.state}
+                  touched={formik.touched.state}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  options={getStatesAvailable}
+                  horizontalConstraint={13}
+                />
               </Spacings.Inline>
               <Spacings.Inline>
                 <TextField
@@ -305,45 +341,158 @@ const ShippingAddressForm = (props) => {
             </Constraints.Horizontal>
             <Spacings.Stack>
               <Spacings.Inline>
-                <SecondaryButton label="Cancel" onClick={props?.onClose} />
+                <SecondaryButton
+                  label="Cancel"
+                  onClick={formik.handleReset}
+                //onClick={props?.onClose} 
+                />
                 <PrimaryButton
-                  //type="submit"
                   label="Submit"
                   //onClick={formik.handleSubmit}
-                  onSubmit={onSubmit}
+                  //onSubmit={onSubmit}
                   onClick={onSubmit}
                   isDisabled={false}
                 />
               </Spacings.Inline>
             </Spacings.Stack>
           </CollapsiblePanel>
-          <Spacings.Stack scale="s">
-            <Spacings.Inline>
-
-              {!isQuoteRequest && 
-                <PrimaryButton
-                  label="Next"
-                  //onClick={onSubmit}
-                  onClick={() => push(`place-order`)}
-                  //onSubmit={onSubmit}
-                  isDisabled={false}
-                />
-              }
-              {isQuoteRequest && 
-                <PrimaryButton
-                      label="Next"
-                      //onClick={onSubmit}
-                      onClick={() => push(`place-quote-request`)}
-                      //onSubmit={onSubmit}
-                      isDisabled={false}
-                    />
-              }    
-            </Spacings.Inline>
-          </Spacings.Stack>
         </Spacings.Stack>
+
+        {/* <CheckboxInput
+                //value="foo-radio-value"
+                isDisabled={false}
+                // value={isBillingSameAsShipping}
+                isChecked={isBillingSameAsShipping}
+                //onChange={formik.handleChange}
+                onChange={(event) => {
+                  setIsBillingSameAsShipping((p) =>
+                    !p)
+                  //setIsBillingSameAsShipping(p);
+                  console.log(isBillingSameAsShipping, event)
+                  if (CheckboxInput.isChecked == true) {
+
+                    console.log(props?.initialValues.filter(e => e.id == p)[0])
+                    const shippingAddress = props?.initialValues.filter(e => e.id == p)[0];
+                    formik.setValues(docToFormValuess(shippingAddress, null));
+                  }
+                  else {
+                    formik.setValues(props.initialValues)
+                  }
+                  //setIsEditable(event.target.checked);
+                  // document.getElementById("checkbox").checked = true;
+                  // document.getElementById("checkbox").checked = false;
+
+                  // event.cartId = item.id
+                  // onClickCheckBox(event)
+                  // setAddressId(event.target.value)
+                  // if (CheckboxInput.isChecked == true) {
+                  //   formik.setValues(props.initialValues)
+                  // }
+                }}
+              >
+                Use this address as billing address
+              </CheckboxInput> */}
+
+        {/* <CheckboxInput>
+                  id?: string;
+                  name?: string;
+                  value?: string;
+                  isChecked?: boolean;
+                  isIndeterminate?: boolean;
+                  onChange: ChangeEventHandler<HTMLInputElement>;
+                    isHovered?: boolean;
+                    isDisabled?: boolean;
+                    isReadOnly?: boolean;
+                    hasError?: boolean;
+                    children?: ReactNode;
+                </CheckboxInput> */}
+
+
+
+
+        {/* <Spacings.Stack>
+        <CheckboxInput
+          //value="foo-radio-value"
+          isDisabled={false}
+          // value={isBillingSameAsShipping}
+          isChecked={isBillingSameAsShipping}
+          //onChange={formik.handleChange}
+          onChange={(event) => {
+            setIsBillingSameAsShipping((p) =>
+              !p)
+            //setIsBillingSameAsShipping(p);
+            // console.log(isBillingSameAsShipping, event)
+            // if (props.isChecked == true) {
+            //   formik.setValues(docToFormValues(cart?.shippingAddress))
+            // }
+            // else {
+            //   formik.setValues(docToFormValuess(cart?.billingAddress))
+            // }
+
+            // if (isBillingSameAsShipping == true) {
+
+            //     console.log(props?.initialValues.filter(e => e.id == p)[0])
+            //     const shippingAddress = props?.initialValues.filter(e => e.id == p)[0];
+            //     formik.setValues(docToFormValuess(shippingAddress, null));
+            // }
+            // else {
+            //     const billingAddress = props?.initialValues
+            //     formik.setValues(docToFormValues(billingAddress, null))
+            // }
+            //setIsEditable(event.target.checked);
+            // document.getElementById("checkbox").checked = true;
+            // document.getElementById("checkbox").checked = false;
+
+            // event.cartId = item.id
+            // onClickCheckBox(event)
+            // setAddressId(event.target.value)
+            // if (CheckboxInput.isChecked == true) {
+            //   formik.setValues(props.initialValues)
+            // }
+          }}
+        >
+          Use this address as billing address
+        </CheckboxInput>
       </Spacings.Stack>
+      <Spacings.Stack>
+        <BillingAddress isChecked={isBillingSameAsShipping} />
+
+      </Spacings.Stack> */}
+        {/* <Spacings.Stack scale="s">
+        <Spacings.Inline>
+
+          {!isQuoteRequest &&
+            <PrimaryButton
+              label="Next"
+              //onClick={onSubmit}
+              onClick={() => push(`place-order`)}
+              //onSubmit={onSubmit}
+              isDisabled={false}
+            />
+          }
+          {isQuoteRequest &&
+            <PrimaryButton
+              label="Next"
+              //onClick={onSubmit}
+              onClick={() => push(`place-quote-request`)}
+              //onSubmit={onSubmit}
+              isDisabled={false}
+            />
+          }
+        </Spacings.Inline>
+      </Spacings.Stack> */}
+      </Spacings.Stack>
+
     </form>
   );
+  return props.children({
+    formElements,
+    values: formik.values,
+    isDirty: formik.dirty,
+    isSubmitting: formik.isSubmitting,
+    submitForm: onSubmit,
+    handleReset: formik.handleReset,
+  });
 };
 ShippingAddressForm.displayName = 'ShippingAddressForm';
 ShippingAddressForm.propType = {
