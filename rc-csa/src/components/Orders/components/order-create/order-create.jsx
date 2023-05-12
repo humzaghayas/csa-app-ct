@@ -27,16 +27,19 @@ import { useFetchOrderById, useOrderUpdateById, useCreateOrderEditById, useOrder
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useReducer } from 'react';
+import { useApiFetchPostRequest } from '../../../../hooks/use-customers-connector/use-customers-connector';
 
 const OrderCreate = (props) => {
   const intl = useIntl();
   const params = useParams();
   const match = useRouteMatch();
   const { push } = useHistory();
-  const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
+  const { dataLocale, projectLanguages,ctCsaBackendURL } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
     projectLanguages: context.project?.languages ?? [],
+    ctCsaBackendURL:context.environment.CT_CSA_BACKEND,
   }));
+
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.Manage],
   });
@@ -48,19 +51,34 @@ const OrderCreate = (props) => {
   const showNotification = useShowNotification();
   const showApiErrorNotification = useShowApiErrorNotification();
 
-  //const [order,setOrder] = useState(null);
+  const [order,setOrder] = useState(null);
+  const [isPaymentPending,setIsPaymentPending] = useState(false);
 
   const [reducerValue, forceUpdate] = useReducer(x => x + 1, 0);
 
-  let { order, loading, error } = useFetchOrderById(match.params.id);
+  //let { order, loading, error } = useFetchOrderById(match.params.id);
+  const{execute:fetchByUrl,loading}= useApiFetchPostRequest();
 
-  console.log('order', order);
   // useEffect(async()=>{
   //   if(order == null){
   //     const result  = await executeFetchOrder(match.params.id);
   //     setOrder(result);
   //   }
   // },[reducerValue]);
+  const orderApiUrl=`${ctCsaBackendURL}/order-by-id`;
+
+  useEffect( async ()=> {
+    if(order === null){
+        const o = await fetchByUrl(orderApiUrl,{orderId:params.id})
+
+        console.log('order: ',o);
+
+        setIsPaymentPending(!o.payment);
+        if( o.data){
+          setOrder(o); 
+        }
+    }
+  },[]);
 
 
   const handleSubmit = useCallback(
@@ -158,8 +176,7 @@ const OrderCreate = (props) => {
       onChange={handleChange}
       isReadOnly={!canManage}
       dataLocale={dataLocale}
-
-
+      isPaymentPending={isPaymentPending}
     >
       {(formProps) => {
         return (
