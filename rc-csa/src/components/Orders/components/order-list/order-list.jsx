@@ -44,10 +44,10 @@ import './order-list-module.css';
 import OrderAccount from '../order-account/order-account';
 import { getOrderRows } from './rows';
 import MoneyField from '@commercetools-uikit/money-field';
-import { IconButton } from '@commercetools-frontend/ui-kit';
+import { IconButton, TextField } from '@commercetools-frontend/ui-kit';
 import { useCallback } from 'react';
 import SelectableSearchInput from '@commercetools-uikit/selectable-search-input';
-import { orderSearchOptions, queryBuilderHelper } from './helper';
+import { getOrderIds, orderSearchOptions, queryBuilderHelper } from './helper';
 // import { getCompanies } from '../../api';
 // import { useEffect } from 'react';
 
@@ -124,9 +124,10 @@ const Orders = (props) => {
   useEffect(
     ()=>{
       console.log("Set orders")
-      setOrders(getOrderRows(ordersPaginatedResult));
-    },
-    [orders]
+      if(!orders){
+        setOrders(getOrderRows(ordersPaginatedResult));
+      }
+    }
   );
   
   const value = {
@@ -137,7 +138,7 @@ const Orders = (props) => {
   const onSearchButtonReset = useCallback(
     async () =>{
       setOrders(getOrderRows(ordersPaginatedResult))
-    },[orders]
+    }
   )
   const onSubmitOrdersSerach = useCallback(
     async (val) =>{
@@ -159,14 +160,12 @@ const Orders = (props) => {
       try{
         const searchResults =  await executeOrderSearch(payload);
         const orderHits = searchResults?.hits;
-        
-        console.log(searchResults?.hits); 
+        const orderIds = getOrderIds(orderHits);
+        setOrders(orders?.filter(order=>orderIds?.includes(order?.id)))
+        console.log(orderIds); 
       }catch(e){
         console.log(e?.message)
-      }
-
-      alert(JSON.stringify(val))
-      
+      }      
     },
     [executeOrderSearch]
   );
@@ -247,7 +246,7 @@ const Orders = (props) => {
         />
 
       </Spacings.Stack>
-      {orders ? (
+      {orders?.length>0 ? (
         <Spacings.Stack scale="l">
 
           <DataTable
@@ -272,7 +271,7 @@ const Orders = (props) => {
             onPageChange={page.onChange}
             perPage={perPage.value}
             onPerPageChange={perPage.onChange}
-            totalItems={ordersPaginatedResult.total}
+            totalItems={ordersPaginatedResult?.total}
           />
           <Switch>
             {/* <SuspendedRoute path={`${match.path}/:id`}>
@@ -288,7 +287,14 @@ const Orders = (props) => {
             </SuspendedRoute> */}
           </Switch>
         </Spacings.Stack>
-      ) : null}
+      ) : 
+        <Spacings.Stack scale='l'>
+          <Text.Subheadline tone='secondary' as='h3' isBold={true}>{'There are no orders that match your search query.'}</Text.Subheadline>
+          <Text.Body as='h3'>{'Suggestions:'} </Text.Body>
+          <Text.Body as='h3'>{'    Check the spelling.'} </Text.Body>
+          <Text.Body as='h3'>{'    Make sure that the values are correct.'} </Text.Body>
+        </Spacings.Stack>
+        }
     </Spacings.Stack>
   );
 };

@@ -22,6 +22,7 @@ const phoneNumber='phone';
 const postalCode='postalCode';
 const productId='lineItems.productId';
 const returnTrackingId='returnInfo.returnTrackingId';
+const orderStatus='orderState';
 // const trackingId='trackingId';
 
 
@@ -50,6 +51,7 @@ export const orderSearchOptions = [
     { value: postalCode , label: 'Postal code' },
     { value: productId , label: 'Product Id' },
     { value: returnTrackingId , label: 'Return tracking ID' },
+    { value: orderStatus , label: 'Order Status' },
     // { value: trackingId , label: 'Tracking ID' },
 ]
 
@@ -136,3 +138,11 @@ const fullTextuQuery = (fields,value) =>(
         }
     })
 )
+
+export const getOrderIds = (orderHits) =>{
+    let orderIds = [];
+    orderHits?.forEach(e => {
+        orderIds.push(e?.id)
+    });
+    return orderIds;
+}
