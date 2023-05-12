@@ -12,6 +12,10 @@ let adminConnections={};
 
  // adminDBService.adminConnections = {};
 
+  adminDBService.resetConfiguration=async () => {
+    adminConnections={};
+  }
+
   adminDBService.setApiRoot=async (projectKey,apiRoot) => {
 
     if(adminConnections[projectKey]){

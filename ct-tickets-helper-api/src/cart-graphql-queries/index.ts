@@ -160,6 +160,12 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
         lineItemMode
         ...totalPriceLineItem
         ...taxedPriceLineItem
+        custom{
+          customFieldsRaw{
+            name
+            value
+          }
+        }
     }
   }
   

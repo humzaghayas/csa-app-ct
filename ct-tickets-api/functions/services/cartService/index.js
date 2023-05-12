@@ -44,16 +44,18 @@ module.exports = ()=>{
                             if(t.state === "Success"){
                                 return t.amount.centAmount;
                             }
-                        })
+                        })[0];
                     })
 
                     if(trans && trans.length > 0){
-                        const sum = trans.reduce((a, b) => a + b)[0];
+
+                        console.log('trans',trans);
+                        const sum = trans.reduce((a, b) => a + b,0);
 
                         console.log('sum : ',sum);
                         console.log('cart?.taxedPrice?.totalNet?.centAmount : ',cart?.taxedPrice?.totalNet?.centAmount);
 
-                        if(sum === cart?.taxedPrice?.totalNet?.centAmount){
+                        if(sum >= cart?.taxedPrice?.totalNet?.centAmount){
                             return {payment:true,data:result}
                         }else{
                             return {payment:false,message_code:"PAYMENT_INCOMPLETE"}
