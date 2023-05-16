@@ -352,7 +352,21 @@ fragment cart on Order{
 fragment paymentInfo on Order{
   paymentInfo{
       payments{
-          id
+        id
+        amountPlanned{
+          currencyCode
+          centAmount
+        }
+        paymentMethodInfo{
+          method
+        }
+        transactions{
+          timestamp
+          amount{
+            centAmount
+          }
+          state
+        }
       }
   }
 }

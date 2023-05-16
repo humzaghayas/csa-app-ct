@@ -20,19 +20,20 @@ export const docToFormValues = (carts, languages) => ({
       carts?.taxedPrice?.totalGross?.centAmount,
       carts?.taxedPrice?.totalGross?.fractionDigits
     ),
-    totalNet: amountCalculator(
-      carts?.taxedPrice?.totalNet?.centAmount,
-      carts?.taxedPrice?.totalNet?.fractionDigits
-    ),
-    totalTax: amountCalculator(
-      carts?.taxedPrice?.totalTax?.centAmount,
-      carts?.taxedPrice?.totalTax?.fractionDigits
-    ),
-    
   },
+  //   totalNet: amountCalculator(
+  //     carts?.taxedPrice?.totalNet?.centAmount,
+  //     carts?.taxedPrice?.totalNet?.fractionDigits
+  //   ),
+  //   totalTax: amountCalculator(
+  //     carts?.taxedPrice?.totalTax?.centAmount,
+  //     carts?.taxedPrice?.totalTax?.fractionDigits
+  //   ),
+  // },
   totalItems: carts?.lineItems?.length,
-  discountCodes:carts?.discountCodes,
-  customerId:carts?.customerId
+  discountCodes: carts?.discountCodes,
+  customerId: carts?.customerId,
+  discountCodes: getDiscountCodes(carts?.discountCodes),
 });
 
 export function getLineItems(lineItems) {
@@ -70,7 +71,20 @@ export function getLineItems(lineItems) {
           lineItem?.totalPrice?.centAmount,
           lineItem?.totalPrice?.fractionDigits
         ),
-        custom:lineItem?.custom
+        taxedPrice: {
+          totalGross: amountCalculator(
+            lineItem?.taxedPrice?.totalGross?.centAmount,
+            lineItem?.taxedPrice?.totalGross?.fractionDigits
+          ),
+          totalNet: amountCalculator(
+            lineItem?.taxedPrice?.totalNet?.centAmount,
+            lineItem?.taxedPrice?.totalNet?.fractionDigits
+          ),
+          totalTax: amountCalculator(
+            lineItem?.taxedPrice?.totalTax?.centAmount,
+            lineItem?.taxedPrice?.totalTax?.fractionDigits
+          ),
+        },
       };
     });
   }
@@ -161,3 +175,37 @@ export const formValuesToDoc = (formValues) => ({
     ? formValues.totalItems
     : undefined,
 });
+
+const getDiscountCodes = (discountCodes) =>
+  discountCodes?.map((discountCode) => {
+    return {
+      code: discountCode?.discountCode?.code ?? '--',
+      //code: discountCode?.discountCode?.cartDiscounts[0]?.key,
+      name: discountCode?.discountCode?.cartDiscounts[0]?.name ?? '--',
+      value: returnValue(
+        discountCode?.discountCode?.cartDiscounts[0]?.value?.type ?? '--',
+        discountCode?.discountCode?.cartDiscounts[0]?.value
+      ),
+    };
+  });
+
+const returnValue = (type, value) => {
+  switch (type) {
+    case 'relative':
+      return value?.permyriad / 100 + '%';
+    case 'absolute':
+      return value?.money[0]?.centAmount / 100 + '$';
+  }
+};
+
+export const cartDiscountCodeOptions = (discountCodes, rows) =>
+  discountCodes?.map((discountCode) => {
+    return {
+      value: discountCode?.id,
+      label: discountCode?.code,
+      //label: discountCode?.key,
+      isDisabled: rows?.filter((e) => e.code == discountCode.code)[0]?.code
+        ? true
+        : false,
+    };
+  });

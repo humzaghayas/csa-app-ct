@@ -15,6 +15,8 @@ import {
   CONSTANTS,
   FETCH_ACTIVE_CART_COUNT,
   FETCH_ORDER_COUNT,
+  FETCH_CART_DISCOUNT_CODES,
+  FETCH_SHIPPING_ADDRESS_BY_CART,
 } from 'ct-tickets-helper-api';
 import {
   convertToActionData,
@@ -28,8 +30,7 @@ export const useCartsFetcher = ({ page, perPage, tableSorting }) => {
     `,
     {
       variables: {
-
-        where:"cartState in (\"Active\",\"Merged\")",
+        where: 'cartState in ("Active","Merged")',
 
         limit: perPage.value,
         offset: (page.value - 1) * perPage.value,
@@ -199,5 +200,49 @@ export const useGetOrdersByCustomer = () => {
   };
   return {
     execute,
+  };
+};
+
+export const useFetchCartDiscountCodes = () => {
+  const { data, loading, error } = useMcQuery(
+    gql`
+      ${FETCH_CART_DISCOUNT_CODES}
+    `,
+    {
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+      fetchPolicy: 'network-only',
+    }
+  );
+
+  return {
+    discountCodes: data?.discountCodes?.results,
+    // discountCodes: data?.cartDiscounts?.results,
+    loading,
+    error,
+  };
+};
+
+export const useFetchAddressByCartId = (cartId) => {
+  const { data, error, loading } = useMcQuery(
+    gql`
+      ${FETCH_SHIPPING_ADDRESS_BY_CART}
+    `,
+    {
+      variables: {
+        id: cartId,
+      },
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+      fetchPolicy: 'network-only',
+    }
+  );
+
+  return {
+    cart: data?.cart,
+    error,
+    loading,
   };
 };

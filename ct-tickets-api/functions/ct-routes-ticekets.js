@@ -9,6 +9,7 @@ const customerService = require('./services/customer')();
 const ticketsService = require('./services/ticketsService')();
 const {adminDBService} =require('ct-external-connections');
 const cartService = require('./services/cartService')();
+const orderService = require('./services/orderService')();
 const {getTicketCategories,getTicketPriorityValues} = require('ct-tickets-helper-api');
 
 
@@ -308,6 +309,39 @@ app.get('/payment-link', async(req, res) =>{
     }
 
     res.status(200).json({paymentLink:adminConf.PAYMENT_LINK});
+});
+
+app.post('/order-by-id', async(req, res) =>{
+
+    const {orderId} = req.body;
+    const{ projectKey} = req.session;
+
+    console.log('p',projectKey);
+    const results = await orderService.getOrderById(orderId,projectKey);
+
+
+    if(results.error){
+        res.status(400).json( results);    
+    }else{
+        res.status(200).json(results);
+    }
+
+});
+
+app.post('/customer-by-orderid', async(req, res) =>{
+
+    const {orderId} = req.body;
+    const{ projectKey} = req.session;
+
+    console.log('p',projectKey);
+    const results = await orderService.getCustomerByOrderId(orderId,projectKey);
+
+    if(results.error){
+        res.status(400).json( results);    
+    }else{
+        res.status(200).json(results);
+    }
+
 });
 
 exports.tickets = functions.https.onRequest(app);

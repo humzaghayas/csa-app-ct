@@ -77,32 +77,55 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
         customLineItems{
             __typename
         }
-        discountCodes{
-            __typename
-        }
+        ...discountCodes
         directDiscounts{
             __typename
         }
-
-        paymentInfo{
-          payments{
-            id
-            amountPlanned{
-              currencyCode
-              centAmount
-            }
-            paymentMethodInfo{
-              method
-            }
-            transactions{
-              timestamp
-              amount{
-                centAmount
+    }
+  }
+  
+  fragment discountCodes on Cart{
+    discountCodes{
+      discountCodeRef{
+        typeId
+        id
+      }
+      state
+      discountCode{
+        code
+        isActive
+        cartPredicate
+        validFrom
+        validUntil
+        version
+        name(locale:"en-US")
+        ...cartDiscounts
+      }
+    }
+  }
+  
+  fragment cartDiscounts on DiscountCode{
+    cartDiscounts{
+      key
+      name(locale:"en-US")
+      isActive
+      validFrom
+      validUntil
+      version
+      value{
+              ... on AbsoluteDiscountValue{
+                type
+                money{
+                  centAmount
+                  currencyCode
+                  fractionDigits
+                }
               }
-              state
+              ... on RelativeDiscountValue{
+                permyriad
+                type
+              }
             }
-          }
-        }
     }
   }
   
@@ -160,12 +183,6 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
         lineItemMode
         ...totalPriceLineItem
         ...taxedPriceLineItem
-        custom{
-          customFieldsRaw{
-            name
-            value
-          }
-        }
     }
   }
   
@@ -365,13 +382,27 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
   fragment billingAddress on Cart{
     billingAddress{
         id
-        streetName
-        streetNumber
-        postalCode
-          city
-          state
-          building
-        country
+      streetName
+      streetNumber
+      salutation
+      additionalStreetInfo
+      additionalAddressInfo
+      city
+      region
+      state
+      country
+      company
+      department
+      building
+      apartment
+      pOBox
+      phone
+      mobile
+      email
+      firstName
+      lastName
+      postalCode
+      apartment
     }
   }
   fragment custom on Cart{
@@ -401,6 +432,16 @@ export const CREATE_SHIPPING_BILLING_ADDRESS = `mutation updateCart(
   
    fragment CartFrag on Cart{
     shippingAddress{
+      id
+      streetName
+      streetNumber
+      postalCode
+      city
+      state
+      building
+      country
+    }
+    billingAddress{
       id
       streetName
       streetNumber
@@ -501,12 +542,50 @@ export const UPDATE_CART_BY_ID = `mutation updateCartById($version:Long!,
       id
       streetName
       streetNumber
-      postalCode
       city
+      region
       state
-      building
       country
+      company
+      department
+      building
+      apartment
+      pOBox
+      additionalStreetInfo
+      additionalAddressInfo
     }
+    billingAddress{
+      id
+      streetName
+      streetNumber
+      city
+      region
+      state
+      country
+      company
+      department
+      building
+      apartment
+      pOBox
+      additionalStreetInfo
+      additionalAddressInfo
+    }
+     discountCodes{
+          discountCodeRef{
+            typeId
+            id
+          }
+          state
+          discountCode{
+            code
+        isActive
+        cartPredicate
+        validFrom
+        validUntil
+        version
+        name(locale:"en-US")
+          }
+        }
       }
     }`;
 
@@ -527,3 +606,132 @@ export const FETCH_ORDER_COUNT = `query FETCH_ORDER_COUNT ($where:String){
         }
     }
     `;
+
+export const FETCH_CART_DISCOUNT_CODES = `query{
+  discountCodes{
+    results{
+      id
+      validFrom
+      validUntil
+      isActive
+      name(locale:"en-US")
+      code
+      
+    }
+  }
+}`;
+
+export const FETCH_CART_DISCOUNTS = `query{
+  cartDiscounts{
+    results{
+      id
+      validFrom
+      validUntil
+      isActive
+      name(locale:"en-US")
+      cartPredicate
+      stackingMode
+      requiresDiscountCode
+      sortOrder
+      key
+      value{
+        type
+      }
+    }
+  }
+}`;
+
+export const FETCH_SHIPPING_ADDRESS_BY_CART = `
+query($id:String!){
+    cart(id:$id){
+        id
+        version
+        key
+        createdAt
+        lastModifiedAt
+        customerId
+    shippingAddress{
+      id
+      streetName
+      streetNumber
+      salutation
+      additionalStreetInfo
+      additionalAddressInfo
+      city
+      region
+      state
+      country
+      company
+      department
+      building
+      apartment
+      pOBox
+      phone
+      mobile
+      email
+      firstName
+      lastName
+      postalCode
+      apartment
+    }
+        billingAddress{
+      id
+      streetName
+      streetNumber
+      salutation
+      additionalStreetInfo
+      additionalAddressInfo
+      city
+      region
+      state
+      country
+      company
+      department
+      building
+      apartment
+      pOBox
+      phone
+      mobile
+      email
+      firstName
+      lastName
+      postalCode
+      apartment
+    }
+  }
+}`;
+
+export const FETCH_BILLING_ADDRESS_BY_CART = `
+query($id:String!){
+    cart(id:$id){
+        id
+        version
+        key
+        createdAt
+        lastModifiedAt
+    billingAddress{
+      id
+      streetName
+      streetNumber
+      salutation
+      additionalStreetInfo
+      additionalAddressInfo
+      city
+      region
+      state
+      country
+      company
+      department
+      building
+      apartment
+      pOBox
+      phone
+      mobile
+      email
+      firstName
+      lastName
+      postalCode
+      apartment
+    }
+  }
+}`;
