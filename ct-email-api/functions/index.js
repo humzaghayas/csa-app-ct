@@ -4,7 +4,7 @@ admin.initializeApp();
 
 const emailService = require('./services')();
 const {adminDBService,graphQLService} =require('ct-external-connections');
-const {FETCH_CART_BY_ID} = require('./GraphQL')
+const {FETCH_CART_BY_ID, FETCH_ORDER_BY_ID} = require('./GraphQL')
 const express = require('express');
 const cors = require('cors');
 
@@ -47,12 +47,56 @@ app.post('/send-email', async(req, res) =>{
         const context ={
             lineItems:lItems,
             priceSummary,
-            paymentLink : `${adminConf[projectKey].PAYMENT_LINK}/${projectKey}/${cartId}`
+            paymentLink : `${adminConf[projectKey].PAYMENT_LINK}/cart/${projectKey}/${cartId}`
         }
 
         const html=null;
         result =await emailService.sendEmail({to,subject,html,template,context});
     }
+    
+    if(result.code === 'error'){
+        res.status(400).json({result: result.message});    
+    }else{
+        res.status(200).json(result);
+    }
+
+});
+
+app.post('/send-email-order', async(req, res) =>{
+
+    const {to,subject,orderId,locale,projectKey} = req.body;
+
+    let result ;
+
+    const adminConf = await adminDBService.adminConfiguration(projectKey);
+    // const locale="en-US";
+    console.log(orderId);
+    console.log(locale);
+    const order = await graphQLService.execute(FETCH_ORDER_BY_ID,{id:orderId,locale},projectKey);
+
+    console.log('order',order);
+
+    const lItems = order.order.lineItems.map(l =>{
+        return{
+            name:l.name,
+            quantity:l.quantity,
+            price:l.price.value.centAmount/100,
+            totalPrice:l.taxedPrice.totalNet.centAmount/100
+        }
+    });
+
+
+    const priceSummary = {totalNetPrice:order.order.taxedPrice.totalNet.centAmount/100};
+
+    const template = "order-email"
+    const context ={
+        lineItems:lItems,
+        priceSummary,
+        paymentLink : `${adminConf[projectKey].PAYMENT_LINK}/order/${projectKey}/${orderId}`
+    }
+
+    const html=null;
+    result =await emailService.sendEmail({to,subject,html,template,context});
     
     if(result.code === 'error'){
         res.status(400).json({result: result.message});    
