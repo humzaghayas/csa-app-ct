@@ -31,14 +31,4 @@ export default defineMessages({
     defaultMessage:
       'We were unable to fetch the Employee details. Please check your connection, the provided Employee ID and try again.',
   },
-  PaymentLinkSent:{
-    id: 'Order.PaymentLinkSent',
-    defaultMessage:
-      'Payment notificatoipn Sent to the user\'s registred email address',
-  },
-  PaymentLinkMessage:{
-    id: 'Order.PaymentLinkMessage',
-    defaultMessage:
-      'Please use this button to Send Payment Notification to the User\'s registered email address.',
-  },
 });

@@ -67,7 +67,8 @@ const columns = [
   // { key: 'lineItemState', label: 'LineItemState' },
   { key: 'subTotalPrice', label: 'Sub Total' },
   { key: 'tax', label: 'Tax' },
-  { key: 'totalPrice', label: 'Total' },
+  { key: 'totalPrice', label: 'Total Price' },
+  { key: 'totalGross', label: 'Total Gross' },
   // { key: 'isEditQuantity', label:'Edit Qty'}
 ];
 
@@ -124,7 +125,8 @@ const OrderCreateForm = (props) => {
           unitPrice: li?.unitPrice,
           subTotalPrice: li?.subTotalPrice,
           tax: li?.tax,
-          totalPrice: li?.totalPrice
+          totalPrice: li?.totalPrice,
+          totalGross: li?.taxedPrice?.totalGross
         }
       });
 
@@ -151,33 +153,33 @@ const OrderCreateForm = (props) => {
 
   const setOrderState=(value)=>{
 
-    if(value === 'Confirmed'){
+    if (value === 'Confirmed') {
       const getOrderStates = Object.keys(ORDER_STATE).map((key) => {
-        
-          if(key == 'Confirmed' || key == 'Completed'){
-          
-            return {
-              label: key,
-              value: ORDER_STATE[key]
-            }
-            
-        }else{
+
+        if (key == 'Confirmed' || key == 'Completed') {
+
+          return {
+            label: key,
+            value: ORDER_STATE[key]
+          }
+
+        } else {
           return null;
-        } 
-      }).filter(o => o!== null);
+        }
+      }).filter(o => o !== null);
       setOrderStateOptions(getOrderStates);
       setIsOrderOpenState(value === 'Open')
       return;
     }
-    
-    
-    const getOrderStates =Object.keys(ORDER_STATE).map((key) => ({
-        label: key,
-        value: ORDER_STATE[key],
-      }));
 
-      setOrderStateOptions(getOrderStates);
-    
+
+    const getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
+      label: key,
+      value: ORDER_STATE[key],
+    }));
+
+    setOrderStateOptions(getOrderStates);
+
   }
 
   const showNotification = useShowNotification();
@@ -449,7 +451,6 @@ const OrderCreateForm = (props) => {
         break;
     }
   }
-
   
   const onSubmit = (e) => {
     // console.log("In order create form");
@@ -466,12 +467,12 @@ const OrderCreateForm = (props) => {
           to={`/${projectKey}/orders/${formik?.values?.id}/general/change-history`}
           label={"Open change history"}
           icon={<ListWithSearchIcon />}
-          // onClick={() => {
-          //   const win = window.open(`/${projectKey}/orders/${formik?.values?.id}/general/change-history`, "_blank");
-          //   win.focus();
-            
-          //   // push(`/${projectKey}/orders/quotes/${row.id}`)
-          // }}
+        // onClick={() => {
+        //   const win = window.open(`/${projectKey}/orders/${formik?.values?.id}/general/change-history`, "_blank");
+        //   win.focus();
+
+        //   // push(`/${projectKey}/orders/quotes/${row.id}`)
+        // }}
         />
         {props.isPaymentPending && 
           <Spacings.Stack scale="s">
@@ -586,16 +587,16 @@ const OrderCreateForm = (props) => {
             </CollapsiblePanel.Header>
           }
           scale="l">
-            <Constraints.Horizontal >
-              <Spacings.Stack scale="m">
-             <Spacings.Stack scale="s">
-            
-             {lineItems? 
-                <DataTable 
-                rows={lineItems} 
-                columns={columns} 
-                itemRenderer={itemRenderer}
-                />:null}
+          <Constraints.Horizontal >
+            <Spacings.Stack scale="m">
+              <Spacings.Stack scale="s">
+
+                {lineItems ?
+                  <DataTable
+                    rows={lineItems}
+                    columns={columns}
+                    itemRenderer={itemRenderer}
+                  /> : null}
               </Spacings.Stack>
             </Spacings.Stack>
         </Constraints.Horizontal>
@@ -661,7 +662,7 @@ const OrderCreateForm = (props) => {
       }
      </Spacings.Stack>
 
-     <OrderDiscountCode onSubmit = {props.onSubmit} discountCodes = {formik?.values?.discountCodes} />
+      <OrderDiscountCode onSubmit={props.onSubmit} discountCodes={formik?.values?.discountCodes} />
 
     </Spacings.Stack>
   );

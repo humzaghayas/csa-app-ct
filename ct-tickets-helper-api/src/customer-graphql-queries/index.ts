@@ -669,9 +669,7 @@ export const FETCH_CUSTOMER_ADDRESSES = `query fetchCustomerAddresses($id:String
 
 }`;
 
-
-
-export const FETCH_CUSTOMERS_EMAIL_BY_ID =`query CustomerEmailByID($id:String) {
+export const FETCH_CUSTOMERS_EMAIL_BY_ID = `query CustomerEmailByID($id:String) {
   customer(id:$id) {
     version
     email
@@ -752,7 +750,7 @@ export const FETCH_CUSTOMERS_WISHLIST = `query FetchWishlist($limit: Int, $offse
       
     }
   }
-
+}
 `;
 
 export const FETCH_CUSTOMERS_SHOPPINGLIST = `query FetchShoppinglist($limit: Int, $offset: Int, $sort: [String!], $where: String) {
@@ -831,7 +829,6 @@ export const FETCH_CUSTOMERS_SHOPPINGLIST = `query FetchShoppinglist($limit: Int
   }
 }`;
 
-
 export const FETCH_CUSTOMER_PROMOTIONS = `query FetchCustomerPromotions($id:String!) {
   customer(id:$id) {
       id
@@ -896,7 +893,6 @@ export const FETCH_CUSTOMER_PROMOTIONS = `query FetchCustomerPromotions($id:Stri
       
     }
   }`;
-
 
 export const FETCH_CUSTOMER_PROMOTIONS_LIST = `query FetchCustomerPromotionsList($sort:[String!],$where:String) {
   cartDiscounts(sort:$sort,where:$where) {
@@ -1041,8 +1037,7 @@ export const FETCH_QUOTES_LIST = ` query fetchAllQuotes($limit: Int,
       validTo
     }
   }
-}`
-
+}`;
 
 export const FETCH_QUOTES_REQUEST_LIST = ` query fetchAllQuotesRequests($limit: Int,
   $offset: Int,
@@ -1070,7 +1065,7 @@ export const FETCH_QUOTES_REQUEST_LIST = ` query fetchAllQuotesRequests($limit: 
       lastModifiedAt
     }
   }
-}`
+}`;
 
 export const FETCH_CUSTOMER_GROUPS_LIST = `query fetchCustomerGroupList{
   customerGroups{
@@ -1079,7 +1074,7 @@ export const FETCH_CUSTOMER_GROUPS_LIST = `query fetchCustomerGroupList{
       name
     }
   }
-}`
+}`;
 
 export const CREATE_QUOTE_FOR_CUSTOMER = `mutation ($draft:QuoteRequestDraft!){
   createQuoteRequest(draft:$draft){
@@ -1088,7 +1083,7 @@ export const CREATE_QUOTE_FOR_CUSTOMER = `mutation ($draft:QuoteRequestDraft!){
     id
   }
   }
-}`
+}`;
 
 export const FETCH_STAGED_QUOTES_LIST = `query fetchStagedQuotes($limit: Int,
   $offset: Int,
@@ -1119,4 +1114,4 @@ export const FETCH_STAGED_QUOTES_LIST = `query fetchStagedQuotes($limit: Int,
       validTo
     }
   }
-}`
+}`;
