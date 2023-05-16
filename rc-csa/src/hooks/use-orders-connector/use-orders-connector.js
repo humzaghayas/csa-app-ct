@@ -17,7 +17,8 @@ import {
   FETCH_ORDER_PAYMENTS_BY_ID,
   FETCH_ORDER_RETURNINFO_BY_ID,
   FETCH_DISCOUNT_CODES,
-  CREATE_ORDER_FROM_QUOTE} from 'ct-tickets-helper-api';
+  CREATE_ORDER_FROM_QUOTE,
+  FETCH_SHIPPING_METHODS} from 'ct-tickets-helper-api';
 
 export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
 
@@ -259,3 +260,17 @@ export const useOrderSearch = () =>{
     executeOrderSearch,
   };
 }
+export const useFetchShippingMethods = () => {
+
+  const { data, error, loading } =  useMcQuery(gql`${FETCH_SHIPPING_METHODS}`, {
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    },
+  });
+
+  return {
+    shippingMethods: data?.shippingMethods?.results,
+    error,
+    loading,
+  };
+};
