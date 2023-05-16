@@ -45,6 +45,22 @@ app.get('/cart/:projectKey/:cartId', async(req, res) => {
     
 } );
 
+app.get('/order/:projectKey/:orderId', async(req, res) => {
+
+    const {projectKey,orderId} =req.params;
+
+    const session = await paymentService.createCheckoutSessionForOrder({projectKey,orderId});
+
+    if(session){
+        res.redirect(303, session.url);
+    }else{
+        res.status(400).json({Error: "Error"});
+    }
+
+    return;
+    
+} );
+
 app.get('/:response', async(req, res) => {
 
     const {response} =req.params;

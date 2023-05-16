@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import { useIntl } from 'react-intl';
+import Text from '@commercetools-uikit/text';
 import TextField from '@commercetools-uikit/text-field';
 import SelectField from '@commercetools-uikit/select-field';
 import DateInput from '@commercetools-uikit/date-input';
@@ -34,6 +35,13 @@ import { TabularDetailPage } from '@commercetools-frontend/application-component
 import styles from './order-create-module.css';
 import OrderDiscountCode from './order-discount-code';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import {
+  useShowNotification,
+  useShowApiErrorNotification,
+} from '@commercetools-frontend/actions-global';
+import { useSendEmailConfigOrder } from '../../../../hooks/use-customer-password-connector';
+import { useApiFetchPostRequest } from '../../../../hooks/use-customers-connector/use-customers-connector';
+import { DOMAINS } from '@commercetools-frontend/constants';
 
 // let getOrderStates = Object.keys(ORDER_STATE).map((key) => ({
 //   label: key,
@@ -49,12 +57,6 @@ const getShipmentStates = Object.keys(SHIPMENT_STATUS).map((key) => ({
   label: key,
   value: SHIPMENT_STATUS[key],
 }));
-
-const rows = [
-  { product: '', originalUnitPrice: '$350.00', UnitPrice: '$350.00', Qty: '3', LineItemState: '', subTotal: '$1150.00', Tax: "0", Total: '$1150.00' },
-  { product: '', originalUnitPrice: '$350.00', UnitPrice: '$350.00', Qty: '3', LineItemState: '', subTotal: '$1150.00', Tax: "0", Total: '$1150.00' },
-  { product: '', originalUnitPrice: '$350.00', UnitPrice: '$350.00', Qty: '3', LineItemState: '', subTotal: '$1150.00', Tax: "0", Total: '$1150.00' },
-];
 
 const columns = [
   { key: 'product', label: 'Product' },
@@ -87,9 +89,12 @@ const OrderCreateForm = (props) => {
   // const [searchProducts,setSearchProducts] = useState([]);
   const [searchProductRows, setSearchProductRows] = useState([]);
   const [orderStateOptions, setOrderStateOptions] = useState([]);
+  const [isOrderOpenState, setIsOrderOpenState] = useState(false);
 
-  const { projectKey } = useApplicationContext((context) => ({
-    projectKey: context.project.key
+  const { projectKey,ctCsaBackendURL ,dataLocale} =useApplicationContext((context) => ({
+    projectKey:context.project.key,
+    ctCsaBackendURL:context.environment.CT_CSA_BACKEND,
+    dataLocale: context.dataLocale ?? '',
   }));
   const formik = useFormik({
     initialValues: props.initialValues,
@@ -98,8 +103,12 @@ const OrderCreateForm = (props) => {
     validate,
     enableReinitialize: true,
   });
+
+  const{execute:fetchByUrl,loading}= useApiFetchPostRequest();
   const params = useParams();
   const lineItemId = params.id;
+  const [customer,setCustomer] = useState(null);
+  const[altEmailAddress,setAltEmailAddress] = useState("");
 
   useEffect(() => {
     if (lineItems == null) {
@@ -124,10 +133,25 @@ const OrderCreateForm = (props) => {
       setLineItems(lItems);
 
       setOrderState(formik?.values?.orderState);
+
+      setIsOrderOpenState(formik?.values?.orderState === 'Open')
     }
   })
 
-  const setOrderState = (value) => {
+  const custApiUrl = `${ctCsaBackendURL}/customer-by-orderid`
+
+  useEffect(async () => {
+    if(customer === null){
+      const cust =await fetchByUrl(custApiUrl,{orderId:params.id});
+
+      console.log('cart Cust',cust);
+      setCustomer(cust);
+
+      setAltEmailAddress(cust.email);
+    }
+  },[])
+
+  const setOrderState=(value)=>{
 
     if (value === 'Confirmed') {
       const getOrderStates = Object.keys(ORDER_STATE).map((key) => {
@@ -144,7 +168,7 @@ const OrderCreateForm = (props) => {
         }
       }).filter(o => o !== null);
       setOrderStateOptions(getOrderStates);
-
+      setIsOrderOpenState(value === 'Open')
       return;
     }
 
@@ -156,6 +180,26 @@ const OrderCreateForm = (props) => {
 
     setOrderStateOptions(getOrderStates);
 
+  }
+
+  const showNotification = useShowNotification();
+  const[paymentLinkEnabled,setPaymentLinkEnabled] = useState(true);
+  const {execute:execSendEmail} = useSendEmailConfigOrder();
+  const sendPaymenyLink = async () => {
+
+    setPaymentLinkEnabled(false);
+    //to,subject,orderId,locale,projectKey
+    const e = await execSendEmail({},{
+      to:`${customer.email},${altEmailAddress}`,
+      subject:"Payment Link",html:null,
+      orderSummary:true,orderId:params.id,locale:dataLocale,projectKey
+    });
+
+    showNotification({
+      kind: 'success',
+      domain: DOMAINS.SIDE,
+      text: intl.formatMessage(messages.PaymentLinkSent),
+    });
   }
 
   const itemRenderer = (item, column) => {
@@ -407,14 +451,13 @@ const OrderCreateForm = (props) => {
         break;
     }
   }
-
+  
   const onSubmit = (e) => {
     // console.log("In order create form");
     props.onSubmit(e);
   }
 
-  console.log(formik?.values);
-
+ 
   const formElements = (
     <Spacings.Stack scale="xl">
       <Spacings.Stack scale="l">
@@ -431,7 +474,28 @@ const OrderCreateForm = (props) => {
         //   // push(`/${projectKey}/orders/quotes/${row.id}`)
         // }}
         />
-        {/* </div> */}
+        {props.isPaymentPending && 
+          <Spacings.Stack scale="s">
+
+                <Text.Headline as="h2" intlMessage={messages.PaymentLinkMessage} />
+                <TextField name="altEmail"
+                  title="Alternate Email"
+                  value={altEmailAddress}
+                  horizontalConstraint={13}
+                  onChange={(e) => {
+                    setAltEmailAddress(e.target.value)
+                  }}/>
+
+                <div>       
+                  <PrimaryButton
+                    label="Send payment remider!"
+                    onClick={sendPaymenyLink}
+                    size="small"
+                    isDisabled={!paymentLinkEnabled}
+                  />
+                </div>
+            </Spacings.Stack>
+        }
         <CollapsiblePanel
           data-testid="quote-summary-panel"
           header={
@@ -468,8 +532,8 @@ const OrderCreateForm = (props) => {
                   onBlur={formik.handleBlur}
                   options={orderStateOptions}
                   // isReadOnly={props.isReadOnly}
-                  isDisabled={formik.values.orderState === 'Complete'
-                    || formik.values.orderState === 'Cancelled'}
+                  isDisabled={(formik.values.orderState === 'Complete' 
+                            || formik.values.orderState === 'Cancelled') || props.isPaymentPending}
                   horizontalConstraint={13}
                 />
               </Spacings.Stack>
@@ -535,67 +599,68 @@ const OrderCreateForm = (props) => {
                   /> : null}
               </Spacings.Stack>
             </Spacings.Stack>
-          </Constraints.Horizontal>
-
-          {/* </Spacings.Inline> */}
-        </CollapsiblePanel>
-        {/* Product search */}
-        <CollapsiblePanel
-          data-testid="quote-summary-panel"
-          header={
-            <CollapsiblePanel.Header>
-              {/* {formatMessage(messages.panelTitle)} */}
-              {'Add line items'}
-            </CollapsiblePanel.Header>
-          }
-          scale="l"
-        >
-          <Constraints.Horizontal>
+        </Constraints.Horizontal>
+       
+      {/* </Spacings.Inline> */}
+     </CollapsiblePanel>
+     {isOrderOpenState &&
+          <CollapsiblePanel
+            data-testid="quote-summary-panel"
+            header={
+              <CollapsiblePanel.Header>
+                {/* {formatMessage(messages.panelTitle)} */}
+                {'Add line items'}
+              </CollapsiblePanel.Header>
+            }
+            scale="l"
+          >
+            <Constraints.Horizontal>
             <Spacings.Stack scale='m'>
               <Spacings.Stack scale='s'>
 
-                <SearchSelectInput
-                  id='searchProduct'
-                  name='searchProduct'
-                  horizontalConstraint={7}
-                  optionType="single-lined"
-                  isAutofocussed={false}
-                  backspaceRemovesValue={true}
-                  isClearable={true}
-                  isDisabled={false}
-                  isReadOnly={false}
-                  isMulti={false}
-                  onChange={() => { }}
-                  placeholder="Search products by name"
-                  loadOptions={async (s) => {
-                    console.log(s)
-                    const result = await executeProductSearch(s);
-                    // setSearchProducts(result?.data?.productProjectionSearch?.results);
+                      <SearchSelectInput
+                        id='searchProduct'
+                        name='searchProduct'
+                        horizontalConstraint={7}
+                        optionType="single-lined"
+                        isAutofocussed={false}
+                        backspaceRemovesValue={true}
+                        isClearable={true}
+                        isDisabled={false}
+                        isReadOnly={false}
+                        isMulti={false}
+                        onChange={() => { }}
+                        placeholder="Search products by name"
+                        loadOptions={async (s) => {
+                          console.log(s)
+                          const result = await executeProductSearch(s);
+                          // setSearchProducts(result?.data?.productProjectionSearch?.results);
 
-                    const searchProdRows = getSearchProductRows(result?.data?.productProjectionSearch?.results);
-                    setSearchProductRows(searchProdRows);
+                          const searchProdRows = getSearchProductRows(result?.data?.productProjectionSearch?.results);
+                          setSearchProductRows(searchProdRows);
 
-                  }}
-                // noOptionsMessage="No exact match found"
-                // loadingMessage="loading exact matches"
-                // placeholder="Select customers"
-                // eslint-disable-next-line no-undef
-                // loadOptions={customLoadOptionsFunction}
-                // cacheOptions={false}
-                />
+                        }}
+                      // noOptionsMessage="No exact match found"
+                      // loadingMessage="loading exact matches"
+                      // placeholder="Select customers"
+                      // eslint-disable-next-line no-undef
+                      // loadOptions={customLoadOptionsFunction}
+                      // cacheOptions={false}
+                      />
 
-                {searchProductRows?.length > 0 ? <DataTable
-                  rows={searchProductRows}
-                  columns={searchColumns}
-                  itemRenderer={itemRendererSearch}
-                /> : null}
+                      {searchProductRows?.length > 0 ? <DataTable
+                        rows={searchProductRows}
+                        columns={searchColumns}
+                        itemRenderer={itemRendererSearch}
+                      /> : null}
 
 
               </Spacings.Stack>
             </Spacings.Stack>
-          </Constraints.Horizontal>
-        </CollapsiblePanel>
-      </Spacings.Stack>
+            </Constraints.Horizontal>
+          </CollapsiblePanel>
+      }
+     </Spacings.Stack>
 
       <OrderDiscountCode onSubmit={props.onSubmit} discountCodes={formik?.values?.discountCodes} />
 

@@ -196,9 +196,11 @@ const Tickets = (props) => {
           </Grid>
 
           <Spacings.Stack>
-            <Grid gridGap="16px" gridAutoColumns="12fr" gridTemplateColumns="30% 70%">
+            <Grid gridGap="16px" gridAutoColumns="12fr" gridTemplateColumns="40% 60%">
                 <Grid.Item >
                   <SelectableSearchInput
+                      menuHorizontalConstraint={4}
+                      horizontalConstraint={14}
                       value={selectTextInput}
                       name={'selectTextInput'}
                       showSubmitButton={true}
