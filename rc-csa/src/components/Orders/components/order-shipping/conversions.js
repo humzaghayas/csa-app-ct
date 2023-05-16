@@ -12,7 +12,11 @@ export const docToFormValues = (order, languages) => ({
   country:order?.shippingAddress?.country,
   city:order?.shippingAddress?.city,
   state:order?.shippingAddress?.state,
-  building:order?.shippingAddress?.building
+  building:order?.shippingAddress?.building,
+  shippingMethod:{
+    value:order?.shippingInfo?.shippingMethod?.id,
+    label:order?.shippingInfo?.shippingMethodName
+  }
 });
 
 
@@ -37,3 +41,12 @@ export const formValuesToDoc = (formValues) => (
     ]
   }
 );
+
+export const shippingMethodOptions = (shippingMethods,country) =>(
+  shippingMethods?.map((shippingMethod)=>{
+    return {
+        value:shippingMethod?.id,
+        label:shippingMethod?.name
+    }
+  })
+)
