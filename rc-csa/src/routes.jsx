@@ -151,7 +151,7 @@ const ApplicationRoutes = () => {
         <Route path={`${match.path}/ATG`}>
           <AtgAccount linkToWelcome={match.url} />
         </Route>
-        <Route path={`${match.path}/dashboard`}>
+        <Route path={`${match.path}`}>
         {canViewDashboard ? (
           <DashboardDisplay linkToWelcome={match.url} />
           ):(
