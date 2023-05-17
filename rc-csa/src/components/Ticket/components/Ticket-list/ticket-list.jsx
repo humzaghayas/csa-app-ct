@@ -111,7 +111,8 @@ const Tickets = (props) => {
       const data = await fetchTickets( projectKey,{
             limit: perPage.value,
             offset: (page.value - 1) * perPage.value,
-            sort:{"lastModifiedAt": -1}
+            sort:{"lastModifiedAt": -1},
+            filter:{assignedTo:user?.email}
           });
 
           console.log('data ti list');
