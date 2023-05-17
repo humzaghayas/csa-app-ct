@@ -353,6 +353,18 @@ const addWorklog =(e) => {
                         />
                     </Spacings.Inline>
                   :""}
+                   {formik.values.isEdit && formik.values.category 
+                           && 
+                      <Spacings.Stack scale="s">
+                           <Text.Detail >Customer</Text.Detail>
+                           <Link to={`/${projectKey}/${entryPointUriPath}/customer-account/${customer?.id}/Customers-summary`}>
+                               <PrimaryButton iconLeft={<ChainIcon />} 
+                                  label={formik.values.email}
+                                />
+                            </Link>
+
+                       </Spacings.Stack>
+                    }
 
                 <Spacings.Inline alignItems="flex-end">
                    
@@ -485,17 +497,7 @@ const addWorklog =(e) => {
                   }
         </Spacings.Inline>
 
-        {formik.values.isEdit && formik.values.category 
-               && 
-          <Spacings.Stack scale="s">
-               <Link to={`/${projectKey}/${entryPointUriPath}/customer-account/${customer?.id}/Customers-summary`}>
-                   <PrimaryButton iconLeft={<ChainIcon />} 
-                      label={formik.values.email}
-                    />
-                </Link>
-
-           </Spacings.Stack>
-        }
+       
 
         <Spacings.Stack scale="s">
         <SelectField
