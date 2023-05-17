@@ -15,6 +15,7 @@ import {
   FlatButton,
   PrimaryButton,
   SecondaryButton,
+  Text,
 } from '@commercetools-frontend/ui-kit';
 import { BackIcon } from '@commercetools-uikit/icons';
 import { useCustomerGroupsFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
@@ -128,23 +129,17 @@ const CustomerProfileForm = (props) => {
           </Spacings.Stack>
           <Spacings.Stack>
             <Spacings.Inline>
-              {/* <DateField
-          title="Date Of Birth"
-          value="1998-08-14"
-          horizontalConstraint={13}
-          onChange={(event) => alert(event.target.value)}
-        /> */}
-
-              <DateInput
-                name="dateOfBirth"
-                title="Date of Birth"
-                value={formik.values.dateOfBirth}
-                errors={formik.errors.dateOfBirth}
-                touched={formik.touched.dateOfBirth}
+              <SelectField
+                name="gender"
+                title="Gender"
+                value={formik.values.gender}
+                errors={formik.errors.gender}
+                touched={formik.touched.gender}
                 onChange={formik.handleChange}
+                options={getCustomerGender}
                 onBlur={formik.handleBlur}
                 horizontalConstraint={13}
-                placeholder="Date of Birth"
+                isRequired
               />
               <SelectField
                 name="ageGroup"
@@ -154,32 +149,6 @@ const CustomerProfileForm = (props) => {
                 touched={formik.touched.ageGroup}
                 onChange={formik.handleChange}
                 options={getCustomerAgeGroup}
-                onBlur={formik.handleBlur}
-                horizontalConstraint={13}
-                isRequired
-              />
-            </Spacings.Inline>
-          </Spacings.Stack>
-          <Spacings.Stack>
-            <Spacings.Inline>
-              {/* <RadioField
-                title="Gender"
-                name="Gender"
-                value="Female"
-                onChange={(event) => alert(event.target.value)}
-              >
-                <RadioInput.Option value="Male">{'Male'}</RadioInput.Option>
-                <RadioInput.Option value="Female">{'Female'}</RadioInput.Option>
-                <RadioInput.Option value="Others">{'Others'}</RadioInput.Option>
-              </RadioField> */}
-              <SelectField
-                name="gender"
-                title="Gender"
-                value={formik.values.gender}
-                errors={formik.errors.gender}
-                touched={formik.touched.gender}
-                onChange={formik.handleChange}
-                options={getCustomerGender}
                 onBlur={formik.handleBlur}
                 horizontalConstraint={13}
                 isRequired
@@ -215,6 +184,22 @@ const CustomerProfileForm = (props) => {
                 onBlur={formik.handleBlur}
                 horizontalConstraint={13}
                 isRequired
+              />
+            </Spacings.Inline>
+          </Spacings.Stack>
+          <Spacings.Stack>
+          <Text.Detail >Date of birth</Text.Detail>
+            <Spacings.Inline>
+              <DateInput
+                name="dateOfBirth"
+                title="Date of birth"
+                value={formik.values.dateOfBirth}
+                errors={formik.errors.dateOfBirth}
+                touched={formik.touched.dateOfBirth}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                horizontalConstraint={13}
+                placeholder="Date of Birth"
               />
             </Spacings.Inline>
           </Spacings.Stack>
