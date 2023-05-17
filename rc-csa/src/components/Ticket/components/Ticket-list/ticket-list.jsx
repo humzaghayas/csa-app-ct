@@ -18,6 +18,7 @@ import Constraints from '@commercetools-uikit/constraints';
 import FlatButton from '@commercetools-uikit/flat-button';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import DataTable from '@commercetools-uikit/data-table';
+import DataTableManager, { UPDATE_ACTIONS } from '@commercetools-uikit/data-table-manager';
 import { ContentNotification } from '@commercetools-uikit/notifications';
 import { Pagination } from '@commercetools-uikit/pagination';
 import Spacings from '@commercetools-uikit/spacings';
@@ -66,7 +67,7 @@ const columns = [
   { key: 'resolutionDate', label: 'Resolution Date' },
 ];
 
-
+// const visibleColumnKeys = columns.map(({ key }) => key);
 const Tickets = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
@@ -143,13 +144,53 @@ const Tickets = (props) => {
   }
 
 
-  // if (error) {
-  //   return (
-  //     <ContentNotification type="error">
-  //       <Text.Body>{error}</Text.Body>
-  //     </ContentNotification>
-  //   );
-  // }
+  const [tableData, setTableData] = useState({
+    columns: columns,
+    visibleColumnKeys: columns.map(({ key }) => key),
+  });
+
+  const [isCondensed, setIsCondensed] = useState(false);
+  const [isWrappingText, setIsWrappingText] = useState(false);
+
+  const tableSettingsChangeHandler = {
+    [UPDATE_ACTIONS.COLUMNS_UPDATE]: (visibleColumnKeys) =>{
+
+      console.log('visibleColumnKeys',visibleColumnKeys);
+      console.log('visibleColumnKeys',columns.filter(c => visibleColumnKeys.includes(c.key)));
+      setTableData({
+        columns:columns.filter(c => visibleColumnKeys.includes(c.key)),
+        visibleColumnKeys,
+ 
+      });
+    },
+    [UPDATE_ACTIONS.IS_TABLE_CONDENSED_UPDATE]: setIsCondensed,
+    [UPDATE_ACTIONS.IS_TABLE_WRAPPING_TEXT_UPDATE]: setIsWrappingText,
+  };
+
+  const displaySettings = {
+    disableDisplaySettings:  false,
+    isCondensed,
+    isWrappingText,
+  };
+
+  const columnManager = {
+   // areHiddenColumnsSearchable: boolean('areHiddenColumnsSearchable', true),
+    // searchHiddenColumns: (searchTerm) => {
+    //   setTableData({
+    //     ...tableData,
+    //     columns: initialColumnsState.filter(
+    //       (column) =>
+    //         tableData.visibleColumnKeys.includes(column.key) ||
+    //         column.label
+    //           .toLocaleLowerCase()
+    //           .includes(searchTerm.toLocaleLowerCase())
+    //     ),
+    //   });
+    // },
+    disableColumnManager: false,
+    visibleColumnKeys: tableData.visibleColumnKeys,
+    hideableColumns: tableData.columns,
+  };
 
 
   return (
@@ -242,20 +283,35 @@ const Tickets = (props) => {
       </Spacings.Stack>
       : null}
 
+
       {rows ? 
         <Spacings.Stack scale="l">
          
-          <DataTable
-            isCondensed
-            columns={columns}
-            rows={rows}
-            // itemRenderer={(item, column) => itemRenderer(item, column)}
-            maxHeight={600}
-            // sortedBy={tableSorting.value.key}
-            // sortDirection={tableSorting.value.order}
-            // onSortChange={tableSorting.onChange}
-            onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
-          />
+         <DataTableManager 
+            columns={tableData.columns}
+            // columnManager={{disableColumnManager:false,
+            //       visibleColumnKeys:tableData.visibleColumnKeys,
+            //       hideableColumns:columns}}  
+            // displaySettings={{disableDisplaySettings:false}}
+
+            columnManager={columnManager}
+            displaySettings={displaySettings}
+            onSettingsChange={(action, nextValue) => {
+                tableSettingsChangeHandler[action](nextValue);
+            }}
+            >
+            <DataTable
+              // isCondensed
+              
+              rows={rows}
+              // itemRenderer={(item, column) => itemRenderer(item, column)}
+              // maxHeight={600}
+              // sortedBy={tableSorting.value.key}
+              // sortDirection={tableSorting.value.order}
+              // onSortChange={tableSorting.onChange}
+              onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
+            />
+          </DataTableManager>
           <Pagination
             page={page.value}
             onPageChange={()=>{applyFiltersOnTickets(selectTextInput)}}
