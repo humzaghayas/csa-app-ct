@@ -135,7 +135,8 @@ const Tickets = (props) => {
     let vars = { 
       limit: perPage.value,
       offset: (page.value - 1) * perPage.value,
-      sort:{"lastModifiedAt": -1}};
+      sort:{"lastModifiedAt": -1},
+      filter:{assignedTo:user?.email}};
 
       if(sortColumn ){
        
