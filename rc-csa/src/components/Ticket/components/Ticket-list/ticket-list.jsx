@@ -18,7 +18,7 @@ import Constraints from '@commercetools-uikit/constraints';
 import FlatButton from '@commercetools-uikit/flat-button';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import DataTable from '@commercetools-uikit/data-table';
-import DataTableManager, { UPDATE_ACTIONS } from '@commercetools-uikit/data-table-manager';
+import DataTableManager, { UPDATE_ACTIONS, useSorting } from '@commercetools-uikit/data-table-manager';
 import { ContentNotification } from '@commercetools-uikit/notifications';
 import { Pagination } from '@commercetools-uikit/pagination';
 import Spacings from '@commercetools-uikit/spacings';
@@ -52,19 +52,19 @@ import SelectableSearchInput from '@commercetools-uikit/selectable-search-input'
 
 
 
-const columns = [
-  { key:'ticketNumber', label: 'Ticket Number' },
-  { key:'Customer', label: 'Customer' },
-  { key: 'Created', label: 'Created' },
-  { key: 'Modified', label: 'Modified' },
+let columns = [
+  { key:'ticketNumber', label: 'Ticket Number',isSortable: true,mapping:"ticketNumber" },
+  { key:'Customer', label: 'Customer',isSortable: true , mapping:"email" },
+  { key: 'Created', label: 'Created',isSortable: true , mapping:"createdAt" },
+  { key: 'Modified', label: 'Modified',isSortable: true , mapping:"lastModifiedAt" },
   { key: 'Source', label: 'Source' },
-  { key: 'status', label: 'Status' },
-  { key: 'Priority', label: 'Priority' },
+  { key: 'status', label: 'Status',isSortable: true , mapping:"status"  },
+  { key: 'Priority', label: 'Priority',isSortable: true , mapping:"priority" },
   { key: 'Category', label: 'Category' },
   { key: 'Subject', label: 'Subject' },
-  { key: 'assignedTo', label: 'Assignee' },
+  { key: 'assignedTo', label: 'Assignee',isSortable: true , mapping:"assignedTo" },
   { key: 'createdBy', label: 'Created By' },
-  { key: 'resolutionDate', label: 'Resolution Date' },
+  { key: 'resolutionDate', label: 'Resolution Date',isSortable: true , mapping:"resolutionDate"  },
 ];
 
 // const visibleColumnKeys = columns.map(({ key }) => key);
@@ -125,12 +125,39 @@ const Tickets = (props) => {
     console.log('inside hook !');
   }, [foundUser]);
 
-  const applyFiltersOnTickets =async({option,text}) =>{
+  const {
+    sortedBy,
+    sortDirection,
+  } = useSorting(rows);
+
+  const applyFiltersOnTickets =async({option,text,sortColumn}) =>{
 
     let vars = { 
       limit: perPage.value,
       offset: (page.value - 1) * perPage.value,
       sort:{"lastModifiedAt": -1}};
+
+      if(sortColumn ){
+       
+        const sortDirCol = columns.filter(c => c.key ===sortColumn )[0];
+        let sortDir =sortDirCol.sortDir;
+
+        if(!sortDir){
+          sortDir = "asc";
+        }
+        if(sortDir == 'desc'){
+          vars.sort = {[sortDirCol.mapping]:-1}
+          sortDirCol.sortDir='asc';
+        }else{
+          vars.sort = {[sortDirCol.mapping]:1}
+          sortDirCol.sortDir='desc';
+        }
+        
+        const ind =columns.findIndex(c => c.key === sortColumn)
+
+        columns[ind] = sortDirCol;
+        console.log('columns',columns);
+      }
 
     if(text){
       vars.filter ={[option]:text}
@@ -144,6 +171,7 @@ const Tickets = (props) => {
     setRows(r);
   }
 
+  
 
   const [tableData, setTableData] = useState({
     columns: columns,
@@ -307,9 +335,16 @@ const Tickets = (props) => {
               rows={rows}
               // itemRenderer={(item, column) => itemRenderer(item, column)}
               // maxHeight={600}
-              // sortedBy={tableSorting.value.key}
-              // sortDirection={tableSorting.value.order}
-              // onSortChange={tableSorting.onChange}
+              sortedBy={sortedBy}
+              sortDirection={sortDirection}
+              onSortChange={(columnKey,sortDirection) => { 
+                applyFiltersOnTickets({
+                  ...selectTextInput,
+                  sortColumn:columnKey,
+                  sortDir:sortDirection
+                }
+                  )
+              }}
               onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
             />
           </DataTableManager>
