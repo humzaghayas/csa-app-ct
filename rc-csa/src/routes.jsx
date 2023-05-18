@@ -21,6 +21,7 @@ import AtgAccount from './components/ATG-Poc/components/atg-account/atg-account'
 import ProductAccount from './components/Products/components/product-account/product-account';
 import ProductDetails from './components/Products/components/product-details';
 import { getPermission } from './utils';
+import KnowledgebaseAccount from './components/Knowledgebase-FAQ/components/knowledgebase-account/knowledgebase-account';
 import DashboardDisplay from './components/Dashboard/components/dashboard-details/dashboard';
 
 const ApplicationRoutes = () => {
@@ -36,14 +37,14 @@ const ApplicationRoutes = () => {
   const canManageCustomer360 = getPermission('ManageCsaCustomer');
   const canViewCustomerCarts = getPermission('ViewCustomerCarts');
   const canViewDashboard = getPermission('ViewCsaDashboard');
-  const canManageCustomerCarts = getPermission('ManageCustomerCarts'); 
+  const canManageCustomerCarts = getPermission('ManageCustomerCarts');
   const canViewCustomerOrders = getPermission('ViewCustomerOrders');
   const canManageCustomerOrders = getPermission('ManageCustomerOrders');
   const canViewProductSearch = getPermission('ViewProductSearch');
 
-  console.log('canManageTickets',PERMISSIONS)
-  console.log('canManageCustomer',canViewCustomer360);
-  console.log('canManageCustomerOrders',canManageCustomerOrders);
+  console.log('canManageTickets', PERMISSIONS)
+  console.log('canManageCustomer', canViewCustomer360);
+  console.log('canManageCustomerOrders', canManageCustomerOrders);
 
 
   /**
@@ -79,52 +80,52 @@ const ApplicationRoutes = () => {
         <Route path={`${match.path}/Customers`}>
           {canViewCustomer360 ? (
             <Customers linkToWelcome={match.url} />
-          ):(
+          ) : (
             <PageUnauthorized />
           )}
         </Route>
         <Route path={`${match.path}/Products`}>
           {canViewProductSearch ? (
             <ProductAccount linkToWelcome={match.url} />
-          ):(
+          ) : (
             <PageUnauthorized />
           )}
         </Route>
         <Route path={`${match.path}/product-details/:id`}>
-            {canViewProductSearch ? (
-              <ProductDetails linkToWelcome={match.url} />
-            ):(
-              <PageUnauthorized />
-            )}
+          {canViewProductSearch ? (
+            <ProductDetails linkToWelcome={match.url} />
+          ) : (
+            <PageUnauthorized />
+          )}
         </Route>
         <Route path={`${match.path}/Orders`}>
           {canViewCustomerOrders ? (
-              <Orders linkToWelcome={match.url} />
-            ):(
-              <PageUnauthorized />
-            )}          
+            <Orders linkToWelcome={match.url} />
+          ) : (
+            <PageUnauthorized />
+          )}
         </Route>
         <Route path={`${match.path}/Cart`}>
           {canViewCustomerCarts ? (
-              <Cart linkToWelcome={match.url} />
-            ):(
-              <PageUnauthorized />
-            )}
+            <Cart linkToWelcome={match.url} />
+          ) : (
+            <PageUnauthorized />
+          )}
         </Route>
         <Route path={`${match.path}/order-edit/:id`}>
           {canManageCustomerOrders ? (
             <OrderAccount linkToWelcome={match.url} />
-          ):(
+          ) : (
             <PageUnauthorized />
           )}
         </Route>
 
         <Route path={`${match.path}/cart-edit/:id`}>
-            {canManageCustomerCarts ? (
-              <CartAccount linkToWelcome={match.url} />
-              ):(
-                <PageUnauthorized />
-              )}
+          {canManageCustomerCarts ? (
+            <CartAccount linkToWelcome={match.url} />
+          ) : (
+            <PageUnauthorized />
+          )}
         </Route>
         <Route path={`${match.path}/customer-edit/:lahari`}>
           <CustomerAccount linkToWelcome={match.url} />
@@ -132,9 +133,9 @@ const ApplicationRoutes = () => {
         <Route path={`${match.path}/ticket-edit/:id`}>
           {canManageTickets ? (
             <TicketAccount linkToWelcome={match.url} />
-            ):(
-              <PageUnauthorized />
-            )}
+          ) : (
+            <PageUnauthorized />
+          )}
         </Route>
         <Route path={`${match.path}/customer-create`}>
           <CustomerCreate linkToWelcome={match.url} />
@@ -153,6 +154,9 @@ const ApplicationRoutes = () => {
         </Route>
         <Route path={`${match.path}/dashboard`}>
           <DashboardDisplay linkToWelcome={match.url} />
+        </Route>
+        <Route path={`${match.path}/Knowledgebase`}>
+          <KnowledgebaseAccount linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/`}>
           <DashboardDisplay linkToWelcome={match.url} />

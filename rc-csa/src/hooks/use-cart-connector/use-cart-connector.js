@@ -17,6 +17,7 @@ import {
   FETCH_ORDER_COUNT,
   FETCH_CART_DISCOUNT_CODES,
   FETCH_SHIPPING_ADDRESS_BY_CART,
+  FETCH_SHIPPING_METHODS,
 } from 'ct-tickets-helper-api';
 import {
   convertToActionData,
@@ -244,5 +245,25 @@ export const useFetchAddressByCartId = (cartId) => {
     cart: data?.cart,
     error,
     loading,
+  };
+};
+
+export const useFetchCartShippingMethods = () => {
+  const { data, loading, error } = useMcQuery(
+    gql`
+      ${FETCH_SHIPPING_METHODS}
+    `,
+    {
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+      fetchPolicy: 'network-only',
+    }
+  );
+
+  return {
+    shippingMethods: data?.shippingMethods?.results,
+    loading,
+    error,
   };
 };

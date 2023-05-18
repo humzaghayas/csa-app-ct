@@ -83,60 +83,10 @@ const ShippingAddressForm = (props) => {
     }
   );
 
-  // const hadnleSubmit = (event) =>{
-  //     if(isBillingSameAsShipping){
-  //       props.onSubmitShipping(formik?.values)
-  //       props.onSubmitBilling( value)
-  //     }else{
-  //       props.onSubmitShipping( value)
-  //     }
-  // }
-
-
-  // const onSubmitt = (e) => {
-  //   const updateDataa = formValuesToDocc(formik?.values);
-  //   console.log("Update data", updateDataa);
-  //   props.onSubmitt(updateDataa);
-  // };
-  const [address, setAddress] = useState(formik?.values);
-
-
-  // console.log("Customer Addresses",props?.addresses);
-  // console.log("Address Id",addressId);
-  // console.log("Selected Address",address);
-  // console.log("formik values",formik.values);
 
   const formElements = (
     <form onSubmit={onSubmit}>
       <Spacings.Stack scale="xl">
-        <Spacings.Stack scale="l">
-          <CollapsiblePanel
-            data-testid="address-summary-panel"
-            header={
-              <CollapsiblePanel.Header>
-                {/* {formatMessage(messages.panelTitle)} */}
-                {'Shipping Method'}
-              </CollapsiblePanel.Header>
-            }
-            scale="l"
-          >
-            <Constraints.Horizontal min={13}>
-              <Spacings.Inline>
-                <TextField
-                  name="shippingMethodName"
-                  title="Shipping method"
-                  value={formik?.values?.shippingMethodName}
-                  errors={formik.errors.shippingMethodName}
-                  touched={formik.touched.shippingMethodName}
-                  onChange={(event) => console.log(event)}
-                  //onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  horizontalConstraint={13}
-                />
-              </Spacings.Inline>
-            </Constraints.Horizontal>
-          </CollapsiblePanel>
-        </Spacings.Stack>
         <Spacings.Stack scale='l'>
           <CollapsiblePanel
             header={<CollapsiblePanel.Header>

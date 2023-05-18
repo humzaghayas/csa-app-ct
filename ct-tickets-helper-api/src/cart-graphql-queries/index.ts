@@ -735,3 +735,20 @@ query($id:String!){
     }
   }
 }`;
+
+export const FETCH_SHIPPING_METHODS = `
+query{
+    shippingMethods{
+      results{
+        id
+        name
+        key
+        predicate
+        taxCategory{
+          name
+        }
+        createdAt
+        lastModifiedAt
+      }
+    }
+}`;

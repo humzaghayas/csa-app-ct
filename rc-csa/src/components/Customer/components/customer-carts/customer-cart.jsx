@@ -25,7 +25,7 @@ import { useCustomersCartsFetcher, useCustomersCreateCart, useCustomersOrdersFet
 import { showNotification } from '@commercetools-frontend/actions-global';
 import { DOMAINS } from '@commercetools-frontend/constants';
 import { CollapsiblePanel, SecondaryButton, SelectField } from '@commercetools-frontend/ui-kit';
-import {getDefaultCountryToCurrency} from 'ct-tickets-helper-api'
+import { getDefaultCountryToCurrency } from 'ct-tickets-helper-api'
 
 const CustomerCart = (props) => {
   const intl = useIntl();
@@ -40,7 +40,7 @@ const CustomerCart = (props) => {
   const [cartCurrency, setCartCurrency] = useState(null);
   const [currencyList, setCurrencyList] = useState(null);
 
-  const { projectKey,countries,currencies } = useApplicationContext((context) => ({
+  const { projectKey, countries, currencies } = useApplicationContext((context) => ({
     projectKey: context.project.key,
     countries: context.project.countries,
     currencies: context.project.currencies,
@@ -48,18 +48,18 @@ const CustomerCart = (props) => {
 
   let countriesToCurrency = {};
 
-  for(const c of countries){
+  for (const c of countries) {
     const curr = getDefaultCountryToCurrency(c);
 
-    if(!countriesToCurrency[c]){
+    if (!countriesToCurrency[c]) {
       countriesToCurrency[c] = [];
     }
-    if(currencies.includes(curr)){
-      countriesToCurrency[c].push({label:curr,value:curr});
+    if (currencies.includes(curr)) {
+      countriesToCurrency[c].push({ label: curr, value: curr });
     }
   }
 
-  const getCartCountries = countries.map(c =>({label:c,value:c}));
+  const getCartCountries = countries.map(c => ({ label: c, value: c }));
 
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
@@ -67,7 +67,7 @@ const CustomerCart = (props) => {
   const customerId = props.customer?.id;
   console.log("params", params);
   console.log("props", props);
-  const { customersCartPaginatedResult, error, loading ,refetch} = useCustomersCartsFetcher({
+  const { customersCartPaginatedResult, error, loading, refetch } = useCustomersCartsFetcher({
     page,
     perPage,
     tableSorting,
@@ -106,9 +106,9 @@ const CustomerCart = (props) => {
     centAmount = '$' + centAmount + '.00';
     return centAmount;
   }
-  const{createCart} =useCustomersCreateCart()
-  const createCartForCustomer =async () =>{
-    await createCart(customerId,cartCurrency,cartCountry);
+  const { createCart } = useCustomersCreateCart()
+  const createCartForCustomer = async () => {
+    await createCart(customerId, cartCurrency, cartCountry);
 
     await refetch();
 
@@ -122,54 +122,54 @@ const CustomerCart = (props) => {
   return (
     <Spacings.Stack scale="xl">
 
-        <Spacings.Stack scale="l">
-          
-              <CollapsiblePanel
-                  isClosed={isClosedCommentsPanel}
-                  onToggle={()=>{setIsClosedCommentsPanel(!isClosedCommentsPanel);}}
-                  header="Create Cart Panel" >
-                  <Spacings.Stack scale="l">
-                    <Spacings.Inline>
-                        <SelectField
-                              name="cCountry"
-                              title="Country"
-                              value={cartCountry}
-                              onChange={(e)=>{
-                                  const v = e.target.value;
+      <Spacings.Stack scale="l">
 
-                                  if(v){
-                                    setCartCountry(v);
-                                    setCurrencyList(countriesToCurrency[v])
-                                 }
-                              }}
-                              options={getCartCountries}
-                              horizontalConstraint={13}
-                            />
-                        <SelectField
-                              name="cCurrency"
-                              title="Currency"
-                              value={cartCurrency}
-                              onChange={(e)=>{
-                                setCartCurrency(e.target.value)
-                              }}
-                              options={currencyList}
-                              horizontalConstraint={13}
-                              isDisabled={cartCountry === null}
-                            />
-                       </Spacings.Inline>
-                            <Spacings.Stack scale="m">
-                                <SecondaryButton
-                                      label="Create Cart"
-                                      data-track-event="click"
-                                      onClick={createCartForCustomer}
-                                      iconLeft={<PlusBoldIcon />}
-                                      size="medium"
-                                      isDisabled={cartCountry === null || cartCurrency === null}
-                                    />
-                                </Spacings.Stack>
-                      </Spacings.Stack>
-                </CollapsiblePanel>
-            
+        <CollapsiblePanel
+          isClosed={isClosedCommentsPanel}
+          onToggle={() => { setIsClosedCommentsPanel(!isClosedCommentsPanel); }}
+          header={"Order On Behalf Of " + props?.customer?.firstName}  >
+          <Spacings.Stack scale="l">
+            <Spacings.Inline>
+              <SelectField
+                name="cCountry"
+                title="Country"
+                value={cartCountry}
+                onChange={(e) => {
+                  const v = e.target.value;
+
+                  if (v) {
+                    setCartCountry(v);
+                    setCurrencyList(countriesToCurrency[v])
+                  }
+                }}
+                options={getCartCountries}
+                horizontalConstraint={13}
+              />
+              <SelectField
+                name="cCurrency"
+                title="Currency"
+                value={cartCurrency}
+                onChange={(e) => {
+                  setCartCurrency(e.target.value)
+                }}
+                options={currencyList}
+                horizontalConstraint={13}
+                isDisabled={cartCountry === null}
+              />
+            </Spacings.Inline>
+            <Spacings.Stack scale="m">
+              <SecondaryButton
+                label="Create Cart"
+                data-track-event="click"
+                onClick={createCartForCustomer}
+                iconLeft={<PlusBoldIcon />}
+                size="medium"
+                isDisabled={cartCountry === null || cartCurrency === null}
+              />
+            </Spacings.Stack>
+          </Spacings.Stack>
+        </CollapsiblePanel>
+
       </Spacings.Stack>
 
       {customersCartPaginatedResult ? (
