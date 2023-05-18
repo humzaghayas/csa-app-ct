@@ -152,11 +152,10 @@ const ApplicationRoutes = () => {
           <AtgAccount linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/dashboard`}>
-        {canViewDashboard ? (
           <DashboardDisplay linkToWelcome={match.url} />
-          ):(
-            <PageUnauthorized />
-          )}
+        </Route>
+        <Route path={`${match.path}/`}>
+          <DashboardDisplay linkToWelcome={match.url} />
         </Route>
       </Switch>
     </Spacings.Inset>
