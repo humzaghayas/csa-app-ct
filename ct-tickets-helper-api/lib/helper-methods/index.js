@@ -294,6 +294,7 @@ function getTicketValue(ticketInfo, uuid) {
         lastModifiedAt: currentDate,
         createdBy: ticketInfo.createdBy,
         assignedTo: ticketInfo.assignedTo,
+        timeSpentOnTicket: ticketInfo.timeSpentOnTicket
     };
     if (ticketInfo.createdAt) {
         t['createdAt'] = ticketInfo.createdAt;

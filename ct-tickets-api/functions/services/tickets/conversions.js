@@ -41,7 +41,8 @@ const dataToFormCommonValues=(ticket,isEdit)=>(
     subject: escapeQuotes(ticket?.subject) ?? '',
     isEdit:isEdit ?? false,
     createdBy:ticket?.createdBy ?? '',
-    assignedTo:ticket?.assignedTo ?? ''
+    assignedTo:ticket?.assignedTo ?? '',
+    timeSpentOnTicket:ticket?.timeSpentOnTicket ?? 0
   }
 );
 

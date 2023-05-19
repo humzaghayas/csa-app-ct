@@ -138,7 +138,7 @@ export const useGetTicketById = () => {
   const getTicketById = async (projectKey,id) => {
     const header= {
       'Content-Type': 'application/json',
-      //'ngrok-skip-browser-warning': 'bar',
+      'ngrok-skip-browser-warning': 'bar',
     };
 
     const result =await dispatch(
