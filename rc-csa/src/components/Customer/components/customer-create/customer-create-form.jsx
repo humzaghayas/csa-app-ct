@@ -69,7 +69,7 @@ const CustomerCreateForm = (props) => {
           <Spacings.Stack scale="m">
 
             <Constraints.Horizontal constraint="xl">
-              <Card constraint="xl"  insetScale="l">
+              <Card constraint="xl" theme="dark" insetScale="l">
                 <Text.Subheadline as="h4" isBold={true} >{'Name'}</Text.Subheadline>
                 <Text.Subheadline as="h3"  > {props.customer?.firstName}</Text.Subheadline>
 
@@ -80,7 +80,7 @@ const CustomerCreateForm = (props) => {
           <Spacings.Stack scale="m">
 
             <Constraints.Horizontal constraint="xl">
-              <Card constraint="xl"  insetScale="l">
+              <Card constraint="xl" theme="dark" insetScale="l">
                 <Text.Subheadline as="h4" isBold={true} >{'Customer Number'}</Text.Subheadline>
                 <Text.Subheadline as="h3" > {props.customer?.customerNumber}</Text.Subheadline>
 
@@ -92,7 +92,7 @@ const CustomerCreateForm = (props) => {
           <Spacings.Stack scale="m">
 
             <Constraints.Horizontal constraint="xl">
-              <Card constraint="xl"  insetScale="l">
+              <Card constraint="xl" theme="dark" insetScale="l">
                 <Text.Subheadline as="h4" isBold={true} >{'External Id'}</Text.Subheadline>
                 <Text.Subheadline as="h3" > {props.customer?.externalId}</Text.Subheadline>
 
@@ -113,7 +113,7 @@ const CustomerCreateForm = (props) => {
             <Spacings.Inline>
               <Spacings.Stack scale="l">
                 <Constraints.Horizontal >
-                  <Card constraint="xl"  insetScale="l">
+                  <Card constraint="xl" theme="dark" insetScale="l">
                     <Text.Subheadline as="h4" isBold={true} >{'Order'}</Text.Subheadline>
                     <Text.Subheadline as="h3" >{props.customerSummary?.orderCount}</Text.Subheadline>
                   </Card>
@@ -121,7 +121,7 @@ const CustomerCreateForm = (props) => {
               </Spacings.Stack>
               <Spacings.Stack scale="l">
                 <Constraints.Horizontal >
-                  <Card constraint="xl"  insetScale="l">
+                  <Card constraint="xl" theme="dark" insetScale="l">
                     <Text.Subheadline as="h4" isBold={true} >{'Sales'}</Text.Subheadline>
                     <Text.Subheadline as="h3" >{props.customerSummary?.salesCount}</Text.Subheadline>
                   </Card>
@@ -129,7 +129,7 @@ const CustomerCreateForm = (props) => {
               </Spacings.Stack>
               <Spacings.Stack scale="l">
                 <Constraints.Horizontal >
-                  <Card constraint="xl"  insetScale="l">
+                  <Card constraint="xl" theme="dark" insetScale="l">
                     <Text.Subheadline as="h4" isBold={true} >{'Tickets'}</Text.Subheadline>
                     <Text.Subheadline as="h3" >{props.customerSummary?.ticketsCount}</Text.Subheadline>
                   </Card>
@@ -138,7 +138,7 @@ const CustomerCreateForm = (props) => {
               <br />
               <Spacings.Stack scale="l">
                 <Constraints.Horizontal min={13}>
-                  <Card constraint="xl" insetScale="l" >
+                  <Card constraint="xl" insetScale="l" theme="dark">
                     <Text.Subheadline as="h4" isBold={true} >{'Saved Cart'}</Text.Subheadline>
                     <Text.Subheadline as="h3" >{props.customerSummary?.activeCartCount}</Text.Subheadline>
 
@@ -157,7 +157,7 @@ const CustomerCreateForm = (props) => {
             <Spacings.Stack scale="m">
               <div className={styles.amountCard}>
                 <Constraints.Horizontal constraint="xl">
-                  <Card constraint="xl"  insetScale="xl">
+                  <Card constraint="xl" theme="dark" insetScale="xl">
                     <Text.Subheadline as="h4" isBold={true} >{'Shipping Address'}</Text.Subheadline>
                     <Text.Subheadline as="h3" >
                       {props.customer?.defaultShippingAddress?.firstName}{' '}
@@ -185,7 +185,7 @@ const CustomerCreateForm = (props) => {
             <Spacings.Stack scale="m">
               <div className={styles.amountCard}>
                 <Constraints.Horizontal constraint="xl">
-                  <Card constraint="xl"  insetScale="xl">
+                  <Card constraint="xl" theme="dark" insetScale="xl">
                     <Text.Subheadline as="h4" isBold={true} >{'Billing Address'}</Text.Subheadline>
                     <Text.Subheadline as="h3" >
                       {props.customer?.defaultBillingAddress?.firstName}{' '}
