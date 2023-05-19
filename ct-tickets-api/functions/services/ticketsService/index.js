@@ -73,6 +73,7 @@ const {adminDBService,clientDBConnection} =require('ct-external-connections');
         const conf = adminConf[projectKey];
 
         if(conf.isDatabase){
+          console.log('adasdasd',ticket);
           return await ticketsService.createTicketMongo(conf,ticket);
         
         }else{

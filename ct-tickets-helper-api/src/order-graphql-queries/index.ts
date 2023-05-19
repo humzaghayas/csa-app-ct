@@ -841,7 +841,7 @@ export const CREATE_ORDER_FROM_QUOTE = `mutation createOrderFromQuote($draft:Ord
     id
   }
 }`
-export const FETCH_SHIPPING_METHODS = `query fetchShippingMethods{
+export const ORDER_FETCH_SHIPPING_METHODS = `query fetchShippingMethods{
   shippingMethods{
     results{
       id
