@@ -57,36 +57,7 @@ const AddressDetails = (props) => {
 
 
     let { cart } = useFetchCartById(match.params.id);
-    // const handleSubmit = useCallback(async (payload) => {
-    //     console.log('In Handle Submit');
-    //     payload.cartId = cart?.id;
-    //     payload.version = cart?.version;
-    //     //payload.actions = cart?.setBillingAddress || cart?.setShippingAddress;
-    //     console.log(payload);
-    //     try {
-    //         //if(cart?.shippingAddress){
-    //         const result = await executeUpdateCart(payload);
-    //         cart = result?.data?.updateCart?.version
-    //             ? result?.data?.updateCart?.version
-    //             : cart;
-    //         console.log(result);
-    //         console.log(cart);
-    //         forceUpdate();
-    //         showNotification({
-    //             kind: 'success',
-    //             domain: DOMAINS.SIDE,
-    //             text: intl.formatMessage(messages.CartUpdated),
-    //         });
-    //     } catch (graphQLErrors) {
-    //         console.log('humza : ' + graphQLErrors);
-    //         const transformedErrors = transformErrors(graphQLErrors);
-    //         if (transformedErrors.unmappedErrors.length > 0) {
-    //             showApiErrorNotification({
-    //                 errors: graphQLErrors.message,
-    //             });
-    //         }
-    //     }
-    // });
+
 
     const handleSubmit = useCallback(async (e) => {
         console.log('In Handle Submit');
