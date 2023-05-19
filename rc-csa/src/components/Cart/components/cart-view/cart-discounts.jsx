@@ -112,13 +112,7 @@ const CartDiscounts = (props) => {
                                 />
 
 
-                                {/* <SecondaryButton
-                                    //onClick={formik.handleSubmit}
-                                    //isDisabled={formik.isSubmitting || !formik.dirty}
-                                    label="Apply"
-                                    icon={<PlusBoldIcon />}
-                                    size='medium'
-                                /> */}
+
                             </Spacings.Inline>
 
                             <Spacings.Inline>

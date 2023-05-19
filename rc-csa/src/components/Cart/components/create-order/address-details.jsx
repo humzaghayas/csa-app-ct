@@ -1,47 +1,39 @@
 import { useIntl } from 'react-intl';
-import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
-
+import { useParams, useRouteMatch } from 'react-router-dom';
 import {
-    Link as RouterLink,
-    Switch,
-    useHistory,
-    useRouteMatch,
-} from 'react-router-dom';
-
-import validate from './validate';
-import Spacings from '@commercetools-uikit/spacings';
-import { CheckActiveIcon, CheckInactiveIcon, CloseIcon, MinimizeIcon } from '@commercetools-uikit/icons';
-import { CheckboxInput, CollapsiblePanel, Constraints, CreatableSelectField, DataTable, FlatButton, IconButton, PlusBoldIcon, PlusThinIcon, PrimaryButton, RadioField, RadioInput, SearchSelectField, SearchSelectInput, SecondaryButton, SecondaryIconButton, TextField, ToggleInput } from '@commercetools-frontend/ui-kit';
-import { useFormik } from 'formik';
-import { useCartUpdateById, useFetchCartById, useFetchCartDiscountCodes } from '../../../../hooks/use-cart-connector/use-cart-connector';
-import { cartDiscountCodeOptions, docToFormValuess } from './conversions';
-import { useShowApiErrorNotification, useShowNotification } from '@commercetools-frontend/actions-global';
-import { useIsAuthorized } from '@commercetools-frontend/permissions';
+    PageNotFound,
+    FormModalPage,
+} from '@commercetools-frontend/application-components';
+import React, { useCallback, useReducer } from 'react';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
-import { transformErrors } from './transform-errors';
+import { DOMAINS, NO_VALUE_FALLBACK } from '@commercetools-frontend/constants';
+import { useIsAuthorized } from '@commercetools-frontend/permissions';
+import {
+    useShowNotification,
+    useShowApiErrorNotification,
+} from '@commercetools-frontend/actions-global';
 import { PERMISSIONS } from '../../../../constants';
+import { docToFormValues, formValuesToDoc, addressInfo } from './conversions';
+import ShippingAddressForm from './shipping-address-form';
+import { transformErrors } from './transform-errors';
+import messages from './messages';
+//import validate from './validate';
+import {
+    useCartsFetcher,
+    useShippingAddressCreator,
+    useAddLineItem,
+    useFetchCartById,
+    useCartUpdateById,
+    useFetchAddressByCartId,
+} from '../../../../hooks/use-cart-connector/use-cart-connector';
 import { useCustomerAddressesFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
-import ShippingAddress from './shipping-address';
-import BillingAddress from './billing-address';
-import { docToFormValues, formValuesToDoc } from './conversions';
+import AddressDetailsForm from './address-details-form';
 
-const columns = [
-    { key: 'name', label: 'Discount Name' },
-    { key: 'value', label: 'Amount' },
-    { key: 'code', label: 'Discount Codes' },
-
-]
-
-const rows = [
-
-]
 const AddressDetails = (props) => {
     const intl = useIntl();
     const params = useParams();
     const match = useRouteMatch();
-    const { push } = useHistory();
     const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
         dataLocale: context.dataLocale ?? '',
         projectLanguages: context.project?.languages ?? [],
@@ -50,12 +42,6 @@ const AddressDetails = (props) => {
         demandedPermissions: [PERMISSIONS.Manage],
     });
 
-    const formik = useFormik({
-        initialValues: props.initialValues,
-        validate,
-        enableReinitialize: true,
-    });
-    const [addressId, setAddressId] = useState("cartAddress");
     const isQuoteRequest = props?.isQuoteRequest;
 
     //const {executeFetchOrder} = useFetchOrderById(match.params.id);
@@ -69,99 +55,73 @@ const AddressDetails = (props) => {
 
     const [reducerValue, forceUpdate] = useReducer((x) => x + 1, 0);
 
-    const [isBillingSameAsShipping, setIsBillingSameAsShipping] = useState(true);
+
     let { cart } = useFetchCartById(match.params.id);
 
 
+    const handleSubmit = useCallback(async (e) => {
+        console.log('In Handle Submit');
+        const actions = e.actions;
+        if (actions.length != 0) {
+            try {
+                const draft = {
+                    cartId: cart.id,
+                    version: cart.version,
+
+                    actions,
+                };
+                console.log(draft);
+                const result = await executeUpdateCart(draft);
+
+                console.log(result);
+
+                forceUpdate();
+                showNotification({
+                    kind: 'success',
+                    domain: DOMAINS.SIDE,
+                    text: intl.formatMessage(messages.CartUpdated),
+                });
+
+                window.location.reload(true)
+            } catch (graphQLErrors) {
+                console.log(graphQLErrors.message);
+                const transformedErrors = transformErrors(graphQLErrors);
+                if (transformedErrors.unmappedErrors.length > 0) {
+                    showApiErrorNotification({
+                        errors: transformedErrors.unmappedErrors,
+                    });
+                }
+            }
+        }
+        push(`${match.url}`);
+    }, [executeUpdateCart]);
+    const handleChange = useCallback(async (e) => {
+    });
+    //console.log("Cart in shipping address", cart)
+
+    const { customer } = useCustomerAddressesFetcher(cart?.customerId);
+
+
     return (
-        //  <form onSubmit={handleSubmit}>
-
-        <Spacings.Stack scale="xl">
-
-            <Spacings.Stack scale="l">
-                <ShippingAddress initialValues={docToFormValues(cart?.shippingAddress, projectLanguages)}
-                />
-            </Spacings.Stack>
-            <Spacings.Stack>
-                <CheckboxInput
-                    //value="foo-radio-value"
-                    isDisabled={false}
-                    // value={isBillingSameAsShipping}
-                    isChecked={isBillingSameAsShipping}
-                    //onChange={formik.handleChange}
-                    onChange={(event) => {
-                        setIsBillingSameAsShipping((p) =>
-                            !p)
-                        //setIsBillingSameAsShipping(p);
-                        console.log(isBillingSameAsShipping, event)
-                        // if (isBillingSameAsShipping == true) {
-
-                        //     console.log(props?.initialValues.filter(e => e.id == p)[0])
-                        //     const shippingAddress = props?.initialValues.filter(e => e.id == p)[0];
-                        //     formik.setValues(docToFormValuess(shippingAddress, null));
-                        // }
-                        // else {
-                        //     const billingAddress = props?.initialValues
-                        //     formik.setValues(docToFormValues(billingAddress, null))
-                        // }
-                        //setIsEditable(event.target.checked);
-                        // document.getElementById("checkbox").checked = true;
-                        // document.getElementById("checkbox").checked = false;
-
-                        // event.cartId = item.id
-                        // onClickCheckBox(event)
-                        // setAddressId(event.target.value)
-                        // if (CheckboxInput.isChecked == true) {
-                        //   formik.setValues(props.initialValues)
-                        // }
-                    }}
-                >
-                    Use this address as billing address
-                </CheckboxInput>
-            </Spacings.Stack>
-
-            <Spacings.Stack scale="l">
-                <BillingAddress isChecked={isBillingSameAsShipping} />
-
-            </Spacings.Stack>
-            <Spacings.Stack scale="s">
-                <Spacings.Inline>
-
-                    {!isQuoteRequest &&
-                        <PrimaryButton
-                            label="Next"
-                            //onClick={onSubmit}
-                            onClick={() => push(`place-order`)}
-                            //onSubmit={onSubmit}
-                            isDisabled={false}
-                        />
-                    }
-                    {isQuoteRequest &&
-                        <PrimaryButton
-                            label="Next"
-                            //onClick={onSubmit}
-                            onClick={() => push(`place-quote-request`)}
-                            //onSubmit={onSubmit}
-                            isDisabled={false}
-                        />
-                    }
-                </Spacings.Inline>
-            </Spacings.Stack>
-
-
-        </Spacings.Stack>
-
-        //    </form>
-
+        <AddressDetailsForm
+            initialValues={addressInfo(cart, projectLanguages)}
+            addresses={customer?.addresses}
+            onSubmit={handleSubmit}
+            onChange={handleChange}
+            isReadOnly={!canManage}
+            dataLocale={dataLocale}
+            onClose={props?.onClose}
+            cartId={cart?.id}
+            cartVersion={cart?.version}
+            isQuoteRequest={isQuoteRequest}
+        >
+            {(formProps) => {
+                return (
+                    <React.Fragment>{formProps.formElements}</React.Fragment>
+                );
+            }}
+        </AddressDetailsForm>
     );
-    // return props.children({
-    //     formElements,
-    //     values: formik.values,
-    //     isDirty: formik.dirty,
-    //     isSubmitting: formik.isSubmitting,
-    //     //submitForm: onSubmit,
-    //     //handleReset: formik.handleReset,
-    // });
 };
 AddressDetails.displayName = 'AddressDetails';
 AddressDetails.propTypes = {
