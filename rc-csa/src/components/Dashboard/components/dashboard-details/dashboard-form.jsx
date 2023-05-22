@@ -72,7 +72,7 @@ const columnsSla = [
 const DashboardDisplayForm = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
-  const { push } = useHistory();
+  const history = useHistory();
   // const [query] = useState(QUERY);
   const { page, perPage } = usePaginationState();
   const formik = useFormik({
@@ -94,7 +94,6 @@ const DashboardDisplayForm = (props) => {
   const highTickets = highProirityTickets(ticketData);
   const openTickets = openStatusTickets(ticketData);
   const inprogTickets = inProgressTickets(ticketData);
-  console.log('print', ticketData);
 
   //Assigning row values
   rows = ticketData;
@@ -628,6 +627,15 @@ const DashboardDisplayForm = (props) => {
           }
         >
           Chat
+        </button>
+      </div>
+      <div>
+        <button
+          onClick={() =>
+            history.push(`/csa-project-4/csa-customer-tickets/feedback`)
+          }
+        >
+          feedback
         </button>
       </div>
       <br />
