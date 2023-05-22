@@ -172,11 +172,14 @@ const Tickets = (props) => {
     setRows(r);
   }
 
-  
+  const initialVisibleColumns = columns;
+  const initialHiddenColumns = []
+
+  const initialColumnsState = [...initialVisibleColumns, ...initialHiddenColumns];
 
   const [tableData, setTableData] = useState({
-    columns: columns,
-    visibleColumnKeys: columns.map(({ key }) => key),
+    columns: initialColumnsState,
+    visibleColumnKeys: initialVisibleColumns.map(({ key }) => key),
   });
 
   const [isCondensed, setIsCondensed] = useState(false);
@@ -188,7 +191,7 @@ const Tickets = (props) => {
       console.log('visibleColumnKeys',visibleColumnKeys);
       console.log('visibleColumnKeys',columns.filter(c => visibleColumnKeys.includes(c.key)));
       setTableData({
-        columns:columns.filter(c => visibleColumnKeys.includes(c.key)),
+        ...tableData,
         visibleColumnKeys,
  
       });
@@ -203,20 +206,32 @@ const Tickets = (props) => {
     isWrappingText,
   };
 
+  const mappedColumns = tableData.columns.reduce(
+    (columns, column) => ({
+      ...columns,
+      [column.key]: column,
+    }),
+    {}
+  );
+
+  const visibleColumns = tableData.visibleColumnKeys.map(
+    (columnKey) => mappedColumns[columnKey]
+  );
+
   const columnManager = {
-   // areHiddenColumnsSearchable: boolean('areHiddenColumnsSearchable', true),
-    // searchHiddenColumns: (searchTerm) => {
-    //   setTableData({
-    //     ...tableData,
-    //     columns: initialColumnsState.filter(
-    //       (column) =>
-    //         tableData.visibleColumnKeys.includes(column.key) ||
-    //         column.label
-    //           .toLocaleLowerCase()
-    //           .includes(searchTerm.toLocaleLowerCase())
-    //     ),
-    //   });
-    // },
+   areHiddenColumnsSearchable: true,
+    searchHiddenColumns: (searchTerm) => {
+      setTableData({
+        ...tableData,
+        columns: initialColumnsState.filter(
+            (column) =>
+              tableData.visibleColumnKeys.includes(column.key) ||
+              column.label
+                .toLocaleLowerCase()
+                .includes(searchTerm.toLocaleLowerCase())
+          ),
+      });
+    },
     disableColumnManager: false,
     visibleColumnKeys: tableData.visibleColumnKeys,
     hideableColumns: tableData.columns,
@@ -318,7 +333,7 @@ const Tickets = (props) => {
         <Spacings.Stack scale="l">
          
          <DataTableManager 
-            columns={tableData.columns}
+            columns={visibleColumns}
             // columnManager={{disableColumnManager:false,
             //       visibleColumnKeys:tableData.visibleColumnKeys,
             //       hideableColumns:columns}}  
