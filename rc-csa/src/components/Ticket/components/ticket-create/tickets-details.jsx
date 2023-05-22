@@ -17,6 +17,7 @@ import {
   useGetTicketById,
 } from '../../../../hooks/use-register-user-connector';
 import { CONSTANTS } from 'ct-tickets-helper-api/lib/constants';
+import { useSendOrderMail } from '../../../../hooks/use-order-sendmail-connector';
 
 const TicketDetailsP = (props) => {
   const match = useRouteMatch();
@@ -42,21 +43,10 @@ const TicketDetailsP = (props) => {
 
       console.log('ticket det', t);
       setTicket(t);
-      if (ticket.status === 'inprogress' && data.status === 'done') {
-        const ticketEmail = await execSendEmail(
-          {},
-          {
-            to: ticket?.email,
-            subject: 'Your ticket is resolved',
-            html: `<p>Thanks for contacting CSA Support.</p><p>Your Ticket ID: ${ticket.ticketNumber} </p> 
-            <p> Please take a moment to submit your feedback by visiting <br>
-            <a href="http://localhost:3001/csa-project-4/csa-customer-tickets/feedback">http://localhost:3001/csa-project-4/csa-customer-tickets/feedback/</a> </p>`,
-          }
-        );
-        console.log('Email sent', ticketEmail);
-      }
     }
   }, [ticket]);
+
+  const { execute: execSendEmail } = useSendOrderMail();
 
   const { execute } = useCreateOrUpdateTicket();
   const handleSubmit = useCallback(
@@ -68,6 +58,19 @@ const TicketDetailsP = (props) => {
       let t = await execute(projectKey, data);
 
       console.log(t);
+      if (ticket.status === 'inprogress' && data.status === 'done') {
+        const ticketEmail = await execSendEmail(
+          {},
+          {
+            to: ticket?.email,
+            subject: 'Your ticket is resolved',
+            html: `<p>Thanks for contacting CSA Support.</p><p>Your Ticket ID: ${ticket.ticketNumber} </p> 
+            <p> Please take a moment to submit your feedback by visiting <br>
+            <a href="https://c226-49-207-199-94.ngrok-free.app/">https://c226-49-207-199-94.ngrok-free.app/</a> </p>`,
+          }
+        );
+        console.log('Email sent', ticketEmail);
+      }
     },
     [execute]
   );

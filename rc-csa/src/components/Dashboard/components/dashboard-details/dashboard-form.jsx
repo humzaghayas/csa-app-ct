@@ -285,7 +285,7 @@ const DashboardDisplayForm = (props) => {
                       rows={rows.slice(0, 5)} // limit to first 5 rows
                       maxHeight={400}
                       onRowClick={(row) =>
-                        push(`ticket-edit/${row.id}/tickets-general`)
+                        history.push(`ticket-edit/${row.id}/tickets-general`)
                       }
                     />
                     <Switch>
