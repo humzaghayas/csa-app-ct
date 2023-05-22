@@ -28,6 +28,7 @@ import{CREATE_TICKET_MUTATION,getCreateTicketDraft} from 'ct-tickets-helper-api'
 import { gql } from '@apollo/client';
 import { useCreateOrUpdateTicket } from '../../../../hooks/use-register-user-connector';
 import { CONSTANTS } from 'ct-tickets-helper-api/lib/constants';
+import { useEmailSender } from '../../../../hooks/use-email-sender';
 
 const TicketCreate = (props) => {
   const intl = useIntl();
@@ -43,36 +44,53 @@ const TicketCreate = (props) => {
   const canManage = useIsAuthorized({
     demandedPermissions: [PERMISSIONS.ManageCsaTickets],
   });
-  // const showNotification = useShowNotification();
-  // const showApiErrorNotification = useShowApiErrorNotification();
-  // const TicketCreateCreator = useTicketCreateCreator();
-
-//  const [createOrUpdateCustomObject, { data, loading, error }] = useMcMutation(gql`${CREATE_TICKET_MUTATION}`);
   const{execute} = useCreateOrUpdateTicket();
+  const {execSendEmail} = useEmailSender();
 
   const handleSubmit = useCallback(
     async (formValues) => {
 
       let data = {};
       formValues.createdBy = user.email;
-      // formValues.id='a';
-      // formValues.key='a';
 
       if(!formValues.assignedTo){
         formValues.assignedTo = user.email;
       }
-      
+      console.log("formvalues",formValues);
       data = formValuesToDoc(formValues);
-
       console.log("data");
       console.log(data);
       let t = await execute(projectKey
         ,data,CONSTANTS.CREATE_OPERATION);
+      
+      sendEmail(t?.tickets);
 
       console.log(t);
     },
     [execute]
   );
+
+  const sendEmail = useCallback(
+    async (ticket) => {
+      if(ticket){
+        const response = await execSendEmail({},{
+          to:ticket?.email,
+          subject:"Complain ticket created",
+          html:`<h1>A new ticket is created with reference to your complain</h1> 
+          <br/>
+          <h2> Ticket subject: ${ticket?.subject} </h2>
+          <h2> Message: ${ticket?.message}</h2>
+          <br/>
+          <h2>Ticket Number: ${ticket?.ticketNumber}</h2>
+          <body>We appreciate your patience our team is looking into the issue.</body>
+          <h3>Thanks</h3>
+          `
+        });
+        console.log("Email send response", response);
+      }
+    }
+    ,[execSendEmail]
+  )
 
 
 
