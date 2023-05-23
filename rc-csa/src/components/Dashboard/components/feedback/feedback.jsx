@@ -25,6 +25,7 @@ const Feedback = (props) => {
   const [hover, setHover] = useState(null);
   const [feedbackDes, setFeedbackDes] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  console.log('feedback list', props);
   // const submitted = props.onSubmit
   // console.log(props);
   const { dataLocale, entryPointUriPath, projectKey } = useApplicationContext(
@@ -104,6 +105,7 @@ const Feedback = (props) => {
     formik.setValues(data);
     formik.handleSubmit(e);
     setSubmitted(data);
+    // history.push(`/csa-project-4/csa-customer-tickets/dashboard`);
     // handleSubmit(e);
     // console.log('worked', formik.setValues(data));
   };

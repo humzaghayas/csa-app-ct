@@ -86,31 +86,6 @@ const FeedbackSetup = (props) => {
   // console.log('Decider', feedbackRaw);
 
   const handleSubmit = useCallback();
-  // const handleSubmitFeedback = useCallback(
-  //   async (formValues) => {
-  //     let data = {};
-  //     // formValues.rating = user.email;
-  //     // formValues.feedbackDes='a';
-  //     // formValues.key='a';
-
-  //     // if(!formValues.assignedTo){
-  //     //   formValues.assignedTo = user.email;
-  //     // }
-
-  //     data = formValuesToDoc(formValues);
-
-  //     console.log('data');
-  //     console.log(data);
-  //     let t = await createFeedback(
-  //       projectKey,
-  //       data,
-  //       CONSTANTS.CREATE_OPERATION
-  //     );
-
-  //     console.log(t);
-  //   },
-  //   [createFeedback]
-  // );
 
   const handleSubmitFeedback = useCallback(
     async (formValues) => {
@@ -143,7 +118,6 @@ const FeedbackSetup = (props) => {
 
   return (
     <Feedback
-      // initialValues={docToFormValues(feedback, null, projectLanguages)}
       feedback={feedback}
       // onSubmit={handleSubmitFeedback}
     >

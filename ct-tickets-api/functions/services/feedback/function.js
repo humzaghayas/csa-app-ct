@@ -14,9 +14,9 @@ function getCreateFeedbackDraftForDB(feedbackInfo) {
 }
 exports.getCreateFeedbackDraftForDB = getCreateFeedbackDraftForDB;
 
-function getFeedbackValue(ticketInfo) {
-  var rating = ticketInfo.rating;
-  var feedbackDes = ticketInfo.feedbackDes;
+function getFeedbackValue(feedInfo) {
+  var rating = feedInfo.rating;
+  var feedbackDes = feedInfo.feedbackDes;
 
   var t = {
     rating: rating,

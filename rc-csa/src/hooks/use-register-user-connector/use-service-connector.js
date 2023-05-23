@@ -282,9 +282,8 @@ export const useCreateOrUpdateFeedback = () => {
 
   const apiUrl = ctCsaBackendURL + '/create-feedback-db';
 
-  const execute = async (projectKey, data, operation) => {
-    console.log('createFeedback', projectKey, data, operation);
-
+  const execute = async ({ projectKey, data, operation }) => {
+    console.log('CreateFeedback', projectKey, data, operation);
     const header = {
       'Content-Type': 'application/json',
     };

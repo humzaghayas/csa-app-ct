@@ -66,7 +66,8 @@ const TicketDetailsP = (props) => {
             subject: 'Your ticket is resolved',
             html: `<p>Thanks for contacting CSA Support.</p><p>Your Ticket ID: ${ticket.ticketNumber} </p> 
             <p> Please take a moment to submit your feedback by visiting <br>
-            <a href="https://c226-49-207-199-94.ngrok-free.app/">https://c226-49-207-199-94.ngrok-free.app/</a> </p>`,
+            <a href="https://mc.us-central1.gcp.commercetools.com/csa-project-4/csa-customer-tickets/feedback">https://mc.us-central1.gcp.commercetools.com/csa-project-4/csa-customer-tickets/feedback</a> </p>
+            <p>Thank you, have a great day!</p>`,
           }
         );
         console.log('Email sent', ticketEmail);
