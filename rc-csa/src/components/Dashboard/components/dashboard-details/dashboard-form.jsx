@@ -210,7 +210,7 @@ const DashboardDisplayForm = (props) => {
               <Card constraint="xl">
                 <br />
                 <div>
-                  <Text.Subheadline as="h4" isBold={true} tone="positive">
+                  <Text.Subheadline as="h4" isBold={true} >
                     {'Ticket details'}
                   </Text.Subheadline>
                   <br />
@@ -233,30 +233,30 @@ const DashboardDisplayForm = (props) => {
                       </Pie>
                     </PieChart>
                     <br />
-                    <Text.Subheadline as="h5" isBold={true} tone="positive">
+                    <Text.Subheadline as="h5" isBold={true} >
                       {'Total tickets = '}
                       {totalTicket}
                     </Text.Subheadline>
-                    <Text.Subheadline as="h5" isBold={true} tone="primary">
+                    <Text.Subheadline as="h5" isBold={true} >
                       {'Active tickets = '}
                       {activeTicket}
                     </Text.Subheadline>
                   </div>
                   <br />
                   <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <Text.Subheadline as="h5" isBold={true} tone="negative">
+                    <Text.Subheadline as="h5" isBold={true} >
                       {'High Priority = '}
                       {highTickets}
                     </Text.Subheadline>
-                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                    <Text.Subheadline as="h5" isBold={true} >
                       {'New Tickets = '}
                       {newTickets}
                     </Text.Subheadline>
-                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                    <Text.Subheadline as="h5" isBold={true} >
                       {'Open = '}
                       {openTickets}
                     </Text.Subheadline>
-                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                    <Text.Subheadline as="h5" isBold={true} >
                       {'In-progress = '}
                       {inprogTickets}
                     </Text.Subheadline>
@@ -272,8 +272,8 @@ const DashboardDisplayForm = (props) => {
 
           <Constraints.Horizontal max={13}>
             <div className={styles.tickets_component}>
-              <Card constraint="xl" theme="dark" insetScale="l">
-                <Text.Subheadline as="h4" isBold={true} tone="positive">
+              <Card constraint="xl" theme="light" insetScale="l">
+                <Text.Subheadline as="h4" isBold={true} >
                   {'Recent Tickets '}
                 </Text.Subheadline>
                 <br />
@@ -310,7 +310,7 @@ const DashboardDisplayForm = (props) => {
         <Spacings.Stack scale="xl" alignItems="flexEnd">
           <Constraints.Horizontal min={14} max={15}>
             <Card constraint="xl">
-              <Text.Subheadline as="h4" isBold={true} tone="positive">
+              <Text.Subheadline as="h4" isBold={true} >
                 {'Report'}
               </Text.Subheadline>
               <br />
@@ -321,7 +321,7 @@ const DashboardDisplayForm = (props) => {
                       constraint="xl"
                       // min={22}
                       // max={29}
-                      theme="dark"
+                      theme="light"
                       insetScale="l"
                     >
                       <div
@@ -333,7 +333,7 @@ const DashboardDisplayForm = (props) => {
                         <Text.Subheadline
                           as="h5"
                           isBold={true}
-                          tone="information"
+                          
                         >
                           {'From:'}
                         </Text.Subheadline>
@@ -350,7 +350,7 @@ const DashboardDisplayForm = (props) => {
                         <Text.Subheadline
                           as="h5"
                           isBold={true}
-                          tone="information"
+                          
                         >
                           {'To:'}
                         </Text.Subheadline>
@@ -367,7 +367,7 @@ const DashboardDisplayForm = (props) => {
                         <Text.Subheadline
                           as="h5"
                           isBold={true}
-                          tone="information"
+                          
                         >
                           {'Report type:'}
                         </Text.Subheadline>
@@ -419,68 +419,68 @@ const DashboardDisplayForm = (props) => {
         <Spacings.Stack scale="xl">
           <Constraints.Horizontal constraint="l">
             <Card constraint="xl">
-              <Text.Subheadline as="h4" isBold={true} tone="positive">
+              <Text.Subheadline as="h4" isBold={true} >
                 {'Agent details'}
               </Text.Subheadline>
               <br />
               <Spacings.Inline>
                 <Spacings.Stack scale="l">
                   <Constraints.Horizontal>
-                    <Card constraint="xl" theme="dark" insetScale="l">
+                    <Card constraint="xl" theme="light" insetScale="l">
                       <Text.Subheadline
                         as="h4"
                         isBold={true}
-                        tone="information"
+                        // tone=""
                       >
                         {'Total Agents'}
                       </Text.Subheadline>
-                      <Text.Subheadline as="h3">50</Text.Subheadline>
+                      <Text.Subheadline as="div">50</Text.Subheadline>
                     </Card>
                   </Constraints.Horizontal>
                 </Spacings.Stack>
                 <Spacings.Stack scale="l">
                   <Constraints.Horizontal>
-                    <Card constraint="xl" theme="dark" insetScale="l">
+                    <Card constraint="xl" theme="light" insetScale="l">
                       <Text.Subheadline
                         as="h4"
                         isBold={true}
-                        tone="information"
+                        
                       >
                         {'Present     '}
                       </Text.Subheadline>
                       {/* make changes here */}
-                      <Text.Subheadline as="h3">47</Text.Subheadline>
+                      <Text.Subheadline as="div">47</Text.Subheadline>
                     </Card>
                   </Constraints.Horizontal>
                 </Spacings.Stack>
                 <Spacings.Stack scale="l">
                   <Constraints.Horizontal>
-                    <Card constraint="xl" theme="dark" insetScale="l">
+                    <Card constraint="xl" theme="light" insetScale="l">
                       <Text.Subheadline
                         as="h4"
                         isBold={true}
-                        tone="information"
+                        
                       >
                         {'On Leave'}
                       </Text.Subheadline>
                       {/* make changes here */}
-                      <Text.Subheadline as="h3">3</Text.Subheadline>
+                      <Text.Subheadline as="div">3</Text.Subheadline>
                     </Card>
                   </Constraints.Horizontal>
                 </Spacings.Stack>
                 <br />
                 <Spacings.Stack scale="l">
                   <Constraints.Horizontal min={13}>
-                    <Card constraint="xl" insetScale="l" theme="dark">
+                    <Card constraint="xl" insetScale="l" theme="light">
                       <Text.Subheadline
                         as="h4"
                         isBold={true}
-                        tone="information"
+                        
                       >
                         {'Break'}
                       </Text.Subheadline>
                       {/* make changes here */}
-                      <Text.Subheadline as="h3">2</Text.Subheadline>
+                      <Text.Subheadline as="div">2</Text.Subheadline>
                     </Card>
                   </Constraints.Horizontal>
                 </Spacings.Stack>
@@ -491,8 +491,8 @@ const DashboardDisplayForm = (props) => {
         <div style={{ float: 'right', textAlign: 'right' }}>
           <Spacings.Stack scale="l" alignItems="flexEnd">
             <Constraints.Horizontal max={6}>
-              <Card theme="dark" insetScale="l">
-                <Text.Subheadline as="h4" isBold={true} tone="information">
+              <Card theme="light" insetScale="l">
+                <Text.Subheadline as="h4" isBold={true} >
                   {'Time Tracker'}
                 </Text.Subheadline>
                 <br />
@@ -535,8 +535,8 @@ const DashboardDisplayForm = (props) => {
       <Spacings.Inline alignItems="stretch" justifyContent="space-between">
         <Constraints.Horizontal max={13}>
           <div className={styles.tickets_component}>
-            <Card constraint="xl" theme="dark" insetScale="l">
-              <Text.Subheadline as="h4" isBold={true} tone="positive">
+            <Card constraint="xl" theme="light" insetScale="l">
+              <Text.Subheadline as="h4" isBold={true} >
                 {'SLA Matrix'}
               </Text.Subheadline>
               <br />
@@ -569,7 +569,7 @@ const DashboardDisplayForm = (props) => {
               <Card constraint="xl">
                 <br />
                 <div>
-                  <Text.Subheadline as="h4" isBold={true} tone="positive">
+                  <Text.Subheadline as="h4" isBold={true} >
                     {'SLA Graph'}
                   </Text.Subheadline>
                   <br />
@@ -603,11 +603,11 @@ const DashboardDisplayForm = (props) => {
                       {'SLA Met (Overall) = '}
                       {slaMetPercentage + '%'}
                     </Text.Subheadline>
-                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                    <Text.Subheadline as="h5" isBold={true} >
                       {'SLA Not Met (Overall) = '}
                       {slaNotMetPercent + '%'}
                     </Text.Subheadline>
-                    <Text.Subheadline as="h5" isBold={true} tone="information">
+                    <Text.Subheadline as="h5" isBold={true} >
                       {'SLA (High Priority) = '}
                       {slaHighPercentage + '%'}
                     </Text.Subheadline>

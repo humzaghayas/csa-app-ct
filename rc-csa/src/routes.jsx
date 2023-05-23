@@ -21,6 +21,7 @@ import AtgAccount from './components/ATG-Poc/components/atg-account/atg-account'
 import ProductAccount from './components/Products/components/product-account/product-account';
 import ProductDetails from './components/Products/components/product-details';
 import { getPermission } from './utils';
+import KnowledgebaseAccount from './components/Knowledgebase-FAQ/components/knowledgebase-account/knowledgebase-account';
 import DashboardDisplay from './components/Dashboard/components/dashboard-details/dashboard';
 import Feedback from './components/Dashboard/components/feedback/feedback';
 import FeedbackSetup from './components/Dashboard/components/feedback/feedback-essential';

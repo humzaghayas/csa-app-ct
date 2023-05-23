@@ -44,6 +44,7 @@ const ticketSchema = new mongoose.Schema( {
     "createdBy": String,
     "assignedTo": String,
     "ticketData": TicketData,
-    "history": [History ]
+    "history": [History ],
+    "timeSpentOnTicket" : {type: Number, default: 0}
   });
 module.exports= ticketSchema;

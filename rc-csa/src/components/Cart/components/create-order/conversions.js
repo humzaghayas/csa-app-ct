@@ -32,7 +32,6 @@ export const docToFormValues = (
   shippingAddress,
   languages
 ) => ({
-  shippingMethodName: shippingAddress?.shippingMethodName ?? '--',
   streetNumber: shippingAddress?.streetNumber,
   streetName: shippingAddress?.streetName,
   postalCode: shippingAddress?.postalCode,
@@ -49,6 +48,24 @@ export const docToFormValues = (
   phone: shippingAddress?.phone,
   mobile: shippingAddress?.mobile,
 });
+
+export const addressInfo = (carts, languages) => ({
+  id: carts?.id,
+  version: carts?.version,
+  shippingMethod: {
+    value: carts?.shippingInfo?.shippingMethod?.id ?? '--',
+    label: carts?.shippingInfo?.shippingMethodName ?? '--',
+  },
+  //shippingMethod: carts?.shippingInfo?.shippingMethodName,
+});
+
+export const getShippingMethods = (shippingMethods, country) =>
+  shippingMethods?.map((shippingMethod) => {
+    return {
+      value: shippingMethod?.id,
+      label: shippingMethod?.name,
+    };
+  });
 
 export const formValuesToDoc = (formValues, carts) => ({
   cartId: formValues?.id,

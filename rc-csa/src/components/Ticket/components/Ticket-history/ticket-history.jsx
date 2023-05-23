@@ -19,7 +19,7 @@ import {
 import SearchSelectInput from '@commercetools-uikit/search-select-input';
 
 const columns = [
-  { key: 'id', label: 'Ticket Id' },
+  { key: 'ticketNumber', label: 'Ticket Number' },
   { key: 'operationDate', label: 'Ticket Raised' },
   { key: 'reason', label: 'Reason' },
   { key: 'Solution', label: 'Solution' },
@@ -41,20 +41,29 @@ const TicketHistory = (props) => {
     projectKey:context.project.key,
   }));
 
-  const [ticket, setTicket] = useState(null);
+  const [ticketHistory, setTicketHistory] = useState(null);
 
   const {getTicketById} = useGetTicketById();//();
  
   
   useEffect(async () => {
-    if(!ticket){
+    if(!ticketHistory){
       console.log('calling execute !');
       const t = await getTicketById(projectKey,match.params.id);
 
       console.log('ticket',t);
-      setTicket(t);
+
+      let tHistory = t?.history;
+
+      tHistory = tHistory.map(h => ({
+       ...h,
+       ticketNumber:t.ticketNumber,
+       operationDate:t.createdAt,
+       reason:t.category 
+      }));
+      setTicketHistory(tHistory);
     }
-  },[ticket]);
+  },[ticketHistory]);
 
   return (
     <Spacings.Stack scale="xl">
@@ -122,12 +131,12 @@ const TicketHistory = (props) => {
               cacheOptions={false}
             />
 
-            {ticket?.history ? (
+            {ticketHistory ? (
               <Spacings.Stack scale="l">
                 <DataTable
                   isCondensed
                   columns={columns}
-                  rows={ticket?.history}
+                  rows={ticketHistory}
                   // itemRenderer={(item, column) => itemRenderer(item, column)}
                   maxHeight={600}
                   // sortedBy={tableSorting.value.key}

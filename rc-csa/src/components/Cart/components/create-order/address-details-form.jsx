@@ -14,6 +14,7 @@ import { useHistory, useParams } from 'react-router-dom';
 //import { useEmployeeDetailsFetcher } from '../../../../hooks/use-employee-connector/use-employeee-graphql-connector';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import {
+    AsyncSelectInput,
     CheckboxInput,
     CreatableSelectField,
     PrimaryButton,
@@ -23,45 +24,36 @@ import {
 } from '@commercetools-frontend/ui-kit';
 //  import EmployeeAddressDetail from '../employee-address-details';
 //  import EmployeeAddAddress from '../employee-add-address';
-import { docToFormValues, docToFormValuess, formValuesToDoc, formValuesToDocc } from './conversions';
+import { docToFormValues, docToFormValuess, formValuesToDoc, formValuesToDocc, getShippingMethods, addressInfo } from './conversions';
 import { useCallback, useState } from 'react';
 import CartDiscounts from '../cart-view/cart-discounts';
-import { useFetchCartById } from '../../../../hooks/use-cart-connector/use-cart-connector';
+import { useFetchCartById, useFetchCartShippingMethods } from '../../../../hooks/use-cart-connector/use-cart-connector';
+import ShippingAddress from './shipping-address';
 import BillingAddress from './billing-address';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import CartShippingMethods from './cart-shipping-method';
 
-
-const getCountryOptions = Object.keys(COUNTRY).map((key) => ({
-    label: COUNTRY[key],
-    value: COUNTRY[key],
-}));
-const rows = [
-]
-const columns = [
-    { key: 'name', label: 'Discount Name' },
-    { key: 'value', label: 'Amount' },
-    { key: 'code', label: 'Discount Codes' },
-
-]
-
-const getStatesAvailable = [
-    { label: "All", value: "" },
-    { label: "California", value: "California" },
-    { label: "Texas", value: "Texas" },
-    { label: "Florida", value: "Florida" },
-]
 
 const AddressDetailsForm = (props) => {
     const intl = useIntl();
     const { push } = useHistory();
     const match = useRouteMatch();
-    const [addressId, setAddressId] = useState("cartAddress");
-    const [isBillingSameAsShipping, setIsBillingSameAsShipping] = useState(false);
-    //const [isBillingSameAsShipping]
+    const [isBillingSameAsShipping, setIsBillingSameAsShipping] = useState(true);
+
+
     const formik = useFormik({
         initialValues: props.initialValues,
         validate,
         enableReinitialize: true,
+        onSubmit: props.onSubmit,
     });
+
+    console.log(formik);
+    console.log('Props', props);
+    const { dataLocale, projectLanguages } = useApplicationContext((context) => ({
+        dataLocale: context.dataLocale ?? '',
+        projectLanguages: context.project?.languages ?? [],
+    }));
     let { cart } = useFetchCartById(match.params.id);
     const isQuoteRequest = props?.isQuoteRequest;
     const onSubmit = (e) => {
@@ -76,43 +68,77 @@ const AddressDetailsForm = (props) => {
         //   props.onSubmit(updateDataa);
         // }
     };
-    const onClickCheckBox = useCallback(
-        async (event) => {
-            console.log(event)
-        }
-    );
-
-    // const hadnleSubmit = (event) =>{
-    //     if(isBillingSameAsShipping){
-    //       props.onSubmitShipping(formik?.values)
-    //       props.onSubmitBilling( value)
-    //     }else{
-    //       props.onSubmitShipping( value)
-    //     }
-    // }
 
 
-    // const onSubmitt = (e) => {
-    //   const updateDataa = formValuesToDocc(formik?.values);
-    //   console.log("Update data", updateDataa);
-    //   props.onSubmitt(updateDataa);
-    // };
-    const [address, setAddress] = useState(formik?.values);
 
-
-    // console.log("Customer Addresses",props?.addresses);
-    // console.log("Address Id",addressId);
-    // console.log("Selected Address",address);
-    // console.log("formik values",formik.values);
-
-    return (
+    const formElements = (
         <form onSubmit={onSubmit}>
             <Spacings.Stack scale="xl">
+                <Spacings.Stack scale='l'>
+                    <CartShippingMethods initialValues={props?.initialValues} />
+                </Spacings.Stack>
+                <Spacings.Stack scale="l">
+                    <ShippingAddress initialValues={docToFormValues(cart?.shippingAddress, projectLanguages)}
+                    />
+                </Spacings.Stack>
+                <Spacings.Stack>
+                    <CheckboxInput
+                        //value="foo-radio-value"
+                        isDisabled={false}
+                        // value={isBillingSameAsShipping}
+                        isChecked={isBillingSameAsShipping}
+                        //onChange={formik.handleChange}
+                        onChange={(event) => {
+                            setIsBillingSameAsShipping((p) =>
+                                !p)
+                            //setIsBillingSameAsShipping(p);
+                            console.log(isBillingSameAsShipping, event)
 
+                        }}
+                    >
+                        Use this address as billing address
+                    </CheckboxInput>
+                </Spacings.Stack>
+
+                <Spacings.Stack scale="l">
+                    <BillingAddress isChecked={isBillingSameAsShipping} />
+
+                </Spacings.Stack>
+                <Spacings.Stack scale="s">
+                    <Spacings.Inline>
+
+                        {!isQuoteRequest &&
+                            <PrimaryButton
+                                label="Next"
+                                //onClick={onSubmit}
+                                onClick={() => push(`place-order`)}
+                                //onSubmit={onSubmit}
+                                isDisabled={false}
+                            />
+                        }
+                        {isQuoteRequest &&
+                            <PrimaryButton
+                                label="Next"
+                                //onClick={onSubmit}
+                                onClick={() => push(`place-quote-request`)}
+                                //onSubmit={onSubmit}
+                                isDisabled={false}
+                            />
+                        }
+                    </Spacings.Inline>
+                </Spacings.Stack>
             </Spacings.Stack>
 
         </form>
     );
+    return props.children({
+        formElements,
+        values: formik.values,
+        isDirty: formik.dirty,
+        isSubmitting: formik.isSubmitting,
+        submitForm: onSubmit,
+        handleReset: formik.handleReset,
+    });
 };
 AddressDetailsForm.displayName = 'AddressDetailsForm';
 AddressDetailsForm.propType = {
