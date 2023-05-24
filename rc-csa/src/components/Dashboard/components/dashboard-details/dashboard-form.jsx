@@ -263,7 +263,7 @@ const DashboardDisplayForm = (props) => {
                                   <IconButton
                                       icon={<UserLinearIcon />}
                                       label="A label text"
-                                      onClick={() =>  history.push(`/csa-project-4/csa-customer-tickets/feedback`)}/>                            
+                                      onClick={() =>  {history.push(`/csa-project-4/csa-customer-tickets/feedback`)}}/>                            
                                 <Text.Subheadline as="h2" >
                                   {'Feedback'}
                                 </Text.Subheadline>
