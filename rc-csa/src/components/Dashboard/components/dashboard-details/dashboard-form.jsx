@@ -9,6 +9,7 @@ import Header from './Header';
 import {
   Card,
   Constraints,
+  IconButton,
   PrimaryButton,
 } from '@commercetools-frontend/ui-kit';
 import { Switch, useHistory, useRouteMatch } from 'react-router-dom';
@@ -48,6 +49,7 @@ import {
 
 // import PropTypes from 'prop-types';
 import SelectInput from '@commercetools-uikit/select-input';
+import { UserFilledIcon, UserLinearIcon } from '@commercetools-uikit/icons';
 
 let rows = null;
 
@@ -111,14 +113,6 @@ const DashboardDisplayForm = (props) => {
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-
-  const handleStartDateChange = (date) => {
-    setStartDate(date);
-  };
-
-  const handleEndDateChange = (date) => {
-    setEndDate(date);
-  };
 
   // Export to excel
   const starttDate = moment(startDate).format('DD-MM-YYYY');
@@ -211,7 +205,10 @@ const DashboardDisplayForm = (props) => {
 
       <Spacings.Stack >
           <Spacings.Stack scale="xl" >
-                    <Card theme="light" insetScale="l" type="raised">
+
+              <Spacings.Inline alignItems="stretch" justifyContent="space-between" >
+                <Constraints.Horizontal >
+                  <Card theme="light" insetScale="l" type="raised">
                       <Text.Subheadline as="h4" isBold={true} >
                         {'Time Tracker'}
                       </Text.Subheadline>
@@ -248,6 +245,36 @@ const DashboardDisplayForm = (props) => {
                         )}
                       </div>
                     </Card>
+                  </Constraints.Horizontal>
+                    <Constraints.Horizontal max={7}>
+                      <Card constraint="xl" theme="light" insetScale="l">
+                      <Spacings.Inline alignItems="stretch"  >
+
+                                <IconButton
+                                      icon={<UserFilledIcon />}
+                                      label="A label text"
+                                      onClick={() => navigateToLink('https://dashboard.tawk.to/#/dashboard')}/>
+                                <Text.Subheadline as="h2" >
+                                  {'Chat'}
+                                </Text.Subheadline>                              
+                          </Spacings.Inline>
+                          <div style={{height: '12px'}}></div>
+                          <Spacings.Inline alignItems="stretch"  >
+                                  <IconButton
+                                      icon={<UserLinearIcon />}
+                                      label="A label text"
+                                      onClick={() =>  history.push(`/csa-project-4/csa-customer-tickets/feedback`)}/>                            
+                                <Text.Subheadline as="h2" >
+                                  {'Feedback'}
+                                </Text.Subheadline>
+
+                                      
+                            </Spacings.Inline>
+                      </Card>
+                    </Constraints.Horizontal>
+
+              </Spacings.Inline>
+                    
 
               <Constraints.Horizontal>
                 <div className={styles.tickets_component}>
@@ -371,6 +398,7 @@ const DashboardDisplayForm = (props) => {
                         style={{
                           display: 'block',
                           marginRight: '50px',
+                          marginBottom:'20px'
                         }}
                       >
                         <Text.Subheadline
@@ -380,16 +408,9 @@ const DashboardDisplayForm = (props) => {
                         >
                           {'From:'}
                         </Text.Subheadline>
-                        {/* <DatePicker
-                          selected={startDate}
-                          onChange={handleStartDateChange}
-                          selectsStart
-                          startDate={startDate}
-                          endDate={endDate}
-                          width='200px'
-                        /> */}
-                        <DateTimeInput label="Basic date picker" 
+                         <DateTimeInput label="Basic date picker" 
                           horizontalConstraint={13}
+                          timeZone='UTC'
                           value={startDate}
                           onChange={(e)=>{setStartDate(e.target.value)}}/>
                       </div>
@@ -397,6 +418,7 @@ const DashboardDisplayForm = (props) => {
                       style={{
                         display: 'block',
                         marginRight: '50px',
+                        marginBottom:'20px'
                       }}>
                         {/* <label>To:</label> */}
                         <Text.Subheadline
@@ -416,10 +438,11 @@ const DashboardDisplayForm = (props) => {
                         /> */}
                         <DateTimeInput label="Basic date picker" 
                           value={endDate}
+                          timeZone='UTC'
                           horizontalConstraint={13}
                           onChange={(e)=>{setEndDate(e.target.value)}}/>
                       </div>
-                      <div style={{ marginRight: '50px', marginBottom: '5px' }}>
+                      <div style={{ marginRight: '50px', marginBottom: '5px' ,marginBottom:'20px'}}>
                         <Text.Subheadline
                           as="h5"
                           isBold={true}
@@ -484,7 +507,7 @@ const DashboardDisplayForm = (props) => {
                         />
                       </div>
                     {/* </Card> */}
-                    <div style={{height: '215px'}}></div>
+                    <div style={{height: '155px'}}></div>
                 </Card>
                     
             {/* </div> */}
@@ -624,28 +647,6 @@ const DashboardDisplayForm = (props) => {
                   </Constraints.Horizontal>
             </Spacings.Inline>
       </Spacings.Stack>
-      <br />
-      <br />
-      <div>
-        <button
-          onClick={() =>
-            navigateToLink('https://dashboard.tawk.to/#/dashboard')
-          }
-        >
-          Chat
-        </button>
-      </div>
-      <br />
-      <br />
-      <div>
-        <button
-          onClick={() =>
-            history.push(`/csa-project-4/csa-customer-tickets/feedback`)
-          }
-        >
-          feedback
-        </button>
-      </div>
       <TawkTo />
     </Spacings.Stack>
   );
