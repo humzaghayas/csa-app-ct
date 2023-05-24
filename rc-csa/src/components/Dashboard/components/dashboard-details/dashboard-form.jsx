@@ -209,12 +209,48 @@ const DashboardDisplayForm = (props) => {
 
       <Spacings.Stack >
           <Spacings.Stack scale="xl" >
-              {/* <Card constraint="xl"> */}
+                    <Card theme="light" insetScale="l" type="raised">
+                      <Text.Subheadline as="h4" isBold={true} >
+                        {'Time Tracker'}
+                      </Text.Subheadline>
+                      <br />
+                      <div>
+                        {!isLoggedIn ? (
+                          <PrimaryButton
+                            label="Login"
+                            onClick={handleLoginClick}
+                            size="big"
+                            isToggled={true}
+                            // theme="info"
+                          />
+                        ) : (
+                          <>
+                            <Text.Subheadline as="h5" isBold={true} tone="primary">
+                              {'logged in at: '}
+                              {loginTime.toLocaleTimeString()}
+                            </Text.Subheadline>
+                            <Text.Subheadline as="h5" isBold={true} tone="primary">
+                              {'logged in for: '}
+                              {formatElapsedTime(elapsedTime)}
+                            </Text.Subheadline>
+
+                            <PrimaryButton
+                              label="Logout"
+                              onClick={handleLogoutClick}
+                              size="big"
+                              isToggled={true}
+                              tone="urgent"
+                              // theme="info"
+                            />
+                          </>
+                        )}
+                      </div>
+                    </Card>
 
               <Constraints.Horizontal>
                 <div className={styles.tickets_component}>
                   <Card constraint="xl" theme="light" insetScale="l">
-                    <Text.Subheadline as="h4" isBold={true} >
+                    <Text.Subheadline as="h2" isBold={true} >
                       {'Recent Tickets '}
                     </Text.Subheadline>
                     <br />
@@ -260,7 +296,7 @@ const DashboardDisplayForm = (props) => {
                     <Card constraint="xl">
                       <br />
                       <div>
-                        <Text.Subheadline as="h4" isBold={true} >
+                        <Text.Subheadline as="h2" isBold={true} >
                           {'Ticket details'}
                         </Text.Subheadline>
                         <br />
@@ -283,30 +319,29 @@ const DashboardDisplayForm = (props) => {
                             </Pie>
                           </PieChart>
                           <br />
-                          <Text.Subheadline as="h5" isBold={true} >
+                          <Text.Subheadline as="h2" >
                             {'Total tickets = '}
                             {totalTicket}
                           </Text.Subheadline>
-                          <Text.Subheadline as="h5" isBold={true} >
+                          <Text.Subheadline as="h2" >
                             {'Active tickets = '}
                             {activeTicket}
                           </Text.Subheadline>
                         </div>
-                        <br />
-                        <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                          <Text.Subheadline as="h5" isBold={true} >
+                        <div style={{ display: 'block', marginRight: '20px' }}>
+                          <Text.Subheadline as="h2" >
                             {'High Priority = '}
                             {highTickets}
                           </Text.Subheadline>
-                          <Text.Subheadline as="h5" isBold={true} >
+                          <Text.Subheadline as="h2" >
                             {'New Tickets = '}
                             {newTickets}
                           </Text.Subheadline>
-                          <Text.Subheadline as="h5" isBold={true} >
+                          <Text.Subheadline as="h2" >
                             {'Open = '}
                             {openTickets}
                           </Text.Subheadline>
-                          <Text.Subheadline as="h5" isBold={true} >
+                          <Text.Subheadline as="h2" >
                             {'In-progress = '}
                             {inprogTickets}
                           </Text.Subheadline>
@@ -318,8 +353,8 @@ const DashboardDisplayForm = (props) => {
               </div>
 
 
-            <Card >
-              <Text.Subheadline as="h4" isBold={true} >
+            <Card style={{width:'50%'}}>
+              <Text.Subheadline as="h2" isBold={true} >
                 {'Report'}
               </Text.Subheadline>
               <br />
@@ -447,214 +482,146 @@ const DashboardDisplayForm = (props) => {
                         />
                       </div>
                     {/* </Card> */}
-                    <div style={{height: '180px'}}></div>
+                    <div style={{height: '215px'}}></div>
                 </Card>
                     
             {/* </div> */}
         </Spacings.Inline>
 
-        <Spacings.Stack scale="xl" >
+        </Spacings.Stack>
+        <Spacings.Stack>
+        <Spacings.Stack scale="xl" justifyContent="space-between">
           <Constraints.Horizontal constraint="l" >
+            
             <Card constraint="xl">
-              <Text.Subheadline as="h4" isBold={true} >
+              <Text.Subheadline as="h2" isBold={true} >
                 {'Agent details'}
               </Text.Subheadline>
               <br />
-              <Spacings.Inline>
-                <Spacings.Stack scale="l">
-                  <Constraints.Horizontal>
+              <Spacings.Inline justifyContent='center'>
+  
                     <Card constraint="xl" theme="light" insetScale="l">
                       <Text.Subheadline
-                        as="h4"
-                        isBold={true}
-                        // tone=""
-                      >
+                        as="h2">
                         {'Total Agents'}
                       </Text.Subheadline>
                       <Text.Subheadline as="div">50</Text.Subheadline>
                     </Card>
-                  </Constraints.Horizontal>
-                </Spacings.Stack>
-                <Spacings.Stack scale="l">
-                  <Constraints.Horizontal>
+
                     <Card constraint="xl" theme="light" insetScale="l">
                       <Text.Subheadline
-                        as="h4"
-                        isBold={true}
-                        
-                      >
+                        as="h2" >
                         {'Present     '}
                       </Text.Subheadline>
                       {/* make changes here */}
                       <Text.Subheadline as="div">47</Text.Subheadline>
                     </Card>
-                  </Constraints.Horizontal>
-                </Spacings.Stack>
-                <Spacings.Stack scale="l">
-                  <Constraints.Horizontal>
                     <Card constraint="xl" theme="light" insetScale="l">
                       <Text.Subheadline
-                        as="h4"
-                        isBold={true}
-                        
-                      >
+                        as="h2">
                         {'On Leave'}
                       </Text.Subheadline>
                       {/* make changes here */}
                       <Text.Subheadline as="div">3</Text.Subheadline>
                     </Card>
-                  </Constraints.Horizontal>
-                </Spacings.Stack>
-                <br />
-                <Spacings.Stack scale="l">
-                  <Constraints.Horizontal min={13}>
                     <Card constraint="xl" insetScale="l" theme="light">
                       <Text.Subheadline
-                        as="h4"
-                        isBold={true}
-                        
-                      >
+                        as="h2">
                         {'Break'}
                       </Text.Subheadline>
                       {/* make changes here */}
                       <Text.Subheadline as="div">2</Text.Subheadline>
                     </Card>
-                  </Constraints.Horizontal>
-                </Spacings.Stack>
               </Spacings.Inline>
             </Card>
           </Constraints.Horizontal>
         </Spacings.Stack>
-        <div style={{ float: 'right', textAlign: 'right' }}>
-          <Spacings.Stack scale="l" alignItems="flexEnd">
-            <Constraints.Horizontal max={6}>
-              <Card theme="light" insetScale="l">
-                <Text.Subheadline as="h4" isBold={true} >
-                  {'Time Tracker'}
-                </Text.Subheadline>
-                <br />
-                <div>
-                  {!isLoggedIn ? (
-                    <PrimaryButton
-                      label="Login"
-                      onClick={handleLoginClick}
-                      size="big"
-                      isToggled={true}
-                      // theme="info"
-                    />
-                  ) : (
-                    <>
-                      <Text.Subheadline as="h5" isBold={true} tone="primary">
-                        {'logged in at: '}
-                        {loginTime.toLocaleTimeString()}
-                      </Text.Subheadline>
-                      <Text.Subheadline as="h5" isBold={true} tone="primary">
-                        {'logged in for: '}
-                        {formatElapsedTime(elapsedTime)}
-                      </Text.Subheadline>
 
-                      <PrimaryButton
-                        label="Logout"
-                        onClick={handleLogoutClick}
-                        size="big"
-                        isToggled={true}
-                        tone="urgent"
-                        // theme="info"
-                      />
-                    </>
-                  )}
-                </div>
-              </Card>
-            </Constraints.Horizontal>
-          </Spacings.Stack>
-        </div>
       </Spacings.Stack>
-      <Spacings.Inline alignItems="stretch" justifyContent="space-between">
-        <Constraints.Horizontal max={13}>
-          <div className={styles.tickets_component}>
-            <Card constraint="xl" theme="light" insetScale="l">
-              <Text.Subheadline as="h4" isBold={true} >
-                {'SLA Matrix'}
-              </Text.Subheadline>
-              <br />
-              {rows ? (
-                <Spacings.Stack scale="l">
-                  <DataTable
-                    isCondensed
-                    columns={columnsSla}
-                    rows={rowsSla} // limit to first 5 rows
-                    maxHeight={300}
-                    // onRowClick={(row) =>
-                    //   push(`ticket-edit/${row.id}/tickets-general`)
-                    // }
-                  />
-                  <Switch>
-                    <SuspendedRoute path={`${match.path}/:id`}>
-                      <TicketAccount onClose={() => push(`${match.url}`)} />
-                    </SuspendedRoute>
-                  </Switch>
-                </Spacings.Stack>
-              ) : (
-                <p>Loading...</p>
-              )}
-            </Card>
-          </div>
-        </Constraints.Horizontal>
-        <div className={styles.ticdetails}>
-          <Spacings.Stack scale="xl" alignItems="flexEnd">
-            <Constraints.Horizontal constraint="l" max={8}>
-              <Card constraint="xl">
-                <br />
-                <div>
-                  <Text.Subheadline as="h4" isBold={true} >
-                    {'SLA Graph'}
+      <Spacings.Stack scale="xl" justifyContent="space-between">
+
+          <Spacings.Inline alignItems="stretch" justifyContent="space-between" >
+            <Constraints.Horizontal max={30}>
+                <Card constraint="xl" theme="light" insetScale="l">
+                  <Text.Subheadline as="h2" isBold={true} >
+                    {'SLA Matrix'}
                   </Text.Subheadline>
                   <br />
-                  <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <PieChart width={200} height={200}>
-                      <Pie
-                        data={dataSla}
-                        dataKey="tickets"
-                        nameKey="name"
-                        outerRadius={100}
-                      >
-                        {dataSla?.map((entry, index) => (
-                          <>
-                            <Cell key={`cell-${index}`} fill={entry.fill} />
-                            <Label
-                              key={`label-${index}`}
-                              position="outside"
-                              offset={10}
-                            >
-                              {entry.name}
-                            </Label>
-                          </>
-                        ))}
-                      </Pie>
-                    </PieChart>
+                  {rows ? (
+                    <Spacings.Stack scale="l">
+                      <DataTable
+                        isCondensed
+                        columns={columnsSla}
+                        rows={rowsSla} // limit to first 5 rows
+                        maxHeight={300}
+                        // onRowClick={(row) =>
+                        //   push(`ticket-edit/${row.id}/tickets-general`)
+                        // }
+                      />
+                      <Switch>
+                        <SuspendedRoute path={`${match.path}/:id`}>
+                          <TicketAccount onClose={() => push(`${match.url}`)} />
+                        </SuspendedRoute>
+                      </Switch>
+                    </Spacings.Stack>
+                  ) : (
+                    <p>Loading...</p>
+                  )}
+                </Card>
+              </Constraints.Horizontal>
+              <Constraints.Horizontal max={7}>
+                  <Card constraint="xl" >
                     <br />
-                  </div>
-                  <br />
-                  <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                    <Text.Subheadline as="h5" isBold={true} tone="primary">
-                      {'SLA Met (Overall) = '}
-                      {slaMetPercentage + '%'}
-                    </Text.Subheadline>
-                    <Text.Subheadline as="h5" isBold={true} >
-                      {'SLA Not Met (Overall) = '}
-                      {slaNotMetPercent + '%'}
-                    </Text.Subheadline>
-                    <Text.Subheadline as="h5" isBold={true} >
-                      {'SLA (High Priority) = '}
-                      {slaHighPercentage + '%'}
-                    </Text.Subheadline>
-                  </div>
-                </div>
-              </Card>
-            </Constraints.Horizontal>
-          </Spacings.Stack>
-        </div>
-      </Spacings.Inline>
+                    <div>
+                      <Text.Subheadline as="h4" isBold={true} >
+                        {'SLA Graph'}
+                      </Text.Subheadline>
+                      <br />
+                      <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                        <PieChart width={200} height={200}>
+                          <Pie
+                            data={dataSla}
+                            dataKey="tickets"
+                            nameKey="name"
+                            outerRadius={100}
+                          >
+                            {dataSla?.map((entry, index) => (
+                              <>
+                                <Cell key={`cell-${index}`} fill={entry.fill} />
+                                <Label
+                                  key={`label-${index}`}
+                                  position="outside"
+                                  offset={10}
+                                >
+                                  {entry.name}
+                                </Label>
+                              </>
+                            ))}
+                          </Pie>
+                        </PieChart>
+                        <br />
+                      </div>
+                      <br />
+                      <div style={{ display: 'inline-block', marginRight: '20px' }}>
+                        <Text.Subheadline as="h5" isBold={true} tone="primary">
+                          {'SLA Met (Overall) = '}
+                          {slaMetPercentage + '%'}
+                        </Text.Subheadline>
+                        <Text.Subheadline as="h5" isBold={true} >
+                          {'SLA Not Met (Overall) = '}
+                          {slaNotMetPercent + '%'}
+                        </Text.Subheadline>
+                        <Text.Subheadline as="h5" isBold={true} >
+                          {'SLA (High Priority) = '}
+                          {slaHighPercentage + '%'}
+                        </Text.Subheadline>
+                      </div>
+                    </div>
+                    <div style={{height: '20px'}}></div>
+                  </Card>
+                  </Constraints.Horizontal>
+            </Spacings.Inline>
+      </Spacings.Stack>
       <br />
       <br />
       <div>
