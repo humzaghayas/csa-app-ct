@@ -200,6 +200,8 @@ const DashboardDisplayForm = (props) => {
     setTimerId(null);
   };
 
+  const history = useHistory();
+
   const formElements = (
     <Spacings.Stack scale="xxl">
       <div className={styles.header}>
@@ -635,6 +637,15 @@ const DashboardDisplayForm = (props) => {
       </div>
       <br />
       <br />
+      <div>
+        <button
+          onClick={() =>
+            history.push(`/csa-project-4/csa-customer-tickets/feedback`)
+          }
+        >
+          feedback
+        </button>
+      </div>
       <TawkTo />
     </Spacings.Stack>
   );

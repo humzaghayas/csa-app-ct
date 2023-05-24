@@ -44,6 +44,12 @@ import {
   useUserFetcher,
 } from '../../../../hooks/use-register-user-connector';
 import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
+import {
+  useCreateOrUpdateFeedback,
+  useFetchFeedbackList,
+} from '../../../../hooks/use-register-user-connector/use-service-connector';
+import Feedback from '../feedback/feedback';
+import { getFeedbackRows } from '../feedback/function';
 
 const DashboardDisplay = (props) => {
   const intl = useIntl();
@@ -57,7 +63,9 @@ const DashboardDisplay = (props) => {
   });
   const { page, perPage } = usePaginationState();
   const [rowsTick, setRows] = useState(null);
+  const [feedback, setFeedback] = useState(null);
   const [resData, setResData] = useState(null);
+  const [feedbackRaw, setFeedRaw] = useState(null);
   const { user } = useApplicationContext((context) => ({
     user: context.user ?? '',
   }));
@@ -67,6 +75,8 @@ const DashboardDisplay = (props) => {
   const { foundUser } = useUserFetcher(user.email);
   const { execute } = useCreateEntry(user.email);
   const { execute: fetchTickets } = useFetchTicketsList();
+  const { execute: fetchFeedback } = useFetchFeedbackList();
+  const { execute: createFeedback } = useCreateOrUpdateFeedback();
 
   useEffect(async () => {
     if (canManage && foundUser == false) {
@@ -85,6 +95,26 @@ const DashboardDisplay = (props) => {
       setResData(data);
     }
   }, [foundUser]);
+
+  useEffect(async () => {
+    if (canManage && foundUser == false) {
+      await execute();
+    }
+
+    if (!feedback) {
+      const data = await fetchFeedback(projectKey, {
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        // sort: { lastModifiedAt: -1 },
+      });
+
+      const r = await getFeedbackRows(data);
+      setFeedback(r);
+      setFeedRaw(data);
+    }
+  }, [foundUser]);
+  // console.log('Feedback', feedback);
+  // console.log('Decider', feedbackRaw);
 
   const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
   const orderData = useOrdersFetcher({
@@ -111,6 +141,31 @@ const DashboardDisplay = (props) => {
   });
 
   const handleSubmit = useCallback();
+  const handleSubmitFeedback = useCallback(
+    async (formValues) => {
+      let data = {};
+      // formValues.createdBy = user.email;
+      // formValues.id='a';
+      // formValues.key='a';
+
+      // if(!formValues.assignedTo){
+      //   formValues.assignedTo = user.email;
+      // }
+
+      data = formValuesToDoc(formValues);
+
+      console.log('data');
+      console.log(data);
+      let t = await createFeedback(
+        projectKey,
+        data,
+        CONSTANTS.CREATE_OPERATION
+      );
+
+      console.log(t);
+    },
+    [createFeedback]
+  );
 
   return (
     <DashboardDisplayForm
@@ -153,6 +208,18 @@ const DashboardDisplay = (props) => {
         );
       }}
     </DashboardDisplayForm>
+
+    // (
+    //   <Feedback
+    //     initialValues={docToFormValues(feedback, null, projectLanguages)}
+    //     feedback={feedback}
+    //     onSubmit={handleSubmitFeedback}
+    //   >
+    //     {(formProps) => {
+    //       return <React.Fragment>{formProps.formElements}</React.Fragment>;
+    //     }}
+    //   </Feedback>
+    // )
   );
 };
 DashboardDisplay.displayName = 'DashboardDisplay';

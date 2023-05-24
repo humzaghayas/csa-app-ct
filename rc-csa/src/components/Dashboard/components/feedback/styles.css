@@ -1,0 +1,13 @@
+.feedback-form .star-rating a {
+    font-size: 24px;
+    color: #ccc;
+    text-decoration: none;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .feedback-form .star-rating a:hover,
+  .feedback-form .star-rating a.active {
+    color: #ffd700;
+    text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700, 0 0 30px #ffd700;
+  }
+  

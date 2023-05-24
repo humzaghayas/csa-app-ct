@@ -1,24 +1,12 @@
 import LocalizedTextInput from '@commercetools-uikit/localized-text-input';
 import { transformLocalizedFieldToLocalizedString } from '@commercetools-frontend/l10n';
 import { TextInput } from '@commercetools-frontend/ui-kit';
-import { CART_STATE } from './constants';
+// import { CART_STATE } from './constants';
 
 export const docToFormValues = (employee, languages) => ({
   id: employee?.id ?? '',
-  salutation: employee?.salutation ?? '',
-  optionSelect: employee?.optionSelect ?? '',
-  title: employee?.title ?? '',
-  firstName: employee?.firstName ?? '',
-  middleName: employee?.middleName ?? '',
-  lastName: employee?.lastName ?? '',
-  email: employee?.email ?? '',
-  dateOfBirth: employee?.dateOfBirth ?? '',
-  employeeNumber: employee?.employeeNumber ?? '',
-  externalId: employee?.externalId ?? '',
-  customerGroup: employee?.customerGroup ?? '',
-  roles: employee?.roles ?? '',
-  password: employee?.password ?? '',
-  confirmedPassword: employee?.confirmedPassword ?? '',
+  rating: employee?.rating ?? '',
+  feedbackDes: employee?.feedbackDes ?? '',
 });
 
 export function getOrderData(orderPaginationResult) {
@@ -52,10 +40,8 @@ export function getOrderData(orderPaginationResult) {
 }
 
 export const formValuesToDoc = (formValues) => ({
-  rating: !TextInput.isEmpty(formValues.rating) ? formValues.rating : '--',
-  feedbackDes: !TextInput.isEmpty(formValues.feedbackDes)
-    ? formValues.feedbackDes
-    : '--',
+  rating: formValues.rating ? formValues.rating : '--',
+  feedbackDes: formValues.feedbackDes ? formValues.feedbackDes : '--',
   // firstName: !TextInput.isEmpty(formValues.firstName)
   //   ? formValues.firstName
   //   : '--',
