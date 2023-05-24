@@ -49,7 +49,7 @@ const TicketDetailsP = (props) => {
     }
   }, [ticket]);
 
-  const { execute: execSendEmail } = useSendOrderMail();
+  // const { execute: execSendEmail } = useSendOrderMail();
 
   const { execute } = useCreateOrUpdateTicket();
   const handleSubmit = useCallback(
@@ -60,7 +60,6 @@ const TicketDetailsP = (props) => {
       const opr = formValues?.operation ?? '';
       let t = await execute(projectKey, data);
 
-      let t = await execute(projectKey,data);
       console.log(t);
       if (ticket.status === 'inprogress' && data.status === 'done') {
         const ticketEmail = await execSendEmail(
