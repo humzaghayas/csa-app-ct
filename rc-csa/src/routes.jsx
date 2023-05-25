@@ -23,6 +23,8 @@ import ProductDetails from './components/Products/components/product-details';
 import { getPermission } from './utils';
 import KnowledgebaseAccount from './components/Knowledgebase-FAQ/components/knowledgebase-account/knowledgebase-account';
 import DashboardDisplay from './components/Dashboard/components/dashboard-details/dashboard';
+import Feedback from './components/Dashboard/components/feedback/feedback';
+import FeedbackSetup from './components/Dashboard/components/feedback/feedback-essential';
 
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
@@ -42,10 +44,9 @@ const ApplicationRoutes = () => {
   const canManageCustomerOrders = getPermission('ManageCustomerOrders');
   const canViewProductSearch = getPermission('ViewProductSearch');
 
-  console.log('canManageTickets', PERMISSIONS)
+  console.log('canManageTickets', PERMISSIONS);
   console.log('canManageCustomer', canViewCustomer360);
   console.log('canManageCustomerOrders', canManageCustomerOrders);
-
 
   /**
    * When using routes, there is a good chance that you might want to
@@ -61,7 +62,6 @@ const ApplicationRoutes = () => {
   return (
     <Spacings.Inset scale="l">
       <Switch>
-
         <Route path={`${match.path}/Tickets`}>
           {canViewTickets ? (
             <Tickets linkToWelcome={match.url} />
@@ -153,13 +153,17 @@ const ApplicationRoutes = () => {
           <AtgAccount linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/dashboard`}>
-          <DashboardDisplay linkToWelcome={match.url} />
-        </Route>
-        <Route path={`${match.path}/Knowledgebase`}>
-          <KnowledgebaseAccount linkToWelcome={match.url} />
-        </Route>
+            <DashboardDisplay linkToWelcome={match.url} />
+          </Route>
         <Route path={`${match.path}/`}>
           <DashboardDisplay linkToWelcome={match.url} />
+        </Route>
+        <Route path={`${match.path}/feedback`}>
+          {canViewDashboard ? (
+            <FeedbackSetup linkToWelcome={match.url} />
+          ) : (
+            <PageUnauthorized />
+          )}
         </Route>
       </Switch>
     </Spacings.Inset>
