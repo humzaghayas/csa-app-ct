@@ -50,6 +50,7 @@ import {
 // import PropTypes from 'prop-types';
 import SelectInput from '@commercetools-uikit/select-input';
 import { UserFilledIcon, UserLinearIcon } from '@commercetools-uikit/icons';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 let rows = null;
 
@@ -104,6 +105,12 @@ const DashboardDisplayForm = (props) => {
   //Assigning row values
   rows = ticketData;
   rowsSla = getSlaRow(ticketData);
+
+  const { entryPointUriPath, projectKey } = useApplicationContext(
+    (context) => ({
+      entryPointUriPath: context.environment.entryPointUriPath,
+      projectKey: context.project.key
+    }));
 
   //SLA Details
   const slaPercentage = getSlaPercentage(ticketData);
@@ -263,7 +270,7 @@ const DashboardDisplayForm = (props) => {
                                   <IconButton
                                       icon={<UserLinearIcon />}
                                       label="A label text"
-                                      onClick={() =>  {history.push(`/csa-project-4/csa-customer-tickets/feedback`)}}/>                            
+                                      onClick={() =>  {history.push(`/${projectKey}/${entryPointUriPath}/feedback`)}}/>                            
                                 <Text.Subheadline as="h2" >
                                   {'Feedback'}
                                 </Text.Subheadline>
