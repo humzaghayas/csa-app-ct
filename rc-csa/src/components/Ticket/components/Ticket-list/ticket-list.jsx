@@ -126,7 +126,7 @@ const Tickets = (props) => {
     console.log('inside hook !');
   }, [foundUser]);
 
-  const applyFiltersOnTickets =async({option,text,sortColumn}) =>{
+  const applyFiltersOnTickets =async({option,text,sortColumn,setRowsVar}) =>{
     console.log("Apply filter on tickets",option,text,sortColumn);
     let vars = { 
       limit: perPage.value,
@@ -163,7 +163,12 @@ const Tickets = (props) => {
     const data = await fetchTickets( projectKey,vars);
 
     const r = await getTicketRows(data);
-    setRows(r);
+
+    if(setRowsVar){
+      setRowsVar(r)
+    }else{
+      setRows(r);
+    }
   }
 
   return (
@@ -268,7 +273,8 @@ const Tickets = (props) => {
               applyFiltersOnTickets({
                 ...selectTextInput,
                 sortColumn:columnKey,
-                sortDir:sortDirection
+                sortDir:sortDirection,
+                setRowsVar:setRows
               }
                 )
             }}

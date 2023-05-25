@@ -53,8 +53,8 @@ const columns = [
   //{ key: 'key', label: 'Cart Key' },
   { key: 'cart_ordernumber', label: 'Order Number' },
   { key: 'customer', label: 'Customer' },
-  { key: 'totalPrice', label: 'Cart Total', isSortable:true },
-  { key: 'noOforderItems', label: 'No.of order Items', isSortable:true },
+  { key: 'totalPrice', label: 'Cart Total'},
+  { key: 'noOforderItems', label: 'No.of order Items' },
   { key: 'totalItems', label: 'Total Items' },
   { key: 'cartState', label: 'Cart Status',isSortable:true },
   { key: 'createdAt', label: 'Created',isSortable:true },
@@ -66,9 +66,9 @@ const Cart = (props) => {
   const match = useRouteMatch();
   const { push } = useHistory();
   const { page, perPage } = usePaginationState();
-  const tableSorting = useDataTableSortingState({ key: 'lastModifiedAt', carts: 'desc' });
+  const tableSorting = { key: 'id', order: 'asc' };
 
-  const { cartPaginatedResult, data, error, loading } = useCartsFetcher({
+  const { cartPaginatedResult, data, error, loading, refetch } = useCartsFetcher({
     // data,
     page,
     perPage,
@@ -93,6 +93,28 @@ const Cart = (props) => {
             columns={columns}
             rows={getCartRows(cartPaginatedResult)}
             onRowClick={(row) => push(`cart-edit/${row.id}/cart-general`)}
+            onSortChange={ async (columnKey,sortDirection)=>{
+
+              let ind = columns.findIndex(c => c.key ==columnKey );
+
+              console.log('ind',ind);
+              console.log('ind',columns);
+              if(!columns[ind].sortDir || columns[ind].sortDir == 'desc'){
+                columns[ind].sortDir = 'asc'
+              }else{
+                columns[ind].sortDir = 'desc'
+              }
+
+              await refetch(
+                  {
+                    limit: perPage.value,
+                    offset: (page.value-1)*perPage.value,
+                    where:'version>0',
+                    sort: [`${columnKey} ${columns[ind].sortDir}`],
+                  });
+                  // setOrders(getOrderRows(ordersPaginatedResult));
+            }
+          }
           />
           <Pagination
             page={page.value}

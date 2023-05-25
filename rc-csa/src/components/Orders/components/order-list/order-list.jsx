@@ -40,18 +40,17 @@ import { getOrderIds, orderSearchOptions, queryBuilderHelper } from './helper';
 import DataTableManagerCustom from '../../../Common/data-table-custom-component';
 
 
-const columns = [
-  { key: 'orderNumber', label: 'Order Number', isSortable:true },
+let columns = [
+  { key: 'orderNumber', label: 'Order Number', isSortable:true, mapping:'orderNumber' },
   { key: 'customer', label: 'Customer' },
-  { key: 'totalPrice', label: 'Order Total', isSortable:true },
-  { key: 'noOforderItems', label: 'No.of order Items', isSortable:true },
-  { key: 'totalItems', label: 'Total Items', isSortable:true },
+  { key: 'totalPrice', label: 'Order Total'},
+  { key: 'noOforderItems', label: 'No.of order Items'},
+  { key: 'totalItems', label: 'Total Items'},
   { key: 'orderState', label: 'Order Status', isSortable:true },
-  { key: 'shipmentStatus', label: 'Shipment Status', isSortable:true },
-  { key: 'paymentStatus', label: 'Payment Status', isSortable:true },
+  { key: 'shipmentStatus', label: 'Shipment Status' },
+  { key: 'paymentStatus', label: 'Payment Status' },
   { key: 'createdAt', label: 'Created', isSortable:true },
   { key: 'lastModifiedAt', label: 'Modified',isSortable:true },
-  //{ key: 'lastModifiedBy', label: 'Modified By' },
   { key: 'duplicate', label: 'Duplicate', shouldIgnoreRowClick: true }
 ];
 
@@ -65,8 +64,8 @@ const Orders = (props) => {
   const { push } = useHistory();
   const { executeReplicateOrder } = useReplicateOrderById();
   const { page, perPage } = usePaginationState();
-  const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
-  const { ordersPaginatedResult, error, loading } = useOrdersFetcher({
+  const tableSorting = { key: 'id', order: 'asc' };
+  const { ordersPaginatedResult, error, loading ,refetch} = useOrdersFetcher({
     page,
     perPage,
     tableSorting,
@@ -206,6 +205,28 @@ const Orders = (props) => {
             rows={orders}
             itemRenderer={itemRenderer}
             onRowClick={(row) => {push(`order-edit/${row.id}/orders-general`)}}
+            onSortChange={ async (columnKey,sortDirection)=>{
+
+              let ind = columns.findIndex(c => c.key ==columnKey );
+
+              console.log('ind',ind);
+              console.log('ind',columns);
+              if(!columns[ind].sortDir || columns[ind].sortDir == 'desc'){
+                columns[ind].sortDir = 'asc'
+              }else{
+                columns[ind].sortDir = 'desc'
+              }
+
+              await refetch(
+                  {
+                    limit: perPage.value,
+                    offset: (page.value-1)*perPage.value,
+                    where:'version>0',
+                    sort: [`${columnKey} ${columns[ind].sortDir}`],
+                  });
+                  setOrders(getOrderRows(ordersPaginatedResult));
+            }
+          }
           />
           <Pagination
             page={page.value}
