@@ -155,15 +155,11 @@ const ApplicationRoutes = () => {
         <Route path={`${match.path}/dashboard`}>
             <DashboardDisplay linkToWelcome={match.url} />
           </Route>
+        <Route path={`${match.path}/feedback`}>
+            <FeedbackSetup linkToWelcome={match.url} />
+        </Route>
         <Route path={`${match.path}/`}>
           <DashboardDisplay linkToWelcome={match.url} />
-        </Route>
-        <Route path={`${match.path}/feedback`}>
-          {canViewDashboard ? (
-            <FeedbackSetup linkToWelcome={match.url} />
-          ) : (
-            <PageUnauthorized />
-          )}
         </Route>
       </Switch>
     </Spacings.Inset>
