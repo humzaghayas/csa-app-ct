@@ -25,7 +25,7 @@ import {
 } from '../../helpers';
 
 export const useCartsFetcher = ({ page, perPage, tableSorting }) => {
-  const { data, error, loading } = useMcQuery(
+  const { data, error, loading, refetch } = useMcQuery(
     gql`
       ${FETCH_CARTS}
     `,
@@ -35,7 +35,7 @@ export const useCartsFetcher = ({ page, perPage, tableSorting }) => {
 
         limit: perPage.value,
         offset: (page.value - 1) * perPage.value,
-        sort: ['createdAt desc'],
+        sort: [`${tableSorting.key} ${tableSorting.order}`],
       },
       context: {
         target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
@@ -47,6 +47,7 @@ export const useCartsFetcher = ({ page, perPage, tableSorting }) => {
     cartPaginatedResult: data?.carts,
     error,
     loading,
+    refetch
   };
 };
 

@@ -49,6 +49,7 @@ import { useApplicationContext } from '@commercetools-frontend/application-shell
 import { SecondaryIconButton, } from '@commercetools-frontend/ui-kit';
 import Grid from '@commercetools-uikit/grid';
 import SelectableSearchInput from '@commercetools-uikit/selectable-search-input';
+import DataTableManagerCustom from '../../../Common/data-table-custom-component';
 
 
 
@@ -125,13 +126,8 @@ const Tickets = (props) => {
     console.log('inside hook !');
   }, [foundUser]);
 
-  const {
-    sortedBy,
-    sortDirection,
-  } = useSorting(rows);
-
-  const applyFiltersOnTickets =async({option,text,sortColumn}) =>{
-
+  const applyFiltersOnTickets =async({option,text,sortColumn,setRowsVar}) =>{
+    console.log("Apply filter on tickets",option,text,sortColumn);
     let vars = { 
       limit: perPage.value,
       offset: (page.value - 1) * perPage.value,
@@ -163,80 +159,17 @@ const Tickets = (props) => {
     if(text){
       vars.filter ={[option]:text}
     }
-    // else{
-    //   vars.where ="version> 0";
-    // }
+    
     const data = await fetchTickets( projectKey,vars);
 
     const r = await getTicketRows(data);
-    setRows(r);
+
+    if(setRowsVar){
+      setRowsVar(r)
+    }else{
+      setRows(r);
+    }
   }
-
-  const initialVisibleColumns = columns;
-  const initialHiddenColumns = []
-
-  const initialColumnsState = [...initialVisibleColumns, ...initialHiddenColumns];
-
-  const [tableData, setTableData] = useState({
-    columns: initialColumnsState,
-    visibleColumnKeys: initialVisibleColumns.map(({ key }) => key),
-  });
-
-  const [isCondensed, setIsCondensed] = useState(false);
-  const [isWrappingText, setIsWrappingText] = useState(false);
-
-  const tableSettingsChangeHandler = {
-    [UPDATE_ACTIONS.COLUMNS_UPDATE]: (visibleColumnKeys) =>{
-
-      console.log('visibleColumnKeys',visibleColumnKeys);
-      console.log('visibleColumnKeys',columns.filter(c => visibleColumnKeys.includes(c.key)));
-      setTableData({
-        ...tableData,
-        visibleColumnKeys,
- 
-      });
-    },
-    [UPDATE_ACTIONS.IS_TABLE_CONDENSED_UPDATE]: setIsCondensed,
-    [UPDATE_ACTIONS.IS_TABLE_WRAPPING_TEXT_UPDATE]: setIsWrappingText,
-  };
-
-  const displaySettings = {
-    disableDisplaySettings:  false,
-    isCondensed,
-    isWrappingText,
-  };
-
-  const mappedColumns = tableData.columns.reduce(
-    (columns, column) => ({
-      ...columns,
-      [column.key]: column,
-    }),
-    {}
-  );
-
-  const visibleColumns = tableData.visibleColumnKeys.map(
-    (columnKey) => mappedColumns[columnKey]
-  );
-
-  const columnManager = {
-   areHiddenColumnsSearchable: true,
-    searchHiddenColumns: (searchTerm) => {
-      setTableData({
-        ...tableData,
-        columns: initialColumnsState.filter(
-            (column) =>
-              tableData.visibleColumnKeys.includes(column.key) ||
-              column.label
-                .toLocaleLowerCase()
-                .includes(searchTerm.toLocaleLowerCase())
-          ),
-      });
-    },
-    disableColumnManager: false,
-    visibleColumnKeys: tableData.visibleColumnKeys,
-    hideableColumns: tableData.columns,
-  };
-
 
   return (
     <Spacings.Stack scale="xl">
@@ -332,38 +265,21 @@ const Tickets = (props) => {
       {rows ? 
         <Spacings.Stack scale="l">
          
-         <DataTableManager 
-            columns={visibleColumns}
-            // columnManager={{disableColumnManager:false,
-            //       visibleColumnKeys:tableData.visibleColumnKeys,
-            //       hideableColumns:columns}}  
-            // displaySettings={{disableDisplaySettings:false}}
-
-            columnManager={columnManager}
-            displaySettings={displaySettings}
-            onSettingsChange={(action, nextValue) => {
-                tableSettingsChangeHandler[action](nextValue);
+         <DataTableManagerCustom
+            rows={rows}
+            columns={columns}
+            onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
+            onSortChange={(columnKey,sortDirection) => { 
+              applyFiltersOnTickets({
+                ...selectTextInput,
+                sortColumn:columnKey,
+                sortDir:sortDirection,
+                setRowsVar:setRows
+              }
+                )
             }}
-            >
-            <DataTable
-              // isCondensed
-              
-              rows={rows}
-              // itemRenderer={(item, column) => itemRenderer(item, column)}
-              // maxHeight={600}
-              sortedBy={sortedBy}
-              sortDirection={sortDirection}
-              onSortChange={(columnKey,sortDirection) => { 
-                applyFiltersOnTickets({
-                  ...selectTextInput,
-                  sortColumn:columnKey,
-                  sortDir:sortDirection
-                }
-                  )
-              }}
-              onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
-            />
-          </DataTableManager>
+         />
+
           <Pagination
             page={page.value}
             onPageChange={()=>{applyFiltersOnTickets(selectTextInput)}}

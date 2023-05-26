@@ -20,13 +20,14 @@ import {
   CREATE_ORDER_FROM_QUOTE,
   ORDER_FETCH_SHIPPING_METHODS} from 'ct-tickets-helper-api';
 
-export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
+export const useOrdersFetcher = ({ page, perPage, tableSorting,where }) => {
 
-  const { data, error, loading } =  useMcQuery(gql`${FETCH_ORDERS}`, {
+  const { data, error, loading,refetch } =  useMcQuery(gql`${FETCH_ORDERS}`, {
     variables: {
       limit: perPage.value,
       offset: (page.value-1)*perPage.value,
-      sort: ["lastModifiedAt desc"],
+      where:where,
+      sort: [`${tableSorting.key} ${tableSorting.order}`],
     },
     context: {
       target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
@@ -37,8 +38,11 @@ export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
     ordersPaginatedResult: data?.orders,
     error,
     loading,
+    refetch
   };
 };
+
+
 export const useFetchOrderById =  (orderId) =>{
 
 
