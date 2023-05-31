@@ -23,8 +23,8 @@ const postalCode='postalCode';
 const productId='lineItems.productId';
 const returnTrackingId='returnInfo.returnTrackingId';
 const orderStatus='orderState';
-// const trackingId='trackingId';
-
+const isScheduleOrder='custom.isScheduleOrder';
+const scheduleDate='custom.scheduleDate';
 
 export const orderSearchOptions = [
     { value: all, label: 'All fields' },
@@ -52,7 +52,8 @@ export const orderSearchOptions = [
     { value: productId , label: 'Product Id' },
     { value: returnTrackingId , label: 'Return tracking ID' },
     { value: orderStatus , label: 'Order Status' },
-    // { value: trackingId , label: 'Tracking ID' },
+    { value: isScheduleOrder , label: 'Schedule Order' },
+    { value: scheduleDate , label: 'Schedule Order Date' },
 ]
 
 
@@ -114,6 +115,20 @@ export const queryBuilderHelper = (option,optionValue) => {
                 field:option,
                 value:optionValue,
                 language:"en-US"
+            }
+            return query;
+        case isScheduleOrder:
+            query.exact={
+                field:isScheduleOrder,
+                value:optionValue?true:false,
+                customType:"BooleanType"
+            }
+            return query;
+        case scheduleDate:
+            query.exact={
+                field:scheduleDate,
+                value:optionValue,
+                customType:"SetType.DateType"
             }
             return query;
         default:

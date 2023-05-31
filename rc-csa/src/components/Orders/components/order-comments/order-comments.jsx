@@ -100,7 +100,7 @@ const OrderComment = (props) => {
                 actions: [
                   {
                     setCustomType: {
-                    typeKey: "comments"
+                    typeKey: "customFields"
                     }
                   },
                   {
