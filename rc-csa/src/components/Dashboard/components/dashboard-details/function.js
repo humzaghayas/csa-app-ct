@@ -95,3 +95,23 @@ export function countActiveTickets(ticketData) {
   }
   return count;
 }
+
+/**
+ * To calculate Average feedback from the given list.
+ * @param {*} feedbackData
+ * @returns averageRating
+ */
+export function calculateAverageRating(feedbackData) {
+  if (feedbackData && feedbackData) {
+    let totalRating = 0;
+    const feedbackLen = feedbackData?.length || 0;
+    for (let i = 0; i < feedbackLen; i++) {
+      let rating = feedbackData[i].rating;
+      totalRating += parseInt(rating);
+    }
+
+    let averageRating = totalRating / feedbackLen;
+    return averageRating.toFixed(2);
+  }
+  return 0;
+}
