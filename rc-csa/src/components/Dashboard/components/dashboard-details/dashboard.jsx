@@ -175,6 +175,7 @@ const DashboardDisplay = (props) => {
         rowsTick,
         customerData,
         productData,
+        feedback,
         null,
         projectLanguages
       )}
@@ -184,6 +185,7 @@ const DashboardDisplay = (props) => {
       cart={cartData}
       customer={customerData}
       product={productData}
+      feedback={feedback}
       isReadOnly={!canManage}
       dataLocale={dataLocale}
     >
