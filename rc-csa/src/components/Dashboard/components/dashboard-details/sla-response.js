@@ -9,6 +9,11 @@ export function calculateResponseTimeInMinutes(created, responseDate) {
   const responseDateTime = new Date(responseDate);
   const responseTimeInMinutes =
     Math.abs(responseDateTime - createdDate) / (1000 * 60);
+
+  if (isNaN(responseTimeInMinutes)) {
+    return null; // or any other appropriate action for invalid values
+  }
+
   return responseTimeInMinutes;
 }
 

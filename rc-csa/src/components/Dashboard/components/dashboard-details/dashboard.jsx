@@ -50,6 +50,26 @@ import {
 } from '../../../../hooks/use-register-user-connector/use-service-connector';
 import Feedback from '../feedback/feedback';
 import { getFeedbackRows } from '../feedback/function';
+import { getOrderRows } from '../../../Orders/components/order-list/rows';
+
+let columns = [
+  {
+    key: 'orderNumber',
+    label: 'Order Number',
+    isSortable: true,
+    mapping: 'orderNumber',
+  },
+  { key: 'customer', label: 'Customer' },
+  { key: 'totalPrice', label: 'Order Total' },
+  { key: 'noOforderItems', label: 'No.of order Items' },
+  { key: 'totalItems', label: 'Total Items' },
+  { key: 'orderState', label: 'Order Status', isSortable: true },
+  { key: 'shipmentStatus', label: 'Shipment Status' },
+  { key: 'paymentStatus', label: 'Payment Status' },
+  { key: 'createdAt', label: 'Created', isSortable: true },
+  { key: 'lastModifiedAt', label: 'Modified', isSortable: true },
+  { key: 'duplicate', label: 'Duplicate', shouldIgnoreRowClick: true },
+];
 
 const DashboardDisplay = (props) => {
   const intl = useIntl();
@@ -115,19 +135,21 @@ const DashboardDisplay = (props) => {
   }, [foundUser]);
   // console.log('Feedback', feedback);
   // console.log('Decider', feedbackRaw);
-
-  const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
+  // const tableSort = [{ key: 'id', order: 'asc' }];
+  const tableSorting = useDataTableSortingState({ key: 'id', order: 'asc' });
+  // const tableSort = tableSorting.value;
   const orderData = useOrdersFetcher({
     page,
     perPage,
     tableSorting,
   });
+
   const cartData = useCartsFetcher({
     page,
     perPage,
     tableSorting,
   });
-
+  console.log('Cart check', orderData);
   const customerData = useCustomersFetcher({
     page,
     perPage,
