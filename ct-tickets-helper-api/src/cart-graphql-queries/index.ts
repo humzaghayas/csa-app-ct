@@ -71,6 +71,7 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
         ...lineItems
         ...shippingAddress
         ...shippingInfo
+        ...paymentInfo
         ...billingAddress
         ...taxedPrice
         ...custom
@@ -377,6 +378,27 @@ export const FETCH_CART_BY_CARTNUMBER = `query($id:String!){
       lastName
       postalCode
       apartment
+    }
+  }
+  fragment paymentInfo on Cart{
+    paymentInfo{
+        payments{
+          id
+          amountPlanned{
+            currencyCode
+            centAmount
+          }
+          paymentMethodInfo{
+            method
+          }
+          transactions{
+            timestamp
+            amount{
+              centAmount
+            }
+            state
+          }
+        }
     }
   }
   fragment billingAddress on Cart{

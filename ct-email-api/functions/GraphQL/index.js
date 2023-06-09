@@ -18,10 +18,22 @@ module.exports.FETCH_CART_BY_ID = `query($id:String!,$locale:Locale!){
           currencyCode
           centAmount
         }
+        totalGross{
+          centAmount
+          currencyCode
+        }
+        totalTax{
+          centAmount
+          currencyCode
+        }
       }
     }
     taxedPrice{
       totalNet{
+        currencyCode
+        centAmount
+      }
+      totalGross{
         currencyCode
         centAmount
       }
@@ -49,10 +61,22 @@ module.exports.FETCH_ORDER_BY_ID = `query($id:String!,$locale:Locale!){
           currencyCode
           centAmount
         }
+        totalGross{
+          centAmount
+          currencyCode
+        }
+        totalTax{
+          centAmount
+          currencyCode
+        }
       }
     }
     taxedPrice{
       totalNet{
+        currencyCode
+        centAmount
+      }
+      totalGross{
         currencyCode
         centAmount
       }
