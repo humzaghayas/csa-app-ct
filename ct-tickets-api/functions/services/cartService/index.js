@@ -53,9 +53,9 @@ module.exports = ()=>{
                         const sum = trans.reduce((a, b) => a + b,0);
 
                         console.log('sum : ',sum);
-                        console.log('cart?.taxedPrice?.totalNet?.centAmount : ',cart?.taxedPrice?.totalNet?.centAmount);
+                        console.log('cart?.taxedPrice?.totalGross?.centAmount : ',cart?.taxedPrice?.totalGross?.centAmount);
 
-                        if(sum >= cart?.taxedPrice?.totalNet?.centAmount){
+                        if(sum >= cart?.taxedPrice?.totalGross?.centAmount){
                             return {payment:true,data:result}
                         }else{
                             return {payment:false,message_code:"PAYMENT_INCOMPLETE"}

@@ -39,8 +39,8 @@ const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
       const line_items = order.order.lineItems.map(li => ({
           // li.taxedPrice.totalNet.centAmount
           price_data: {
-            currency:li.taxedPrice.totalNet.currencyCode,
-            unit_amount:li.taxedPrice.totalNet.centAmount,
+            currency:li.taxedPrice.totalGross.currencyCode,
+            unit_amount:li.taxedPrice.totalGross.centAmount,
             product_data:{
               name:li.variant.sku
             }
@@ -104,8 +104,8 @@ const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
           return {
             // li.taxedPrice.totalNet.centAmount
             price_data: {
-              currency:li.taxedPrice.totalNet.currencyCode,
-              unit_amount:li.taxedPrice.totalNet.centAmount/li.quantity,
+              currency:li.taxedPrice.totalGross.currencyCode,
+              unit_amount:li.taxedPrice.totalGross.centAmount/li.quantity,
               product_data:{
                 name:li.variant.sku
               }
@@ -160,8 +160,8 @@ const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
           return {
             // li.taxedPrice.totalNet.centAmount
             price_data: {
-              currency:li.taxedPrice.totalNet.currencyCode,
-              unit_amount:li.taxedPrice.totalNet.centAmount/li.quantity,
+              currency:li.taxedPrice.totalGross.currencyCode,
+              unit_amount:li.taxedPrice.totalGross.centAmount/li.quantity,
               product_data:{
                 name:li.variant.sku
               }
