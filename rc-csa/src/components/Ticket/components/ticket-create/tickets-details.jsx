@@ -66,10 +66,13 @@ const TicketDetailsP = (props) => {
           {},
           {
             to: ticket?.email,
-            subject: 'Your ticket is resolved, please leave a feedback!',
-            html: `<p>Thanks for contacting CSA Support.</p><p>Your Ticket ID: ${ticket.ticketNumber} </p> 
-            <p> Please take a moment to submit your feedback by visiting <br>
+            // subject: 'Your ticket is resolved, please leave a feedback!',
+            subject: `Your ticket ${ticket.ticketNumber} is resolved, please leave us a feedback!`,
+            html: `<p>Hello, </p>
+            <p>We were glad to serve you, please let us know your experience. </p> 
+            <p>Your feedback allows us to understand what we're doing well and identify areas where we can improve. Please take a moment to submit your feedback by visiting <br>
             <a href="https://mc.us-central1.gcp.commercetools.com/csa-project-4/csa-customer-tickets/feedback">https://mc.us-central1.gcp.commercetools.com/csa-project-4/csa-customer-tickets/feedback</a> </p>
+            <p>Your feedback is valuable to us, as it helps us improve our products and services.</p>
             <p>Thank you, have a great day!</p>`,
           }
         );
@@ -97,16 +100,18 @@ const TicketDetailsP = (props) => {
           {},
           {
             to: ticket?.email,
-            subject: 'Complain ticket created',
-            html: `<h1>A new ticket is created with reference to your complain</h1> 
+            subject: `Service request ${ticket?.ticketNumber} is resolved.`,
+            html: `<h3>Hello, <br/>
+            We are pleased to inform you that we have successfully resolved your ticket.</h3> 
           <br/>
-          <h2> Ticket subject: ${ticket?.subject} </h2>
-          <h2> Message: ${ticket?.message}</h2>
+          <h3> Ticket subject: ${ticket?.subject} </h3>
+          <h3> Message: ${ticket?.message}</h3>
           <br/>
-          <h2>Ticket Number: ${ticket?.ticketNumber}</h2>
-          <h2>Ticket Status: ${ticket?.status}</h2>
-          <body>We appreciate your patience our time Is looking into the issue.</body>
-          <h3>Thanks</h3>
+          <h3>Ticket Number: ${ticket?.ticketNumber}</h3>
+          <h3>Ticket Status: ${ticket?.status}</h3>
+          <h3>Our support team worked diligently to address your concern, and we are happy to report that your concern has been resolved.</h3>
+          <h3>Thank you for giving us the opportunity to assist you. We look forward to serving you in the future.</h3>
+          <h3>Have a great day!</h3>
           `,
           }
         );
@@ -128,16 +133,17 @@ const TicketDetailsP = (props) => {
           {},
           {
             to: ticket?.email,
-            subject: 'Your ticket is inprogress.',
-            html: `<h1>A new ticket is created our team is looking into it.</h1> 
+            subject: `Update: Your ticket ${ticket?.ticketNumber} is inprogress.`,
+            html: `<h3>Hello, <br/>
+            We wanted to provide you with an update regarding the support ticket you raised with us. <h3> 
           <br/>
-          <h2> Ticket subject: ${ticket?.subject} </h2>
-          <h2> Message: ${ticket?.message}</h2>
+          <h3> Ticket subject: ${ticket?.subject} </h3>
+          <h3> Message: ${ticket?.message}</h3>
           <br/>
-          <h2>Ticket Number: ${ticket?.ticketNumber}</h2>
-          <h2>Ticket Status: ${ticket?.status}</h2>
-          <body>Thank you for contacting us, we are currently working on your concern. Our Team will get back to you shortly.</body>
-          <h3>Thanks</h3>
+          <h3>Ticket Number: ${ticket?.ticketNumber}</h3>
+          <h3>Ticket Status: ${ticket?.status}</h3>
+          <h3>Our team has been actively working on resolving your inquiry and wanted to assure you that your case is currently in progress. Our Team will get back to you shortly.</h3>
+          <h3>Thank you.</h3>
           `,
           }
         );
