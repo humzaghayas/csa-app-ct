@@ -29,6 +29,10 @@ module.exports.FETCH_ORDER_BY_ID = `query ($id:String){
           centAmount
           currencyCode
         }
+        totalGross{
+          centAmount
+          currencyCode
+        }
       }
     }
     paymentInfo{
@@ -91,6 +95,10 @@ module.exports.FETCH_CUSTOMER_BY_ID = `query FetchCustomer($id:String){
         }
         taxedPrice{
           totalNet{
+            centAmount
+            currencyCode
+          }
+          totalGross{
             centAmount
             currencyCode
           }

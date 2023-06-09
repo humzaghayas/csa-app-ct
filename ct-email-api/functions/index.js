@@ -36,12 +36,14 @@ app.post('/send-email', async(req, res) =>{
                 name:l.name,
                 quantity:l.quantity,
                 price:l.price.value.centAmount/100,
-                totalPrice:l.taxedPrice.totalNet.centAmount/100
+                totalPrice:l.taxedPrice.totalNet.centAmount/100,
+                totalTax:l.taxedPrice.totalTax.centAmount/100,
+                totalGross:l.taxedPrice.totalGross.centAmount/100
             }
         });
 
  
-        const priceSummary = {totalNetPrice:cart.cart.taxedPrice.totalNet.centAmount/100};
+        const priceSummary = {totalGross:cart.cart.taxedPrice.totalGross.centAmount/100};
 
         const template = "order-email"
         const context ={
@@ -81,12 +83,14 @@ app.post('/send-email-order', async(req, res) =>{
             name:l.name,
             quantity:l.quantity,
             price:l.price.value.centAmount/100,
-            totalPrice:l.taxedPrice.totalNet.centAmount/100
+            totalPrice:l.taxedPrice.totalNet.centAmount/100,
+            totalTax:l.taxedPrice.totalTax.centAmount/100,
+            totalGross:l.taxedPrice.totalGross.centAmount/100
         }
     });
 
 
-    const priceSummary = {totalNetPrice:order.order.taxedPrice.totalNet.centAmount/100};
+    const priceSummary = {totalGross:order.order.taxedPrice.totalGross.centAmount/100};
 
     const template = "order-email"
     const context ={
