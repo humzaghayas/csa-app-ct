@@ -31,7 +31,7 @@ module.exports = ()=>{
                     if(trans && trans.length > 0){
                         const sum = trans.reduce((a, b) => a + b,0);
 
-                        if(sum >= order?.taxedPrice?.totalNet?.centAmount){
+                        if(sum >= order?.taxedPrice?.totalGross?.centAmount){
                             return {payment:true,data:result}
                         }else{
                             return {payment:false,data:result}
