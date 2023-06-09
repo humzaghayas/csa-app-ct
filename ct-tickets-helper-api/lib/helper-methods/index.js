@@ -62,7 +62,9 @@ function getTicketRows(customObjects) {
                 Subject: co.value.subject,
                 assignedTo: co.value.assignedTo,
                 createdBy: co.value.createdBy,
-                resolutionDate: co.value.resolutionDate };
+                resolutionDate: co.value.resolutionDate,
+                responseDate: co.value.responseDate,
+            };
         });
     }
     // return {};
@@ -294,6 +296,7 @@ function getTicketValue(ticketInfo, uuid) {
         lastModifiedAt: currentDate,
         createdBy: ticketInfo.createdBy,
         assignedTo: ticketInfo.assignedTo,
+        timeSpentOnTicket: ticketInfo.timeSpentOnTicket
     };
     if (ticketInfo.createdAt) {
         t['createdAt'] = ticketInfo.createdAt;
@@ -306,6 +309,12 @@ function getTicketValue(ticketInfo, uuid) {
     }
     else {
         t['resolutionDate'] = ticketInfo.resolutionDate;
+    }
+    if (ticketInfo.status === constants_1.TICKET_STATUS.inprogress.name) {
+        t["responseDate"] = currentDate;
+    }
+    else {
+        t["responseDate"] = ticketInfo.responseDate;
     }
     return t;
 }

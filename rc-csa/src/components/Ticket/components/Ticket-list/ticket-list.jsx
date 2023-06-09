@@ -18,6 +18,7 @@ import Constraints from '@commercetools-uikit/constraints';
 import FlatButton from '@commercetools-uikit/flat-button';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import DataTable from '@commercetools-uikit/data-table';
+import DataTableManager, { UPDATE_ACTIONS, useSorting } from '@commercetools-uikit/data-table-manager';
 import { ContentNotification } from '@commercetools-uikit/notifications';
 import { Pagination } from '@commercetools-uikit/pagination';
 import Spacings from '@commercetools-uikit/spacings';
@@ -48,25 +49,26 @@ import { useApplicationContext } from '@commercetools-frontend/application-shell
 import { SecondaryIconButton, } from '@commercetools-frontend/ui-kit';
 import Grid from '@commercetools-uikit/grid';
 import SelectableSearchInput from '@commercetools-uikit/selectable-search-input';
+import DataTableManagerCustom from '../../../Common/data-table-custom-component';
 
 
 
-const columns = [
-  { key:'ticketNumber', label: 'Ticket Number' },
-  { key:'Customer', label: 'Customer' },
-  { key: 'Created', label: 'Created' },
-  { key: 'Modified', label: 'Modified' },
+let columns = [
+  { key:'ticketNumber', label: 'Ticket Number',isSortable: true,mapping:"ticketNumber" },
+  { key:'Customer', label: 'Customer',isSortable: true , mapping:"email" },
+  { key: 'Created', label: 'Created',isSortable: true , mapping:"createdAt" },
+  { key: 'Modified', label: 'Modified',isSortable: true , mapping:"lastModifiedAt" },
   { key: 'Source', label: 'Source' },
-  { key: 'status', label: 'Status' },
-  { key: 'Priority', label: 'Priority' },
+  { key: 'status', label: 'Status',isSortable: true , mapping:"status"  },
+  { key: 'Priority', label: 'Priority',isSortable: true , mapping:"priority" },
   { key: 'Category', label: 'Category' },
   { key: 'Subject', label: 'Subject' },
-  { key: 'assignedTo', label: 'Assignee' },
+  { key: 'assignedTo', label: 'Assignee',isSortable: true , mapping:"assignedTo" },
   { key: 'createdBy', label: 'Created By' },
-  { key: 'resolutionDate', label: 'Resolution Date' },
+  { key: 'resolutionDate', label: 'Resolution Date',isSortable: true , mapping:"resolutionDate"  },
 ];
 
-
+// const visibleColumnKeys = columns.map(({ key }) => key);
 const Tickets = (props) => {
   const intl = useIntl();
   const match = useRouteMatch();
@@ -110,7 +112,8 @@ const Tickets = (props) => {
       const data = await fetchTickets( projectKey,{
             limit: perPage.value,
             offset: (page.value - 1) * perPage.value,
-            sort:{"lastModifiedAt": -1}
+            sort:{"lastModifiedAt": -1},
+            filter:{assignedTo:user?.email}
           });
 
           console.log('data ti list');
@@ -123,34 +126,50 @@ const Tickets = (props) => {
     console.log('inside hook !');
   }, [foundUser]);
 
-  const applyFiltersOnTickets =async({option,text}) =>{
-
+  const applyFiltersOnTickets =async({option,text,sortColumn,setRowsVar}) =>{
+    console.log("Apply filter on tickets",option,text,sortColumn);
     let vars = { 
       limit: perPage.value,
       offset: (page.value - 1) * perPage.value,
-      sort:{"lastModifiedAt": -1}};
+      sort:{"lastModifiedAt": -1},
+      filter:{assignedTo:user?.email}};
+
+      if(sortColumn ){
+       
+        const sortDirCol = columns.filter(c => c.key ===sortColumn )[0];
+        let sortDir =sortDirCol.sortDir;
+
+        if(!sortDir){
+          sortDir = "asc";
+        }
+        if(sortDir == 'desc'){
+          vars.sort = {[sortDirCol.mapping]:-1}
+          sortDirCol.sortDir='asc';
+        }else{
+          vars.sort = {[sortDirCol.mapping]:1}
+          sortDirCol.sortDir='desc';
+        }
+        
+        const ind =columns.findIndex(c => c.key === sortColumn)
+
+        columns[ind] = sortDirCol;
+        console.log('columns',columns);
+      }
 
     if(text){
       vars.filter ={[option]:text}
     }
-    // else{
-    //   vars.where ="version> 0";
-    // }
+    
     const data = await fetchTickets( projectKey,vars);
 
     const r = await getTicketRows(data);
-    setRows(r);
+
+    if(setRowsVar){
+      setRowsVar(r)
+    }else{
+      setRows(r);
+    }
   }
-
-
-  // if (error) {
-  //   return (
-  //     <ContentNotification type="error">
-  //       <Text.Body>{error}</Text.Body>
-  //     </ContentNotification>
-  //   );
-  // }
-
 
   return (
     <Spacings.Stack scale="xl">
@@ -242,20 +261,25 @@ const Tickets = (props) => {
       </Spacings.Stack>
       : null}
 
+
       {rows ? 
         <Spacings.Stack scale="l">
          
-          <DataTable
-            isCondensed
-            columns={columns}
+         <DataTableManagerCustom
             rows={rows}
-            // itemRenderer={(item, column) => itemRenderer(item, column)}
-            maxHeight={600}
-            // sortedBy={tableSorting.value.key}
-            // sortDirection={tableSorting.value.order}
-            // onSortChange={tableSorting.onChange}
+            columns={columns}
             onRowClick={(row) => push(`ticket-edit/${row.id}/tickets-general`)}
-          />
+            onSortChange={(columnKey,sortDirection) => { 
+              applyFiltersOnTickets({
+                ...selectTextInput,
+                sortColumn:columnKey,
+                sortDir:sortDirection,
+                setRowsVar:setRows
+              }
+                )
+            }}
+         />
+
           <Pagination
             page={page.value}
             onPageChange={()=>{applyFiltersOnTickets(selectTextInput)}}

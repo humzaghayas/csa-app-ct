@@ -37,6 +37,7 @@ import CartAccount from '../cart-account/cart-account';
 import { getCartRows } from './rows';
 import MoneyField from '@commercetools-uikit/money-field';
 import { useOrdersFetcher } from '../../../../hooks/use-orders-connector/use-orders-connector';
+import DataTableManagerCustom from '../../../Common/data-table-custom-component';
 
 const rows = [
   // { CartNumber: 'CS0012875',Customer:'Lahari',CartTotal:'$350.00',NooforderItems:'1',TotalItems:'1',CartStatus:'',ShipmentStatus:"",PaymentStatus:'',Created:'jun 14, 2022,2:54:47...',Modified:'Aug 14, 2022,2:54:47...'},
@@ -48,16 +49,16 @@ const rows = [
 ];
 
 const columns = [
-  { key: 'id', label: 'Cart Number' },
+  { key: 'id', label: 'Cart Number', isSortable:true},
   //{ key: 'key', label: 'Cart Key' },
   { key: 'cart_ordernumber', label: 'Order Number' },
   { key: 'customer', label: 'Customer' },
-  { key: 'totalPrice', label: 'Cart Total' },
+  { key: 'totalPrice', label: 'Cart Total'},
   { key: 'noOforderItems', label: 'No.of order Items' },
   { key: 'totalItems', label: 'Total Items' },
-  { key: 'cartState', label: 'Cart Status' },
-  { key: 'createdAt', label: 'Created' },
-  { key: 'lastModifiedAt', label: 'Modified' },
+  { key: 'cartState', label: 'Cart Status',isSortable:true },
+  { key: 'createdAt', label: 'Created',isSortable:true },
+  { key: 'lastModifiedAt', label: 'Modified',isSortable:true },
 ];
 
 const Cart = (props) => {
@@ -65,9 +66,9 @@ const Cart = (props) => {
   const match = useRouteMatch();
   const { push } = useHistory();
   const { page, perPage } = usePaginationState();
-  const tableSorting = useDataTableSortingState({ key: 'lastModifiedAt', carts: 'desc' });
+  const tableSorting = { key: 'id', order: 'asc' };
 
-  const { cartPaginatedResult, data, error, loading } = useCartsFetcher({
+  const { cartPaginatedResult, data, error, loading, refetch } = useCartsFetcher({
     // data,
     page,
     perPage,
@@ -88,18 +89,32 @@ const Cart = (props) => {
 
       {cartPaginatedResult ? (
         <Spacings.Stack scale="l">
-          <DataTable
-            isCondensed
+          <DataTableManagerCustom
             columns={columns}
             rows={getCartRows(cartPaginatedResult)}
-            //rows = {cartPaginatedResult.results}
-            // itemRenderer={(item, column) => itemRenderer(item, column)}
-            maxHeight={600}
-            //sortedBy={tableSorting.value.key}
-            // sortDirection={tableSorting.value.order}
-            // onSortChange={tableSorting.onChange}
             onRowClick={(row) => push(`cart-edit/${row.id}/cart-general`)}
-            // onRowClick={(row) => push(`Ticket-account/${row.id}/companies-general`)}
+            onSortChange={ async (columnKey,sortDirection)=>{
+
+              let ind = columns.findIndex(c => c.key ==columnKey );
+
+              console.log('ind',ind);
+              console.log('ind',columns);
+              if(!columns[ind].sortDir || columns[ind].sortDir == 'desc'){
+                columns[ind].sortDir = 'asc'
+              }else{
+                columns[ind].sortDir = 'desc'
+              }
+
+              await refetch(
+                  {
+                    limit: perPage.value,
+                    offset: (page.value-1)*perPage.value,
+                    where:'version>0',
+                    sort: [`${columnKey} ${columns[ind].sortDir}`],
+                  });
+                  // setOrders(getOrderRows(ordersPaginatedResult));
+            }
+          }
           />
           <Pagination
             page={page.value}

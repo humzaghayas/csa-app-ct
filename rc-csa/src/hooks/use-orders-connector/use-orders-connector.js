@@ -17,15 +17,17 @@ import {
   FETCH_ORDER_PAYMENTS_BY_ID,
   FETCH_ORDER_RETURNINFO_BY_ID,
   FETCH_DISCOUNT_CODES,
-  CREATE_ORDER_FROM_QUOTE} from 'ct-tickets-helper-api';
+  CREATE_ORDER_FROM_QUOTE,
+  ORDER_FETCH_SHIPPING_METHODS} from 'ct-tickets-helper-api';
 
-export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
+export const useOrdersFetcher = ({ page, perPage, tableSorting,where }) => {
 
-  const { data, error, loading } =  useMcQuery(gql`${FETCH_ORDERS}`, {
+  const { data, error, loading,refetch } =  useMcQuery(gql`${FETCH_ORDERS}`, {
     variables: {
       limit: perPage.value,
       offset: (page.value-1)*perPage.value,
-      sort: ["lastModifiedAt desc"],
+      where:where,
+      sort: [`${tableSorting.key} ${tableSorting.order}`],
     },
     context: {
       target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
@@ -36,8 +38,11 @@ export const useOrdersFetcher = ({ page, perPage, tableSorting }) => {
     ordersPaginatedResult: data?.orders,
     error,
     loading,
+    refetch
   };
 };
+
+
 export const useFetchOrderById =  (orderId) =>{
 
 
@@ -259,3 +264,17 @@ export const useOrderSearch = () =>{
     executeOrderSearch,
   };
 }
+export const useFetchShippingMethods = () => {
+
+  const { data, error, loading } =  useMcQuery(gql`${ORDER_FETCH_SHIPPING_METHODS}`, {
+    context: {
+      target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+    },
+  });
+
+  return {
+    shippingMethods: data?.shippingMethods?.results,
+    error,
+    loading,
+  };
+};

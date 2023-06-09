@@ -38,12 +38,14 @@ const ticketSchema = new mongoose.Schema( {
     "category": { type: String, required: true },
     "subject": { type: String, required: true },
     "type": String,
-    "createdAt": { type: Date, default: Date.now },
+    "createdAt": { type: Date},
     "resolutionDate": Date,
+    "responseDate": Date,
     "lastModifiedAt": { type: Date, default: Date.now },
     "createdBy": String,
     "assignedTo": String,
     "ticketData": TicketData,
-    "history": [History ]
+    "history": [History ],
+    "timeSpentOnTicket" : {type: Number, default: 0}
   });
 module.exports= ticketSchema;

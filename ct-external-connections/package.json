@@ -1,6 +1,7 @@
 {
   "name": "ct-external-connections",
-  "version": "1.0.11",
+  "version": "1.0.15",
+
   "description": "Mongo DB connections for CSA",
   "scripts": {
     "serve": "firebase emulators:start --only functions",
@@ -22,7 +23,7 @@
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.0",
     "mongodb": "^5.2.0",
-    "mongoose": "^7.0.3"
+    "mongoose": "^7.1.1"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"

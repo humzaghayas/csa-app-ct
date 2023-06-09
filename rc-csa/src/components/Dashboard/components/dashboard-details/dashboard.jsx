@@ -44,6 +44,32 @@ import {
   useUserFetcher,
 } from '../../../../hooks/use-register-user-connector';
 import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
+import {
+  useCreateOrUpdateFeedback,
+  useFetchFeedbackList,
+} from '../../../../hooks/use-register-user-connector/use-service-connector';
+import Feedback from '../feedback/feedback';
+import { getFeedbackRows } from '../feedback/function';
+import { getOrderRows } from '../../../Orders/components/order-list/rows';
+
+let columns = [
+  {
+    key: 'orderNumber',
+    label: 'Order Number',
+    isSortable: true,
+    mapping: 'orderNumber',
+  },
+  { key: 'customer', label: 'Customer' },
+  { key: 'totalPrice', label: 'Order Total' },
+  { key: 'noOforderItems', label: 'No.of order Items' },
+  { key: 'totalItems', label: 'Total Items' },
+  { key: 'orderState', label: 'Order Status', isSortable: true },
+  { key: 'shipmentStatus', label: 'Shipment Status' },
+  { key: 'paymentStatus', label: 'Payment Status' },
+  { key: 'createdAt', label: 'Created', isSortable: true },
+  { key: 'lastModifiedAt', label: 'Modified', isSortable: true },
+  { key: 'duplicate', label: 'Duplicate', shouldIgnoreRowClick: true },
+];
 
 const DashboardDisplay = (props) => {
   const intl = useIntl();
@@ -57,7 +83,9 @@ const DashboardDisplay = (props) => {
   });
   const { page, perPage } = usePaginationState();
   const [rowsTick, setRows] = useState(null);
+  const [feedback, setFeedback] = useState(null);
   const [resData, setResData] = useState(null);
+  const [feedbackRaw, setFeedRaw] = useState(null);
   const { user } = useApplicationContext((context) => ({
     user: context.user ?? '',
   }));
@@ -67,6 +95,8 @@ const DashboardDisplay = (props) => {
   const { foundUser } = useUserFetcher(user.email);
   const { execute } = useCreateEntry(user.email);
   const { execute: fetchTickets } = useFetchTicketsList();
+  const { execute: fetchFeedback } = useFetchFeedbackList();
+  const { execute: createFeedback } = useCreateOrUpdateFeedback();
 
   useEffect(async () => {
     if (canManage && foundUser == false) {
@@ -86,18 +116,40 @@ const DashboardDisplay = (props) => {
     }
   }, [foundUser]);
 
-  const tableSorting = useDataTableSortingState({ key: 'key', order: 'asc' });
+  useEffect(async () => {
+    if (canManage && foundUser == false) {
+      await execute();
+    }
+
+    if (!feedback) {
+      const data = await fetchFeedback(projectKey, {
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        // sort: { lastModifiedAt: -1 },
+      });
+
+      const r = await getFeedbackRows(data);
+      setFeedback(r);
+      setFeedRaw(data);
+    }
+  }, [foundUser]);
+  // console.log('Feedback', feedback);
+  // console.log('Decider', feedbackRaw);
+  // const tableSort = [{ key: 'id', order: 'asc' }];
+  const tableSorting = useDataTableSortingState({ key: 'id', order: 'asc' });
+  // const tableSort = tableSorting.value;
   const orderData = useOrdersFetcher({
     page,
     perPage,
     tableSorting,
   });
+
   const cartData = useCartsFetcher({
     page,
     perPage,
     tableSorting,
   });
-
+  console.log('Cart check', orderData);
   const customerData = useCustomersFetcher({
     page,
     perPage,
@@ -111,6 +163,31 @@ const DashboardDisplay = (props) => {
   });
 
   const handleSubmit = useCallback();
+  const handleSubmitFeedback = useCallback(
+    async (formValues) => {
+      let data = {};
+      // formValues.createdBy = user.email;
+      // formValues.id='a';
+      // formValues.key='a';
+
+      // if(!formValues.assignedTo){
+      //   formValues.assignedTo = user.email;
+      // }
+
+      data = formValuesToDoc(formValues);
+
+      console.log('data');
+      console.log(data);
+      let t = await createFeedback(
+        projectKey,
+        data,
+        CONSTANTS.CREATE_OPERATION
+      );
+
+      console.log(t);
+    },
+    [createFeedback]
+  );
 
   return (
     <DashboardDisplayForm
@@ -120,6 +197,7 @@ const DashboardDisplay = (props) => {
         rowsTick,
         customerData,
         productData,
+        feedback,
         null,
         projectLanguages
       )}
@@ -129,6 +207,7 @@ const DashboardDisplay = (props) => {
       cart={cartData}
       customer={customerData}
       product={productData}
+      feedback={feedback}
       isReadOnly={!canManage}
       dataLocale={dataLocale}
     >
@@ -153,6 +232,18 @@ const DashboardDisplay = (props) => {
         );
       }}
     </DashboardDisplayForm>
+
+    // (
+    //   <Feedback
+    //     initialValues={docToFormValues(feedback, null, projectLanguages)}
+    //     feedback={feedback}
+    //     onSubmit={handleSubmitFeedback}
+    //   >
+    //     {(formProps) => {
+    //       return <React.Fragment>{formProps.formElements}</React.Fragment>;
+    //     }}
+    //   </Feedback>
+    // )
   );
 };
 DashboardDisplay.displayName = 'DashboardDisplay';

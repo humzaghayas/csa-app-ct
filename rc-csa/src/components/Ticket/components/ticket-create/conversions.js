@@ -1,4 +1,4 @@
-import { TextInput } from '@commercetools-frontend/ui-kit';
+import { NumberInput, TextInput } from '@commercetools-frontend/ui-kit';
 import {CONSTANTS, escapeQuotes} from 'ct-tickets-helper-api'
 export const docToFormValues = (ticket, languages,isEdit) => {
   let doc = docToFormCommonValues(ticket,isEdit);
@@ -39,7 +39,8 @@ const docToFormCommonValues=(ticket,isEdit)=>(
     isEdit:isEdit ?? false,
     createdBy:ticket?.createdBy ?? '',
     assignedTo:ticket?.assignedTo ?? '',
-    history:ticket?.history ?? []
+    history:ticket?.history ?? [],
+    timeSpentOnTicket:ticket?.timeSpentOnTicket ?? 0
   }
 );
 
@@ -113,6 +114,9 @@ export const formValuesToDoc = (formValues) => {
     status: !TextInput.isEmpty(formValues.status)
     ? formValues.status
     : '',
+    timeSpentOnTicket: !NumberInput.isEmpty(formValues.timeSpentOnTicket)
+    ? formValues.timeSpentOnTicket
+    : 0,
     });
 
 

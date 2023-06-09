@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "question": "What are the services do you offer?",
+    "answer": "We offer Multi-channel support (email, phone, chat, social media), Intelligent routing and prioritization of inquiries Real-time analytics and performance metrics, Customizable automation and workflows and Omnichannel communication support."
+  },
+  {
+    "id": 2,
+    "question": "What are your preferred method of payment?",
+    "answer": "We preferred credit or debit card payment as well as UPI payments."
+  },
+  {
+    "id": 3,
+    "question": "Are your services beginners friendly?",
+    "answer": "Yes ofcourse, our services are easy to understand and help customer service agents for multiple purposes."
+  },
+  {
+    "id": 4,
+    "question": "What how does it take to upgrade a package?",
+    "answer": "Upgrade is used to install the newest versions of all packages currently installed on the system from the sources enumerated in /etc/apt/sources.list. Packages currently installed with new versions available are retrieved and upgraded."
+  },
+  {
+    "id": 5,
+    "question": "Where are your offices located around the world?",
+    "answer": "Headquartered in Chicago, Illinois we have a global footprint with offices and development centers across North America, Asia, Europe, Africa and the Middle east, India and Pakistan ."
+  },
+  {
+    "id": 6,
+    "question": "What are the system requirements?",
+    "answer": "Information about hardware and software requirements are given on the System Requirements page."
+  },
+  {
+    "id": 7,
+    "question": "What are the licensing terms for using CSA?",
+    "answer": "The license terms for CSA are explained on the license terms page that you can access during download of Commercetools."
+  },
+  {
+    "id": 8,
+    "question": "What are the key benefits of CSA?",
+    "answer": "The key features of CSA are Easy plug-and-play accelerator available on commercetools Merchant place, Improves customer satisfaction through transparency, agility, and overall user experience.Improves usability, speed, and efficiency using a single, highly responsive interface for handling all sales and customer interactions."
+  }
+]

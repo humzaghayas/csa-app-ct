@@ -555,24 +555,34 @@ export const UPDATE_ORDER_BY_ID = `mutation updateOrderById($version:Long!,
               quantity
           }
       }
-  }`
+}`
 export const CREATE_EDIT_ORDER_BY_ID = `mutation createOrderEdit($draft:OrderEditDraft!){
-    createOrderEdit(draft:$draft){
-      id
-      version
-      result{
+  createOrderEdit(draft:$draft){
+    id
+    version
+    result{
+      type
+      ... on PreviewFailure{
         type
+        errors
+      }
+      ... on PreviewSuccess{
+        type
+        preview{
+          id
+        }
+        messagePayloads{
+          type
+        }
       }
     }
-  }`
+  }
+}`
 export const REPLICATE_ORDER = `mutation orderReplicate($referenceInput:ReferenceInput!) {
   replicateCart(reference:$referenceInput){
     id
   }
 }`
-
-
-
 export const FETCH_PAYMENTS_TO_DISPLAY = `query FETCH_PAYMENTS_TO_DISPLAY($where:String,$offset:Int,$limit:Int) {
   orders(where:$where,offset:$offset,limit:$limit){
   	count
@@ -826,9 +836,17 @@ export const FETCH_DISCOUNT_CODES = `query{
     }
   }
 }`
-
 export const CREATE_ORDER_FROM_QUOTE = `mutation createOrderFromQuote($draft:OrderQuoteCommand!){
   createOrderFromQuote(draft:$draft){
     id
+  }
+}`
+export const ORDER_FETCH_SHIPPING_METHODS = `query fetchShippingMethods{
+  shippingMethods{
+    results{
+      id
+      key
+      name
+    }
   }
 }`

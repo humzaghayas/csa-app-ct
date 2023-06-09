@@ -24,6 +24,7 @@ import { lazy, useState, useEffect } from 'react';
 import Products from '../product-list/product-list';
 import ProductListSearch from '../product-list/product-list-search';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import { PrimaryButton } from '@commercetools-frontend/ui-kit';
 
 const ProductAccount = (props) => {
   const match = useRouteMatch();
@@ -39,6 +40,10 @@ const ProductAccount = (props) => {
     projectKey: context.project.key,
   }));
 
+  function navigateToLink(link) {
+    window.location.href = link;
+  }
+
   return (
     <TabularDetailPage
       title=" "
@@ -50,7 +55,6 @@ const ProductAccount = (props) => {
         <>
           <Spacings.Stack scale="xl">
             <Spacings.Inline>
-
               <TabHeader
                 to={`${match.url}/productsList-search`}
                 label="Product Search"
@@ -59,7 +63,16 @@ const ProductAccount = (props) => {
                 to={`${match.url}/productsList-general`}
                 label="Product List"
               />
-
+              <PrimaryButton
+                onClick={() =>
+                  navigateToLink(
+                    'https://mc.us-central1.gcp.commercetools.com/csa-project-4/products'
+                  )
+                }
+                iconLeft={<PlusBoldIcon />}
+                label="Update Stock"
+                size="big"
+              />
             </Spacings.Inline>
           </Spacings.Stack>
         </>

@@ -17,6 +17,7 @@ import {
   FETCH_ORDER_COUNT,
   FETCH_CART_DISCOUNT_CODES,
   FETCH_SHIPPING_ADDRESS_BY_CART,
+  FETCH_SHIPPING_METHODS,
 } from 'ct-tickets-helper-api';
 import {
   convertToActionData,
@@ -24,7 +25,7 @@ import {
 } from '../../helpers';
 
 export const useCartsFetcher = ({ page, perPage, tableSorting }) => {
-  const { data, error, loading } = useMcQuery(
+  const { data, error, loading, refetch } = useMcQuery(
     gql`
       ${FETCH_CARTS}
     `,
@@ -34,7 +35,7 @@ export const useCartsFetcher = ({ page, perPage, tableSorting }) => {
 
         limit: perPage.value,
         offset: (page.value - 1) * perPage.value,
-        sort: ['createdAt desc'],
+        sort: [`${tableSorting.key} ${tableSorting.order}`],
       },
       context: {
         target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
@@ -46,6 +47,7 @@ export const useCartsFetcher = ({ page, perPage, tableSorting }) => {
     cartPaginatedResult: data?.carts,
     error,
     loading,
+    refetch
   };
 };
 
@@ -244,5 +246,25 @@ export const useFetchAddressByCartId = (cartId) => {
     cart: data?.cart,
     error,
     loading,
+  };
+};
+
+export const useFetchCartShippingMethods = () => {
+  const { data, loading, error } = useMcQuery(
+    gql`
+      ${FETCH_SHIPPING_METHODS}
+    `,
+    {
+      context: {
+        target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM,
+      },
+      fetchPolicy: 'network-only',
+    }
+  );
+
+  return {
+    shippingMethods: data?.shippingMethods?.results,
+    loading,
+    error,
   };
 };

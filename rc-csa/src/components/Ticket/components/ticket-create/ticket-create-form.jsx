@@ -15,7 +15,9 @@ import { ChainIcon, CollapsibleMotion, MultilineTextField, PrimaryButton, Second
   AngleUpDownIcon, 
   SecondaryIconButton,
   Text,
-  DataTable} from '@commercetools-frontend/ui-kit';
+  DataTable,
+  NumberInput,
+  FieldLabel} from '@commercetools-frontend/ui-kit';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useState } from 'react';
 import{CONSTANTS} from 'ct-tickets-helper-api'
@@ -95,6 +97,7 @@ const TicketCreateForm = (props) => {
   const [customer, setCustomer] = useState(null);
   const [disableSubmitButton, setDisableSubmitButton] = useState(!canManage || !customerFound);
   const [isClosedCommentsPanel, setIsClosedCommentsPanel] = useState(true);
+  const [timeSpentOnTicket , setTimeSpentOnTicket] = useState(0)//useState(formik.values.timeSpentOnTicket)
 
   const [workflowStatusses, setWorkflowStatusses] = useState([]);   
 
@@ -353,6 +356,18 @@ const addWorklog =(e) => {
                         />
                     </Spacings.Inline>
                   :""}
+                   {formik.values.isEdit && formik.values.category 
+                           && 
+                      <Spacings.Stack scale="s">
+                           <Text.Detail >Customer</Text.Detail>
+                           <Link to={`/${projectKey}/${entryPointUriPath}/customer-account/${customer?.id}/Customers-summary`}>
+                               <PrimaryButton iconLeft={<ChainIcon />} 
+                                  label={formik.values.email}
+                                />
+                            </Link>
+
+                       </Spacings.Stack>
+                    }
 
                 <Spacings.Inline alignItems="flex-end">
                    
@@ -485,17 +500,7 @@ const addWorklog =(e) => {
                   }
         </Spacings.Inline>
 
-        {formik.values.isEdit && formik.values.category 
-               && 
-          <Spacings.Stack scale="s">
-               <Link to={`/${projectKey}/${entryPointUriPath}/customer-account/${customer?.id}/Customers-summary`}>
-                   <PrimaryButton iconLeft={<ChainIcon />} 
-                      label={formik.values.email}
-                    />
-                </Link>
-
-           </Spacings.Stack>
-        }
+       
 
         <Spacings.Stack scale="s">
         <SelectField
@@ -622,6 +627,37 @@ const addWorklog =(e) => {
                     </CollapsiblePanel>
                   </>
                 }
+
+                {canManage && formik.values.isEdit &&
+
+              <div>
+                <FieldLabel
+                    title={"Enter Time Spent on Ticket"}
+                    hasRequiredIndicator={false}
+                    horizontalConstraint={7}
+                  />
+                    <NumberInput
+                        id="timeSpentOnTicket"
+                        name="timeSpentOnTicket"
+                        label="Time Spent On Ticket"
+                        // onChange={(e) => {
+                        //   if(e.target.value < 0){
+                        //     return;
+                        //   }
+                        //   setTimeSpentOnTicket(e.target.value)
+                        //   formik.handleChange();
+                        // }}
+                        horizontalConstraint={13}
+                        value={formik.values.timeSpentOnTicket}
+                        touched={formik.touched.timeSpentOnTicket}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                  </div>
+                }
+                <div>&nbsp;</div>
+                <div>&nbsp;</div>
+                <div>&nbsp;</div>
                 <div>
                    <input type='file' id="upload_file" 
                           name="upload_file" 

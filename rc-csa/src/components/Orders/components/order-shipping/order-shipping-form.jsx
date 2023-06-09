@@ -13,6 +13,7 @@ import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 import Constraints from '@commercetools-uikit/constraints';
 import { PrimaryButton, SecondaryButton } from '@commercetools-uikit/buttons';
 import { formValuesToDoc } from './conversions';
+import OrderShippingMethods from './order-shipping-methods';
 
 const OrderShippingForm = (props) => {
   const intl = useIntl();
@@ -29,6 +30,7 @@ const OrderShippingForm = (props) => {
 
   return(  <form onSubmit={onSubmit}>
     <Spacings.Stack scale="l">
+      <OrderShippingMethods initialValues={props?.initialValues} />
      
      <CollapsiblePanel
           data-testid="quote-summary-panel"
