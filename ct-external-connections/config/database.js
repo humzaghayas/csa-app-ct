@@ -35,4 +35,9 @@ const feedbackDBConnection = (uri) => {
   return feedbackSchema.registerSchema(conn);
 };
 
-module.exports = { adminConnection, clientDBConnection, feedbackDBConnection };
+const orderScheduleDBConnection = (uri) => {
+  let conn = connect(uri, MONGO_TICKETS_DB);
+  return orderScheduleSchema.registerSchema(conn);
+};
+
+module.exports = { adminConnection, clientDBConnection, feedbackDBConnection, orderScheduleDBConnection };

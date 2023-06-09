@@ -4,6 +4,7 @@ const {
   adminConnection,
   clientDBConnection,
   feedbackDBConnection,
+  orderScheduleDBConnection
 } = require("./config/database");
 module.exports = {
   adminDBService,
@@ -11,6 +12,7 @@ module.exports = {
   adminConnection,
   clientDBConnection,
   feedbackDBConnection,
+  orderScheduleDBConnection
 };
 
 // async function a(){

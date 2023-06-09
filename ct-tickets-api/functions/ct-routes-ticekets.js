@@ -10,6 +10,7 @@ const { adminDBService } = require("ct-external-connections");
 const cartService = require("./services/cartService")();
 const orderService = require("./services/orderService")();
 const feedbackService = require("./services/feedbackService")();
+const schedulesService = require("./services/schedulesService")();
 const {
   getTicketCategories,
   getTicketPriorityValues,
@@ -366,6 +367,42 @@ app.post("/create-feedback-db", async (req, res) => {
   // }else{
   res.status(200).json({ feedbacks });
   //}
+});
+
+app.post("/schedules", async (req, res) => {
+  const { variables, projectKey } = req.body;
+  // const { projectKey } = req.session;
+  const results = await schedulesService.getSchedules({ projectKey, variables });
+
+  if (results?.error) {
+    res.status(400).json(results);
+  } else {
+    res.status(200).json(results);
+  }
+});
+
+app.post("/schedules/create", async (req, res) => {
+  const { data, projectKey } = req.body;
+  // const { projectKey } = req.session;
+  const results = await schedulesService.createSchedule(projectKey, data);
+
+  if (results?.error) {
+    res.status(400).json(results);
+  } else {
+    res.status(200).json(results);
+  }
+});
+
+app.post("/schedules/id", async (req, res) => {
+  const { scheduleId, projectKey } = req.body;
+  // const { projectKey } = req.session;
+  const results = await schedulesService.getScheduleById(projectKey, scheduleId);
+
+  if (results?.error) {
+    res.status(400).json(results);
+  } else {
+    res.status(200).json(results);
+  }
 });
 
 exports.tickets = functions.https.onRequest(app);
