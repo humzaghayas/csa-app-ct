@@ -122,7 +122,7 @@ const DashboardDisplayForm = (props) => {
   const highTickets = highProirityTickets(ticketData);
   const openTickets = openStatusTickets(ticketData);
   const inprogTickets = inProgressTickets(ticketData);
-  // console.log('print', ticketData);
+  console.log('print', props);
 
   //Assigning row values
   rows = ticketData;
@@ -167,11 +167,11 @@ const DashboardDisplayForm = (props) => {
   };
 
   // Dropdown options
-  const [selectedOption, setSelectedOption] = useState('--');
+  const [selectedOption, setSelectedOption] = useState('');
 
-  const handleSelectChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
+  // const handleSelectChange = (event) => {
+  //   setSelectedOption(event.target.value);
+  // };
 
   //PieChart
   const dataPie = [
@@ -508,20 +508,20 @@ const DashboardDisplayForm = (props) => {
                 {'Report type:'}
               </Text.Subheadline>
               {/* <select
-                          id="dropdown"
-                          value={selectedOption}
-                          onChange={handleSelectChange}
-                          style={{ width: '200px' }}
-                        >
-                          <option value="--">--</option>
-                          <option value="Tickets">Tickets</option>
-                          <option value="Agent">Agent</option>
-                          <option value="Orders">Orders</option>
-                          <option value="Carts">Carts</option>
-                          <option value="Customer">Customer</option>
-                          <option value="Product">Product</option>
-                          <option value="SLA">SLA</option>
-                        </select> */}
+                id="dropdown"
+                value={selectedOption}
+                onChange={handleSelectChange}
+                style={{ width: '200px' }}
+              >
+                <option value="--">--</option>
+                <option value="Tickets">Tickets</option>
+                <option value="Agent">Agent</option>
+                <option value="Orders">Orders</option>
+                <option value="Carts">Carts</option>
+                <option value="Customer">Customer</option>
+                <option value="Product">Product</option>
+                <option value="SLA">SLA</option>
+              </select> */}
 
               <SelectInput
                 name="form-field-name"
@@ -529,6 +529,7 @@ const DashboardDisplayForm = (props) => {
                 onChange={(e) => {
                   setSelectedOption(e.target.value);
                 }}
+                // onChange={handleSelectChange}
                 horizontalConstraint={13}
                 options={[
                   { value: 'Tickets', label: 'Tickets' },

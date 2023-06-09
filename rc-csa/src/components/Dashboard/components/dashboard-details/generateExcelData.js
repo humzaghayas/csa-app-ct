@@ -2,7 +2,9 @@ import * as moment from 'moment';
 import { getSLARate } from './sla-percentage';
 
 // Excel export for Tickets
-export function generateTicketExcel(ticketMdbData, startDate, endDate) {
+export function generateTicketExcel(ticketMdbData, startD, endD) {
+  const startDate = new Date(startD);
+  const endDate = new Date(endD);
   const filteredTicketData = ticketMdbData?.filter((obj) => {
     const createdAt = new Date(obj.Created);
     return createdAt >= startDate && createdAt <= endDate;
@@ -30,7 +32,9 @@ export function generateTicketExcel(ticketMdbData, startDate, endDate) {
 }
 
 // Excel export for Orders
-export function generateOrderExcel(orderData, startDate, endDate) {
+export function generateOrderExcel(orderData, startD, endD) {
+  const startDate = new Date(startD);
+  const endDate = new Date(endD);
   const filtereOrderData = orderData?.ordersPaginatedResult?.results?.filter(
     (obj) => {
       const createdAt = new Date(obj.createdAt);
@@ -90,7 +94,9 @@ export function generateOrderExcel(orderData, startDate, endDate) {
 }
 
 // Excel export for Carts
-export function generateCartExcel(cartData, startDate, endDate) {
+export function generateCartExcel(cartData, startD, endD) {
+  const startDate = new Date(startD);
+  const endDate = new Date(endD);
   const filterCartData = cartData?.cartPaginatedResult?.results?.filter(
     (obj) => {
       const createdAt = new Date(obj.createdAt);
@@ -133,7 +139,9 @@ export function generateCartExcel(cartData, startDate, endDate) {
 }
 
 // Excel export for Customers
-export function generateCustomerExcel(customerData, startDate, endDate) {
+export function generateCustomerExcel(customerData, startD, endD) {
+  const startDate = new Date(startD);
+  const endDate = new Date(endD);
   const filterCustomerData =
     customerData?.customersPaginatedResult?.results?.filter((obj) => {
       const createdAt = new Date(obj.createdAt);
@@ -158,7 +166,9 @@ export function generateCustomerExcel(customerData, startDate, endDate) {
 }
 
 // Excel export for Products
-export function generateProductExcel(productData, startDate, endDate) {
+export function generateProductExcel(productData, startD, endD) {
+  const startDate = new Date(startD);
+  const endDate = new Date(endD);
   const filterProductData = productData?.ProductListItems?.filter((obj) => {
     const createdAt = new Date(obj.createdAt);
 
@@ -189,7 +199,9 @@ export function generateProductExcel(productData, startDate, endDate) {
 }
 
 // Excel export for SLA Metrics
-export function generateSLAExcel(ticketMdbData, startDate, endDate) {
+export function generateSLAExcel(ticketMdbData, startD, endD) {
+  const startDate = new Date(startD);
+  const endDate = new Date(endD);
   const filterSlaData = ticketMdbData?.filter((obj) => {
     const createdAt = new Date(obj.Created);
 
