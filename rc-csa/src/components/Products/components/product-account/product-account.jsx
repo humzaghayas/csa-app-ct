@@ -25,6 +25,7 @@ import Products from '../product-list/product-list';
 import ProductListSearch from '../product-list/product-list-search';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { PrimaryButton } from '@commercetools-frontend/ui-kit';
+import ProductsEnquiry from '../product-enquiry/product-enquiry';
 
 const ProductAccount = (props) => {
   const match = useRouteMatch();
@@ -63,6 +64,10 @@ const ProductAccount = (props) => {
                 to={`${match.url}/productsList-general`}
                 label="Product List"
               />
+              <TabHeader
+                to={`${match.url}/products-stock`}
+                label="Request Stock"
+              />
               <PrimaryButton
                 onClick={() =>
                   navigateToLink(
@@ -84,6 +89,9 @@ const ProductAccount = (props) => {
         </Route>
         <Route path={`${match.path}/productsList-search`}>
           <ProductListSearch />
+        </Route>
+        <Route path={`${match.path}/products-stock`}>
+          <ProductsEnquiry />
         </Route>
       </Switch>
     </TabularDetailPage>

@@ -25,6 +25,7 @@ import KnowledgebaseAccount from './components/Knowledgebase-FAQ/components/know
 import DashboardDisplay from './components/Dashboard/components/dashboard-details/dashboard';
 import Feedback from './components/Dashboard/components/feedback/feedback';
 import FeedbackSetup from './components/Dashboard/components/feedback/feedback-essential';
+import ProductStock from './components/Products/components/product-stockNotify/product-stock';
 
 const ApplicationRoutes = () => {
   const match = useRouteMatch();
@@ -98,6 +99,13 @@ const ApplicationRoutes = () => {
             <PageUnauthorized />
           )}
         </Route>
+        <Route path={`${match.path}/product-enquiry/:id`}>
+          {canViewProductSearch ? (
+            <ProductStock linkToWelcome={match.url} />
+          ) : (
+            <PageUnauthorized />
+          )}
+        </Route>
         <Route path={`${match.path}/Orders`}>
           {canViewCustomerOrders ? (
             <Orders linkToWelcome={match.url} />
@@ -153,10 +161,10 @@ const ApplicationRoutes = () => {
           <AtgAccount linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/dashboard`}>
-            <DashboardDisplay linkToWelcome={match.url} />
-          </Route>
+          <DashboardDisplay linkToWelcome={match.url} />
+        </Route>
         <Route path={`${match.path}/feedback`}>
-            <FeedbackSetup linkToWelcome={match.url} />
+          <FeedbackSetup linkToWelcome={match.url} />
         </Route>
         <Route path={`${match.path}/`}>
           <DashboardDisplay linkToWelcome={match.url} />

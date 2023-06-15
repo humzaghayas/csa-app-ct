@@ -22,6 +22,15 @@ export const PRODUCT_SEARCH_QUERY = `query productSearchQuery($locale:Locale!,$t
               fractionDigits
             }
           }
+          availability{
+            noChannel{
+              isOnStock
+              restockableInDays
+              availableQuantity
+              version
+              id
+            }
+          }
         }
         variants{
           sku
@@ -41,40 +50,49 @@ export const PRODUCT_SEARCH_QUERY = `query productSearchQuery($locale:Locale!,$t
       }
     }
   }`;
-export const FETCH_PRODUCT_LIST = `query productsList($limit: Int!, $offset: Int!, $sort: [String!]){
-  products(limit:$limit,offset:$offset,sort:$sort){
+export const FETCH_PRODUCT_LIST = `query productsList($limit: Int!, $offset: Int!, $sort: [String!]) {
+  products(limit: $limit, offset: $offset, sort: $sort) {
     count
     total
-    results{
+    results {
       id
       key
       skus
       version
-      productType{
+      productType {
         key
         name
       }
       createdAt
       lastModifiedAt
-      masterData{
+      masterData {
         published
         hasStagedChanges
-        current{
-          name(locale:"en-US")
-          masterVariant{
+        current {
+          name(locale: "en-US")
+          masterVariant {
             id
             sku
             key
-            images{
+            images {
               url
             }
-            prices{
+            prices {
               id
-              value{
+              value {
                 type
                 centAmount
                 currencyCode
                 fractionDigits
+              }
+            }
+            availability{
+              noChannel{
+                isOnStock
+                restockableInDays
+                availableQuantity
+                version
+                id
               }
             }
           }
@@ -114,6 +132,8 @@ export const FETCH_PRODUCT_BY_ID = `query($id:String!){
             key
             availability{
               noChannel{
+                isOnStock
+                restockableInDays
                 availableQuantity
               }
             }
@@ -154,4 +174,4 @@ export const FETCH_PRODUCT_BY_ID = `query($id:String!){
      
   }
 }
-`
+`;
