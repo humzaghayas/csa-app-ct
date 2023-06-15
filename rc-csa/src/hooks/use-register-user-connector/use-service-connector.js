@@ -310,3 +310,79 @@ export const useCreateOrUpdateFeedback = () => {
     execute,
   };
 };
+
+export const useFetchSchedulesList = () => {
+  const dispatch = useAsyncDispatch();
+  const { ctCsaBackendURL } = useApplicationContext((context) => ({
+    ctCsaBackendURL: context.environment.CT_CSA_BACKEND,
+  }));
+
+  const apiUrl = ctCsaBackendURL + '/schedules';
+
+  const execute = async (projectKey, variables) => {
+    const header = {
+      'Content-Type': 'application/json',
+    };
+
+    const payload = {
+      projectKey,
+      variables,
+    };
+
+    console.log('apiUrl', apiUrl);
+
+    const data = await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header,
+        },
+      })
+    );
+
+    return data;
+  };
+
+  return {
+    execute,
+  };
+};
+
+
+export const useCreateOrUpdateSchedule = () => {
+  const dispatch = useAsyncDispatch();
+  const { ctCsaBackendURL } = useApplicationContext((context) => ({
+    ctCsaBackendURL: context.environment.CT_CSA_BACKEND,
+  }));
+
+  const apiUrl = ctCsaBackendURL + '/schedules/create';
+  console.log("URL",ctCsaBackendURL);
+  const execute = async (projectKey, data ) => {
+    console.log('Create or Update Schedule', projectKey, data);
+    const header = {
+      'Content-Type': 'application/json',
+    };
+
+    const payload = {
+      projectKey,
+      data,
+    };
+
+    const result = await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header,
+        },
+      })
+    );
+
+    return result;
+  };
+
+  return {
+    execute,
+  };
+};
