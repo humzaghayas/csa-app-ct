@@ -7,7 +7,7 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 const paymentService = require('./services/paymentService')();
-const cartService = require('./services/cartService')();
+const orderService = require('./services/orderService')();
 const app = express();
 
 
@@ -92,8 +92,13 @@ app.post('/webhook', async (request, response) => {
 
         const customerDetails = data.customer_details;
 
-        await paymentService.createPayment(payload.data.object);
+        const ret = await paymentService.createPayment(payload.data.object);
 
+        if(ret.cartId){
+            const {projectKey} = JSON.parse(payload.data.object.client_reference_id);
+
+            orderService.createOrderFromCart(ret.result.updateCart,projectKey);
+        }
         console.log(customerDetails);
     }
   

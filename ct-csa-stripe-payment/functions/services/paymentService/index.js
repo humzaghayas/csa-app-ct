@@ -279,14 +279,17 @@ const {CT_STRIPE_URL,CT_STRIPE_API_KEY} = process.env;
 
         if(cartId){
           const resultPC = await graphQLService.execute(ADD_PAYMENT_TO_CART,
-              {version:cart.cart.version,id:cartId,actions:paymentToCartAction},projectKey);
-
+            
+            {version:cart.cart.version,id:cartId,actions:paymentToCartAction},projectKey);
           console.log('payment ',resultPC);
+
+          return {cartId,result:resultPC}
         }else{
           const resultPC = await graphQLService.execute(ADD_PAYMENT_TO_ORDER,
               {version:order.order.version,id:orderId,actions:paymentToCartAction},projectKey);
 
           console.log('payment ',resultPC);
+          return {orderId,result:resultPC}
         }
 
       }catch(err){

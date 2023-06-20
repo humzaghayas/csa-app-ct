@@ -87,7 +87,7 @@ const TicketCreate = (props) => {
           {
             to: ticket?.email,
             // subject: 'Service request ${ticket?.ticketNumber} created',
-            subject: `Your service request ${ticket?.ticketNumber} is created.`,
+            subject: `Your service request #${ticket?.ticketNumber} is created.`,
             html: `<h3>Hello, 
             <br/> We have received your request for assistance, and a support ticket has been created.</h3> 
           <br/>
