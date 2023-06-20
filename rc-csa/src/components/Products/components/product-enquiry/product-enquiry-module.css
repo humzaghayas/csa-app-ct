@@ -1,0 +1,209 @@
+
+.product-list-filter{
+    background: var(--color-neutral-95);
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    width: auto;
+}
+.product-list-filter-container{
+    align-items: stretch;
+    background-color: var(--color-accent-30);
+    box-shadow: 0 2px 4px 0 var(--color-neutral-60);
+    display: flex;
+    flex-direction: column;
+    /* position: absolute; */
+    z-index: 2;
+    animation: filters-sidebar-layout-module__shrink___krJho .31s;
+    width: 304px;
+}
+.product-list-filter-header-items{
+display: flex;
+    flex-direction: column;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    -webkit-box-align: stretch;
+    align-items: stretch;
+}
+.products-search-filter{
+    width: 350px;
+    position: relative;
+}
+/* #product-list-search {  */
+ 
+    .css-294zjy-container {
+        position: relative;
+        box-sizing: border-box;
+        font-family: inherit;
+        min-height: 32px;
+        width: auto;
+        border-radius: 6px;
+    }
+    .css-1mwcof6-container{
+        width:  auto;
+    }
+   .search-results {
+    display: flex;
+    justify-content: space-evenly;
+    font-size: 16px;
+    color: blue;
+    border: 1px solid black;
+    list-style-type: none;
+    border: none;
+    margin-top: 23px;
+}
+.ais-Hits{
+    margin-left: 200px;
+}
+.ais-Hits-list {
+    margin-top: 34px;
+    border: 2px solid;
+    list-style-type: none;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    max-width: 952px;
+    /* margin-left: 524px; */
+}
+.search-results-name{
+    color: rgb(12, 83, 131);
+    font-weight: 600;
+}
+.ais-SearchBox-input{
+       
+       height: 55px;
+       /* margin-left: 324px; */
+       border: 1px solid black;
+       border-radius: 4px;
+       min-width: 950px;
+       font-size: 20px;
+       margin-top: 75px;
+   
+}
+.ais-SearchBox-form{
+    margin-left: 200px;
+}
+.ais-SearchBox-reset{
+    width: 52px;
+    height: 55px;
+    margin-left: 20px;
+    display: none;
+   
+}
+.ais-SearchBox-submit{
+    width: 52px;
+    height: 57px;
+    display: none;
+   
+}
+.search-results-drop{
+    display: flex;
+}
+
+.search-options-dropdown{
+    margin-top: -22px;
+    margin-right: -10px;
+    width: 500px;
+}
+
+.filter-button{
+      /* margin-left: 2000px; */
+      margin-right: 647px !important;
+      margin-left: 8px !important;
+}
+.search-product-results{
+    display: flex;
+}
+.search-result-image{
+    width: 24px;
+    height: 24px;
+    margin-left: 20px;
+}
+.search-result-details-right{
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+.search-result-price{
+    font-size: 18px;
+    color: darkorange;
+    font-weight: 600;
+    margin-top: 5px;
+}
+.search-result-name{
+    margin-top: 5px;
+    font-size: 18px;
+    color: black;
+    font-weight: 600;
+}
+.search-result-category{
+    font-weight: bolder;
+    font-size: 20px;
+    color: grey;
+}
+.search-result-image{
+    width: 124px;
+    height: 124px;
+    margin-right: 30px;
+}
+.search-result-details-left{
+    width: 300px;
+}
+.searchbox-items{
+    display: flex;
+    flex-direction: column;
+    min-width: 1200px;
+}
+.refinement-list-search{
+    display: flex;
+}
+.ais-RefinementList{
+    max-width: 400px;
+    margin-top: -10px;
+
+}
+.ais-RefinementList-list{
+    list-style-type: none;
+    font-size: medium;
+}
+.ais-RefinementList-item{
+    padding-top: 10px;
+    font-weight: 600;
+}
+.ais-Pagination-item{
+    font-size: medium;
+    font-weight: 600;
+    padding: 10px;
+   border: 1px solid black;
+   /* width: 20px; */
+}
+.ais-Pagination-list{
+    list-style-type: none;
+    display: flex;
+    margin-left: 789px;
+    margin-top: 20px;
+}
+.refinement-list-category{
+    margin-top: 171px;
+    font-size: 20px;
+    font-weight: 800;
+    margin-left: 40px;
+}
+.refinement-list-price{
+    font-size: 20px;
+    font-weight: 800;
+    margin-left: 40px;
+    margin-top: 40px;
+}
+.refinement-list-brand{
+    font-size: 20px;
+    font-weight: 800;
+    margin-left: 40px;
+    margin-top: 40px;
+}
+/* .search-results-list{
+margin-left: 300px;
+} */

@@ -67,7 +67,7 @@ const TicketDetailsP = (props) => {
           {
             to: ticket?.email,
             // subject: 'Your ticket is resolved, please leave a feedback!',
-            subject: `Your ticket ${ticket.ticketNumber} is resolved, please leave us a feedback!`,
+            subject: `Your ticket #${ticket.ticketNumber} is resolved, please leave us a feedback!`,
             html: `<p>Hello, </p>
             <p>We were glad to serve you, please let us know your experience. </p> 
             <p>Your feedback allows us to understand what we're doing well and identify areas where we can improve. Please take a moment to submit your feedback by visiting <br>
@@ -100,7 +100,7 @@ const TicketDetailsP = (props) => {
           {},
           {
             to: ticket?.email,
-            subject: `Service request ${ticket?.ticketNumber} is resolved.`,
+            subject: `Service request #${ticket?.ticketNumber} is resolved.`,
             html: `<h3>Hello, <br/>
             We are pleased to inform you that we have successfully resolved your ticket.</h3> 
           <br/>
@@ -133,7 +133,7 @@ const TicketDetailsP = (props) => {
           {},
           {
             to: ticket?.email,
-            subject: `Update: Your ticket ${ticket?.ticketNumber} is inprogress.`,
+            subject: `Update: Your ticket #${ticket?.ticketNumber} is inprogress.`,
             html: `<h3>Hello, <br/>
             We wanted to provide you with an update regarding the support ticket you raised with us. <h3> 
           <br/>
