@@ -4,9 +4,10 @@ const schedulesService = require("./services/schedulesService")();
 const cartService = require("./services/cartService")();
 const logger = functions.logger;
 const fetch = require("node-fetch");
+const orderService = require("./services/orderService")();
 
  exports.createScheduleOrders = functions.pubsub
-     .schedule('*/1 * * * *')
+     .schedule('0 */12 * * *') // At 0 minutes past the hour, every 12 hours
      .onRun(async () =>{
          const date = new Date(Date.now());
          logger.info(`Set hours ${date.setHours(0,0,0,0)}`)
@@ -29,13 +30,18 @@ const fetch = require("node-fetch");
                 logger.info(`Creating duplicate cart for cartId ${cartId}`)
                 const cart = await cartService.replicateCart(cartId, "csa-project-4");
                 const replicateCartId = cart?.replicateCart?.id;
-                console.log("Cart",);
+                console.log("Cart",cart);
                 logger.info(`Duplicate cart created with cartId ${replicateCartId}`);
 
                 if(replicateCartId){
-                    logger.info(`Creating payment for ${replicateCartId}`)
-                    const payment = await createPayment(replicateCartId);
-                    logger.info(`Created payment for ${replicateCartId}`)
+                    // logger.info(`Creating payment for ${replicateCartId}`)
+                    // const payment = await createPayment(replicateCartId);
+                    // console.log("Payment",payment);
+                    // logger.info(`Created payment for ${replicateCartId}`)
+                    logger.info("Creating order");
+                    const order = await orderService.createOrderFromCart(cart?.replicateCart,"csa-project-4");
+                    console.log("Order",order)
+                    logger.info("Order created ")
                 }
 
                 scheduleNextDate(schedule,date);
@@ -83,7 +89,7 @@ async function scheduleNextDate(schedule,date){
     console.log("Next schedule date is ",newDate);
     updateSchedule.scheduleDate = newDate;
     console.log("Update schedule",updateSchedule);
-    // schedulesService.createSchedule("csa-project-4",schedule);
+    schedulesService.createSchedule("csa-project-4",updateSchedule);
     logger.info("Update schedule for next schedule date");
 }
 
