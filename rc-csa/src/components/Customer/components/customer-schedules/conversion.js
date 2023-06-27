@@ -10,11 +10,24 @@ export const getRepeatOptions = Object.keys(REPEAT_ENUM).map(
       value: REPEAT_ENUM[key],
   }));
 
+export const getReadableFrequencyOption = (option) =>{
+    switch(option){
+        case 'month':
+            return "After Every Month";
+        case '2month':
+            return "After Every 2 Months";
+        case '3month':
+            return "After Every 3 Months";
+        default:
+            return "After Every Month";
+    }
+}
+
 export const getCartOptions = (carts,selectedCartId) =>(
     carts?.map(cart=>{
         return {
             value:cart?.id,
-            label:cart?.createdAt,
+            label:cart?.id,
             isDisabled:carts.filter(e=>e.id==selectedCartId)[0]?.id ? true : false
         }
     })
@@ -93,5 +106,6 @@ export const getScheduleEmptyFormValue = async () =>(
         isActive:true,
         repeat:{},
         scheduleDate:"",
+        orderId:""
     }
 )

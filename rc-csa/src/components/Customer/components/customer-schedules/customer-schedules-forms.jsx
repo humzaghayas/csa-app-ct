@@ -10,7 +10,7 @@ import Text from '@commercetools-uikit/text';
 import { getCartOptions, getRepeatOptions, REPEAT_ENUM } from './conversion';
 import { useIntl } from 'react-intl';
 import { DateField } from '@commercetools-frontend/ui-kit';
-import { useCustomersCartsFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
+import { useCustomersCartsFetcher, useCustomersOrdersFetcher } from '../../../../hooks/use-customers-connector/use-customers-connector';
 import { useRouteMatch } from 'react-router-dom';
 import { useDataTableSortingState } from '@commercetools-uikit/hooks';
 
@@ -24,7 +24,13 @@ const CustomerSchedulesForm = (props) => {
   const customerId = props?.customerId;
   const page = 0;
   const perPage = Number.MAX_VALUE;
-  const { customersCartPaginatedResult, error, loading, refetch } = useCustomersCartsFetcher({
+  // const { customersCartPaginatedResult, error, loading, refetch } = useCustomersCartsFetcher({
+  //   page,
+  //   perPage,
+  //   tableSorting,
+  //   customerId,
+  // });
+  const { customersOrderPaginatedResult, error, loading } = useCustomersOrdersFetcher({
     page,
     perPage,
     tableSorting,
@@ -32,7 +38,7 @@ const CustomerSchedulesForm = (props) => {
   });
 
   console.log("Props",props);
-  console.log("Carts",getCartOptions(customersCartPaginatedResult?.results));
+  console.log("Orders",getCartOptions(customersOrderPaginatedResult?.results));
   console.log(match);
   console.log(customerId);
 
@@ -70,12 +76,12 @@ const CustomerSchedulesForm = (props) => {
               </Spacings.Inline>
             :null}
             <SelectField
-              title="Cart"
-              name='cartId'
-              errors={formik.errors?.cartId}
-              touched={formik.touched?.cartId}
-              value={formik?.values?.cartId}
-              options={getCartOptions(customersCartPaginatedResult?.results)}
+              title="Order"
+              name='orderId'
+              errors={formik.errors?.orderId}
+              touched={formik.touched?.orderId}
+              value={formik?.values?.orderId}
+              options={getCartOptions(customersOrderPaginatedResult?.results)}
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               horizontalConstraint={9}

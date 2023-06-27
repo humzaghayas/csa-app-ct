@@ -23,21 +23,17 @@ const orderService = require("./services/orderService")();
                     "filter":{"isActive":true, scheduleDate:date.toISOString()}
             }
             const schedules = await schedulesService.getSchedules({projectKey,variables});
-            logger.info(`Total schedules ${schedules?.total}`);
+            logger.info(`Total schedules ${schedules?.total ?? 0}`);
 
             schedules?.results?.forEach(async schedule=>{
-                const cartId = schedule?.value?.cartId ? schedule?.value?.cartId : schedule?.value?.orderId;
-                logger.info(`Creating duplicate cart for cartId ${cartId}`)
-                const cart = await cartService.replicateCart(cartId, "csa-project-4");
+                const orderId = schedule?.value?.orderId ? schedule?.value?.orderId : schedule?.value?.cartId;
+                logger.info(`Creating duplicate cart for orderId ${orderId}`)
+                const cart = await cartService.replicateCart(orderId, "csa-project-4");
                 const replicateCartId = cart?.replicateCart?.id;
                 console.log("Cart",cart);
                 logger.info(`Duplicate cart created with cartId ${replicateCartId}`);
 
                 if(replicateCartId){
-                    // logger.info(`Creating payment for ${replicateCartId}`)
-                    // const payment = await createPayment(replicateCartId);
-                    // console.log("Payment",payment);
-                    // logger.info(`Created payment for ${replicateCartId}`)
                     logger.info("Creating order");
                     const order = await orderService.createOrderFromCart(cart?.replicateCart,"csa-project-4");
                     console.log("Order",order)

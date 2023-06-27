@@ -63,7 +63,7 @@ module.exports = ()=>{
           const conf = adminConf[projectKey];
   
           if(conf.isDatabase){
-            console.log('adasdasd',schedule);
+            console.log('Create schedule in database',schedule);
             return await scheduleService.createSchedulesMongo(conf,schedule);
           
           }else{
