@@ -85,7 +85,8 @@ const PlaceOrder = (props) => {
         }
       }else{
         const c = await fetchByUrl(cartApiUrl,{cartId:params.id,isQuoteRequest:true})
-        setCart(c.data);
+        setCart(c.data.cart);
+        setIsConfirmDisabled(false);
       }
     }
   },[])
