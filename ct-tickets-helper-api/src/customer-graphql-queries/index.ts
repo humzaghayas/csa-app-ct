@@ -1115,3 +1115,25 @@ export const FETCH_STAGED_QUOTES_LIST = `query fetchStagedQuotes($limit: Int,
     }
   }
 }`;
+
+export const FETCH_CUSTOMER_BY_EMAIL = `query FetchCustomersByEmail($where:String!) {
+  customers(where: $where, limit:1) {
+    results {
+      id
+      customerNumber
+      externalId
+      firstName
+      dateOfBirth
+      lastName
+      companyName
+      email
+      customerGroup{
+      name
+      }
+      createdAt
+      lastModifiedAt
+      key
+    }
+  }
+} 
+`
