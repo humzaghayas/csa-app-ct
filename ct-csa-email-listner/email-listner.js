@@ -38,9 +38,7 @@ function processEmailBody(body) {
       console.log('From:', parsedEmail.from.text);
       console.log('Body:', parsedEmail.text);
 
-      console.log("Email :", );
-
-      createTicket(extractEmail(parsedEmail.from.text),parsedEmail.subject,parsedEmail.text);
+      createTicket(extractEmail(parsedEmail.from.text),parsedEmail.subject,extractMessageText(parsedEmail.text));
 
     }
   });
@@ -62,26 +60,42 @@ function extractEmail(str){
   }
 }
 
+function extractMessageText(str){
+  // Remove newline characters using the replace() method with a regular expression
+  const cleanedStr = str.replace(/\n/g, "");
+  return cleanedStr;
+}
+
 async function createTicket (email,subject,message){
   const ticketCreationUrl = process.env.TICKET_CREATION_URL;      
-  const response = await axios.post(ticketCreationUrl+"/create/ticket",
-          {
-            "data":{
-                "email":email,
-                "category":"request",
-                "contactType":"email",
-                "priority":"normal",
-                "subject":subject,
-                "message":message       
-            },
-            "projectKey":"csa-project-4"
-        });
-        console.log("Ticket creation response",response.data);
-      if(response.statusText == '200'){
-        console.log("Ticket created");
-      }else{
-        console.log("Ticket not created",response.data);
+    axios.post(ticketCreationUrl+"/create/ticket",
+      {
+        "data":{
+            "email":email,
+            "category":"request",
+            "contactType":"email",
+            "priority":"normal",
+            "subject":subject,
+            "message":message       
+        },
+        "projectKey":"csa-project-4"
+    }).then(result=>{
+      console.log("Ticket created with ticket number:",result?.data?.tickets?.ticketNumber);
+    }).catch(error =>{
+      if (error.response) {
+          // If server responded with a status code for a request
+          console.log("Data", error.response.data);
+          console.log("Status", error.response.status);
+          // console.log("Headers", error.response.headers);
+      } else if (error.request) {
+          // Client made a request but response is not received
+          console.log("<<<<<<<Response Not Received>>>>>>>>");
+          console.log(error.request);
+      } else {
+          // Other case
+          console.log("Error", error.message);
       }
+    });
 }
 
 // Connect to the IMAP server

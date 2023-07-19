@@ -29,7 +29,7 @@ app.post("/create/ticket", async (req, res) => {
   console.log("create ticket:" + projectKey);
 
   const customer = await customerService.getCustomerByEmail(data?.email,projectKey);
-  console.log(customer);
+  console.log("Customer id:",customer?.id);
   if(customer){
     data.customerId = customer?.id;
     const tickets = await ticketsService.createTicket(projectKey, data);
