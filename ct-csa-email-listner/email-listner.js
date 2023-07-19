@@ -17,7 +17,7 @@ const imapConfig = {
   }
 };
 
-console.log(imapConfig);
+console.log("Configured user email",imapConfig.user);
 
 // Create an IMAP instance
 const imap = new Imap(imapConfig);
