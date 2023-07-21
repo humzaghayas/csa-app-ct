@@ -34,8 +34,6 @@ module.exports = ()=>{
     customerService.getCustomerByEmail = async (email,projectKey) =>{
         try{
 
-            console.log("Query:",FETCH_CUSTOMER_BY_EMAIL);
-
             const adminConf = await adminDBService.adminConfiguration(projectKey);
 
             if(adminConf.error){

@@ -4,6 +4,7 @@ admin.initializeApp({}, "admkin-sf");
 const { adminDBService } = require("ct-external-connections");
 const express = require("express");
 const cors = require("cors");
+const { sendTicketCreationEmail } = require("./services/emailService");
 const app = express();
 const ticketsService = require("./services/ticketsService")();
 const customerService = require("./services/customer")();
@@ -38,6 +39,8 @@ app.post("/create/ticket", async (req, res) => {
       res.status(400).json({tickets});
     }else{
       res.status(200).json({ tickets });
+      ///send email
+      sendTicketCreationEmail(tickets);
     }
   }else{
     res.status(404).json({error:`Customer with email: ${data?.email} not found in commercetools project: ${projectKey}`})

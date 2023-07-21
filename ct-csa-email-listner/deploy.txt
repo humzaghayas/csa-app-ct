@@ -1,0 +1,7 @@
+docker build -t gcr.io/commerce-tools-b2b-services/ct-csa-email-listener .
+
+build docker image : docker build -t gcr.io/commerce-tools-b2b-services/ct-csa-email-listener .
+
+push docker image : docker push gcr.io/commerce-tools-b2b-services/ct-csa-email-listener
+
+gcloud run deploy bff-api --image=gcr.io/commerce-tools-b2b-services/ct-csa-email-listener --region=us-central1
