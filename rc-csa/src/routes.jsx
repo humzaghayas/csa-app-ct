@@ -166,6 +166,9 @@ const ApplicationRoutes = () => {
         <Route path={`${match.path}/feedback`}>
           <FeedbackSetup linkToWelcome={match.url} />
         </Route>
+        <Route path={`${match.path}/Knowledgebase`}>
+          <KnowledgebaseAccount linkToWelcome={match.url} />
+        </Route>
         <Route path={`${match.path}/`}>
           <DashboardDisplay linkToWelcome={match.url} />
         </Route>

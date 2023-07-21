@@ -164,3 +164,447 @@
         }
     ]
 }
+
+
+/// all custom fields
+
+{
+  "limit": 20,
+  "offset": 0,
+  "count": 8,
+  "total": 8,
+  "results": [
+    {
+      "id": "dd370546-f0d7-4d1a-a8f9-09dd88aa6ff6",
+      "version": 6,
+      "versionModifiedAt": "2023-05-30T09:03:37.785Z",
+      "createdAt": "2023-05-08T09:26:31.141Z",
+      "lastModifiedAt": "2023-05-30T09:03:37.785Z",
+      "lastModifiedBy": {
+        "clientId": "D1Ok7gTmTK035os5eDmgOIrv",
+        "isPlatformClient": false
+      },
+      "createdBy": {
+        "clientId": "D1Ok7gTmTK035os5eDmgOIrv",
+        "isPlatformClient": false
+      },
+      "key": "customFields",
+      "name": {
+        "en": "Custom Fields",
+        "de": "Custom Fields"
+      },
+      "description": {
+        "en": "If there are any special comments for the order by the customer, then CS agent can add the same. Custom fields also contains the fields for schedule orders."
+      },
+      "resourceTypeIds": [
+        "order"
+      ],
+      "fieldDefinitions": [
+        {
+          "name": "comments",
+          "label": {
+            "en": "Comments"
+          },
+          "required": false,
+          "type": {
+            "name": "Set",
+            "elementType": {
+              "name": "String"
+            }
+          },
+          "inputHint": "MultiLine"
+        },
+        {
+          "name": "isScheduleOrder",
+          "label": {
+            "de": "isScheduleOrder",
+            "en": "isScheduleOrder"
+          },
+          "required": false,
+          "type": {
+            "name": "Boolean"
+          },
+          "inputHint": "SingleLine"
+        },
+        {
+          "name": "scheduleDate",
+          "label": {
+            "de": "Schedule Date",
+            "en": "Schedule Date"
+          },
+          "required": false,
+          "type": {
+            "name": "Date"
+          },
+          "inputHint": "SingleLine"
+        }
+      ]
+    },
+    {
+      "id": "c9ef15fa-b10e-4da5-a9f1-dee19f9ce925",
+      "version": 2,
+      "versionModifiedAt": "2023-05-09T08:30:39.160Z",
+      "createdAt": "2023-05-08T09:27:46.783Z",
+      "lastModifiedAt": "2023-05-09T08:30:39.160Z",
+      "lastModifiedBy": {
+        "clientId": "D1Ok7gTmTK035os5eDmgOIrv",
+        "isPlatformClient": false
+      },
+      "createdBy": {
+        "clientId": "D1Ok7gTmTK035os5eDmgOIrv",
+        "isPlatformClient": false
+      },
+      "key": "profileFields",
+      "name": {
+        "en": "Profile custom fields"
+      },
+      "description": {
+        "en": "List of customer custom profile fields"
+      },
+      "resourceTypeIds": [
+        "customer"
+      ],
+      "fieldDefinitions": [
+        {
+          "name": "occupation",
+          "label": {
+            "en": "Occupation"
+          },
+          "required": false,
+          "type": {
+            "name": "String"
+          },
+          "inputHint": "SingleLine"
+        },
+        {
+          "name": "preferredLanguage",
+          "label": {
+            "en": "Preferred Language"
+          },
+          "required": false,
+          "type": {
+            "name": "String"
+          },
+          "inputHint": "SingleLine"
+        },
+        {
+          "name": "ageGroup",
+          "label": {
+            "en": "Age Group"
+          },
+          "required": false,
+          "type": {
+            "name": "String"
+          },
+          "inputHint": "SingleLine"
+        },
+        {
+          "name": "gender",
+          "label": {
+            "en": "Gender"
+          },
+          "required": false,
+          "type": {
+            "name": "String"
+          },
+          "inputHint": "SingleLine"
+        },
+        {
+          "name": "preferredCurrency",
+          "label": {
+            "en": "Preferred Currency"
+          },
+          "required": false,
+          "type": {
+            "name": "String"
+          },
+          "inputHint": "SingleLine"
+        },
+        {
+          "name": "promotions",
+          "label": {
+            "en": "Promotions"
+          },
+          "required": false,
+          "type": {
+            "name": "Set",
+            "elementType": {
+              "name": "Reference",
+              "referenceTypeId": "cart-discount"
+            }
+          },
+          "inputHint": "SingleLine"
+        }
+      ]
+    },
+    {
+      "id": "9c6949af-da3e-46ab-9603-a641842a4022",
+      "version": 1,
+      "versionModifiedAt": "2023-05-08T09:29:37.900Z",
+      "createdAt": "2023-05-08T09:29:37.900Z",
+      "lastModifiedAt": "2023-05-08T09:29:37.900Z",
+      "lastModifiedBy": {
+        "clientId": "D1Ok7gTmTK035os5eDmgOIrv",
+        "isPlatformClient": false
+      },
+      "createdBy": {
+        "clientId": "D1Ok7gTmTK035os5eDmgOIrv",
+        "isPlatformClient": false
+      },
+      "key": "promotionsList",
+      "name": {
+        "en": "Promotions List"
+      },
+      "description": {
+        "en": "List of promotions (eg. vouchers, gift cards) assigned to cusotmer."
+      },
+      "resourceTypeIds": [
+        "customer"
+      ],
+      "fieldDefinitions": [
+        {
+          "name": "promotions",
+          "label": {
+            "en": "Promotions"
+          },
+          "required": false,
+          "type": {
+            "name": "Set",
+            "elementType": {
+              "name": "Reference",
+              "referenceTypeId": "cart-discount"
+            }
+          },
+          "inputHint": "SingleLine"
+        }
+      ]
+    },
+    {
+      "id": "4d01cd6e-5e7b-4bd3-b9b6-c671760f7b1d",
+      "version": 2,
+      "versionModifiedAt": "2023-06-19T11:29:18.308Z",
+      "createdAt": "2023-05-09T15:38:04.611Z",
+      "lastModifiedAt": "2023-06-19T11:29:18.308Z",
+      "lastModifiedBy": {
+        "clientId": "5vR6JeXRGbFHqDt5LQqa-1AN",
+        "isPlatformClient": false
+      },
+      "createdBy": {
+        "clientId": "klrVDO43kRZWoIKvmtI5Y6Rb",
+        "isPlatformClient": false
+      },
+      "key": "line-item-custom-type",
+      "name": {
+        "en": "Line Item Custom Type"
+      },
+      "description": {
+        "en": "Line Item Custom Type"
+      },
+      "resourceTypeIds": [
+        "line-item"
+      ],
+      "fieldDefinitions": [
+        {
+          "name": "stripe_session_ids",
+          "label": {
+            "en": "Stripe Session ID"
+          },
+          "required": false,
+          "type": {
+            "name": "Set",
+            "elementType": {
+              "name": "String"
+            }
+          },
+          "inputHint": "SingleLine"
+        },
+        {
+          "name": "quantity_charged",
+          "label": {
+            "en": "Quantity Already Charged"
+          },
+          "required": false,
+          "type": {
+            "name": "Number"
+          },
+          "inputHint": "SingleLine"
+        },
+        {
+          "name": "isScheduleOrder",
+          "label": {
+            "de": "isScheduleOrder",
+            "en": "isScheduleOrder"
+          },
+          "required": false,
+          "type": {
+            "name": "Boolean"
+          },
+          "inputHint": "SingleLine"
+        }
+      ]
+    },
+    {
+      "id": "b1e7043a-3c8a-4f5e-9ffc-a73408087f5c",
+      "version": 1,
+      "versionModifiedAt": "2023-05-10T13:22:37.808Z",
+      "createdAt": "2023-05-10T13:22:37.808Z",
+      "lastModifiedAt": "2023-05-10T13:22:37.808Z",
+      "lastModifiedBy": {
+        "clientId": "wn1IOH1hkebPy564YeihqEmK",
+        "isPlatformClient": false
+      },
+      "createdBy": {
+        "clientId": "wn1IOH1hkebPy564YeihqEmK",
+        "isPlatformClient": false
+      },
+      "key": "wishlist",
+      "name": {
+        "en": "wishlist"
+      },
+      "description": {
+        "en": "description"
+      },
+      "resourceTypeIds": [
+        "shopping-list"
+      ],
+      "fieldDefinitions": [
+        {
+          "name": "wishlistName",
+          "label": {
+            "en": "wishlistName"
+          },
+          "required": false,
+          "type": {
+            "name": "String"
+          },
+          "inputHint": "SingleLine"
+        }
+      ]
+    },
+    {
+      "id": "7a50383b-4b56-4218-80fa-652b07d952fb",
+      "version": 1,
+      "versionModifiedAt": "2023-05-10T13:27:35.168Z",
+      "createdAt": "2023-05-10T13:27:35.168Z",
+      "lastModifiedAt": "2023-05-10T13:27:35.168Z",
+      "lastModifiedBy": {
+        "clientId": "wn1IOH1hkebPy564YeihqEmK",
+        "isPlatformClient": false
+      },
+      "createdBy": {
+        "clientId": "wn1IOH1hkebPy564YeihqEmK",
+        "isPlatformClient": false
+      },
+      "key": "cartOrderNumber",
+      "name": {
+        "en": "cartOrderNumber"
+      },
+      "description": {
+        "en": "description"
+      },
+      "resourceTypeIds": [
+        "order"
+      ],
+      "fieldDefinitions": [
+        {
+          "name": "cartOrderNumber",
+          "label": {
+            "en": "cartOrderNumber"
+          },
+          "required": false,
+          "type": {
+            "name": "String"
+          },
+          "inputHint": "SingleLine"
+        }
+      ]
+    },
+    {
+      "id": "4cb896d1-902e-47a2-b1e6-9845db56a9a1",
+      "version": 1,
+      "versionModifiedAt": "2023-05-10T13:28:39.519Z",
+      "createdAt": "2023-05-10T13:28:39.519Z",
+      "lastModifiedAt": "2023-05-10T13:28:39.519Z",
+      "lastModifiedBy": {
+        "clientId": "wn1IOH1hkebPy564YeihqEmK",
+        "isPlatformClient": false
+      },
+      "createdBy": {
+        "clientId": "wn1IOH1hkebPy564YeihqEmK",
+        "isPlatformClient": false
+      },
+      "key": "wishlistNumber",
+      "name": {
+        "en": "wishlist"
+      },
+      "description": {
+        "en": "description"
+      },
+      "resourceTypeIds": [
+        "shopping-list"
+      ],
+      "fieldDefinitions": [
+        {
+          "name": "wishlistNumber",
+          "label": {
+            "en": "wishlistNumber"
+          },
+          "required": false,
+          "type": {
+            "name": "String"
+          },
+          "inputHint": "SingleLine"
+        }
+      ]
+    },
+    {
+      "id": "f818aa36-0e5e-4918-9f47-e83122f5d9b0",
+      "version": 1,
+      "versionModifiedAt": "2023-05-16T12:19:57.467Z",
+      "createdAt": "2023-05-16T12:19:57.467Z",
+      "lastModifiedAt": "2023-05-16T12:19:57.467Z",
+      "lastModifiedBy": {
+        "clientId": "klrVDO43kRZWoIKvmtI5Y6Rb",
+        "isPlatformClient": false
+      },
+      "createdBy": {
+        "clientId": "klrVDO43kRZWoIKvmtI5Y6Rb",
+        "isPlatformClient": false
+      },
+      "key": "paymentFields",
+      "name": {
+        "en": "Payment Fields"
+      },
+      "description": {
+        "en": "Payment url field and Payment PSP Status Field to save the url of payment link of PSP."
+      },
+      "resourceTypeIds": [
+        "payment"
+      ],
+      "fieldDefinitions": [
+        {
+          "name": "paymentLink",
+          "label": {
+            "en": "PaymentLink"
+          },
+          "required": false,
+          "type": {
+            "name": "String"
+          },
+          "inputHint": "SingleLine"
+        },
+        {
+          "name": "pspPaymentStatus",
+          "label": {
+            "en": "PspPaymentStatus"
+          },
+          "required": false,
+          "type": {
+            "name": "String"
+          },
+          "inputHint": "SingleLine"
+        }
+      ]
+    }
+  ]
+}
