@@ -19,7 +19,7 @@
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "ct-external-connections": "^1.0.15",
-    "ct-tickets-helper-api": "^1.0.47",
+    "ct-tickets-helper-api": "^1.0.59",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "firebase-admin": "^10.0.2",
