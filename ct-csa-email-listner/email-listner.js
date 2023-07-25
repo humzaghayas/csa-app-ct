@@ -34,12 +34,13 @@ function processEmailBody(body) {
       //what emails do we need to check for this service will create tickets for all emails
       //how to filter the emails what is constrant 
 
-      console.log('Subject:', parsedEmail.subject);
-      console.log('From:', parsedEmail.from.text);
-      console.log('Body:', parsedEmail.text);
-
-      createTicket(extractEmail(parsedEmail.from.text),parsedEmail.subject,extractMessageText(parsedEmail.text));
-
+      if(!parsedEmail.from.text.includes("<mailer-daemon@googlemail.com>")){
+        console.log('Subject:', parsedEmail.subject);
+        console.log('From:', parsedEmail.from.text);
+        console.log('Body:', parsedEmail.text);
+  
+        createTicket(extractEmail(parsedEmail.from.text),parsedEmail.subject,extractMessageText(parsedEmail.text));
+      }
     }
   });
 }
