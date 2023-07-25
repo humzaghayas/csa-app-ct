@@ -64,7 +64,7 @@ const PlaceOrder = (props) => {
   const custApiUrl = `${ctCsaBackendURL}/customer-by-cartid`
 
   const [customer,setCustomer] = useState(null);
-
+  const [isConfirmDisabled,setIsConfirmDisabled] = useState(true);
   useEffect(async()=>{
     if(cart === null){
       if(!isQuoteRequest){
@@ -73,6 +73,10 @@ const PlaceOrder = (props) => {
         console.log('cart: ',c);
         if(c.payment){
           setCart(c.data.cart);
+
+          if(c.data.cart.cartState == "Active" || c.data.cart.cartState ==  "Merged" ){
+            setIsConfirmDisabled(false);
+          }
         }else{
           const cust =await fetchByUrl(custApiUrl,{cartId:params.id});
 
@@ -81,7 +85,8 @@ const PlaceOrder = (props) => {
         }
       }else{
         const c = await fetchByUrl(cartApiUrl,{cartId:params.id,isQuoteRequest:true})
-        setCart(c.data);
+        setCart(c.data.cart);
+        setIsConfirmDisabled(false);
       }
     }
   },[])
@@ -201,6 +206,7 @@ const PlaceOrder = (props) => {
                     isOpen
                     onClose={props.onClose}
                     onPrimaryButtonClick={handleSubmit}
+                    isPrimaryButtonDisabled={isConfirmDisabled}
 
                     // labelPrimaryButton=" "
                     // labelPrimaryButton={FormModalPage.Intl.save}

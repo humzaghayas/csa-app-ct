@@ -1,15 +1,17 @@
-const {getApiRoot,projectKey } = require('../../config/commercetools-client');
+const {getApiRoot } = require('../../config/commercetools-client');
 const {FETCH_QUOTES_REQUEST_LIST,FETCH_QUOTES_LIST,
     CREATE_QUOTE_FOR_CUSTOMER,FETCH_STAGED_QUOTES_LIST} =require ('ct-tickets-helper-api');
+    const {adminDBService} =require('ct-external-connections');
 
 module.exports = ()=>{
 
     const quotesService = {};
 
-    quotesService.getQuotesByCustomer = async(page,perPage,customerId)=>{
+    quotesService.getQuotesByCustomer = async(page,perPage,customerId,projectKey)=>{
 
         try {
-            const apiRoot =  getApiRoot();
+            const adminConf = await adminDBService.adminConfiguration(projectKey);
+            const apiRoot =  getApiRoot(adminConf[projectKey]);
             // const results =await apiRoot.withProjectKey({projectKey}).customObjects()
             //                     .withContainerAndKey({container,key}).get().execute();
 
@@ -37,10 +39,11 @@ module.exports = ()=>{
         }
     };
 
-    quotesService.getQuotesRequestsByCustomer = async(page,perPage,customerId)=>{
+    quotesService.getQuotesRequestsByCustomer = async(page,perPage,customerId,projectKey)=>{
 
         try {
-            const apiRoot =  getApiRoot();
+            const adminConf = await adminDBService.adminConfiguration(projectKey);
+            const apiRoot =  getApiRoot(adminConf[projectKey]);
             // const results =await apiRoot.withProjectKey({projectKey}).customObjects()
             //                     .withContainerAndKey({container,key}).get().execute();
 
@@ -68,10 +71,11 @@ module.exports = ()=>{
         }
     };
 
-    quotesService.getStagedQuotesByCustomer = async(page,perPage,customerId)=>{
+    quotesService.getStagedQuotesByCustomer = async(page,perPage,customerId,projectKey)=>{
 
         try {
-            const apiRoot =  getApiRoot();
+            const adminConf = await adminDBService.adminConfiguration(projectKey);
+            const apiRoot =  getApiRoot(adminConf[projectKey]);
             // const results =await apiRoot.withProjectKey({projectKey}).customObjects()
             //                     .withContainerAndKey({container,key}).get().execute();
 
@@ -99,10 +103,12 @@ module.exports = ()=>{
         }
     };
 
-    quotesService.createQuoteRequestForCustomer = async(quoteRequest)=>{
+    quotesService.createQuoteRequestForCustomer = async(quoteRequest,projectKey)=>{
 
         try {
-            const apiRoot =  getApiRoot();
+
+            const adminConf = await adminDBService.adminConfiguration(projectKey);
+            const apiRoot =  getApiRoot(adminConf[projectKey]);
             // const results =await apiRoot.withProjectKey({projectKey}).customObjects()
             //                     .withContainerAndKey({container,key}).get().execute();
 

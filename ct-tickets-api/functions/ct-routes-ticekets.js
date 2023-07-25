@@ -63,10 +63,12 @@ app.post("/create-ticket", async (req, res) => {
 
 app.post("/customer-quotes", async (req, res) => {
   const { page, perPage, customerId } = req.body;
+  const { projectKey } = req.session;
   const result = await quotesService.getQuotesByCustomer(
     page,
     perPage,
-    customerId
+    customerId,
+    projectKey
   );
 
   if (result.error) {
@@ -78,10 +80,12 @@ app.post("/customer-quotes", async (req, res) => {
 
 app.post("/customer-quotes-requests", async (req, res) => {
   const { page, perPage, customerId } = req.body;
+  const { projectKey } = req.session;
   const result = await quotesService.getQuotesRequestsByCustomer(
     page,
     perPage,
-    customerId
+    customerId,
+    projectKey
   );
 
   if (result.error) {
@@ -93,10 +97,12 @@ app.post("/customer-quotes-requests", async (req, res) => {
 
 app.post("/customer-quotes-staged", async (req, res) => {
   const { page, perPage, customerId } = req.body;
+  const { projectKey } = req.session;
   const result = await quotesService.getStagedQuotesByCustomer(
     page,
     perPage,
-    customerId
+    customerId,
+    projectKey
   );
 
   if (result.error) {
@@ -107,9 +113,10 @@ app.post("/customer-quotes-staged", async (req, res) => {
 });
 app.post("/create-customer-quote", async (req, res) => {
   const draft = req.body;
+  const { projectKey } = req.session;
 
   console.log("draft", draft);
-  const result = await quotesService.createQuoteRequestForCustomer(draft);
+  const result = await quotesService.createQuoteRequestForCustomer(draft,projectKey);
 
   if (result.error) {
     res.status(400).json({ result: result.errors });
