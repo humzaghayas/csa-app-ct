@@ -29,17 +29,17 @@ function processEmailBody(body) {
     if (err) {
       console.error('Error parsing email:', err);
     } else {
-
       //listen for related emails if the email subject is 
       //what emails do we need to check for this service will create tickets for all emails
-      //how to filter the emails what is constrant 
-
-      if(!parsedEmail.from.text.includes("<mailer-daemon@googlemail.com>")){
+      //how to filter the emails what is constrant
+      if(!parsedEmail.from.text.includes("<mailer-daemon@googlemail.com>") && !isReplyEmail(parsedEmail.subject)){
         console.log('Subject:', parsedEmail.subject);
         console.log('From:', parsedEmail.from.text);
         console.log('Body:', parsedEmail.text);
   
         createTicket(extractEmail(parsedEmail.from.text),parsedEmail.subject,extractMessageText(parsedEmail.text));
+      }else{
+        console.log("Its a reply email not created any ticket");7
       }
     }
   });
@@ -76,8 +76,8 @@ async function createTicket (email,subject,message){
             "category":"request",
             "contactType":"email",
             "priority":"normal",
-            "subject":subject,
-            "message":message       
+            "subject":subject ?? "--",
+            "message":message?? "--"       
         },
         "projectKey":"csa-project-4"
     }).then(result=>{
@@ -97,6 +97,12 @@ async function createTicket (email,subject,message){
           console.log("Error", error.message);
       }
     });
+}
+
+function isReplyEmail(emailBody) {
+  // Implement your logic here to check for patterns or keywords indicating a reply email
+  // For example, you can check for "Re:", "Reply:", or custom keywords in the email subject or body
+  return emailBody.includes("Re:");
 }
 
 // Connect to the IMAP server
