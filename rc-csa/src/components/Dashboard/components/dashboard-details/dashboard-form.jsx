@@ -67,6 +67,7 @@ import { useUserFetcher } from '../../../../hooks/use-register-user-connector';
 import { useFetchChatNotifyList } from '../../../../hooks/use-register-user-connector/use-service-connector';
 import { getChatRows } from '../chat/function';
 import { PERMISSIONS } from '../../../../constants';
+import { Badge } from '@mui/material';
 
 let rows = null;
 
@@ -125,6 +126,7 @@ const DashboardDisplayForm = (props) => {
   const [chat, setChat] = useState(null);
   const [chatRaw, setChatRaw] = useState(null);
   const ticketData = props?.ticket;
+  const newChatCount = props?.newChatCount;
   const orderData = props?.order;
   const cartData = props?.cart;
   const customerData = props?.customer;
@@ -318,13 +320,17 @@ const DashboardDisplayForm = (props) => {
             <Constraints.Horizontal max={7}>
               <Card constraint="xl" theme="light" insetScale="l">
                 <Spacings.Inline alignItems="stretch">
-                  <IconButton
-                    icon={<UserFilledIcon />}
-                    label="A label text"
-                    onClick={() =>
-                      navigateToLink('https://dashboard.tawk.to/#/dashboard')
-                    }
-                  />
+                <Badge badgeContent={newChatCount} color="primary">
+                  
+                    <IconButton
+                      icon={<UserFilledIcon />}
+                      label="A label text"
+                      onClick={() =>
+                        navigateToLink('https://dashboard.tawk.to/#/dashboard')
+                      }
+                    />
+                </Badge>
+
                   <Text.Subheadline as="h2">{'Chat'}</Text.Subheadline>
                 </Spacings.Inline>
                 <div style={{ height: '12px' }}></div>

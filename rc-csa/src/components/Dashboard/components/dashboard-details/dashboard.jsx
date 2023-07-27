@@ -91,6 +91,8 @@ const DashboardDisplay = (props) => {
   const [resData, setResData] = useState(null);
   const [feedbackRaw, setFeedRaw] = useState(null);
   const [chatRaw, setChatRaw] = useState(null);
+  const [newChatCount, setNewChatCount] = useState(null);
+  const [messageShown, setMessageShown] = useState(false);
   const { user } = useApplicationContext((context) => ({
     user: context.user ?? '',
   }));
@@ -179,16 +181,21 @@ const DashboardDisplay = (props) => {
         const newCount = updatedChatData?.count;
         if (newCount > previousCount) {
           const newChats = newCount - previousCount;
-          toast.info(`You've got ${newChats} new chat(s) waiting`, {
-            autoClose: 5000, // Set the duration for how long the notification will be shown (in milliseconds)
-            hideProgressBar: true, // Hide the progress bar
-          });
+          // toast.info(`You've got ${newChats} new chat(s) waiting`, {
+          //   autoClose: 5000, // Set the duration for how long the notification will be shown (in milliseconds)
+          //   hideProgressBar: true, // Hide the progress bar
+          // });
+
+          setMessageShown(true);
+
+          setNewChatCount(newChats);
+          // setPreviousCount(newCount);
         }
       }
     };
 
     // Check for new chats every 2 minutes (120,000 milliseconds)
-    const intervalId = setInterval(checkForNewChats, 3 * 1000);
+    const intervalId = setInterval(checkForNewChats, 30 * 1000);
 
     // Clear the interval when the component is unmounted to avoid memory leaks
     return () => clearInterval(intervalId);
@@ -276,6 +283,7 @@ const DashboardDisplay = (props) => {
       chatCount={chatCount}
       isReadOnly={!canManage}
       dataLocale={dataLocale}
+      newChatCount={newChatCount}
     >
       {(formProps) => {
         return (

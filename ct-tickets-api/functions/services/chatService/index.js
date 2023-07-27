@@ -29,7 +29,14 @@ module.exports = () => {
           .replace("{{USERNAME}}", adminConf[projectKey].username)
           .replace("{{PASSWORD}}", adminConf[projectKey].password);
 
-        const Chat = await chatDBConnection(uri);
+          const chatConn = adminDBService[projectKey+'chat'];
+
+        let Chat ={};
+        
+        if(!chatConn || chatConn.connection?.readyState != 1){
+          Chat  =await chatDBConnection(uri);
+          adminDBService[projectKey+'chat']=Chat;
+        }
         console.log("chat", Chat);
         const offset = variables.offset;
         let r = await Chat.find(filter).limit(variables.limit).skip(offset);
