@@ -10,6 +10,7 @@ const { adminDBService } = require("ct-external-connections");
 const cartService = require("./services/cartService")();
 const orderService = require("./services/orderService")();
 const feedbackService = require("./services/feedbackService")();
+const chatService = require("./services/chatService")();
 const {
   getTicketCategories,
   getTicketPriorityValues,
@@ -116,7 +117,10 @@ app.post("/create-customer-quote", async (req, res) => {
   const { projectKey } = req.session;
 
   console.log("draft", draft);
-  const result = await quotesService.createQuoteRequestForCustomer(draft,projectKey);
+  const result = await quotesService.createQuoteRequestForCustomer(
+    draft,
+    projectKey
+  );
 
   if (result.error) {
     res.status(400).json({ result: result.errors });
@@ -367,6 +371,32 @@ app.post("/create-feedback-db", async (req, res) => {
   console.log("create ticket:" + projectKey);
 
   const feedbacks = await feedbackService.createFeedback(projectKey, data);
+
+  // if(result.error){
+  //     res.status(400).json({result: result.errors});
+  // }else{
+  res.status(200).json({ feedbacks });
+  //}
+});
+
+app.post("/chat-startList", async (req, res) => {
+  const { variables } = req.body;
+  const { projectKey } = req.session;
+  const results = await chatService.getChats({ projectKey, variables });
+
+  if (results.error) {
+    res.status(400).json(results);
+  } else {
+    res.status(200).json(results);
+  }
+});
+
+app.post("/create-startChat-db", async (req, res) => {
+  const { data } = req.body;
+  const { projectKey } = req.session;
+  console.log("create ticket:" + projectKey);
+
+  const feedbacks = await chatService.createStartChat(projectKey, data);
 
   // if(result.error){
   //     res.status(400).json({result: result.errors});

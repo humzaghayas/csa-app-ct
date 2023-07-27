@@ -310,3 +310,41 @@ export const useCreateOrUpdateFeedback = () => {
     execute,
   };
 };
+
+export const useFetchChatNotifyList = () => {
+  const dispatch = useAsyncDispatch();
+  const { ctCsaBackendURL } = useApplicationContext((context) => ({
+    ctCsaBackendURL: context.environment.CT_CSA_BACKEND,
+  }));
+
+  const apiUrl = ctCsaBackendURL + '/chat-startList';
+
+  const execute = async (projectKey, variables) => {
+    const header = {
+      'Content-Type': 'application/json',
+    };
+
+    const payload = {
+      projectKey,
+      variables,
+    };
+
+    console.log('apiUrl', apiUrl);
+
+    const data = await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header,
+        },
+      })
+    );
+
+    return data;
+  };
+
+  return {
+    execute,
+  };
+};

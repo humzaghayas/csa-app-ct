@@ -8,6 +8,7 @@ const { sendTicketCreationEmail } = require("./services/emailService");
 const app = express();
 const ticketsService = require("./services/ticketsService")();
 const customerService = require("./services/customer")();
+const chatService = require("./services/chatService")();
 // require('./ct-routes-ticekets')(app);
 
 app.use(cors({ origin: true }));
@@ -29,24 +30,53 @@ app.post("/create/ticket", async (req, res) => {
   // const { projectKey } = req.session;
   console.log("create ticket:" + projectKey);
 
-  const customer = await customerService.getCustomerByEmail(data?.email,projectKey);
-  console.log("Customer id:",customer?.id);
-  if(customer){
+  const customer = await customerService.getCustomerByEmail(
+    data?.email,
+    projectKey
+  );
+  console.log("Customer id:", customer?.id);
+  if (customer) {
     data.customerId = customer?.id;
     const tickets = await ticketsService.createTicket(projectKey, data);
 
-    if(tickets.error){
-      res.status(400).json({tickets});
-    }else{
+    if (tickets.error) {
+      res.status(400).json({ tickets });
+    } else {
       res.status(200).json({ tickets });
       ///send email
       sendTicketCreationEmail(tickets);
     }
-  }else{
-    res.status(404).json({error:`Customer with email: ${data?.email} not found in commercetools project: ${projectKey}`})
+  } else {
+    res.status(404).json({
+      error: `Customer with email: ${data?.email} not found in commercetools project: ${projectKey}`,
+    });
   }
-  
 });
 
+app.post("/create-startChat-db", async (req, res) => {
+  const { projectKey, data } = req.body;
+  // const { projectKey } = req.session;
+  console.log("create chat:" + projectKey);
+
+  const chats = await chatService.createStartChat(projectKey, data);
+
+  // if(result.error){
+  //     res.status(400).json({result: result.errors});
+  // }else{
+  res.status(200).json({ chats });
+  //}
+});
+
+app.post("/chat-startList", async (req, res) => {
+  const { variables, projectKey } = req.body;
+  // const {  } = req.session;
+  const results = await chatService.getChats({ projectKey, variables });
+
+  if (results.error) {
+    res.status(400).json(results);
+  } else {
+    res.status(200).json(results);
+  }
+});
 
 exports.ct_csa_api = functions.https.onRequest(app);
