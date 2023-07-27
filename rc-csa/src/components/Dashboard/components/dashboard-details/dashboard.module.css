@@ -50,3 +50,9 @@
 .css-1juivf6-MuiTypography-root{
   font-weight: bold;
 }
+
+/* Custom CSS for ToastContainer */
+.custom-toast-container {
+  top: calc(50% + 30px) !important;
+  transform: translateY(-50%) !important;
+}

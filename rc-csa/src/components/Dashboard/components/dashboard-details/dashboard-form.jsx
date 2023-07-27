@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import { useIntl } from 'react-intl';
@@ -47,7 +47,8 @@ import {
   generateTicketExcel,
 } from './generateExcelData';
 //import { getOrderData } from './conversions';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // import PropTypes from 'prop-types';
 import SelectInput from '@commercetools-uikit/select-input';
 import { UserFilledIcon, UserLinearIcon } from '@commercetools-uikit/icons';
@@ -61,6 +62,11 @@ import {
   getResPercentage,
   getResRow,
 } from './sla-response';
+import { useIsAuthorized } from '@commercetools-frontend/permissions';
+import { useUserFetcher } from '../../../../hooks/use-register-user-connector';
+import { useFetchChatNotifyList } from '../../../../hooks/use-register-user-connector/use-service-connector';
+import { getChatRows } from '../chat/function';
+import { PERMISSIONS } from '../../../../constants';
 
 let rows = null;
 
@@ -109,7 +115,15 @@ const DashboardDisplayForm = (props) => {
     validate,
     enableReinitialize: true,
   });
-
+  const { user } = useApplicationContext((context) => ({
+    user: context.user ?? '',
+  }));
+  const canManage = useIsAuthorized({
+    demandedPermissions: [PERMISSIONS.ManageCsaTickets],
+  });
+  const { foundUser } = useUserFetcher(user.email);
+  const [chat, setChat] = useState(null);
+  const [chatRaw, setChatRaw] = useState(null);
   const ticketData = props?.ticket;
   const orderData = props?.order;
   const cartData = props?.cart;
@@ -123,6 +137,7 @@ const DashboardDisplayForm = (props) => {
   const openTickets = openStatusTickets(ticketData);
   const inprogTickets = inProgressTickets(ticketData);
   console.log('print', props);
+  // console.log('Chat print: ', chatData);
 
   //Assigning row values
   rows = ticketData;
@@ -248,8 +263,11 @@ const DashboardDisplayForm = (props) => {
   // console.log(averageRating);
   const history = useHistory();
 
+  //chat notification
+
   const formElements = (
     <Spacings.Stack scale="xxl">
+      <ToastContainer />
       <div className={styles.header}>
         <Header />
       </div>
@@ -754,6 +772,7 @@ const DashboardDisplayForm = (props) => {
         </Spacings.Inline>
       </Spacings.Stack>
       <TawkTo />
+      <ToastContainer className="custom-toast-container" />
     </Spacings.Stack>
   );
 
