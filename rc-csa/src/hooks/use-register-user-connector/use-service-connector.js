@@ -329,8 +329,6 @@ export const useFetchChatNotifyList = () => {
       variables,
     };
 
-    console.log('apiUrl', apiUrl);
-
     const data = await dispatch(
       actions.forwardTo.post({
         uri: apiUrl,

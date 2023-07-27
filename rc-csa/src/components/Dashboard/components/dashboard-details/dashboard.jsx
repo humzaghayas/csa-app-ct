@@ -49,6 +49,7 @@ import {
   useFetchChatNotifyList,
   useFetchFeedbackList,
 } from '../../../../hooks/use-register-user-connector/use-service-connector';
+import { ToastContainer, toast } from 'react-toastify';
 import Feedback from '../feedback/feedback';
 import { getFeedbackRows } from '../feedback/function';
 import { getOrderRows } from '../../../Orders/components/order-list/rows';
@@ -156,6 +157,42 @@ const DashboardDisplay = (props) => {
       setChatRaw(data);
     }
   }, [foundUser, chat]);
+
+  const [previousCount, setPreviousCount] = useState();
+
+  useEffect(() => {
+    if (chat) {
+      setPreviousCount(chat?.count);
+    }
+  }, [chat]);
+
+  useEffect(() => {
+    const checkForNewChats = async () => {
+      const data = await fetchChatList(projectKey, {
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        // sort: { lastModifiedAt: -1 },
+      });
+      // Fetch the updated chat data from props
+      const updatedChatData = data;
+      if (updatedChatData) {
+        const newCount = updatedChatData?.count;
+        if (newCount > previousCount) {
+          const newChats = newCount - previousCount;
+          toast.info(`You've got ${newChats} new chat(s) waiting`, {
+            autoClose: 5000, // Set the duration for how long the notification will be shown (in milliseconds)
+            hideProgressBar: true, // Hide the progress bar
+          });
+        }
+      }
+    };
+
+    // Check for new chats every 2 minutes (120,000 milliseconds)
+    const intervalId = setInterval(checkForNewChats, 3 * 1000);
+
+    // Clear the interval when the component is unmounted to avoid memory leaks
+    return () => clearInterval(intervalId);
+  }, [props.chat, previousCount]);
 
   const chatCount = chat?.count;
   console.log('chatCount: ', chatCount);

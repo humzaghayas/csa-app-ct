@@ -264,41 +264,7 @@ const DashboardDisplayForm = (props) => {
   const history = useHistory();
 
   //chat notification
-  const chatData = props?.chat;
-  // const [previousCount, setPreviousCount] = useState(0);
-  const previousCount = 6;
 
-  // useEffect(() => {
-  //   if (chatData) {
-  //     setPreviousCount(chat?.count);
-  //   }
-  // }, [chatData, previousCount]);
-
-  useEffect(() => {
-    const checkForNewChats = () => {
-      // Fetch the updated chat data from props
-      // const updatedChatData = chatData;
-      if (chatData) {
-        const newCount = 7;
-        if (newCount > previousCount) {
-          // Show the notification pop-up here (you can use any notification library or custom modal)
-          const newChats = newCount - previousCount;
-          toast.info(`You've got ${newChats} new chat(s) waiting`, {
-            autoClose: 10000, // Set the duration for how long the notification will be shown (in milliseconds)
-            hideProgressBar: true, // Hide the progress bar
-          });
-        }
-        // setChatData(updatedChatData);
-      }
-    };
-
-    // Check for new chats every 2 minutes (2 * 60 * 1000)
-    const intervalId = setInterval(checkForNewChats, 3 * 1000);
-
-    return () => clearInterval(intervalId);
-  }, [chatData, previousCount]);
-
-  console.log('Same value: ', props?.chatCount, ' equals ', previousCount);
   const formElements = (
     <Spacings.Stack scale="xxl">
       <ToastContainer />
