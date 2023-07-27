@@ -3,9 +3,11 @@ require("dotenv").config();
 const adminSchema = require("./adminSchema");
 const ticketSchema = require("./ticketSchema");
 const feedbackSchema = require("./feedbackSchema");
+const chatSchema = require("./chatSchema");
 const { ServerApiVersion } = require("mongodb");
 
-const { MONGO_ADMIN_URI, MONGO_ADMIN_DB, MONGO_TICKETS_DB } = process.env;
+const { MONGO_ADMIN_URI, MONGO_ADMIN_DB, MONGO_TICKETS_DB, MONGO_CHAT_DB } =
+  process.env;
 
 const connect = (uri, dbName) => {
   // Connecting to the database
@@ -35,4 +37,15 @@ const feedbackDBConnection = (uri) => {
   return feedbackSchema.registerSchema(conn);
 };
 
-module.exports = { adminConnection, clientDBConnection, feedbackDBConnection };
+const chatDBConnection = (uri) => {
+  let conn = connect(uri, MONGO_CHAT_DB);
+
+  return chatSchema.registerSchema(conn);
+};
+
+module.exports = {
+  adminConnection,
+  clientDBConnection,
+  feedbackDBConnection,
+  chatDBConnection,
+};

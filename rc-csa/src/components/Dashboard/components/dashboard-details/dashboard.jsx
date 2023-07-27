@@ -46,11 +46,14 @@ import {
 import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
 import {
   useCreateOrUpdateFeedback,
+  useFetchChatNotifyList,
   useFetchFeedbackList,
 } from '../../../../hooks/use-register-user-connector/use-service-connector';
+import { ToastContainer, toast } from 'react-toastify';
 import Feedback from '../feedback/feedback';
 import { getFeedbackRows } from '../feedback/function';
 import { getOrderRows } from '../../../Orders/components/order-list/rows';
+import { getChatRows } from '../chat/function';
 
 let columns = [
   {
@@ -84,8 +87,10 @@ const DashboardDisplay = (props) => {
   const { page, perPage } = usePaginationState();
   const [rowsTick, setRows] = useState(null);
   const [feedback, setFeedback] = useState(null);
+  const [chat, setChat] = useState(null);
   const [resData, setResData] = useState(null);
   const [feedbackRaw, setFeedRaw] = useState(null);
+  const [chatRaw, setChatRaw] = useState(null);
   const { user } = useApplicationContext((context) => ({
     user: context.user ?? '',
   }));
@@ -97,6 +102,7 @@ const DashboardDisplay = (props) => {
   const { execute: fetchTickets } = useFetchTicketsList();
   const { execute: fetchFeedback } = useFetchFeedbackList();
   const { execute: createFeedback } = useCreateOrUpdateFeedback();
+  const { execute: fetchChatList } = useFetchChatNotifyList();
 
   useEffect(async () => {
     if (canManage && foundUser == false) {
@@ -133,8 +139,64 @@ const DashboardDisplay = (props) => {
       setFeedRaw(data);
     }
   }, [foundUser]);
-  // console.log('Feedback', feedback);
-  // console.log('Decider', feedbackRaw);
+
+  useEffect(async () => {
+    if (canManage && foundUser == false) {
+      await execute();
+    }
+
+    if (!chat) {
+      const data = await fetchChatList(projectKey, {
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        // sort: { lastModifiedAt: -1 },
+      });
+
+      const r = await getChatRows(data);
+      setChat(r);
+      setChatRaw(data);
+    }
+  }, [foundUser, chat]);
+
+  const [previousCount, setPreviousCount] = useState();
+
+  useEffect(() => {
+    if (chat) {
+      setPreviousCount(chat?.count);
+    }
+  }, [chat]);
+
+  useEffect(() => {
+    const checkForNewChats = async () => {
+      const data = await fetchChatList(projectKey, {
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        // sort: { lastModifiedAt: -1 },
+      });
+      // Fetch the updated chat data from props
+      const updatedChatData = data;
+      if (updatedChatData) {
+        const newCount = updatedChatData?.count;
+        if (newCount > previousCount) {
+          const newChats = newCount - previousCount;
+          toast.info(`You've got ${newChats} new chat(s) waiting`, {
+            autoClose: 5000, // Set the duration for how long the notification will be shown (in milliseconds)
+            hideProgressBar: true, // Hide the progress bar
+          });
+        }
+      }
+    };
+
+    // Check for new chats every 2 minutes (120,000 milliseconds)
+    const intervalId = setInterval(checkForNewChats, 3 * 1000);
+
+    // Clear the interval when the component is unmounted to avoid memory leaks
+    return () => clearInterval(intervalId);
+  }, [props.chat, previousCount]);
+
+  const chatCount = chat?.count;
+  console.log('chatCount: ', chatCount);
+
   // const tableSort = [{ key: 'id', order: 'asc' }];
   const tableSorting = useDataTableSortingState({ key: 'id', order: 'asc' });
   // const tableSort = tableSorting.value;
@@ -198,6 +260,8 @@ const DashboardDisplay = (props) => {
         customerData,
         productData,
         feedback,
+        chat,
+        chatCount,
         null,
         projectLanguages
       )}
@@ -208,6 +272,8 @@ const DashboardDisplay = (props) => {
       customer={customerData}
       product={productData}
       feedback={feedback}
+      chat={chat}
+      chatCount={chatCount}
       isReadOnly={!canManage}
       dataLocale={dataLocale}
     >
