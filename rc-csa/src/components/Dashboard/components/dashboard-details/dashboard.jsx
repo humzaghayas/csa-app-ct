@@ -46,11 +46,13 @@ import {
 import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
 import {
   useCreateOrUpdateFeedback,
+  useFetchChatNotifyList,
   useFetchFeedbackList,
 } from '../../../../hooks/use-register-user-connector/use-service-connector';
 import Feedback from '../feedback/feedback';
 import { getFeedbackRows } from '../feedback/function';
 import { getOrderRows } from '../../../Orders/components/order-list/rows';
+import { getChatRows } from '../chat/function';
 
 let columns = [
   {
@@ -84,8 +86,10 @@ const DashboardDisplay = (props) => {
   const { page, perPage } = usePaginationState();
   const [rowsTick, setRows] = useState(null);
   const [feedback, setFeedback] = useState(null);
+  const [chat, setChat] = useState(null);
   const [resData, setResData] = useState(null);
   const [feedbackRaw, setFeedRaw] = useState(null);
+  const [chatRaw, setChatRaw] = useState(null);
   const { user } = useApplicationContext((context) => ({
     user: context.user ?? '',
   }));
@@ -97,6 +101,7 @@ const DashboardDisplay = (props) => {
   const { execute: fetchTickets } = useFetchTicketsList();
   const { execute: fetchFeedback } = useFetchFeedbackList();
   const { execute: createFeedback } = useCreateOrUpdateFeedback();
+  const { execute: fetchChatList } = useFetchChatNotifyList();
 
   useEffect(async () => {
     if (canManage && foundUser == false) {
@@ -133,8 +138,28 @@ const DashboardDisplay = (props) => {
       setFeedRaw(data);
     }
   }, [foundUser]);
-  // console.log('Feedback', feedback);
-  // console.log('Decider', feedbackRaw);
+
+  useEffect(async () => {
+    if (canManage && foundUser == false) {
+      await execute();
+    }
+
+    if (!chat) {
+      const data = await fetchChatList(projectKey, {
+        limit: perPage.value,
+        offset: (page.value - 1) * perPage.value,
+        // sort: { lastModifiedAt: -1 },
+      });
+
+      const r = await getChatRows(data);
+      setChat(r);
+      setChatRaw(data);
+    }
+  }, [foundUser, chat]);
+
+  const chatCount = chat?.count;
+  console.log('chatCount: ', chatCount);
+
   // const tableSort = [{ key: 'id', order: 'asc' }];
   const tableSorting = useDataTableSortingState({ key: 'id', order: 'asc' });
   // const tableSort = tableSorting.value;
@@ -198,6 +223,8 @@ const DashboardDisplay = (props) => {
         customerData,
         productData,
         feedback,
+        chat,
+        chatCount,
         null,
         projectLanguages
       )}
@@ -208,6 +235,8 @@ const DashboardDisplay = (props) => {
       customer={customerData}
       product={productData}
       feedback={feedback}
+      chat={chat}
+      chatCount={chatCount}
       isReadOnly={!canManage}
       dataLocale={dataLocale}
     >
