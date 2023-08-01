@@ -5,10 +5,18 @@ const express = require("express");
 const cors = require("cors");
 const crypto = require("crypto");
 const fetch = require("node-fetch");
+const {
+  getChatUpdateIncrement,
+  getChatUpdateDecrement,
+} = require("./function");
 const app = express();
 
 const WEBHOOK_SECRET =
   "3f15f848503040b6f576c88d74a3e1bc67f638a95f82f283c32c40db32f25490d542579f338dbb2b54a6c4767487f081";
+
+//testing
+// const WEBHOOK_SECRET =
+//   "ae592f481465d74d3334d8ed771964cb328c6971a83b7fba136c178505138f7872be19881bb1ef55d790bfa0b48e6d18";
 
 function verifySignature(body, signature) {
   const digest = crypto
@@ -18,15 +26,13 @@ function verifySignature(body, signature) {
   return signature === digest;
 }
 
-// Remove the custom middleware for capturing the raw body
-
-// app.use(express.json()); // Use the built-in express.json() middleware to parse JSON request bodies
-
 app.use(cors({ origin: true }));
 
 app.post("/webhooks", async function (req, res, next) {
   // Check if the 'x-tawk-signature' header exists
+  console.log("*********inside*********");
   const signature = req.headers["x-tawk-signature"];
+  console.log("***signature***: ", signature);
   if (!signature) {
     return res
       .status(400)
@@ -34,17 +40,21 @@ app.post("/webhooks", async function (req, res, next) {
   }
 
   if (!verifySignature(JSON.stringify(req.body), signature)) {
+    console.log("Verification failed. Invalid signature.");
     return res
       .status(401)
       .json({ error: "Verification failed. Invalid signature." });
   }
 
+  // const get = getChatNoteList();
+  // console.log("get this list: ", get);
   const payload = req.body;
   console.log("payload: ", payload);
   const body = {
     projectKey: "csa-project-4",
     data: payload,
   };
+
   const store = fetch(
     `https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/ct_csa_api/create-startChat-db`,
     {
@@ -66,7 +76,13 @@ app.post("/webhooks", async function (req, res, next) {
     .catch((error) => {
       console.log("Error while creating object in mongodb", error);
     });
-  //console.log("fetch: ", store.json);
+  if (payload.event === "chat:start") {
+    getChatUpdateIncrement();
+  }
+  if (payload.event === "chat:end") {
+    getChatUpdateDecrement();
+  }
+  // console.log("fetch: ", update);
   res.status(200).json({ success: true, store });
 });
 

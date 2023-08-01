@@ -20,3 +20,5 @@ export const REPORT_TYPE = {
   Product: 'Attendance',
   Customer: 'Customer',
 };
+
+export const ID = '64c79398cdf3f52b2c98ff48';

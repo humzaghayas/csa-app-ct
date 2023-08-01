@@ -61,3 +61,17 @@ export const formValuesToDoc = (formValues) => ({
   //   : '--',
   // cartState: !TextInput.isEmpty(formValues.country) ? formValues.country : '--',
 });
+
+export function updateChatNoteValue() {
+  const noteId = 'rc12653';
+  const define = '0';
+  const _id = '64c79398cdf3f52b2c98ff48';
+
+  const t = {
+    noteId: noteId,
+    define: define,
+    _id: _id,
+  };
+
+  return t;
+}

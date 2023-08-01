@@ -11,6 +11,7 @@ const cartService = require("./services/cartService")();
 const orderService = require("./services/orderService")();
 const feedbackService = require("./services/feedbackService")();
 const chatService = require("./services/chatService")();
+const chatNoteService = require("./services/chatNoteService")();
 const {
   getTicketCategories,
   getTicketPriorityValues,
@@ -402,6 +403,32 @@ app.post("/create-startChat-db", async (req, res) => {
   //     res.status(400).json({result: result.errors});
   // }else{
   res.status(200).json({ feedbacks });
+  //}
+});
+
+app.post("/chat-noteList", async (req, res) => {
+  const { variables } = req.body;
+  const { projectKey } = req.session;
+  const results = await chatNoteService.getChatsNote({ projectKey, variables });
+
+  if (results.error) {
+    res.status(400).json(results);
+  } else {
+    res.status(200).json(results);
+  }
+});
+
+app.post("/cUpdate-noteChat-db", async (req, res) => {
+  const { data } = req.body;
+  const { projectKey } = req.session;
+  console.log("create ticket:" + projectKey);
+
+  const chatNote = await chatNoteService.createChatNote(projectKey, data);
+
+  // if(result.error){
+  //     res.status(400).json({result: result.errors});
+  // }else{
+  res.status(200).json({ chatNote });
   //}
 });
 

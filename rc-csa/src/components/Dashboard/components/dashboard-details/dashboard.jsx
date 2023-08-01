@@ -22,7 +22,11 @@ import { PERMISSIONS } from '../../../../constants';
 // import {
 //   useCustomerDetailsCreator,
 // } from '../../../../hooks/use-Customer-connector/use-Customere-graphql-connector';
-import { docToFormValues, formValuesToDoc } from './conversions';
+import {
+  docToFormValues,
+  formValuesToDoc,
+  updateChatNoteValue,
+} from './conversions';
 import DashboardDisplayForm from './dashboard-form';
 import { transformErrors } from './transform-errors';
 import messages from './messages';
@@ -46,14 +50,17 @@ import {
 import { getTicketRows } from 'ct-tickets-helper-api/lib/helper-methods';
 import {
   useCreateOrUpdateFeedback,
+  useFetchChatNotification,
   useFetchChatNotifyList,
   useFetchFeedbackList,
+  useUpdateNotification,
 } from '../../../../hooks/use-register-user-connector/use-service-connector';
 import { ToastContainer, toast } from 'react-toastify';
 import Feedback from '../feedback/feedback';
 import { getFeedbackRows } from '../feedback/function';
 import { getOrderRows } from '../../../Orders/components/order-list/rows';
 import { getChatRows } from '../chat/function';
+import { ID } from './constants';
 
 let columns = [
   {
@@ -104,7 +111,8 @@ const DashboardDisplay = (props) => {
   const { execute: fetchTickets } = useFetchTicketsList();
   const { execute: fetchFeedback } = useFetchFeedbackList();
   const { execute: createFeedback } = useCreateOrUpdateFeedback();
-  const { execute: fetchChatList } = useFetchChatNotifyList();
+  const { execute: fetchChatList } = useFetchChatNotification();
+  const { execute: updateChat } = useUpdateNotification();
 
   useEffect(async () => {
     if (canManage && foundUser == false) {
@@ -159,52 +167,10 @@ const DashboardDisplay = (props) => {
       setChatRaw(data);
     }
   }, [foundUser, chat]);
+  const chatNum = chat?.rows?.[0]?.define;
+  console.log('chat: ', chat);
+  console.log('Notify number: ', chatNum);
 
-  const [previousCount, setPreviousCount] = useState();
-
-  useEffect(() => {
-    if (chat) {
-      setPreviousCount(chat?.count);
-    }
-  }, [chat]);
-
-  useEffect(() => {
-    const checkForNewChats = async () => {
-      const data = await fetchChatList(projectKey, {
-        limit: perPage.value,
-        offset: (page.value - 1) * perPage.value,
-        // sort: { lastModifiedAt: -1 },
-      });
-      // Fetch the updated chat data from props
-      const updatedChatData = data;
-      if (updatedChatData) {
-        const newCount = updatedChatData?.count;
-        if (newCount > previousCount) {
-          const newChats = newCount - previousCount;
-          // toast.info(`You've got ${newChats} new chat(s) waiting`, {
-          //   autoClose: 5000, // Set the duration for how long the notification will be shown (in milliseconds)
-          //   hideProgressBar: true, // Hide the progress bar
-          // });
-
-          setMessageShown(true);
-
-          setNewChatCount(newChats);
-          // setPreviousCount(newCount);
-        }
-      }
-    };
-
-    // Check for new chats every 2 minutes (120,000 milliseconds)
-    const intervalId = setInterval(checkForNewChats, 30 * 1000);
-
-    // Clear the interval when the component is unmounted to avoid memory leaks
-    return () => clearInterval(intervalId);
-  }, [props.chat, previousCount]);
-
-  const chatCount = chat?.count;
-  console.log('chatCount: ', chatCount);
-
-  // const tableSort = [{ key: 'id', order: 'asc' }];
   const tableSorting = useDataTableSortingState({ key: 'id', order: 'asc' });
   // const tableSort = tableSorting.value;
   const orderData = useOrdersFetcher({
@@ -268,7 +234,7 @@ const DashboardDisplay = (props) => {
         productData,
         feedback,
         chat,
-        chatCount,
+        chatNum,
         null,
         projectLanguages
       )}
@@ -280,7 +246,7 @@ const DashboardDisplay = (props) => {
       product={productData}
       feedback={feedback}
       chat={chat}
-      chatCount={chatCount}
+      chatCount={chatNum}
       isReadOnly={!canManage}
       dataLocale={dataLocale}
       newChatCount={newChatCount}
@@ -306,18 +272,6 @@ const DashboardDisplay = (props) => {
         );
       }}
     </DashboardDisplayForm>
-
-    // (
-    //   <Feedback
-    //     initialValues={docToFormValues(feedback, null, projectLanguages)}
-    //     feedback={feedback}
-    //     onSubmit={handleSubmitFeedback}
-    //   >
-    //     {(formProps) => {
-    //       return <React.Fragment>{formProps.formElements}</React.Fragment>;
-    //     }}
-    //   </Feedback>
-    // )
   );
 };
 DashboardDisplay.displayName = 'DashboardDisplay';

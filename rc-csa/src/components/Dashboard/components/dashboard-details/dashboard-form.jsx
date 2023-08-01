@@ -126,7 +126,7 @@ const DashboardDisplayForm = (props) => {
   const [chat, setChat] = useState(null);
   const [chatRaw, setChatRaw] = useState(null);
   const ticketData = props?.ticket;
-  const newChatCount = props?.newChatCount;
+  const chatCount = props?.chatCount;
   const orderData = props?.order;
   const cartData = props?.cart;
   const customerData = props?.customer;
@@ -266,7 +266,55 @@ const DashboardDisplayForm = (props) => {
   const history = useHistory();
 
   //chat notification
+  // useEffect(() => {
+  //   const checkForNewChats = async () => {
+  //     const data = await fetchChatList(projectKey, {
+  //       limit: perPage.value,
+  //       offset: (page.value - 1) * perPage.value,
+  //       // sort: { lastModifiedAt: -1 },
+  //     });
 
+  //     const r = await getChatRows(data);
+  //     setChat(r);
+  //     setChatRaw(data);
+  //     // Fetch the updated chat data from props
+  //     const updatedChatData = r;
+  //     setNewChatCount(newChats);
+  //     if (updatedChatData?.rows?.[0]?.define === 1) {
+  //       console.log('**********inside**********');
+  //       toast.info(`You've got ${newChats} new chat(s) waiting`, {
+  //         autoClose: 5000, // Set the duration for how long the notification will be shown (in milliseconds)
+  //         hideProgressBar: true, // Hide the progress bar
+  //       });
+  //       setMessageShown(true);
+
+  //       setTimeout(async () => {
+  //         data = updateChatNoteValue();
+  //         console.log('data: ', data);
+
+  //         let updatedT = await updateChat(
+  //           projectKey,
+  //           data,
+  //           CONSTANTS.STATUS_OPERATION
+  //         );
+  //         console.log(updatedT);
+  //       }, 30000); // 30 seconds in milliseconds (30,000 ms = 30 seconds)
+  //       // if (newCount > previousCount) {
+  //       //   const newChats = newCount - previousCount;
+  //       //   // toast.info(`You've got ${newChats} new chat(s) waiting`, {
+  //       //   //   autoClose: 5000, // Set the duration for how long the notification will be shown (in milliseconds)
+  //       //   //   hideProgressBar: true, // Hide the progress bar
+  //       //   // });
+
+  //       //   setMessageShown(true);
+
+  //       //   setNewChatCount(newChats);
+  //       //   // setPreviousCount(newCount);
+  //       // }
+  //     }
+  //   };
+  //   checkForNewChats();
+  // }, [fetchChatList]);
   const formElements = (
     <Spacings.Stack scale="xxl">
       <ToastContainer />
@@ -320,8 +368,7 @@ const DashboardDisplayForm = (props) => {
             <Constraints.Horizontal max={7}>
               <Card constraint="xl" theme="light" insetScale="l">
                 <Spacings.Inline alignItems="stretch">
-                <Badge badgeContent={newChatCount} color="primary">
-                  
+                  <Badge badgeContent={chatCount} color="primary">
                     <IconButton
                       icon={<UserFilledIcon />}
                       label="A label text"
@@ -329,7 +376,7 @@ const DashboardDisplayForm = (props) => {
                         navigateToLink('https://dashboard.tawk.to/#/dashboard')
                       }
                     />
-                </Badge>
+                  </Badge>
 
                   <Text.Subheadline as="h2">{'Chat'}</Text.Subheadline>
                 </Spacings.Inline>
@@ -778,7 +825,7 @@ const DashboardDisplayForm = (props) => {
         </Spacings.Inline>
       </Spacings.Stack>
       <TawkTo />
-      <ToastContainer className="custom-toast-container" />
+      <ToastContainer />
     </Spacings.Stack>
   );
 

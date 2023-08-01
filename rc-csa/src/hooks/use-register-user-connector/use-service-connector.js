@@ -346,3 +346,76 @@ export const useFetchChatNotifyList = () => {
     execute,
   };
 };
+
+export const useFetchChatNotification = () => {
+  const dispatch = useAsyncDispatch();
+  const { ctCsaBackendURL } = useApplicationContext((context) => ({
+    ctCsaBackendURL: context.environment.CT_CSA_BACKEND,
+  }));
+
+  const apiUrl = ctCsaBackendURL + '/chat-noteList';
+
+  const execute = async (projectKey, variables) => {
+    const header = {
+      'Content-Type': 'application/json',
+    };
+
+    const payload = {
+      projectKey,
+      variables,
+    };
+
+    const data = await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header,
+        },
+      })
+    );
+
+    return data;
+  };
+
+  return {
+    execute,
+  };
+};
+
+export const useUpdateNotification = () => {
+  const dispatch = useAsyncDispatch();
+  const { ctCsaBackendURL } = useApplicationContext((context) => ({
+    ctCsaBackendURL: context.environment.CT_CSA_BACKEND,
+  }));
+
+  const apiUrl = ctCsaBackendURL + '/cUpdate-noteChat-db';
+
+  const execute = async ({ projectKey, data, operation }) => {
+    console.log('CreateFeedback', projectKey, data, operation);
+    const header = {
+      'Content-Type': 'application/json',
+    };
+
+    const payload = {
+      projectKey,
+      data,
+    };
+
+    const result = await dispatch(
+      actions.forwardTo.post({
+        uri: apiUrl,
+        payload,
+        headers: {
+          ...header,
+        },
+      })
+    );
+
+    return result;
+  };
+
+  return {
+    execute,
+  };
+};

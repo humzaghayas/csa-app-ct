@@ -4,6 +4,7 @@ const adminSchema = require("./adminSchema");
 const ticketSchema = require("./ticketSchema");
 const feedbackSchema = require("./feedbackSchema");
 const chatSchema = require("./chatSchema");
+const chatNoteSchema = require("./chatNoteSchema");
 const { ServerApiVersion } = require("mongodb");
 
 const { MONGO_ADMIN_URI, MONGO_ADMIN_DB, MONGO_TICKETS_DB, MONGO_CHAT_DB } =
@@ -43,9 +44,16 @@ const chatDBConnection = (uri) => {
   return chatSchema.registerSchema(conn);
 };
 
+const chatNoteDBConnection = (uri) => {
+  let conn = connect(uri, MONGO_CHAT_DB);
+
+  return chatNoteSchema.registerSchema(conn);
+};
+
 module.exports = {
   adminConnection,
   clientDBConnection,
   feedbackDBConnection,
   chatDBConnection,
+  chatNoteDBConnection,
 };
