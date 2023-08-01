@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "@types/mongoose": "^5.11.97"
+  },
+  "dependencies": {
+    "ct-external-connections": "^1.0.24"
   }
 }

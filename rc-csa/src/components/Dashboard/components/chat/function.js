@@ -30,9 +30,9 @@ export function getChatRows(customObjects) {
       rows: customObjects.results.map(function (co) {
         //   console.log('Chat List', co);
         return {
-          chatId: co?.value?.chatId,
-          time: co?.value?.time,
-          event: co?.value?.event,
+          noteId: co?.value?.noteId,
+          define: co?.value?.define,
+          _id: co?.value?._id,
         };
       }),
     };
