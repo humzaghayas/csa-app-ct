@@ -1,5 +1,5 @@
 const { dataToFormValues } = require("../chat/conversions");
-const { adminDBService, chatDBConnection } = require("ct-external-connections");
+const { adminDBService, chatDBConnection,closeConnection } = require("ct-external-connections");
 const { getStartChatDraftForDB } = require("../chat/function");
 const validateChat = require("../chat/validation")();
 
@@ -53,6 +53,8 @@ module.exports = () => {
       }
     } catch (e) {
       console.error(e);
+    }finally{
+      closeConnection();
     }
 
     return resultingValues;
@@ -75,40 +77,48 @@ module.exports = () => {
     } catch (err) {
       console.log("error", err);
     }
+    finally{
+      closeConnection();
+    }
   };
 
   chatService.createStartChatMongo = async (conf, chat) => {
-    const data = await dataToFormValues(chat, false);
+    try{
+      const data = await dataToFormValues(chat, false);
 
-    console.log("data kasnkasdkasd", data);
-    // const isValid = await validatechat.validate(data);
+      console.log("data kasnkasdkasd", data);
+      // const isValid = await validatechat.validate(data);
 
-    // if (isValid.isError) {
-    //   return { error: true, errors: isValid.errors };
-    // }
+      // if (isValid.isError) {
+      //   return { error: true, errors: isValid.errors };
+      // }
 
-    const chatDraft = await getStartChatDraftForDB(data);
+      const chatDraft = await getStartChatDraftForDB(data);
 
-    // await createTicketHistoryForDB(data, ticketDraft);
+      // await createTicketHistoryForDB(data, ticketDraft);
 
-    console.log("chatDraft", chatDraft);
+      console.log("chatDraft", chatDraft);
 
-    const uri = conf.connectionUri
-      .replace("{{USERNAME}}", conf.username)
-      .replace("{{PASSWORD}}", conf.password);
+      const uri = conf.connectionUri
+        .replace("{{USERNAME}}", conf.username)
+        .replace("{{PASSWORD}}", conf.password);
 
-    const Chat = await chatDBConnection(uri);
+      const Chat = await chatDBConnection(uri);
 
-    if (chatDraft._id) {
-      let doc1 = new Chat(chatDraft);
-      return await Chat.findOneAndUpdate({ _id: chatDraft._id }, chatDraft, {
-        new: true,
-      });
-    } else {
-      let doc1 = new Chat(chatDraft);
-      return await doc1.save({ _id: false });
-    }
+      if (chatDraft._id) {
+        let doc1 = new Chat(chatDraft);
+        return await Chat.findOneAndUpdate({ _id: chatDraft._id }, chatDraft, {
+          new: true,
+        });
+      } else {
+        let doc1 = new Chat(chatDraft);
+        return await doc1.save({ _id: false });
+      }
+  }catch(error){
 
+  }finally{
+    closeConnection();
+  }
     return doc;
   };
 

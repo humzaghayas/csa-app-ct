@@ -6,7 +6,7 @@ const {getApiRoot } = require('../../config/commercetools-client');
 const validateTicket = require('../tickets/validation')();
 
 //const adminDBService = require('../adminDBService')();
-const {adminDBService,clientDBConnection} =require('ct-external-connections');
+const {adminDBService,clientDBConnection,closeConnection} =require('ct-external-connections');
 
   module.exports = ()=>{
 
@@ -55,7 +55,9 @@ const {adminDBService,clientDBConnection} =require('ct-external-connections');
 
     }catch(e){
       console.error(e);
-    } 
+    } finally{
+      closeConnection();
+    }
 
     return resultingValues;
   }
@@ -83,42 +85,51 @@ const {adminDBService,clientDBConnection} =require('ct-external-connections');
 
       }catch(err){
         console.log('error',err);
-      } 
+      } finally{
+        closeConnection();
+      }
 
   }
 
   ticketsService.createTicketMongo=async (conf,ticket) => {
-    const data = await dataToFormValues(ticket,false);
 
-    console.log('data kasnkasdkasd',data);
-    const isValid = await validateTicket.validate(data);
+    try{
+      const data = await dataToFormValues(ticket,false);
+
+      console.log('data kasnkasdkasd',data);
+      const isValid = await validateTicket.validate(data);
 
 
-    if(isValid.isError){
-        return {error:true,errors:isValid.errors};
-    }
+      if(isValid.isError){
+          return {error:true,errors:isValid.errors};
+      }
 
-    const ticketDraft = await getCreateTicketDraftForDB(data);
+      const ticketDraft = await getCreateTicketDraftForDB(data);
 
-    await createTicketHistoryForDB(data,ticketDraft);
+      await createTicketHistoryForDB(data,ticketDraft);
 
-    console.log('ticketDraft',ticketDraft);
+      console.log('ticketDraft',ticketDraft);
 
-    const uri = conf.connectionUri.replace("{{USERNAME}}",conf.username)
-              .replace("{{PASSWORD}}",conf.password);
+      const uri = conf.connectionUri.replace("{{USERNAME}}",conf.username)
+                .replace("{{PASSWORD}}",conf.password);
 
-    const Ticket =await clientDBConnection( uri);
+      const Ticket =await clientDBConnection( uri);
 
-    if(ticketDraft._id){
-      let doc1 = new Ticket(ticketDraft);
-      return await Ticket.findOneAndUpdate({_id:ticketDraft._id}, ticketDraft, {
-          new: true,
-        });
-    }else{
-      let doc1 = new Ticket(ticketDraft);    
-      return await doc1.save();
-    }
+      if(ticketDraft._id){
+        let doc1 = new Ticket(ticketDraft);
+        return await Ticket.findOneAndUpdate({_id:ticketDraft._id}, ticketDraft, {
+            new: true,
+          });
+      }else{
+        let doc1 = new Ticket(ticketDraft);    
+        return await doc1.save();
+      }
 
+    }catch(error){
+      console.log(error);
+    }finally{
+        closeConnection();
+      }
 
 
     return doc;
@@ -188,7 +199,9 @@ const {adminDBService,clientDBConnection} =require('ct-external-connections');
 
     }catch(e){
       console.error(e);
-    } 
+    } finally{
+      closeConnection();
+    }
 
     return result;
   }
