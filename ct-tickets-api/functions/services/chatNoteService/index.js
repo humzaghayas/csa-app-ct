@@ -101,10 +101,16 @@ module.exports = () => {
       .replace("{{PASSWORD}}", conf.password);
 
     const Chat = await chatNoteDBConnection(uri);
-
+    const c = Chat.findOne({ _id: chatDraft._id });
     if (chatDraft._id) {
+      if (chatDraft.increment) {
+        c.define += 1;
+      } else if (chatDraft.decrement) {
+        c.define -= 1;
+      }
       let doc1 = new Chat(chatDraft);
-      return await Chat.findOneAndUpdate({ _id: chatDraft._id }, chatDraft, {
+
+      return await Chat.findOneAndUpdate({ _id: chatDraft._id }, c, {
         new: true,
       });
     } else {
