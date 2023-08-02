@@ -1,5 +1,5 @@
 
-const {adminConnection} = require("../../config/database");
+const {adminConnection,closeConnection} = require("../../config/database");
 var crypto = require('crypto');
 
 const SECRET_KEY = "csa-royalcyber12";
@@ -62,7 +62,7 @@ let adminConnections={};
     }catch(e){
       console.error(e);
     } finally {
-      //await client.close();
+      closeConnection();
     }
 
     return adminConnections;

@@ -20,6 +20,10 @@ const connect = (uri, dbName) => {
   });
 };
 
+const closeConnection=()=>{
+  mongoose.disconnect();
+}
+
 const adminConnection = () => {
   let conn = connect(MONGO_ADMIN_URI, MONGO_ADMIN_DB);
 
@@ -56,4 +60,5 @@ module.exports = {
   feedbackDBConnection,
   chatDBConnection,
   chatNoteDBConnection,
+  closeConnection
 };

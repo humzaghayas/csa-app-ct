@@ -2,6 +2,7 @@ const { dataToFormValues } = require("../feedback/conversions");
 const {
   adminDBService,
   feedbackDBConnection,
+  closeConnection
 } = require("ct-external-connections");
 const { getCreateFeedbackDraftForDB } = require("../feedback/function");
 const validateFeedback = require("../feedback/validation")();
@@ -49,8 +50,9 @@ module.exports = () => {
       }
     } catch (e) {
       console.error(e);
-    }
-
+    }finally{
+      closeConnection();
+  }
     return resultingValues;
   };
 
@@ -70,45 +72,51 @@ module.exports = () => {
       // else {return await feedbackService.createTicketCO(ticket);}
     } catch (err) {
       console.log("error", err);
+    }finally{
+      closeConnection();
     }
   };
 
   feedbackService.createFeedbackMongo = async (conf, feedback) => {
-    const data = await dataToFormValues(feedback, false);
 
-    console.log("data kasnkasdkasd", data);
-    // const isValid = await validateFeedback.validate(data);
+    try{
+        const data = await dataToFormValues(feedback, false);
 
-    // if (isValid.isError) {
-    //   return { error: true, errors: isValid.errors };
-    // }
+        console.log("data kasnkasdkasd", data);
+        // const isValid = await validateFeedback.validate(data);
 
-    const feedbackDraft = await getCreateFeedbackDraftForDB(data);
+        // if (isValid.isError) {
+        //   return { error: true, errors: isValid.errors };
+        // }
 
-    // await createTicketHistoryForDB(data, ticketDraft);
+        const feedbackDraft = await getCreateFeedbackDraftForDB(data);
 
-    console.log("feedbackDraft", feedbackDraft);
+        // await createTicketHistoryForDB(data, ticketDraft);
 
-    const uri = conf.connectionUri
-      .replace("{{USERNAME}}", conf.username)
-      .replace("{{PASSWORD}}", conf.password);
+        console.log("feedbackDraft", feedbackDraft);
 
-    const Feedback = await feedbackDBConnection(uri);
+        const uri = conf.connectionUri
+          .replace("{{USERNAME}}", conf.username)
+          .replace("{{PASSWORD}}", conf.password);
 
-    if (feedbackDraft._id) {
-      let doc1 = new Feedback(feedbackDraft);
-      return await Feedback.findOneAndUpdate(
-        { _id: feedbackDraft._id },
-        feedbackDraft,
-        {
-          new: true,
+        const Feedback = await feedbackDBConnection(uri);
+
+        if (feedbackDraft._id) {
+          let doc1 = new Feedback(feedbackDraft);
+          return await Feedback.findOneAndUpdate(
+            { _id: feedbackDraft._id },
+            feedbackDraft,
+            {
+              new: true,
+            }
+          );
+        } else {
+          let doc1 = new Feedback(feedbackDraft);
+          return await doc1.save();
         }
-      );
-    } else {
-      let doc1 = new Feedback(feedbackDraft);
-      return await doc1.save();
-    }
-
+      }finally{
+        closeConnection();
+      }
     return doc;
   };
 

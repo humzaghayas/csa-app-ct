@@ -6,6 +6,7 @@ const {
   feedbackDBConnection,
   chatDBConnection,
   chatNoteDBConnection,
+  closeConnection
 } = require("./config/database");
 module.exports = {
   adminDBService,
@@ -15,6 +16,7 @@ module.exports = {
   feedbackDBConnection,
   chatDBConnection,
   chatNoteDBConnection,
+  closeConnection
 };
 
 // async function a(){

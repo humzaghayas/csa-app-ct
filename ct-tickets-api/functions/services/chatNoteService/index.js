@@ -1,6 +1,7 @@
 const {
   adminDBService,
   chatNoteDBConnection,
+  closeConnection
 } = require("ct-external-connections");
 const { getCreateChatNoteDraftForDB } = require("../chat/functionNote");
 const { dataToFormValuesNote } = require("../chat/conversionsNote");
@@ -56,6 +57,8 @@ module.exports = () => {
       }
     } catch (e) {
       console.error(e);
+    }finally{
+      closeConnection();
     }
 
     return resultingValues;
