@@ -18,7 +18,11 @@ function getChatNoteValue(chatNInfo) {
   var noteId = chatNInfo.noteId;
   var define = chatNInfo.define;
   var _id = chatNInfo._id ?? "";
+  var increment = chatNInfo?.increment ?? false;
+  var decrement = chatNInfo?.decrement ?? false;
   var isEdit = chatNInfo.isEdit;
+
+ 
 
   var t = {
     noteId: noteId,
@@ -26,9 +30,25 @@ function getChatNoteValue(chatNInfo) {
     isEdit: isEdit,
   };
 
+  if(increment){
+
+
+    t.increment = increment;
+    console.log('incr',t);
+  }
+
+  if(decrement){
+    t.decrement = decrement;
+    console.log('decrementsdsd',t);
+  }
+
+  console.log('decr',t);
+
   if (chatNInfo._id) {
     t._id = _id;
   }
+
+  console.log('decr',t);
 
   return t;
 }

@@ -8,6 +8,7 @@ const fetch = require("node-fetch");
 const {
   getChatUpdateIncrement,
   getChatUpdateDecrement,
+  createTicketMongoDB,
 } = require("./function");
 const app = express();
 
@@ -81,6 +82,9 @@ app.post("/webhooks", async function (req, res, next) {
   }
   if (payload.event === "chat:end") {
     getChatUpdateDecrement();
+  }
+  if (payload.event === "ticket:create") {
+    createTicketMongoDB(payload);
   }
   // console.log("fetch: ", update);
   res.status(200).json({ success: true, store });

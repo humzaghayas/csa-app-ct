@@ -9,7 +9,9 @@ const dataToFormValuesNote = async (chat, isEdit) => {
 const dataToFormCommonValues = (chat, isEdit) => {
   const commonValues = {
     noteId: chat?.noteId ?? "",
-    define: chat?.define ?? "",
+    define: chat?.define ?? 0,
+    increment: chat?.increment ?? false,
+    decrement: chat?.decrement ?? false,
     isEdit: isEdit ?? false,
   };
   if (chat?._id) {

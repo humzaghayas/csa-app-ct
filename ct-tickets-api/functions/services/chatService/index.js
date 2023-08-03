@@ -1,5 +1,9 @@
 const { dataToFormValues } = require("../chat/conversions");
-const { adminDBService, chatDBConnection,closeConnection } = require("ct-external-connections");
+const {
+  adminDBService,
+  chatDBConnection,
+  closeConnection,
+} = require("ct-external-connections");
 const { getStartChatDraftForDB } = require("../chat/function");
 const validateChat = require("../chat/validation")();
 
@@ -29,13 +33,13 @@ module.exports = () => {
           .replace("{{USERNAME}}", adminConf[projectKey].username)
           .replace("{{PASSWORD}}", adminConf[projectKey].password);
 
-          const chatConn = adminDBService[projectKey+'chat'];
+        const chatConn = adminDBService[projectKey + "chat"];
 
-        let Chat ={};
-        
-        if(!chatConn || chatConn.connection?.readyState != 1){
-          Chat  =await chatDBConnection(uri);
-          adminDBService[projectKey+'chat']=Chat;
+        let Chat = {};
+
+        if (!chatConn || chatConn.connection?.readyState != 1) {
+          Chat = await chatDBConnection(uri);
+          adminDBService[projectKey + "chat"] = Chat;
         }
         console.log("chat", Chat);
         const offset = variables.offset;
@@ -53,7 +57,7 @@ module.exports = () => {
       }
     } catch (e) {
       console.error(e);
-    }finally{
+    } finally {
       closeConnection();
     }
 
@@ -76,14 +80,13 @@ module.exports = () => {
       // else {return await chatService.createTicketCO(ticket);}
     } catch (err) {
       console.log("error", err);
-    }
-    finally{
+    } finally {
       closeConnection();
     }
   };
 
   chatService.createStartChatMongo = async (conf, chat) => {
-    try{
+    try {
       const data = await dataToFormValues(chat, false);
 
       console.log("data kasnkasdkasd", data);
@@ -114,12 +117,12 @@ module.exports = () => {
         let doc1 = new Chat(chatDraft);
         return await doc1.save({ _id: false });
       }
-  }catch(error){
-
-  }finally{
-    closeConnection();
-  }
-    return doc;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      closeConnection();
+    }
+    // return doc;
   };
 
   return chatService;
