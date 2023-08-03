@@ -8,7 +8,7 @@ function getStartChatDraftForDB(chatInfo) {
       event = chatInfo?.event;
 
       console.log("chatInfo ", chatInfo);
-      chatDetails = getchatInfo(chatInfo) ?? "";
+      const chatDetails = getchatInfo(chatInfo) ?? "";
 
       // return {chatMessage, chatVisitor, chatProperty};
       return [2 /*return*/, chatDetails];

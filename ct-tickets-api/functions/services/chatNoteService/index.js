@@ -84,44 +84,60 @@ module.exports = () => {
   };
 
   chatNoteService.createChatNoteMongo = async (conf, chat) => {
-    const data = await dataToFormValuesNote(chat, false);
+    try{
+        const data = await dataToFormValuesNote(chat, false);
 
-    console.log("data kasnkasdkasd", data);
-    // const isValid = await validatechat.validate(data);
+        console.log("data chat incr", data);
+        // const isValid = await validatechat.validate(data);
 
-    // if (isValid.isError) {
-    //   return { error: true, errors: isValid.errors };
-    // }
+        // if (isValid.isError) {
+        //   return { error: true, errors: isValid.errors };
+        // }
 
-    const chatDraft = await getCreateChatNoteDraftForDB(data);
+        const chatDraft = await getCreateChatNoteDraftForDB(data);
 
-    // await createTicketHistoryForDB(data, ticketDraft);
+        // await createTicketHistoryForDB(data, ticketDraft);
 
-    console.log("chatDraft", chatDraft);
+        console.log("chatDraft", chatDraft);
 
-    const uri = conf.connectionUri
-      .replace("{{USERNAME}}", conf.username)
-      .replace("{{PASSWORD}}", conf.password);
+        const uri = conf.connectionUri
+          .replace("{{USERNAME}}", conf.username)
+          .replace("{{PASSWORD}}", conf.password);
 
-    const Chat = await chatNoteDBConnection(uri);
-    const c = Chat.findOne({ _id: chatDraft._id });
-    if (chatDraft._id) {
-      if (chatDraft.increment) {
-        c.define += 1;
-      } else if (chatDraft.decrement) {
-        c.define -= 1;
-      }
-      let doc1 = new Chat(chatDraft);
+        const Chat = await chatNoteDBConnection(uri);
+        const c =await Chat.findById( chatDraft._id);
 
-      return await Chat.findOneAndUpdate({ _id: chatDraft._id }, c, {
-        new: true,
-      });
-    } else {
-      let doc1 = new Chat(chatDraft);
-      return await doc1.save({ _id: false });
+        let varC = {};
+
+        varC.noteId= chatDraft.noteId;
+        varC.define= chatDraft.define;
+        varC.isEdit= chatDraft.isEdit;
+        varC._id = chatDraft._id;
+
+        console.log('c 565556',c);
+        
+        if (chatDraft._id) {
+          if (chatDraft.increment) {
+            varC.define = c.define + 1;
+          } else if (chatDraft.decrement) {
+            varC.define = c.define - 1;
+          }
+         
+          console.log('varC',varC);
+
+          return await Chat.findOneAndUpdate({ _id: chatDraft._id }, varC, {
+            new: true,
+          });
+        } else {
+          let doc1 = new Chat(chatDraft);
+          return await doc1.save({ _id: false });
+        }
+    } catch(e){
+        console.error('chat error',e)
+    }finally{
+      closeConnection();
     }
 
-    return doc;
   };
 
   return chatNoteService;

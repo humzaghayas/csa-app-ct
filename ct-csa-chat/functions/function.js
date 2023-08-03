@@ -21,6 +21,8 @@ async function getChatUpdateIncrement() {
     data: getChatNotIncrement(),
   };
 
+  console.log('bodyIncrement',bodyIncrement);
+
   try {
     const response = await fetch(
       `https://us-central1-commerce-tools-b2b-services.cloudfunctions.net/ct_csa_api/cUpdate-noteChat-db`,
