@@ -3,8 +3,6 @@ const simpleParser = require('mailparser').simpleParser;
 const axios = require('axios').default;
 require('dotenv').config();
 
-
-
 // IMAP configuration
 const imapConfig = {
   user: process.env.EMAIL_USERNAME, // Email address
@@ -39,7 +37,7 @@ function processEmailBody(body) {
   
         createTicket(extractEmail(parsedEmail.from.text),parsedEmail.subject,extractMessageText(parsedEmail.text));
       }else{
-        console.log("Its a reply email not created any ticket");7
+        console.log("Its a reply email not created any ticket");
       }
     }
   });
@@ -121,27 +119,7 @@ imap.once('ready', () => {
     // Listen for new mail events
     imap.on('mail', (numNewMsgs) => {
       console.log(`New email received: ${numNewMsgs}`);
-
-      // Fetch the latest email
-      const fetch = imap.fetch(`${mailbox.messages.total}:${mailbox.messages.total}`, { bodies: '' });
-
-      fetch.on('message', (msg) => {
-        msg.on('body', (stream, info) => {
-          let body = '';
-
-          stream.on('data', (chunk) => {
-            body += chunk.toString('utf8');
-          });
-
-          stream.on('end', () => {
-            processEmailBody(body);
-          });
-        });
-      });
-
-      fetch.once('end', () => {
-        console.log('Finished processing email.');
-      });
+      fetchLatestEmail();
     });
   });
 });
@@ -156,3 +134,43 @@ imap.once('end', () => {
 
 // Connect to the IMAP server
 imap.connect();
+
+// Function to fetch and process the latest email
+const fetchLatestEmail = () => {
+  const fetchOptions = { bodies: '', markSeen: true };
+
+  imap.search(['UNSEEN'], (searchErr, results) => {
+    if (searchErr) {
+      console.error('Error searching for new emails:', searchErr);
+      return;
+    }
+
+    if (results.length === 0) {
+      console.log('No new emails.');
+      return;
+    }
+
+    const latestEmailSeq = results[results.length - 1];
+    const fetchBatch = imap.fetch(latestEmailSeq, fetchOptions);
+
+    fetchBatch.on('message', (msg) => {
+      msg.on('body', (stream, info) => {
+        let body = '';
+
+        stream.on('data', (chunk) => {
+          body += chunk.toString('utf8');
+        });
+
+        stream.on('end', () => {
+          processEmailBody(body);
+        });
+      });
+    });
+
+    fetchBatch.once('end', () => {
+      console.log('Finished processing latest email.');
+    });
+  });
+};
+
+
