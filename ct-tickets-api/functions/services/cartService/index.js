@@ -1,5 +1,5 @@
-const {getApiRoot } = require('../../config/commercetools-client');
-const {FETCH_CART_BY_CARTNUMBER,FETCH_CUSTOMERS_DETAILS} =require ('ct-tickets-helper-api');
+const {getApiRoot, projectKey } = require('../../config/commercetools-client');
+const {FETCH_CART_BY_CARTNUMBER,FETCH_CUSTOMERS_DETAILS, REPLICATE_ORDER, UPDATE_CART_BY_ID} =require ('ct-tickets-helper-api');
 const {graphQLService} =require('ct-external-connections');
 
 module.exports = ()=>{
@@ -113,6 +113,42 @@ module.exports = ()=>{
             return {error:true,message:"Error fetching Tickets!"}
         }
     };
+
+    cartService.replicateCart = async (cartId,projectKey) =>{
+        try {
+
+            const variables  = {
+                referenceInput: {
+                    typeId: "cart", "id": cartId
+                }
+            }
+
+            const result = await graphQLService.execute(REPLICATE_ORDER, variables,projectKey);
+            
+            console.log('cart',result);
+
+            return result;
+
+        }catch(error){
+            console.log(`Error: ${error}`);
+            return {error:true,message:`Error while creatiing duplicate order for cart: ${cartId}`}
+        }
+    }
+
+    // cartService.updateCart = async (cartId,updateActions,projectKey) =>{
+    //     try {
+    //         const cart = cartService.getCartById(cartId,false,projectKey)
+    //         const result = await graphQLService.execute(UPDATE_CART_BY_ID, {version:cart?.version,id:cartId},projectKey);
+            
+    //         console.log('cart',result);
+
+    //         return result;
+
+    //     }catch(error){
+    //         console.log(`Error: ${error}`);
+    //         return {error:true,message:`Error while creatiing duplicate order for cart: ${cartId}`}
+    //     }
+    // }
 
 
     return cartService;
