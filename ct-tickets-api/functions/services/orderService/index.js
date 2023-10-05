@@ -1,5 +1,5 @@
 const {getApiRoot } = require('../../config/commercetools-client');
-const {FETCH_ORDER_BY_ID,FETCH_CUSTOMERS_DETAILS} =require ('ct-tickets-helper-api');
+const {FETCH_ORDER_BY_ID,FETCH_CUSTOMERS_DETAILS,CREATE_ORDER_FROMCART} =require ('ct-tickets-helper-api');
 const {graphQLService} =require('ct-external-connections');
 
 module.exports = ()=>{
@@ -67,6 +67,23 @@ module.exports = ()=>{
         }
     };
 
+    // create order from cart
+    orderService.createOrderFromCart = async(cartVar,projectKey)=>{
+        try {
+            const result = await graphQLService.execute(CREATE_ORDER_FROMCART,{draft: {
+                                cart: {id: cartVar.id,},
+                                version: cartVar.version,
+                            }},projectKey);
+
+            console.log(result);
+
+            return result;
+
+        }catch(error){
+            console.log(`Error: ${error}`);
+            return {code:"error",message:"Error Sending Email!"}
+        }
+    };
 
     return orderService;
 

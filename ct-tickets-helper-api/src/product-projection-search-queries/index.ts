@@ -38,6 +38,15 @@ export const PRODUCT_PROJECTION_SEARCH = `query PRODUCT_PROJECTION_SEARCH($local
             fractionDigits
           }
         }
+        availability{
+          noChannel{
+            isOnStock
+            restockableInDays
+            availableQuantity
+            version
+            id
+          }
+        }
       }
       
       createdAt

@@ -142,6 +142,7 @@ module.exports.FETCH_CUSTOMER_BY_ID = `query FetchCustomer($id:String){
       actions:$actions){
         key
         id
+        version
       }
   }`
 
@@ -154,3 +155,24 @@ module.exports.FETCH_CUSTOMER_BY_ID = `query FetchCustomer($id:String){
         id
       }
   }`
+
+
+  module.exports.CREATE_ORDER_FROMCART = `mutation CreateOrderFromCart($draft: OrderCartCommand!) {
+    createOrderFromCart(draft: $draft) {
+      id
+      ...cart
+      version
+      customerEmail
+      customerId
+      purchaseOrderNumber
+      paymentState
+      orderState
+    }
+    
+  }
+  fragment cart on Order{
+    cart{
+        id        
+    }
+  }
+`

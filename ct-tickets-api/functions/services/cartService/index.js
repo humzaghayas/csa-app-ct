@@ -114,12 +114,12 @@ module.exports = ()=>{
         }
     };
 
-    cartService.replicateCart = async (cartId,projectKey) =>{
+    cartService.replicateCart = async (orderId,projectKey) =>{
         try {
 
             const variables  = {
                 referenceInput: {
-                    typeId: "cart", "id": cartId
+                    typeId: "order", "id": orderId
                 }
             }
 
@@ -135,22 +135,5 @@ module.exports = ()=>{
         }
     }
 
-    // cartService.updateCart = async (cartId,updateActions,projectKey) =>{
-    //     try {
-    //         const cart = cartService.getCartById(cartId,false,projectKey)
-    //         const result = await graphQLService.execute(UPDATE_CART_BY_ID, {version:cart?.version,id:cartId},projectKey);
-            
-    //         console.log('cart',result);
-
-    //         return result;
-
-    //     }catch(error){
-    //         console.log(`Error: ${error}`);
-    //         return {error:true,message:`Error while creatiing duplicate order for cart: ${cartId}`}
-    //     }
-    // }
-
-
     return cartService;
-
 }

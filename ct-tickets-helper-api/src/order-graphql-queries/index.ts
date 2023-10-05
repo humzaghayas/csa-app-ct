@@ -581,6 +581,7 @@ export const CREATE_EDIT_ORDER_BY_ID = `mutation createOrderEdit($draft:OrderEdi
 export const REPLICATE_ORDER = `mutation orderReplicate($referenceInput:ReferenceInput!) {
   replicateCart(reference:$referenceInput){
     id
+    version
   }
 }`
 export const FETCH_PAYMENTS_TO_DISPLAY = `query FETCH_PAYMENTS_TO_DISPLAY($where:String,$offset:Int,$limit:Int) {

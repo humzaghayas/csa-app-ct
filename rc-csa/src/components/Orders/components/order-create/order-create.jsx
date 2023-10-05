@@ -149,9 +149,9 @@ const OrderCreate = (props) => {
       const payload = e?.payload;
       try {
         const result = await executeUpdateOrder(payload);
-        // window.location.reload(true)
+        window.location.reload(true)
         // console.log(result);
-        forceUpdate();
+        // forceUpdate();
         showNotification({
           kind: 'success',
           domain: DOMAINS.SIDE,
